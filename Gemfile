@@ -18,7 +18,7 @@ gem 'nokogiri'
 group :assets do
   gem 'sass-rails',   '~> 3.2.3'
   gem 'coffee-rails', '~> 3.2.1'
-  #TESTEEEEEEEEEEEE
+  #TESTEEEEEEEEEEEE3
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   gem 'libv8' #plugin para uso do motor JS v8
   gem 'therubyracer', :platforms => :ruby
