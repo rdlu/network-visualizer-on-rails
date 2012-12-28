@@ -11,6 +11,7 @@ gem 'mysql2'
 gem 'yaml_db'
 gem 'rails-i18n'
 gem 'nokogiri'
+gem 'geocoder'
 
 
 # Gems used only for assets and not required
