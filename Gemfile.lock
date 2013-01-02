@@ -152,6 +152,7 @@ DEPENDENCIES
   immigrant
   jbuilder
   jquery-rails
+  less
   less-rails (~> 2.2.5)
   mysql2
   nokogiri

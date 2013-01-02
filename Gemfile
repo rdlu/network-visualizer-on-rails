@@ -6,7 +6,6 @@ gem 'rails', '3.2.9'
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'less'
-gem "less-rails"
 gem 'mysql2'
 gem 'yaml_db'
 gem 'rails-i18n'
