@@ -12,7 +12,16 @@ gem 'rails-i18n'
 gem 'nokogiri'
 gem 'geocoder'
 gem 'devise'
+gem 'jquery-rails'
 
+# To use ActiveModel has_secure_password
+gem 'bcrypt-ruby', '~> 3.0.0'
+
+# To use Jbuilder templates for JSON
+gem 'jbuilder'
+
+# To use validator of ip
+gem  'ipaddress'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -34,14 +43,6 @@ group :development do
   gem 'foreigner' #sincroniza chaves estrangeiras para o banco de dados
 end
 
-gem 'jquery-rails'
-
-# To use ActiveModel has_secure_password
-gem 'bcrypt-ruby', '~> 3.0.0'
-
-# To use Jbuilder templates for JSON
-gem 'jbuilder'
-
 # Use unicorn as the app server
 gem 'unicorn'
 
@@ -50,3 +51,4 @@ gem 'unicorn'
 
 # To use debugger
 # gem 'debugger'
+

@@ -55,6 +55,7 @@ GEM
     immigrant (0.1.4)
       activerecord (>= 3.0)
       foreigner (>= 1.2.1)
+    ipaddress (0.8.0)
     jbuilder (0.9.1)
       activesupport (>= 3.0.0)
     journey (1.0.4)
@@ -152,6 +153,7 @@ DEPENDENCIES
   foreigner
   geocoder
   immigrant
+  ipaddress
   jbuilder
   jquery-rails
   less
