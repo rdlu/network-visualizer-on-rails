@@ -68,6 +68,13 @@
         </div>
       </div>
   <% end %>
+  <% if flash[:alert] %>
+      <div class="row-fluid">
+        <div class="span12" style="text-align: center;">
+          <div class="alert"><%= flash[:alert] %></div>
+        </div>
+      </div>
+  <% end %>
   <%= yield %>
 </div>
 
