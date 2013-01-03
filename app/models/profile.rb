@@ -2,7 +2,8 @@ class Profile < ActiveRecord::Base
   # attr_accessible :title, :body
 
   #belongs_to
-  #has_many
+
+  has_many :processes #, :metrics
 
   before_save :set_default
 
@@ -19,7 +20,6 @@ class Profile < ActiveRecord::Base
   validates :protocol, :presence => true, :inclusion => { :in => [0, 1] }
   validates :qosType, :presence => true, :inclusion => { :in => [0, 1] }
   validates :qosValue, :presence => true,:inclusion => { :in => [0, 8192] }
-
 
   protected
 
