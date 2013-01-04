@@ -1,5 +1,7 @@
 class Processes < ActiveRecord::Base
-  # attr_accessible :title, :body
+
+  has_many :metrics, :through => :metrics_processes
+  belongs_to :thresholdProfile, :foreing_key => "threshold_id"
 
   attr_accessible :added,:updated, :status, :profile_id, :source_id, :destination_id, :threshold_id
 

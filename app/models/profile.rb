@@ -3,7 +3,7 @@ class Profile < ActiveRecord::Base
 
   #belongs_to
 
-  has_many :processes #, :metrics
+  has_many :processes, :metrics
 
   before_save :set_default
 

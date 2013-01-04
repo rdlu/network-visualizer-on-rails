@@ -17,5 +17,8 @@ class CreateEntities < ActiveRecord::Migration
       t.boolean :isAndroid,:null => false
       t.timestamps
     end
+
+    add_index :name, :ipadress,  :unique => true
+
   end
 end

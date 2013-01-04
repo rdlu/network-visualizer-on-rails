@@ -1,5 +1,5 @@
 class CreateProfiles < ActiveRecord::Migration
-  def up
+  def change
     create_table :profiles do |t|
        t.string :name, :null => false
        t.integer :count, :null => false
@@ -11,12 +11,11 @@ class CreateProfiles < ActiveRecord::Migration
        t.boolean :protocol, :default => false
        t.boolean :qosType, :default => false
        t.integer :qosValue, :null => false
+
        t.timestamps
     end
+
+    add_index :name,  :unique => true
+
   end
-
-  def down
-
-  end
-
 end
