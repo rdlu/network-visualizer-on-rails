@@ -1,0 +1,27 @@
+<div class="row-fluid">
+  <div class="span12" style="text-align: center;">
+    <%= image_tag 'logo-solo-128.png', :style => 'vertical-align:middle' %>
+    <h1>Bem vindo ao NetMetric MoM</h1>
+  </div>
+  <%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
+      <div class="span4 offset4" style="text-align: center;">
+        <div class="field">
+          <%= f.email_field :email, :placeholder => "E-Mail", :class => 'input-block-level' %>
+        </div>
+        <div class="field">
+          <%= f.password_field :password, :placeholder => "Senha", :class => 'input-block-level' %>
+        </div>
+        <% if devise_mapping.rememberable? -%>
+            <div class="field">
+              <%= f.check_box :remember_me, :style => "vertical-align: middle; margin: 0;" %>
+              <%= f.label :remember_me, "Lembrar as credenciais", :style => "vertical-align: middle; margin: 0; display: inline" %>
+            </div><br>
+        <% end -%>
+        <%= f.submit "Entrar!", :class => 'btn btn-primary btn-large btn-block' %>
+        <h4>Se já tiveres cadastro, digite seus dados e clique em entrar.</h4>
+        <%= render "devise/shared/links" %>
+      </div>
+  <% end %>
+</div>
+
+
