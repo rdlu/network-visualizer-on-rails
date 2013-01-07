@@ -1,9 +1,9 @@
 class Entity < ActiveRecord::Base
 
-  has_many :processes_as_source, :class_name => "Processes", :foreing_key => "source_id"
-  has_many :processes_as_destination, :class_name => "Processes", :foreing_key => "destination_id"
-  has_many :destinations, :class_name => "Entity", :through => :processes, :foreing_key => "source_id"
-  has_many :sources, :class_name => "Entity", :through => :processes, :foreing_key => "destination_id"
+  has_many :processes_as_source, :class_name => "Processes", :foreign_key => "source_id"
+  has_many :processes_as_destination, :class_name => "Processes", :foreign_key => "destination_id"
+  has_many :destinations, :class_name => "Entity", :through => :processes, :foreign_key => "source_id"
+  has_many :sources, :class_name => "Entity", :through => :processes, :foreign_key => "destination_id"
 
   attr_accessible :name, :ipadress, :description, :polling, :status, :type, :zip, :adress, :adressnum,
                   :district, :city, :state, :latitude, :longitude, :isAndroid
@@ -25,22 +25,22 @@ class Entity < ActiveRecord::Base
 
   def ipOrHostname?
      if ip(self.ipadress)  || hostname(self.ipadress)
-       return true
+        true
      else
-       return false
+        false
      end
   end
 
-  def ip
-      if IPAddress.valid? self.ipadress
-        return true
+  def ip(ip="")
+      if IPAddress.valid? ip
+         true
       else
-        return false
+         false
       end
   end
 
-  def hostname
-    return (self.ipadress =~ /(([a-zA-Z0-9\-_]*[a-zA-Z0-9_])\.)*([A-Za-z]|[A-Za-z_][A-Za-z0-9\-]*[A-Za-z0-9_])/)
+  def hostname(adress="")
+    return (adress =~ /(([a-zA-Z0-9\-_]*[a-zA-Z0-9_])\.)*([A-Za-z]|[A-Za-z_][A-Za-z0-9\-]*[A-Za-z0-9_])/)
   end
 
   def polling?
