@@ -40,7 +40,7 @@ class Entity < ActiveRecord::Base
   end
 
   def hostname(adress="")
-    return (adress =~ /(([a-zA-Z0-9\-_]*[a-zA-Z0-9_])\.)*([A-Za-z]|[A-Za-z_][A-Za-z0-9\-]*[A-Za-z0-9_])/)
+    return (adress =~ /^(([a-zA-Z0-9\-_]*[a-zA-Z0-9_])\.)*([A-Za-z]|[A-Za-z_][A-Za-z0-9\-]*[A-Za-z0-9_])$/)
   end
 
   def polling?

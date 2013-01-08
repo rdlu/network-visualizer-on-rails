@@ -17,7 +17,7 @@
               <%= f.label :remember_me, "Lembrar as credenciais", :style => "vertical-align: middle; margin: 0; display: inline" %>
             </div><br>
         <% end -%>
-        <%= f.submit "Entrar!", :class => 'btn btn-primary btn-large btn-block' %>
+        <%= f.submit "Entrar!", :class => 'btn btn-primary btn-large btn-block', :id => 'signin' %>
         <h4>Se já tiveres cadastro, digite seus dados e clique em entrar.</h4>
         <%= render "devise/shared/links" %>
       </div>
