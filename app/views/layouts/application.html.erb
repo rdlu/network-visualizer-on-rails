@@ -56,7 +56,7 @@
                 </ul>
               </li>
               <li><%= link_to "Preferências" %></li>
-              <li><%= link_to "Sair",  :destroy_user_session %></li>
+              <li><%= link_to "Sair", destroy_user_session_path, :method => :delete %></li>
           <% end %>
         </ul>
       </div>
