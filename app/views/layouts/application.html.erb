@@ -37,25 +37,34 @@
               <li><%= link_to "Cadastre-se", :controller => "registrations" , :action => "new" %></li>
               <li><%= link_to "Login",  :controller => "sessions" , :action => "create" %></li>
           <% else %>
-              <li><%= link_to "Usuário: "+current_user.email %></li>
+              <li><%= link_to "Inicio", welcome_index_path, :method => :get %></li>
               <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Movimentações <b class="caret"></b></a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Relatórios <b class="caret"></b></a>
                 <ul class="dropdown-menu">
                   <!-- ORIGINAL, :controller => "income", :action => "index"
                        , :controller => "expenditure", :action => "index"-->
                   <li><%= link_to "Receitas" %></li>
+                  <li class="divider"></li>
                   <li><%= link_to "Despesas" %></li>
                 </ul>
               </li>
               <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cadastro <b class="caret"></b></a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Administrar<b class="caret"></b></a>
                 <ul class="dropdown-menu">
                   <!--ORIGINAL , :controller => "account", :action => "index"-->
-                  <li><%= link_to "Alterar",  edit_user_registration_path, :method => :get %></li>
-                  <li><%= link_to "Entidades" %></li>
+                  <li><%= link_to "Processos de Medição" %></li>
+                  <li class="divider"></li>
+                  <li><%= link_to "Sondas e Agentes" %></li>
+                  <li class="divider"></li>
+                  <li><%= link_to "Métricas e Perfis de Teste" %></li>
+                  <li class="divider"></li>
+                  <li><%= link_to "Controle de Usuário", profile_new_path, :method => :get %></li>
+                  <li class="divider"></li>
+                  <li><%= link_to "Minha Conta", edit_user_registration_path, :method => :get %></li>
                 </ul>
               </li>
-              <li><%= link_to "Preferências" %></li>
+              <li class="divider"></li>
+              <li><%= link_to "Usuário: "+current_user.email, edit_user_registration_path, :method => :get %></li>
               <li><%= link_to "Sair", destroy_user_session_path, :method => :delete %></li>
           <% end %>
         </ul>

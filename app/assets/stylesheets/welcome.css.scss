@@ -1,3 +1,16 @@
 // Place all the styles related to the welcome controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+.tab-content-border{
+  border-radius: 0 0 10px 10px;
+  min-height: 450px;
+  padding: 10px;
+  border: 1px solid #DDDDDD;
+  border-top: none !important;
+  box-shadow: 0 1px 1px ;
+}
+
+.nav{
+  margin-bottom: 0 !important;
+}

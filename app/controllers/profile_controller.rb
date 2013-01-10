@@ -6,6 +6,7 @@ class ProfileController < ApplicationController
   end
 
   def delete
-    @variavel = "teste"
+    render  "delete.html.erb"
   end
+
 end

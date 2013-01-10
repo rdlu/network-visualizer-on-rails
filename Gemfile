@@ -34,8 +34,8 @@ group :assets do
   gem 'therubyracer', :require => 'v8'
 
   gem 'uglifier', '>= 1.3.0'
-  gem 'twitter-bootstrap-rails'
-  #gem 'twitter-bootswatch-rails'
+  #gem 'twitter-bootstrap-rails'
+  gem 'twitter-bootswatch-rails'
 end
 
 group :development do
