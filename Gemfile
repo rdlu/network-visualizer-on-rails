@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.9'
+gem 'rails', '3.2.11'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -34,8 +34,8 @@ group :assets do
   gem 'therubyracer', :require => 'v8'
 
   gem 'uglifier', '>= 1.3.0'
-  #gem 'twitter-bootstrap-rails'
-  gem 'twitter-bootswatch-rails'
+  gem 'twitter-bootstrap-rails'
+  #gem 'twitter-bootswatch-rails'
 end
 
 group :development do
