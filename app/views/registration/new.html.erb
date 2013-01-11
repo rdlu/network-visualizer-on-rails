@@ -4,17 +4,16 @@
   </div>
 
   <%= form_for @user, :url => registration_create_path do |f| %>
-      <% if @user.errors.any? %>
-          <div class="alert alert-error">
-            <ul>
-              <% for message in @user.errors.full_messages %>
-                  <li><%= message %></li>
-              <% end %>
-            </ul>
-          </div>
-      <% end %>
-
       <div class="span4 offset4" style="text-align: center;">
+        <% if @user.errors.any? %>
+            <div class="alert alert-error">
+              <ul>
+                <% for message in @user.errors.full_messages %>
+                    <li><%= message %></li>
+                <% end %>
+              </ul>
+            </div>
+        <% end %>
         <div class="field">
           <%= f.email_field :email, :placeholder => "Digite seu E-Mail", :class => 'input-block-level' %>
         </div>
@@ -33,6 +32,4 @@
         <div><%= link_to "Voltar", :back , :class => 'btn btn-inverse btn-large btn-block' %></div>
       </div>
   <% end %>
-
-
 </div>

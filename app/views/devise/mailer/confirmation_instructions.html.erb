@@ -5,6 +5,12 @@
 
 <p><%= link_to 'Confirmar minha conta.', confirmation_url(@resource, :confirmation_token => @resource.confirmation_token) %></p>
 
+<p>Aṕos a confirmação <b>altere a sua senha</b>.<br/>
+Dados para seu primeiro login no sistema:<br/>
+Login: <%= @user.email %> <br/>
+Senha(provisória): <%= @user.password  %>
+</p>
+
  <p>Atenciosamente,</p>
  <i>Equipe NetMetric.</i>
 
