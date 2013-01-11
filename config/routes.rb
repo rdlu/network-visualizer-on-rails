@@ -1,5 +1,7 @@
 MomRails::Application.routes.draw do
-  devise_for :users #, :controllers => { :registrations => "registrations" }
+  get "registrations/new"
+
+  devise_for :users , :controllers => { :registrations => "users/registrations" }
 
   get "welcome/index"
 

@@ -12,6 +12,8 @@ gem 'rails-i18n'
 gem 'nokogiri'
 gem 'geocoder'
 gem 'devise'
+gem "cancan"
+gem "rolify"
 gem 'jquery-rails'
 
 # To use ActiveModel has_secure_password
