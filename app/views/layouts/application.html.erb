@@ -34,7 +34,7 @@
       <div class="nav-collapse collapse">
         <ul class="nav pull-right">
           <% if current_user.nil? %>
-              <li><%= link_to "Cadastre-se",new_user_registration_path, :method => :get %></li>
+
               <li><%= link_to "Login",  :controller => "sessions" , :action => "create" %></li>
           <% else %>
               <li><%= link_to "Inicio", welcome_index_path, :method => :get %></li>
@@ -61,6 +61,8 @@
                   <li><%= link_to "Controle de Usuário", profile_new_path, :method => :get %></li>
                   <li class="divider"></li>
                   <li><%= link_to "Minha Conta", edit_user_registration_path, :method => :get %></li>
+                  <li class="divider"></li>
+                  <li><%= link_to "Cadastre-se",registration_new_path %></li>
                 </ul>
               </li>
               <li class="divider"></li>

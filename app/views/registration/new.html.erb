@@ -1,0 +1,38 @@
+<div class="row-fluid">
+  <div class="span12" style="text-align: center;">
+    <h1> Cadastro NetMetric MoM</h1>
+  </div>
+
+  <%= form_for @user, :url => registration_create_path do |f| %>
+      <% if @user.errors.any? %>
+          <div class="alert alert-error">
+            <ul>
+              <% for message in @user.errors.full_messages %>
+                  <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+      <% end %>
+
+      <div class="span4 offset4" style="text-align: center;">
+        <div class="field">
+          <%= f.email_field :email, :placeholder => "Digite seu E-Mail", :class => 'input-block-level' %>
+        </div>
+
+        <div class="field">
+          <%= f.password_field :password, :placeholder => "Digite uma Senha", :class => 'input-block-level' %>
+        </div>
+
+        <div class="field">
+          <%= f.password_field :password_confirmation, :placeholder => "Repita a sua Senha", :class => 'input-block-level' %>
+        </div>
+        <br/>
+        <div><%= f.submit "Cadastrar", :class => 'btn btn-primary btn-large btn-block' %></div>
+        <br/>
+
+        <div><%= link_to "Voltar", :back , :class => 'btn btn-inverse btn-large btn-block' %></div>
+      </div>
+  <% end %>
+
+
+</div>
