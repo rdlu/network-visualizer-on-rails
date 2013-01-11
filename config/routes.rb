@@ -1,5 +1,5 @@
 MomRails::Application.routes.draw do
-  devise_for :users
+  devise_for :users #, :controllers => { :registrations => "registrations" }
 
   get "welcome/index"
 
@@ -8,6 +8,8 @@ MomRails::Application.routes.draw do
   get "profile/edit"
 
   get "profile/delete"
+
+
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

@@ -34,7 +34,7 @@
       <div class="nav-collapse collapse">
         <ul class="nav pull-right">
           <% if current_user.nil? %>
-              <li><%= link_to "Cadastre-se", :controller => "registrations" , :action => "new" %></li>
+              <li><%= link_to "Cadastre-se",new_user_registration_path, :method => :get %></li>
               <li><%= link_to "Login",  :controller => "sessions" , :action => "create" %></li>
           <% else %>
               <li><%= link_to "Inicio", welcome_index_path, :method => :get %></li>
@@ -74,7 +74,7 @@
 </div>
 
 
-<div class="container">
+<div class="container" style="margin-bottom: 5px">
   <% if flash[:notice] %>
       <div class="row-fluid">
         <div class="span12" style="text-align: center;">
