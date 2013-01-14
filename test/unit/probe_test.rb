@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class EntityControllerTest < ActionController::TestCase
+class ProbeTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

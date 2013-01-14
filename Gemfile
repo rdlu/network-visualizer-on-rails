@@ -2,9 +2,6 @@ source 'https://rubygems.org'
 
 gem 'rails', '3.2.11'
 
-# Bundle edge Rails instead:
-# gem 'rails', :git => 'git://github.com/rails/rails.git'
-
 gem 'less'
 gem 'mysql2'
 gem 'yaml_db'
@@ -15,6 +12,7 @@ gem 'devise'
 gem "cancan"
 gem "rolify"
 gem 'jquery-rails'
+gem 'pry-rails'
 
 # To use ActiveModel has_secure_password
 gem 'bcrypt-ruby', '~> 3.0.0'
@@ -28,7 +26,7 @@ gem  'ipaddress'
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'sass-rails',   '~> 3.2.3'
+  gem 'sass-rails', '~> 3.2.3'
   gem 'less-rails', '~> 2.2.5'
   gem 'coffee-rails', '~> 3.2.2'
 
