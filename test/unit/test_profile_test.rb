@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class ThresholdValueTest < ActiveSupport::TestCase
+class TestProfileTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end
