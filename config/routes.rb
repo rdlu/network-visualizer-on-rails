@@ -17,6 +17,7 @@ MomRails::Application.routes.draw do
 
   get "profile/delete"
 
+  get "registration/index"
 
 
 

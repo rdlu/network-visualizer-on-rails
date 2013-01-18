@@ -6,7 +6,7 @@ class ProfileController < ApplicationController
   end
 
   def delete
-    render  "delete.html.erb"
+    render :partial=> "delete.html.erb"
   end
 
 end

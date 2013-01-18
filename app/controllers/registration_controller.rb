@@ -13,6 +13,9 @@ class RegistrationController < ApplicationController
     authorize! :create, RegistrationController
     @user = User.new(params[:user])
 
+    @roles = Role.find(params[:roles])
+    @user.roles = @roles
+
     if @user.save
       respond_to do |format|
         format.html {
@@ -23,6 +26,13 @@ class RegistrationController < ApplicationController
          format.html { render :action => :new, :status => :unprocessable_entity }
       end
     end
+  end
+
+  def index
+     authorize! :read, RegistrationController
+     @users = User.paginate(:page       => params[:page],
+                          :per_page   => 3,
+                          :order      => 'created_at DESC')
   end
 
 end

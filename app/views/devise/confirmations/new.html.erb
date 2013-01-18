@@ -1,12 +1,27 @@
-<h2>Resend confirmation instructions</h2>
+<div class="row-fluid">
+  <div class="span12" style="text-align: center;">
+    <h2>Reenvio das instruções de Confirmação</h2>
+    </div>
+  </div>
 
 <%= form_for(resource, :as => resource_name, :url => confirmation_path(resource_name), :html => { :method => :post }) do |f| %>
-  <%= devise_error_messages! %>
-
-  <div><%= f.label :email %><br />
-  <%= f.email_field :email %></div>
-
-  <div><%= f.submit "Resend confirmation instructions" %></div>
+    <div class="span4 offset4" style="text-align: center;">
+      <% if @user.errors.any? %>
+          <div class="alert alert-error">
+            <ul>
+              <% for message in @user.errors.full_messages %>
+                  <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+      <% end %>
+    <div class="field">
+    <%= f.email_field :email, :placeholder => "Digite seu E-Mail", :class => 'input-block-level' %>
+    </div>
+      <br/>
+     <div><%= f.submit "Reenviar", :class => 'btn btn-primary btn-large btn-block' %></div>
+      <br/>
+      <div><%= link_to "Voltar", :back , :class => 'btn btn-inverse btn-large btn-block' %></div>
+    </div>
 <% end %>
-
-<%= render "devise/shared/links" %>
+</div>
