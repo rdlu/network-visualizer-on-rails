@@ -1,6 +1,8 @@
 class RegistrationController < ApplicationController
 
+
   def new
+    authorize! :new, RegistrationController
     @user = User.new
     respond_to do |format|
        format.html
@@ -8,6 +10,7 @@ class RegistrationController < ApplicationController
   end
 
   def create
+    authorize! :create, RegistrationController
     @user = User.new(params[:user])
 
     if @user.save

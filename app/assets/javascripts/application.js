@@ -20,6 +20,9 @@
 //= require twitter/bootstrap/bootstrap-collapse
 //= require twitter/bootstrap/bootstrap-dropdown
 //= require twitter/bootstrap/bootstrap-tab
+//= require welcome.js
+
+
 
 
 

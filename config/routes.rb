@@ -1,9 +1,13 @@
 MomRails::Application.routes.draw do
+
+  match 'users/sign_up' => 'welcome#index'
+
   get "registration/new"
 
   post "registration/create"
 
   devise_for :users #, :controllers => { :registrations => "registrations" }
+  #resources :users
 
   get "welcome/index"
 
@@ -12,6 +16,7 @@ MomRails::Application.routes.draw do
   get "profile/edit"
 
   get "profile/delete"
+
 
 
 
