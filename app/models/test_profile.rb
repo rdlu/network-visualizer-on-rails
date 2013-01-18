@@ -3,4 +3,5 @@ class TestProfile < ActiveRecord::Base
 
   #relationships
   belongs_to :connection_profile
+  belongs_to :metric
 end

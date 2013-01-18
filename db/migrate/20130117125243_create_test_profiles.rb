@@ -5,6 +5,9 @@ class CreateTestProfiles < ActiveRecord::Migration
       t.text :config_parameters
       t.string :config_method
 
+      t.references :connection_profile
+      t.references :metric
+
       t.timestamps
     end
   end

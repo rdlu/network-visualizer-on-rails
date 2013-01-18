@@ -7,5 +7,7 @@ class CreateConnectionProfiles < ActiveRecord::Migration
 
       t.timestamps
     end
+
+    add_index :connection_profiles, :name, :unique => true
   end
 end

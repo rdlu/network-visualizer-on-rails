@@ -5,7 +5,11 @@ class CreatePlans < ActiveRecord::Migration
       t.text :description
       t.integer :throughput
 
+      t.references :connection_profile
+
       t.timestamps
     end
+
+    add_index :plans, :name, :unique => true
   end
 end
