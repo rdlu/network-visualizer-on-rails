@@ -40,12 +40,12 @@ class Entity < ActiveRecord::Base
   end
 
   def hostname(adress="")
-    return (adress =~ /^(([a-zA-Z0-9\-_]*[a-zA-Z0-9_])\.)*([A-Za-z]|[A-Za-z_][A-Za-z0-9\-]*[A-Za-z0-9_])$/)
+    (adress =~ /^(([a-zA-Z0-9\-_]*[a-zA-Z0-9_])\.)*([A-Za-z]|[A-Za-z_][A-Za-z0-9\-]*[A-Za-z0-9_])$/)
   end
 
   def polling?
     minWait = 300000 #300 secs
-    return self.polling * 1000 >= minWait
+    self.polling * 1000 >= minWait
   end
 
 end

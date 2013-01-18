@@ -1,6 +1,8 @@
 class WelcomeController < ApplicationController
 
   def index
-   render 'index.html.erb'
+    authorize! :index, WelcomeController
+    render 'index.html.erb'
   end
+
 end
