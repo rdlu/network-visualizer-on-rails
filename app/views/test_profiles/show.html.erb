@@ -1,0 +1,20 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @test_profile.name %>
+</p>
+
+<p>
+  <b>Config parameters:</b>
+  <%= @test_profile.config_parameters %>
+</p>
+
+<p>
+  <b>Config method:</b>
+  <%= @test_profile.config_method %>
+</p>
+
+
+<%= link_to 'Edit', edit_test_profile_path(@test_profile) %> |
+<%= link_to 'Back', test_profiles_path %>

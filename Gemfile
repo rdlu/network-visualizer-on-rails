@@ -15,6 +15,7 @@ gem 'devise'
 gem "cancan"
 gem "rolify"
 gem 'jquery-rails'
+gem 'pry-rails'
 gem 'will_paginate', '~> 3.0'
 
 # To use ActiveModel has_secure_password

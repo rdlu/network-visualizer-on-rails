@@ -1,0 +1,29 @@
+<%= form_for(@test_profile) do |f| %>
+  <% if @test_profile.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@test_profile.errors.count, "error") %> prohibited this test_profile from being saved:</h2>
+
+      <ul>
+      <% @test_profile.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :config_parameters %><br />
+    <%= f.text_area :config_parameters %>
+  </div>
+  <div class="field">
+    <%= f.label :config_method %><br />
+    <%= f.text_field :config_method %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

@@ -1,0 +1,27 @@
+<h1>Listing connection_profiles</h1>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Type</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @connection_profiles.each do |connection_profile| %>
+  <tr>
+    <td><%= connection_profile.name %></td>
+    <td><%= connection_profile.description %></td>
+    <td><%= connection_profile.type %></td>
+    <td><%= link_to 'Show', connection_profile %></td>
+    <td><%= link_to 'Edit', edit_connection_profile_path(connection_profile) %></td>
+    <td><%= link_to 'Destroy', connection_profile, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Connection profile', new_connection_profile_path %>

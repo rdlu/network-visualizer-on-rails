@@ -2,14 +2,10 @@
 
 one:
   name: MyString
-  plugin: MyString
   description: MyString
-  reverse: false
-  order: 1
+  type: 
 
 two:
   name: MyString
-  plugin: MyString
   description: MyString
-  reverse: false
-  order: 1
+  type: 
