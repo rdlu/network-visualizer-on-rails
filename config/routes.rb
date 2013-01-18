@@ -1,13 +1,34 @@
 MomRails::Application.routes.draw do
+  resources :metrics
 
-  match 'users/sign_up' => 'welcome#index'
+
+  resources :test_profiles
+
+
+  resources :connection_profiles
+
+
+  get "threshold/index"
+
+  get "threshold/show"
+
+  get "threshold/new"
+
+  get "threshold/edit"
+
+  get "threshold/create"
+
+  get "threshold/update"
+
+  get "threshold/destroy"
+
+  resources :plans
 
   get "registration/new"
 
   post "registration/create"
 
   devise_for :users #, :controllers => { :registrations => "registrations" }
-  #resources :users
 
   get "welcome/index"
 
@@ -16,7 +37,6 @@ MomRails::Application.routes.draw do
   get "profile/edit"
 
   get "profile/delete"
-
 
 
 

@@ -1,0 +1,30 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @metric.name %>
+</p>
+
+<p>
+  <b>Plugin:</b>
+  <%= @metric.plugin %>
+</p>
+
+<p>
+  <b>Description:</b>
+  <%= @metric.description %>
+</p>
+
+<p>
+  <b>Reverse:</b>
+  <%= @metric.reverse %>
+</p>
+
+<p>
+  <b>Order:</b>
+  <%= @metric.order %>
+</p>
+
+
+<%= link_to 'Edit', edit_metric_path(@metric) %> |
+<%= link_to 'Back', metrics_path %>

@@ -1,0 +1,27 @@
+<h1>Listing test_profiles</h1>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Config parameters</th>
+    <th>Config method</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @test_profiles.each do |test_profile| %>
+  <tr>
+    <td><%= test_profile.name %></td>
+    <td><%= test_profile.config_parameters %></td>
+    <td><%= test_profile.config_method %></td>
+    <td><%= link_to 'Show', test_profile %></td>
+    <td><%= link_to 'Edit', edit_test_profile_path(test_profile) %></td>
+    <td><%= link_to 'Destroy', test_profile, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Test profile', new_test_profile_path %>

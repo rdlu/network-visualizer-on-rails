@@ -11,9 +11,13 @@ class CreateProbes < ActiveRecord::Migration
       t.float :latitude, :default => 0
       t.float :longitude, :default => 0
 
+      t.references :plan
+      t.references :connection_profile
+
       t.timestamps
     end
 
-    add_index :name, :ipadress,  :unique => true
+    add_index :probes, :name, :unique => true
+    add_index :probes, :ipaddress, :unique => true
   end
 end
