@@ -4,23 +4,23 @@
     <div class="navbar">
       <div class="navbar-inner">
         <div class="span10">
-          <form class="navbar-form form-inline" action="">
-            <label for="probe-type" class="filter-bar">Tipo da sonda:</label>
-            <select name="type" id="probe-type" class="span2">
-              <% @types.each_with_index do |type,index| %>
-                  <option value="<%= index %>"><%= type[:name].humanize %></option>
-              <% end %>
-            </select>
-            <label for="probe-city" class="filter-bar">Cidade:</label>
-            <input type="text" name="city" id="probe-city" class="span3">
-            <label for="probe-type" class="filter-bar">UF:</label>
-            <select name="state" id="probe-state" class="span2">
-              <% states.each do |sigla,nome| %>
-                  <option value="<%= sigla %>"><%= sigla.upcase %></option>
-              <% end %>
-            </select>
-            <button type="submit" class="btn">Filtrar!</button>
-          </form>
+          <%= form_tag nil, :class => "navbar-form form-inline" do %>
+              <label for="probe-type" class="filter-bar">Tipo da sonda:</label>
+              <select name="type" id="probe-type" class="span2">
+                <% @types.each_with_index do |type,index| %>
+                    <option value="<%= index %>"><%= type[:name].humanize %></option>
+                <% end %>
+              </select>
+              <label for="probe-city" class="filter-bar">Cidade:</label>
+              <input type="text" name="city" id="probe-city" class="span3">
+              <label for="probe-type" class="filter-bar">UF:</label>
+              <select name="state" id="probe-state" class="span2">
+                <% states.each do |sigla,nome| %>
+                    <option value="<%= sigla %>"><%= sigla.upcase %></option>
+                <% end %>
+              </select>
+              <button type="submit" class="btn">Filtrar!</button>
+          <% end %>
         </div>
       </div>
     </div>
