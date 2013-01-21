@@ -1,5 +1,5 @@
 class Probe < ActiveRecord::Base
-  attr_accessible :address, :description, :ipaddress, :latitude, :longitude, :name, :pre_address, :status, :type
+  attr_accessible :address, :description, :ipaddress, :latitude, :longitude, :name, :pre_address, :status, :type, :city, :state
 
   #validacao
   validates :name, :presence => true, :length => {:maximum => 255, :minimum => 3}, :format => { :with => %r{^[0-9a-zA-Z]+$} },
