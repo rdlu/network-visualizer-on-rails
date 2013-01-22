@@ -59,15 +59,15 @@
                   <li class="divider"></li>
                   <li><%= link_to "Métricas e Perfis de Teste" %></li>
                   <li class="divider"></li>
-                  <li><%= link_to "Controle de Usuário", profile_new_path, :method => :get %></li>
+                  <li><%= link_to "Controle de Usuário", '', :method => :get %></li>
                   <li class="divider"></li>
-                  <li><%= link_to "Minha Conta", edit_user_registration_path, :method => :get %></li>
+                  <li><%= link_to "Minha Conta", edit_user_path(@current_user) %></li>
                   <li class="divider"></li>
                   <li><%= link_to "Cadastrar Novo Usuário",registration_new_path %></li>
                 </ul>
               </li>
               <li class="divider"></li>
-              <li><%= link_to "Usuário: "+current_user.email, edit_user_registration_path, :method => :get %></li>
+              <li><%= link_to "Usuário: "+current_user.email, edit_user_path(@current_user), :method => :get %></li>
               <li><%= link_to "Sair", destroy_user_session_path, :method => :delete %></li>
           <% end %>
         </ul>

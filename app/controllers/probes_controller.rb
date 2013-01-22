@@ -4,6 +4,7 @@ class ProbesController < ApplicationController
 
   def index
     authorize! :index, self
+    authorize! :filter, self
     @types = [
         { name: "Todas", value: ""},
         { name: "Android", value: "android"},

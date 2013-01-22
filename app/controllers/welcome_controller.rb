@@ -1,8 +1,17 @@
 class WelcomeController < ApplicationController
+  before_filter :authenticate_user!, :except => [:login]
 
   def index
     authorize! :index, WelcomeController
     render 'index.html.erb'
+  end
+
+  def login
+    if get_user.nil?
+      redirect_to :controller => "users", :action => "sign_in"
+    else
+      redirect_to :controller => "welcome", :action => "index"
+    end
   end
 
 end

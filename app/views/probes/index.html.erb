@@ -15,6 +15,7 @@
               <input type="text" name="city" id="probe-city" class="span3">
               <label for="probe-type" class="filter-bar">UF:</label>
               <select name="state" id="probe-state" class="span2">
+                <option value="">Todas</option>
                 <% states.each do |sigla,nome| %>
                     <option value="<%= sigla %>"><%= sigla.upcase %></option>
                 <% end %>

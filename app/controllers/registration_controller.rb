@@ -2,7 +2,7 @@ class RegistrationController < ApplicationController
 
 
   def new
-    authorize! :new, RegistrationController
+    authorize! :new, self
     @user = User.new
     respond_to do |format|
        format.html
@@ -10,7 +10,7 @@ class RegistrationController < ApplicationController
   end
 
   def create
-    authorize! :create, RegistrationController
+    authorize! :create, self
     @user = User.new(params[:user])
 
     if @user.save
