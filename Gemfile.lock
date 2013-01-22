@@ -52,6 +52,7 @@ GEM
     foreigner (1.2.1)
       activerecord (>= 3.0.0)
     geocoder (1.1.6)
+    has_scope (0.5.1)
     hike (1.2.1)
     i18n (0.6.1)
     immigrant (0.1.4)
@@ -167,6 +168,7 @@ DEPENDENCIES
   devise
   foreigner
   geocoder
+  has_scope
   immigrant
   ipaddress
   jbuilder

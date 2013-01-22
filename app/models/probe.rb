@@ -15,6 +15,12 @@ class Probe < ActiveRecord::Base
   belongs_to :plan
   belongs_to :connection_profile
 
+  #escopos de pesquisa
+  scope :active, where(:status => 1)
+  scope :by_city, proc { |city| where(:city => city)}
+  scope :by_state, proc { |state| where(:state => state)}
+  scope :by_type, proc { |type| where(:type => type)}
+
 
   #funcoes custom de validacao
   protected

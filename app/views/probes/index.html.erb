@@ -4,17 +4,18 @@
     <div class="navbar">
       <div class="navbar-inner">
         <div class="span10">
-          <%= form_tag nil, :class => "navbar-form form-inline" do %>
+          <%= form_tag nil, :class => "navbar-form form-inline", :method => :get do %>
               <label for="probe-type" class="filter-bar">Tipo da sonda:</label>
-              <select name="type" id="probe-type" class="span2">
+              <select name="by_type" id="probe-type" class="span2">
+                <option value="">Todas</option>
                 <% @types.each_with_index do |type,index| %>
-                    <option value="<%= index %>"><%= type[:name].humanize %></option>
+                <option value="<%= type[:name] %>"><%= type[:name].humanize %></option>
                 <% end %>
               </select>
               <label for="probe-city" class="filter-bar">Cidade:</label>
-              <input type="text" name="city" id="probe-city" class="span3">
+              <input type="text" name="by_city" id="probe-city" class="span3">
               <label for="probe-type" class="filter-bar">UF:</label>
-              <select name="state" id="probe-state" class="span2">
+              <select name="by_state" id="probe-state" class="span2">
                 <option value="">Todas</option>
                 <% states.each do |sigla,nome| %>
                     <option value="<%= sigla %>"><%= sigla.upcase %></option>
@@ -32,5 +33,43 @@
         <%= link_to "Nova Sonda", new_probe_path, :class => "btn btn-primary btn-block" %>
       </div>
     </div>
+  </div>
+</div>
+<div class="row-fluid">
+  <div class="span12">
+    <table class="table table-bordered table-hover">
+      <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Hostname</th>
+            <th>Cidade</th>
+            <th>UF</th>
+            <th>Ult. Atualização</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+      </thead>
+      <tbody>
+        <% if @probes.empty? %>
+          <tr>
+            <td colspan="7">Nenhuma sonda encontrada com os critérios acima.</td>
+          </tr>
+        <% end %>
+        <% @probes.each do |probe| %>
+        <tr>
+          <td>
+            <%= image_tag "icons/"+probe.type+"16" %>
+            <%= probe.name %>
+          </td>
+          <td><%= probe.ipaddress %></td>
+          <td><%= probe.city %></td>
+          <td><%= probe.state %></td>
+          <td><%= probe.updated_at %></td>
+          <td><%= probe.status %></td>
+          <td><%= link_to "Editar", edit_probe_path(probe) %></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
   </div>
 </div>

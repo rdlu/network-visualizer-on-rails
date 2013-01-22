@@ -1,15 +1,13 @@
 MomRails::Application.routes.draw do
   resources :probes
   resources :metrics
-
-
   resources :test_profiles
-
-
   resources :connection_profiles
   resources :threshold
   resources :plans
 
+  devise_for :users
+  resources :users
   get "registration/new"
 
   post "registration/create"
@@ -21,10 +19,7 @@ MomRails::Application.routes.draw do
 
   get "users/sign_in"
 
-
-
   get "welcome/index"
-
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
