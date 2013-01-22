@@ -15,7 +15,16 @@ Metric.create([
     { name: "loss", description: "Perda de pacotes transmitidos", order:4, plugin: "loss", reverse: true },
               ])
 
-Role.create([
-    { name: 'admin'},
-    { name: 'normal' }
-            ])
+admin_role = Role.create({ name: 'admin', description: 'Administrador'})
+normal_role = Role.create({ name: 'normal', description: 'Configurador' })
+
+admin_user = User.new({ email: 'admin@netmetric.com', password: 'admin1'})
+normal_user = User.new({ email: 'normal@netmetric.com', password: 'normal1'})
+
+admin_user.skip_confirmation!
+normal_user.skip_confirmation!
+
+admin_user.roles << admin_role
+admin_user.save!
+normal_user.roles << normal_role
+normal_user.save!

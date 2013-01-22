@@ -1,0 +1,37 @@
+<div class="row-fluid">
+  <div class="span12" style="text-align: center;">
+    <h1> Cadastro NetMetric MoM</h1>
+  </div>
+
+  <%= form_for(@user) do |f| %>
+
+
+      <div class="span4 offset4" style="text-align: center;">
+        <div class="field">
+          <%= f.email_field :email, :placeholder => "Digite o E-Mail", :class => 'input-block-level' %>
+        </div>
+
+        <div class="field">
+          <%= f.password_field :password, :placeholder => "Digite uma Senha", :class => 'input-block-level' %>
+        </div>
+
+        <div class="field">
+          <%= f.password_field :password_confirmation, :placeholder => "Repita a sua Senha", :class => 'input-block-level' %>
+        </div>
+        <% if can? :read, Role %>
+            <i>Nível de Acesso: </i><br/>
+            <% accessible_roles.each do |role| %>
+                <label class="checkbox inline">
+                  <input type="checkbox" name="roles[]" value="<%= role.id %>" > <%= role.description %>
+                </label><br/>
+            <% end  %>
+        <% end %>
+        <br/>
+        <div><%= f.submit "Cadastrar", :class => 'btn btn-primary btn-large btn-block' %></div>
+        <br/>
+        <div><%= link_to "Voltar", :back , :class => 'btn btn-inverse btn-large btn-block' %></div>
+      </div>
+  <% end %>
+
+
+</div>

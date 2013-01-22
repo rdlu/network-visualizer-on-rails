@@ -1,0 +1,54 @@
+
+<table class="table">
+      <thead>
+      <tr>
+        <th>Email</th>
+        <th>Logins</th>
+        <th>Nível de Acesso</th>
+        <th>Último login</th>
+        <th>Status</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+       <% @users.each do |user| %>
+          <tr>
+
+            <td><%= user[:email] %></td>
+            <td><%= user[:sign_in_count] %></td>
+            <td><%= if user.roles.collect(&:name) == ["admin"]
+                        "Administrador"
+                    elsif  user.roles.collect(&:name) == ["normal"]
+                        "Configurador"
+                    else
+                        "Administrador/Configurador"
+                    end
+            %></td>
+            <td><%= if user[:last_sign_in_at] == nil
+                        "Never done this before"
+                    else
+                      user[:last_sign_in_at]
+                    end %></td>
+            <td><%=
+                if user[:confirmed_at] != nil
+                   "Ativo"
+                else
+                   "Inativo"
+                end
+            %></td>
+
+            <td><%= if can? :edit, User
+                    link_to "Editar", edit_user_path(user)
+             end %></td>
+            <td><%= if can? :destroy, User
+                      link_to "Excluir", user_path(user), :data => { :confirm => "Você tem certeza que deseja cancelar sua conta?" }, :method => :delete
+            end %></td>
+            <td><%= if can? :active, User
+                      link_to "Ativar", user_active_path(user)
+            end%></td>
+
+              </tr>
+       <% end %>
+      </tbody>
+  </table>
+<%= will_paginate @users %>

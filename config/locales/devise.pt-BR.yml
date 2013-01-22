@@ -54,3 +54,9 @@ pt-BR:
         subject: 'Instruções para reinicialização de senha'
       unlock_instructions:
         subject: 'Instruções para desbloqueio de conta'
+
+
+  will_paginate:
+    previous_label: "&#8592; Anterior"
+    next_label: "Próximo &#8594;"
+    page_gap: "&hellip;"

@@ -42,8 +42,6 @@
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Relatórios <b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                  <!-- ORIGINAL, :controller => "income", :action => "index"
-                       , :controller => "expenditure", :action => "index"-->
                   <li><%= link_to "Receitas" %></li>
                   <li class="divider"></li>
                   <li><%= link_to "Despesas" %></li>
@@ -52,22 +50,23 @@
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Administrar<b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                  <!--ORIGINAL , :controller => "account", :action => "index"-->
                   <li><%= link_to "Processos de Medição" %></li>
                   <li class="divider"></li>
-                  <li><%= link_to "Sondas e Agentes" %></li>
+                  <li><%= link_to "Sondas e Agentes", probes_path  %></li>
                   <li class="divider"></li>
                   <li><%= link_to "Métricas e Perfis de Teste" %></li>
                   <li class="divider"></li>
-                  <li><%= link_to "Controle de Usuário", registration_index_path %></li>
+                  <li><%= link_to "Controle de Usuário", users_path , :method => :get %></li>
                   <li class="divider"></li>
-                  <li><%= link_to "Minha Conta", edit_user_registration_path, :method => :get %></li>
+                  <li><%= link_to "Minha Conta", edit_user_path(@current_user) %></li>
                   <li class="divider"></li>
-                  <li><%= link_to "Cadastrar Novo Usuário",registration_new_path %></li>
+                  <li><%= if can? :create, User
+                            link_to "Cadastrar Novo Usuário",new_user_path
+                          end%></li>
                 </ul>
               </li>
               <li class="divider"></li>
-              <li><%= link_to "Usuário: "+current_user.email, edit_user_registration_path, :method => :get %></li>
+              <li><%= link_to "Usuário: "+current_user.email, edit_user_path(@current_user), :method => :get %></li>
               <li><%= link_to "Sair", destroy_user_session_path, :method => :delete %></li>
           <% end %>
         </ul>

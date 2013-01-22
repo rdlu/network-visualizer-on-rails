@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130118172906) do
+ActiveRecord::Schema.define(:version => 20130122131324) do
 
   create_table "connection_profiles", :force => true do |t|
     t.string   "name"
@@ -61,6 +61,8 @@ ActiveRecord::Schema.define(:version => 20130118172906) do
     t.integer  "connection_profile_id"
     t.datetime "created_at",                                   :null => false
     t.datetime "updated_at",                                   :null => false
+    t.string   "city",                                         :null => false
+    t.string   "state",                                        :null => false
   end
 
   add_index "probes", ["connection_profile_id"], :name => "probes_connection_profile_id_fk"
@@ -70,8 +72,9 @@ ActiveRecord::Schema.define(:version => 20130118172906) do
 
   create_table "roles", :force => true do |t|
     t.string   "name"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+    t.string   "description"
   end
 
   create_table "roles_users", :id => false, :force => true do |t|

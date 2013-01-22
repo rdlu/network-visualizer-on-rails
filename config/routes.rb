@@ -1,4 +1,5 @@
 MomRails::Application.routes.draw do
+  resources :probes
   resources :metrics
 
 
@@ -6,22 +7,7 @@ MomRails::Application.routes.draw do
 
 
   resources :connection_profiles
-
-
-  get "threshold/index"
-
-  get "threshold/show"
-
-  get "threshold/new"
-
-  get "threshold/edit"
-
-  get "threshold/create"
-
-  get "threshold/update"
-
-  get "threshold/destroy"
-
+  resources :threshold
   resources :plans
 
   get "registration/new"
@@ -29,20 +15,16 @@ MomRails::Application.routes.draw do
   post "registration/create"
 
   devise_for :users #, :controllers => { :registrations => "registrations" }
+  resources :users do
+    get :active
+  end
+
+  get "users/sign_in"
+
+
 
   get "welcome/index"
 
-  get "profile/new"
-
-  get "profile/edit"
-
-  get "profile/delete"
-
-  get "registration/index"
-  get "registration/delete"
-  get "registration/edit"
-  get "registration/active"
-  post "registration/update"
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
@@ -93,7 +75,7 @@ MomRails::Application.routes.draw do
 
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
-  root :to => 'welcome#index'
+  root :to => 'welcome#login'
 
   # See how all your routes lay out with "rake routes"
 
