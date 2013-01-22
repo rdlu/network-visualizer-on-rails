@@ -1,3 +1,4 @@
+# coding: utf-8
 class UsersController < ApplicationController
   before_filter :get_user, :only => [:index,:new,:edit]
   before_filter :accessible_roles, :only => [:new, :edit, :show, :update, :create]
@@ -63,7 +64,7 @@ class UsersController < ApplicationController
       respond_to do |format|
         format.json { render :json => @user.to_json, :status => 200 }
         format.xml  { head :ok }
-        format.html { redirect_to :action => :index }
+        format.html { redirect_to welcome_index_path, :notice =>"Cadastro feito com sucesso. Um e-mail foi enviado para #{@user.email}" } }
       end
     else
       respond_to do |format|
