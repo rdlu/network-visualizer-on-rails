@@ -1,0 +1,40 @@
+
+<table class="table">
+  <thead>
+  <tr>
+    <th>Email</th>
+    <th>Logins</th>
+    <th>Nível de Acesso</th>
+    <th>Último login</th>
+    <th>Status</th>
+    <th></th>
+  </tr>
+  </thead>
+  <tbody>
+  <% @users.each do |user| %>
+      <tr>
+
+        <td><%= user[:email] %></td>
+        <td><%= user[:sign_in_count].to_s.strftime("") %></td>
+        <td><%= if user.roles.collect(&:name) == ["admin"]
+                    "Administrador"
+                elsif  user.roles.collect(&:name) == ["normal"]
+                    "Visualizador"
+                else
+                    "Administrador, Visualizador"
+                end
+        %></td>
+        <td><%= user[:last_sign_in_at] %></td>
+        <td><%=
+            if user[:confirmed_at] != nil
+               "Ativo"
+            else
+               "Inativo"
+            end
+        %></td>
+        <td>Ações</td>
+      </tr>
+  <% end %>
+  </tbody>
+    </table>
+<%= will_paginate @users %>

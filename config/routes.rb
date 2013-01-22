@@ -1,7 +1,11 @@
 MomRails::Application.routes.draw do
   resources :probes
   resources :metrics
+
+
   resources :test_profiles
+
+
   resources :connection_profiles
   resources :threshold
   resources :plans
