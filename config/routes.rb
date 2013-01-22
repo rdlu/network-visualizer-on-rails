@@ -39,7 +39,10 @@ MomRails::Application.routes.draw do
   get "profile/delete"
 
   get "registration/index"
-
+  get "registration/delete"
+  get "registration/edit"
+  get "registration/active"
+  post "registration/update"
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

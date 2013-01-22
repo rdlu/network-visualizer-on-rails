@@ -18,13 +18,7 @@
           <%= f.email_field :email, :placeholder => "Digite seu E-Mail", :class => 'input-block-level' %>
         </div>
 
-        <div class="field">
-          <%= f.password_field :password, :placeholder => "Digite uma Senha", :class => 'input-block-level' %>
-        </div>
 
-        <div class="field">
-          <%=   f.password_field :password_confirmation, :placeholder => "Repita a sua Senha", :class => 'input-block-level' %>
-        </div>
 
         <div class="field">
           <div class="control-group">
@@ -33,6 +27,7 @@
                 <select name="roles[]" class="span12" multiple="multiple">
                   <option value="1" >Administrador</option>
                   <option value="2" selected="true">Visualizador</option>
+                  <option value="3" >Configurador</option>
                 </select>
               </div>
             </div>

@@ -12,8 +12,11 @@ class Ability
       #can :minha_action, Algumacoisa
       can :manage, :all
       cannot :new, RegistrationController
+      #cannot :index, RegistrationController
     else
       can :manage, :all
+      #can :read, SessionsController
+      #cannot :index, WelcomeController
       #can :new, [Devise,User]
     end
   end
