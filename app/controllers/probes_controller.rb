@@ -2,16 +2,19 @@
 class ProbesController < ApplicationController
   helper_method :states
 
+  #escopos
+  has_scope :by_city
+  has_scope :by_state
+  has_scope :by_type
+
   def index
     authorize! :index, self
-    authorize! :filter, self
     @types = [
-        { name: "Todas", value: ""},
         { name: "Android", value: "android"},
         { name: "Linux", value: "linux"}
     ]
 
-    @probes = Probe.all
+    @probes = apply_scopes(Probe).all
 
     respond_to do |format|
       format.html # index.html.erb

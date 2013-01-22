@@ -17,6 +17,7 @@ gem "rolify"
 gem 'jquery-rails'
 gem 'pry-rails'
 gem 'will_paginate', '~> 3.0'
+gem 'has_scope'
 
 # To use ActiveModel has_secure_password
 gem 'bcrypt-ruby', '~> 3.0.0'

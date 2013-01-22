@@ -1,20 +1,12 @@
 MomRails::Application.routes.draw do
   resources :probes
   resources :metrics
-
-
   resources :test_profiles
-
-
   resources :connection_profiles
   resources :threshold
   resources :plans
 
-  get "registration/new"
-
-  post "registration/create"
-
-  devise_for :users #, :controllers => { :registrations => "registrations" }
+  devise_for :users
   resources :users
 
   get "users/sign_in"
