@@ -8,6 +8,14 @@ MomRails::Application.routes.draw do
 
   devise_for :users
   resources :users
+  get "registration/new"
+
+  post "registration/create"
+
+  devise_for :users #, :controllers => { :registrations => "registrations" }
+  resources :users do
+    get :active
+  end
 
   get "users/sign_in"
 

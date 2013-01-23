@@ -1,33 +1,74 @@
 <div class="row-fluid">
-  <div class="span12" style="text-align: center;">
-    <h1><%= @user == @current_user ? "Minha conta: " : "Editando o cadastro: " %><%= @user.email %> </h1>
-  </div>
+    <div class="span12" style="text-align: center;">
+  <% if @user == @current_user  %>
+    <h1>Minha conta: <%= @user.email %> </h1>
+    </div>
+        <%= form_for(@user, :html => { :method => :put }) do |f| %>
+          <div class="span4 offset4" style="text-align: center;">
+            <h3>Papéis deste usuário</h3>
+            <% @user.roles.each do |role| %>
+                <span class="label label-info"><%= role.description %></span>
+            <% end %>
+            <h3>Alteração de Senha</h3>
+            <div class="field"> <i>Deixe em branco caso não queria alterar este campo</i><br />
+              <%= f.password_field :password, :autocomplete => "off", :placeholder => "Digite a sua Nova Senha"  %></div>
 
-  <%= form_for(@user, :html => { :method => :put }) do |f| %>
+            <div class="field">
+              <%= f.password_field :password_confirmation, :placeholder => "Repita a sua Nova Senha" %></div>
 
-      <div class="span4 offset4" style="text-align: center;">
-        <h3>Papéis deste usuário</h3>
-        <% accessible_roles.each do |role| %>
-            <span class="label label-info"><%= role.name %></span>
+            <div class="field"><i>Você precisa de sua senha atual para confirmar suas alterações</i><br />
+              <%= f.password_field :current_password, :placeholder => "Senha Atual"%></div>
+
+            <div><%= f.submit "Salvar", :class => 'btn btn-primary btn-large btn-block' %></div>
+            <br/>
+            <%= link_to "Voltar", :back , :class => 'btn btn-inverse btn-large btn-block' %>
+            <br/>
+            <h3>Cancelar minha Conta: </h3>
+            <%= link_to "Clique aqui", edit_user_path(@user), :data => { :confirm => "Você tem certeza que deseja cancelar sua conta?" }, :method => :delete %>.
+            <br/>
+          </div>
+      <% end %>
+  <%else %>
+          <h1>Editando conta: <%= @user.email %> </h1>
+        </div>
+        <%= form_for(@user, :html => { :method => :put }) do |f| %>
+            <div class="span4 offset4" style="text-align: center;">
+              <h3>Papéis deste usuário</h3>
+              <% @user.roles.each do |role| %>
+                  <span class="label label-info"><%= role.description %></span>
+              <% end %>
+              <h3>Alterar papéis</h3>
+                  <i>Marque para alterar o nível de acesso deste usuário, caso contrário o papel continuará o mesmo.</i> <br/>
+                  <% accessible_roles.each do |role|
+                      @user.roles.each do |my_role|
+                        if my_role.name == role.name %>
+                              <label class="checkbox inline">
+                                <input type="checkbox" id="roles[]" value="<%= role.id %>" checked="true"> <%= my_role.description %>
+                              </label>
+                        <%else %>
+                              <label class="checkbox inline">
+                                <input type="checkbox" id="roles[]" value="<%= role.id %>" > <%= role.description %>
+                              </label>
+                        <%end
+                      end
+                     end %>
+              <h3>Alteração de Senha</h3>
+              <div class="field"> <i>Deixe em branco caso não queria alterar este campo</i><br />
+                <%= f.password_field :password, :autocomplete => "off", :placeholder => "Digite a sua Nova Senha"  %></div>
+
+              <div class="field">
+                <%= f.password_field :password_confirmation, :placeholder => "Repita a sua Nova Senha" %></div>
+
+              <div><%= f.submit "Salvar", :class => 'btn btn-primary btn-large btn-block' %></div>
+              <br/>
+              <%= link_to "Voltar", :back , :class => 'btn btn-inverse btn-large btn-block' %>
+              <br/>
+              <h3>Cancelar esta Conta: </h3>
+              <%= link_to "Clique aqui", edit_user_path(@user), :data => { :confirm => "Você tem certeza que deseja cancelar sua conta?" }, :method => :delete %>.
+              <br/>
+            </div>
         <% end %>
-        <h3>Alteração de Senha</h3>
-        <div class="field"> <i>Deixe em branco caso não queria alterar este campo</i><br />
-          <%= f.password_field :password, :autocomplete => "off", :placeholder => "Digite a sua Nova Senha"  %></div>
+  <%end%>
 
-        <div class="field">
-          <%= f.password_field :password_confirmation, :placeholder => "Repita a sua Nova Senha" %></div>
-
-        <div class="field"><i>Você precisa de sua senha atual para confirmar suas alterações</i><br />
-          <%= f.password_field :current_password, :placeholder => "Senha Atual"%></div>
-
-        <div><%= f.submit "Salvar", :class => 'btn btn-primary btn-large btn-block' %></div>
-        <br/>
-        <%= link_to "Voltar", :back , :class => 'btn btn-inverse btn-large btn-block' %>
-        <br/>
-        <h3>Cancelar minha Conta: </h3>
-        <%= link_to "Clique aqui", edit_user_path(@user), :data => { :confirm => "Você tem certeza que deseja cancelar sua conta?" }, :method => :delete %>.
-        <br/>
-      </div>
-  <% end %>
 </div>
 

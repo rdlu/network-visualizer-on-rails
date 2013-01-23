@@ -23,5 +23,9 @@
 
 
 
+function selectRoles(vet)
+{
+    return true;
 
+}
 

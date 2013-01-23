@@ -19,10 +19,12 @@
           <%= f.password_field :password_confirmation, :placeholder => "Repita a sua Senha", :class => 'input-block-level' %>
         </div>
         <% if can? :read, Role %>
-            <p><%= f.label :role %></p>
-            <ul class="no-pad no-bullets">
-              <%= habtm_checkboxes(@user, :role_ids, @accessible_roles, :name) %>
-            </ul>
+            <i>Nível de Acesso: </i><br/>
+            <% accessible_roles.each do |role| %>
+                <label class="checkbox inline">
+                  <input type="checkbox" name="roles[]" value="<%= role.id %>" > <%= role.description %>
+                </label><br/>
+            <% end  %>
         <% end %>
         <br/>
         <div><%= f.submit "Cadastrar", :class => 'btn btn-primary btn-large btn-block' %></div>

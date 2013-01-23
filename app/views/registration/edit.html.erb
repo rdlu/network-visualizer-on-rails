@@ -1,0 +1,39 @@
+<div class="row-fluid">
+  <div class="span12" style="text-align: center;">
+    <h1>Editar Usuário </h1>
+  </div>
+  <%= form_for @user, :url => registration_update_path do |f| %>
+
+  <div class="span4 offset4" style="text-align: center;">
+
+    <div class="field">
+      <%= f.email_field :email, :autocomplete => "off", :placeholder => "" %></div>
+
+
+    <div class="field">
+      <%= f.password_field :password, :autocomplete => "off", :placeholder => "Digite uma Nova Senha"  %></div>
+
+    <div class="field">
+      <%= f.password_field :password_confirmation, :placeholder => "Repita a Nova Senha" %></div>
+
+
+      <div class="field">
+        <div class="control-group">
+          <label class="control-label">Nível de Acesso:</label>
+          <div class="controls">
+            <select id="selectRole" name="roles[]" class="span12" multiple="multiple">
+              <option id="adm" value="1" >Administrador</option>
+              <option id="normal" value="2" >Visualizador</option>
+              <option id="config" value="3" >Configurador</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+    <div><%= f.submit "Salvar", :class => 'btn btn-primary btn-large btn-block' %></div>
+    <br/>
+    <%= link_to "Voltar", :back , :class => 'btn btn-inverse btn-large btn-block' %>
+    <br/>
+  </div>
+  <% end %>
+</div>

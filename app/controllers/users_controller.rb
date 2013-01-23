@@ -2,17 +2,9 @@
 class UsersController < ApplicationController
   before_filter :get_user, :only => [:index,:new,:edit]
   before_filter :accessible_roles, :only => [:new, :edit, :show, :update, :create]
-  load_and_authorize_resource :only => [:show,:new,:destroy,:edit,:update]
+  load_and_authorize_resource :only => [:show,:new,:destroy,:update]
   helper_method :accessible_roles
-
-  def index
-    @users = User.accessible_by(current_ability, :index).limit(20)
-    respond_to do |format|
-      format.json { render :json => @users }
-      format.xml  { render :xml => @users }
-      format.html
-    end
-  end
+  skip_load_and_authorize_resource :only => [:edit]
 
   def new
     respond_to do |format|
@@ -34,23 +26,27 @@ class UsersController < ApplicationController
   end
 
   def edit
-    respond_to do |format|
-      format.json { render :json => @user }
-      format.xml  { render :xml => @user }
-      format.html
-    end
+      @user = User.find(params[:id])
+      if @user != @current_user
+        authorize! :edit, @user
+      end
+      respond_to do |format|
+        format.json { render :json => @user }
+        format.xml  { render :xml => @user }
+        format.html
+       end
 
   rescue ActiveRecord::RecordNotFound
     respond_to_not_found(:json, :xml, :html)
   end
 
   def destroy
-    @user.destroy!
+    @user.destroy
 
     respond_to do |format|
-      format.json { respond_to_destroy(:ajax) }
+      format.json { render :json => @user.to_json, :status => 200 }
       format.xml  { head :ok }
-      format.html { respond_to_destroy(:html) }
+      format.html { redirect_to  users_path , :method => :get, :notice =>"Usuário excluído com sucesso!" }
     end
 
   rescue ActiveRecord::RecordNotFound
@@ -60,6 +56,9 @@ class UsersController < ApplicationController
   def create
     @user = User.new(params[:user])
 
+    @roles = Role.find(params[:roles])
+    @user.roles = @roles
+
     if @user.save
       respond_to do |format|
         format.json { render :json => @user.to_json, :status => 200 }
@@ -68,7 +67,7 @@ class UsersController < ApplicationController
       end
     else
       respond_to do |format|
-        format.json { render :text => "Could not create user", :status => :unprocessable_entity } # placeholder
+        format.json { render :text => "Usuário não pode ser criado.", :status => :unprocessable_entity } # placeholder
         format.xml  { head :ok }
         format.html { render :action => :new, :status => :unprocessable_entity }
       end
@@ -97,6 +96,39 @@ class UsersController < ApplicationController
 
   rescue ActiveRecord::RecordNotFound
     respond_to_not_found(:js, :xml, :html)
+  end
+
+  def index
+    authorize! :index, self
+    @users = User.paginate(:page       => params[:page],
+                           :per_page   => 3,
+                           :order      => 'created_at DESC')
+  end
+
+  def active
+    authorize! :active, self
+
+    @user = User.find(params[:user_id])
+    if @user.confirmation_token == nil
+      @user.skip_confirmation!
+      #@user.confirmation_sent_at= DateTime.current
+      @user.confirmed_at= DateTime.current
+      @user.confirmation_token= Devise.token_authentication_key
+      #msg = "Usuário ativado com sucesso!"
+    else
+      #@user.confirmation_sent_at= nil
+      @user.confirmed_at= nil
+      @user.confirmation_token= nil
+      #msg = "Usuário desativado com sucesso!"
+    end
+
+    @user.save!
+
+    respond_to do |format|
+      format.json { render :json => @user.to_json, :status => 200 }
+      format.xml  { head :ok }
+      format.html { redirect_to  users_path , :method => :get, :notice => "Alteração feita com sucesso!" }
+    end
   end
 
 end
