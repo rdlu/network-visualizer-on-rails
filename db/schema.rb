@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130122131324) do
+ActiveRecord::Schema.define(:version => 20130123132912) do
 
   create_table "connection_profiles", :force => true do |t|
     t.string   "name"
@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(:version => 20130122131324) do
     t.string   "type"
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
+    t.text     "notes"
   end
 
   add_index "connection_profiles", ["name"], :name => "index_connection_profiles_on_name", :unique => true
@@ -38,10 +39,11 @@ ActiveRecord::Schema.define(:version => 20130122131324) do
   create_table "plans", :force => true do |t|
     t.string   "name"
     t.text     "description"
-    t.integer  "throughput"
+    t.integer  "throughputDown"
     t.integer  "connection_profile_id"
     t.datetime "created_at",            :null => false
     t.datetime "updated_at",            :null => false
+    t.integer  "throughputUp"
   end
 
   add_index "plans", ["connection_profile_id"], :name => "plans_connection_profile_id_fk"
