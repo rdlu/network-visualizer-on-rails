@@ -1,2 +1,64 @@
-<h1>Probes#new</h1>
-<p>Find me in app/views/probes/new.html.erb</p>
+<%= javascript_include_tag "map" %>
+<div class="row-fluid">
+  <h2>Nova sonda</h2>
+  <h4>Dados obrigatórios</h4>
+  <%= form_for @probe, :html => { :class => "form-horizontal" } do |f| %>
+      <div class="span12">
+          <div class="control-group">
+            <%= f.label :type, "Tipo da Sonda", :class => "control-label" %>
+            <div class="controls">
+              <%= f.select :type, types %>
+            </div>
+          </div>
+          <div class="control-group">
+            <%= f.label :pre_address, "Endereço", :class => "control-label" %>
+            <div class="controls">
+              <%= f.text_field :pre_address, :placeholder => "O endereço pode ser qualquer parte (rua, CEP, cidade, bairro), igual ao Google Maps", :class => "span8" %>
+            </div>
+          </div>
+          <div class="control-group">
+            <%= f.label :name, "Nome da sonda", :class => "control-label" %>
+            <div class="controls">
+              <%= f.text_field :name, :placeholder => "Nome da sonda" %>
+            </div>
+          </div>
+          <div class="control-group">
+            <%= f.label :ipaddress, "Endereço IP", :class => "control-label" %>
+            <div class="controls">
+              <%= f.text_field :name, :placeholder => "Numérico ou Hostname" %>
+            </div>
+          </div>
+      </div>
+      <h4>Dados extras</h4>
+      <div class="alert">
+        <strong>Atenção!</strong> Altere somente os dados abaixo em caso de necessidade. <em>Por exemplo, medição feita por GPS</em>
+      </div>
+      <div class="span12">
+        <div class="control-group">
+          <%= f.label :latitude, "Latitude / Longitude", :class => "control-label" %>
+          <div class="controls">
+            <%= f.text_field :latitude, :placeholder => "Latitude" %>
+            <%= f.text_field :longitude, :placeholder => "Longitude" %>
+          </div>
+        </div>
+        <div class="control-group">
+          <%= f.label :city, "Cidade / UF", :class => "control-label" %>
+          <div class="controls">
+            <%= f.text_field :city, :placeholder => "Cidade" %>
+            <%= f.select :state, states %>
+          </div>
+        </div>
+        <div class="control-group">
+          <%= f.label :address, "Endereço após ajustes", :class => "control-label" %>
+          <div class="controls">
+            <%= f.text_field :address, :placeholder => "Endereço após ajustes do sistema", :class => "span8" %>
+          </div>
+        </div>
+        <div class="control-group">
+          <div class="controls">
+            <%= f.submit "Salvar", :class => "btn btn-primary btn-large" %>
+          </div>
+        </div>
+      </div>
+  <% end %>
+</div>
