@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
-
+  #before_filter :check_blocked
   helper_method :get_user
 
   protected
@@ -11,6 +11,14 @@ class ApplicationController < ActionController::Base
 
   def get_user
     @current_user = current_user
+  end
+
+  def check_blocked
+    if @current_user.adm_block != 0
+      false
+    else
+      true
+    end
   end
 
   rescue_from CanCan::AccessDenied do |exception|
