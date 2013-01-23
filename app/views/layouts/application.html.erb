@@ -58,7 +58,8 @@
                   <li class="divider"></li>
                   <li><%= link_to "Controle de Usuário", users_path , :method => :get %></li>
                   <li class="divider"></li>
-                  <li><%= link_to "Minha Conta", edit_user_path(@current_user) %></li>
+                  <% #TEM QUE DEIXAR O GET_USER para o roteamento funcionar ok %>
+                  <li><%= link_to "Minha Conta", edit_user_path(get_user) %></li>
                   <li class="divider"></li>
                   <li><%= if can? :create, User
                             link_to "Cadastrar Novo Usuário",new_user_path
@@ -66,7 +67,7 @@
                 </ul>
               </li>
               <li class="divider"></li>
-              <li><%= link_to "Usuário: "+current_user.email, edit_user_path(@current_user), :method => :get %></li>
+              <li><%= link_to "Usuário: "+current_user.email, edit_user_path(get_user), :method => :get %></li>
               <li><%= link_to "Sair", destroy_user_session_path, :method => :delete %></li>
           <% end %>
         </ul>
