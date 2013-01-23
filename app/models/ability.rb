@@ -8,7 +8,9 @@ class Ability
       can :manage, :all
     elsif  user.role? :normal
      can :read, :all
-    can :manage, Probe
+     can :manage, Probe
+     can :destroy, user
+     can :update, user
     end
   end
 

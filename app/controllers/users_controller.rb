@@ -43,14 +43,22 @@ class UsersController < ApplicationController
   def destroy
     @user.destroy
 
+    if @user != @current_user
     respond_to do |format|
       format.json { render :json => @user.to_json, :status => 200 }
       format.xml  { head :ok }
-      format.html { redirect_to  users_path , :method => :get, :notice =>"Usuário excluído com sucesso!" }
+      format.html { redirect_to  users_path ,:method => :get, :notice => "Conta excluida com sucesso!" }
+      end
+    else
+      respond_to do |format|
+        format.json { render :json => @user.to_json, :status => 200 }
+        format.xml  { head :ok }
+        format.html { redirect_to  users_sign_in_path ,:method => :get }
+      end
     end
 
-  rescue ActiveRecord::RecordNotFound
-    respond_to_not_found(:json, :xml, :html)
+    rescue ActiveRecord::RecordNotFound
+      respond_to_not_found(:json, :xml, :html)
   end
 
   def create
@@ -75,18 +83,34 @@ class UsersController < ApplicationController
   end
 
   def update
+    @user = User.find(params[:id])
+
     if params[:user][:password].blank?
       [:password,:password_confirmation,:current_password].collect{|p| params[:user].delete(p) }
+    elsif params[:user][:current_password].blank?
+      [:current_password].collect{|p| params[:user].delete(p) }
+    end
+
+    if @user != @current_user
+      go_to = users_path
+      if params[:roles].blank?
+         #se nenhuma opcao foi marcada o papel continua o mesmo
+         @roles = Role.find(@user.roles.map{|i| i.id})
+         @user.roles = @roles
+      else
+         @roles = Role.find(params[:roles])
+         @user.roles = @roles
+      end
     else
-      @user.errors[:base] << "The password you entered is incorrect" unless @user.valid_password?(params[:user][:current_password])
+      go_to = welcome_index_path
     end
 
     respond_to do |format|
-      if @user.errors[:base].empty? and @user.update_attributes(params[:user])
-        flash[:notice] = "Your account has been updated"
+      if @user.update_attributes(params[:user])
+        #flash[:notice] = "Your account has been updated"
         format.json { render :json => @user.to_json, :status => 200 }
         format.xml  { head :ok }
-        format.html { render :action => :edit }
+        format.html {  redirect_to go_to, :notice =>"Conta alterada com sucesso." }
       else
         format.json { render :text => "Could not update user", :status => :unprocessable_entity } #placeholder
         format.xml  { render :xml => @user.errors, :status => :unprocessable_entity }
@@ -94,8 +118,6 @@ class UsersController < ApplicationController
       end
     end
 
-  rescue ActiveRecord::RecordNotFound
-    respond_to_not_found(:js, :xml, :html)
   end
 
   def index
@@ -111,15 +133,12 @@ class UsersController < ApplicationController
     @user = User.find(params[:user_id])
     if @user.confirmation_token == nil
       @user.skip_confirmation!
-      #@user.confirmation_sent_at= DateTime.current
       @user.confirmed_at= DateTime.current
       @user.confirmation_token= Devise.token_authentication_key
-      #msg = "Usuário ativado com sucesso!"
     else
-      #@user.confirmation_sent_at= nil
       @user.confirmed_at= nil
       @user.confirmation_token= nil
-      #msg = "Usuário desativado com sucesso!"
+
     end
 
     @user.save!
