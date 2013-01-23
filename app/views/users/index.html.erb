@@ -44,7 +44,11 @@
                       link_to "Excluir", user_path(user), :data => { :confirm => "Você tem certeza que deseja cancelar sua conta?" }, :method => :delete
             end %></td>
             <td><%= if can? :active, User
-                      link_to "Ativar", user_active_path(user)
+                      if user[:confirmed_at].nil?
+                        link_to "Ativar" , user_active_path(user)
+                      else
+                        link_to "Desativar", user_active_path(user)
+                      end
             end%></td>
 
               </tr>

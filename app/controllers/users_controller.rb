@@ -109,13 +109,25 @@ class UsersController < ApplicationController
     authorize! :active, self
 
     @user = User.find(params[:user_id])
-    @user.skip_confirmation!
+    if @user.confirmation_token == nil
+      @user.skip_confirmation!
+      #@user.confirmation_sent_at= DateTime.current
+      @user.confirmed_at= DateTime.current
+      @user.confirmation_token= Devise.token_authentication_key
+      #msg = "Usuário ativado com sucesso!"
+    else
+      #@user.confirmation_sent_at= nil
+      @user.confirmed_at= nil
+      @user.confirmation_token= nil
+      #msg = "Usuário desativado com sucesso!"
+    end
+
     @user.save!
 
     respond_to do |format|
       format.json { render :json => @user.to_json, :status => 200 }
       format.xml  { head :ok }
-      format.html { redirect_to  users_path , :method => :get, :notice =>"Usuário ativado com sucesso!" }
+      format.html { redirect_to  users_path , :method => :get, :notice => "Alteração feita com sucesso!" }
     end
   end
 
