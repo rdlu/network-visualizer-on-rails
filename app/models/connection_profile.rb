@@ -1,5 +1,5 @@
 class ConnectionProfile < ActiveRecord::Base
-  attr_accessible :description, :name, :type, :notes
+  attr_accessible :name_id, :name, :conn_type, :notes
 
   validates :name, :presence => true, :length => {:maximum => 20, :minimum => 3}, :format => { :with => %r{^[0-9a-zA-Z][0-9a-zA-Z\-]+[0-9a-zA-Z]$} },
             :uniqueness => true
