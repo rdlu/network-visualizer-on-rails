@@ -6,6 +6,10 @@ class UsersController < ApplicationController
   helper_method :accessible_roles
   skip_load_and_authorize_resource :only => [:edit]
 
+  #escopos
+  has_scope :by_status
+  has_scope :inactive
+
 
   def new
     respond_to do |format|
@@ -128,7 +132,7 @@ class UsersController < ApplicationController
   def index
     authorize! :index, self
     @users = User.paginate(:page       => params[:page],
-                           :per_page   => 3,
+                           :per_page   => 15,
                            :order      => 'created_at DESC')
   end
 
