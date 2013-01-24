@@ -8,17 +8,18 @@
               <label for="probe-type" class="filter-bar">Tipo da sonda:</label>
               <select name="by_type" id="probe-type" class="span2">
                 <option value="">Todas</option>
-                <% @types.each_with_index do |type,index| %>
-                <option value="<%= type[:name] %>"><%= type[:name].humanize %></option>
+                <% types.each_with_index do |type,index| %>
+                <option value="<%= type.at(1) %>" <%= params[:by_type].to_s == type.at(1).to_s ? "selected=\"selected\"".html_safe : "" %>><%= type.at(1).humanize %></option>
                 <% end %>
               </select>
               <label for="probe-city" class="filter-bar">Cidade:</label>
-              <input type="text" name="by_city" id="probe-city" class="span3">
+              <input type="text" name="by_city" id="probe-city" class="span3" value="<%= params[:by_city].to_s%>">
               <label for="probe-type" class="filter-bar">UF:</label>
               <select name="by_state" id="probe-state" class="span2">
                 <option value="">Todas</option>
-                <% states.each do |sigla,nome| %>
-                    <option value="<%= sigla %>"><%= sigla.upcase %></option>
+
+                <% states.each do |state| %>
+                    <option value="<%= state.at(1) %>" <%= params[:by_state].to_s == state.at(1).to_s ? "selected=\"selected\"".html_safe : "" %>><%= state.at(1).upcase %></option>
                 <% end %>
               </select>
               <button type="submit" class="btn">Filtrar!</button>
