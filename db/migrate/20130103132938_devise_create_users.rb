@@ -5,9 +5,6 @@ class DeviseCreateUsers < ActiveRecord::Migration
       t.string :email,              :null => false, :default => ""
       t.string :encrypted_password, :null => false, :default => ""
 
-      #Blocked User
-      t.integer :adm_block, :default => 0
-
       ## Recoverable
       t.string   :reset_password_token
       t.datetime :reset_password_sent_at
