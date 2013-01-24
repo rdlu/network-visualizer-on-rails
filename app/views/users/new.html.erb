@@ -5,7 +5,6 @@
 
   <%= form_for(@user) do |f| %>
 
-
       <div class="span4 offset4" style="text-align: center;">
         <div class="field">
           <%= f.email_field :email, :placeholder => "Digite o E-Mail", :class => 'input-block-level' %>
@@ -19,12 +18,20 @@
           <%= f.password_field :password_confirmation, :placeholder => "Repita a sua Senha", :class => 'input-block-level' %>
         </div>
         <% if can? :read, Role %>
-            <i>Nível de Acesso: </i><br/>
-            <% accessible_roles.each do |role| %>
-                <label class="checkbox inline">
-                  <input type="checkbox" name="roles[]" value="<%= role.id %>" > <%= role.description %>
-                </label><br/>
-            <% end  %>
+            <div class="field">
+              <i>Nível de Acesso: </i><br/>
+              <% accessible_roles.each do |role| %>
+                  <label class="checkbox inline">
+                    <input type="checkbox" name="roles[]" value="<%= role.id %>" > <%= role.description %>
+                  </label><br/>
+              <% end  %>
+              <% if @user.errors.has_key? :roles %>
+              <br>
+              <div class="alert alert-error">
+                <%= @user.errors.get(:roles).pop %>
+              </div>
+              <% end %>
+            </div>
         <% end %>
         <br/>
         <div><%= f.submit "Cadastrar", :class => 'btn btn-primary btn-large btn-block' %></div>

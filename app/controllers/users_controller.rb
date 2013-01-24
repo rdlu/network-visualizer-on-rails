@@ -64,8 +64,12 @@ class UsersController < ApplicationController
   def create
     @user = User.new(params[:user])
 
-    @roles = Role.find(params[:roles])
-    @user.roles = @roles
+    if params.has_key? :roles
+      @roles = Role.find(params_roles)
+      @user.roles = @roles
+    else
+
+    end
 
     if @user.save
       respond_to do |format|
