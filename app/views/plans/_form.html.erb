@@ -1,29 +1,46 @@
-<%= form_for(@plan) do |f| %>
-  <% if @plan.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@plan.errors.count, "error") %> prohibited this plan from being saved:</h2>
 
-      <ul>
-      <% @plan.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
+    <%= form_for @plan, :html => { :class => "form-horizontal" } do |f| %>
+
+      <% if @plan.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(@plan.errors.count, "error") %> prohibited this plan from being saved:</h2>
+
+          <ul>
+          <% @plan.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+          </ul>
+        </div>
       <% end %>
-      </ul>
-    </div>
-  <% end %>
 
-  <div class="field">
-    <%= f.label :name %><br />
-    <%= f.text_field :name %>
-  </div>
-  <div class="field">
-    <%= f.label :description %><br />
-    <%= f.text_area :description %>
-  </div>
-  <div class="field">
-    <%= f.label :throughput %><br />
-    <%= f.number_field :throughput %>
-  </div>
-  <div class="actions">
-    <%= f.submit %>
-  </div>
-<% end %>
+      <div class="control-group">
+        <%= f.label "Nome", :class => "control-label" %>
+        <div class="controls">
+        <%= f.text_field :name %>
+        </div>
+      </div>
+      <div class="control-group">
+        <%= f.label "Descrição", :class => "control-label" %>
+        <div class="controls">
+        <%= f.text_area :description, :class => "span8", :rows=>"2"  %>
+        </div>
+      </div>
+      <div class="control-group">
+        <%= f.label "Throughput Down", :class => "control-label" %>
+        <div class="controls">
+        <%= f.number_field :throughputDown, :placeholder => "Kbps" %>
+        </div>
+      </div>
+      <div class="control-group">
+          <%= f.label "Throughput Up", :class => "control-label" %>
+        <div class="controls">
+          <%= f.number_field :throughputUp, :placeholder => "Kbps" %>
+        </div>
+      </div>
+
+      <div>
+        <%= f.submit "Salvar", :class => "btn btn-primary btn-large"%>
+      </div>
+       <div><%= link_to 'Voltar', plans_path,  :class => "btn btn-inverse btn-large" %><div>
+
+    <% end %>

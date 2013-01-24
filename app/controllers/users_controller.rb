@@ -69,7 +69,7 @@ class UsersController < ApplicationController
   def create
     @user = User.new(params[:user])
 
-    params_roles = params.has_key? :roles ? params[:roles] : nil
+    params_roles = (params.has_key? :roles) ? params[:roles] : nil
     if params.has_key? :roles
       @roles = Role.find(params_roles)
       @user.roles = @roles

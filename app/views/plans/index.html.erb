@@ -1,27 +1,34 @@
-<h1>Listing plans</h1>
+<div class="row-fluid">
+  <div class="span4">
+    <h2>Lista de Planos </h2>
+  </div>
 
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Description</th>
-    <th>Throughput</th>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
+    <table class="table table-bordered table-hover">
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Throughput Down</th>
+        <th>Throughput Up</th>
+        <th>Ações</th>
 
-<% @plans.each do |plan| %>
-  <tr>
-    <td><%= plan.name %></td>
-    <td><%= plan.description %></td>
-    <td><%= plan.throughput %></td>
-    <td><%= link_to 'Show', plan %></td>
-    <td><%= link_to 'Edit', edit_plan_path(plan) %></td>
-    <td><%= link_to 'Destroy', plan, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-  </tr>
-<% end %>
-</table>
+      </tr>
+      <tbody>
+    <% @plans.each do |plan| %>
+      <tr>
+        <td><%= plan.name %></td>
+        <td><%= plan.description %></td>
+        <td><%= plan.throughputDown %></td>
+        <td><%= plan.throughputUp %></td>
+        <td><%= link_to 'Visualizar', plan %></td>
+        <td><%= link_to 'Editar', edit_plan_path(plan) %></td>
+        <td><%= link_to 'Excluir', plan, method: :delete, data: { confirm: 'Você tem certeza que deseja excluir este plano?' } %></td>
+      </tr>
+    <% end %>
+      </tbody>
+    </table>
 
 <br />
-
-<%= link_to 'New Plan', new_plan_path %>
+  <div class="span2" >
+    <%= link_to 'Novo Plano', new_plan_path, :class => 'btn btn-primary btn-large btn-block' %>
+  </div>
+</div>
