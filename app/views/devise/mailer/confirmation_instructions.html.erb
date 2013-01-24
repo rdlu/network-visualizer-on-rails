@@ -1,16 +1,24 @@
-<%= image_tag 'logo-menu-32.png', :style => 'vertical-align:middle' %>
+<% if @resource.adm_block == 0  %>
+    <p>Bem-vindo,  <%= @resource.email %>!</p>
+    <p>Você foi cadastrado no sistema NetMetric MoM. Confirme sua conta de e-mail através do link abaixo:</p>
 
-<p>Bem-vindo,  <%= @resource.email %>!</p>
-<p>Você foi cadastrado no sistema NetMetric MoM. Confirme sua conta de e-mail através do link abaixo:</p>
+    <p><%= link_to 'Confirmar minha conta.', confirmation_url(@resource, :confirmation_token => @resource.confirmation_token) %></p>
 
-<p><%= link_to 'Confirmar minha conta.', confirmation_url(@resource, :confirmation_token => @resource.confirmation_token) %></p>
+    <p>Aṕos a confirmação <b>altere a sua senha</b>.<br/>
+    Dados para seu primeiro login no sistema:<br/>
+    Login: <%= @user.email %> <br/>
+    Senha(provisória): <%= @user.password  %>
+    </p>
 
-<p>Aṕos a confirmação <b>altere a sua senha</b>.<br/>
-Dados para seu primeiro login no sistema:<br/>
-Login: <%= @user.email %> <br/>
-Senha(provisória): <%= @user.password  %>
-</p>
+     <p>Atenciosamente,</p>
+     <i>Equipe NetMetric.</i>
 
- <p>Atenciosamente,</p>
- <i>Equipe NetMetric.</i>
+<% else%>
+    <p>Atenção, <%= @resource.email %>!</p>
+    <p>Você foi bloqueado, para reativar sua conta, entre em contato com o Administrador.</p>
+
+    <p>Atenciosamente,</p>
+    <i>Equipe NetMetric.</i>
+
+<% end %>
 

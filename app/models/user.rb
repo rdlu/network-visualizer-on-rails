@@ -1,4 +1,3 @@
-# coding: utf-8
 class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :token_authenticatable, :confirmable,
@@ -18,6 +17,14 @@ class User < ActiveRecord::Base
 
   def has_roles?
     errors.add :roles, "O usuario precisa de no mínimo um papel." if self.roles.blank?
+  end
+
+  def active_for_authentication?
+    super && !!self.adm_block
+  end
+
+  def inactive_message
+     :locked
   end
 
 end
