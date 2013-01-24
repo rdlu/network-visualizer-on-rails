@@ -6,6 +6,7 @@ class UsersController < ApplicationController
   helper_method :accessible_roles
   skip_load_and_authorize_resource :only => [:edit]
 
+
   def new
     respond_to do |format|
       format.json { render :json => @user }
@@ -135,10 +136,11 @@ class UsersController < ApplicationController
       @user.skip_confirmation!
       @user.confirmed_at= DateTime.current
       @user.confirmation_token= Devise.token_authentication_key
+      @user.adm_block = 0
     else
       @user.confirmed_at= nil
       @user.confirmation_token= nil
-
+      @user.adm_block = 1
     end
 
     @user.save!
