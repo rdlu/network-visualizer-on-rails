@@ -60,11 +60,6 @@
                   <li class="divider"></li>
                   <% #TEM QUE DEIXAR O GET_USER para o roteamento funcionar ok %>
                   <li><%= link_to "Minha Conta", edit_user_path(get_user) %></li>
-
-                  <% if can? :create, User%>
-                            <li class="divider"></li>
-                           <li><%= link_to "Cadastrar Novo Usuário",new_user_path%> </li>
-                          <%end%>
                 </ul>
               </li>
               <li class="divider"></li>

@@ -17,7 +17,7 @@ class User < ActiveRecord::Base
   end
 
   def has_roles?
-    errors.add :roles, "O usuario precisa de no mínimo um papel." if self.roles.blank?
+    errors.add :roles, "O usuário precisa de no mínimo um papel." if self.roles.blank?
   end
 
   def active_for_authentication?
@@ -25,7 +25,12 @@ class User < ActiveRecord::Base
   end
 
   def inactive_message
+   if super && self.adm_block == 0
+     :unconfirmed
+   else
      :locked
+   end
   end
+
 
 end

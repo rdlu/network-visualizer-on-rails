@@ -5,7 +5,6 @@ class ApplicationController < ActionController::Base
 
   protected
 
-
   def accessible_roles
     @accessible_roles = Role.accessible_by(current_ability,:read)
   end

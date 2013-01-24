@@ -12,3 +12,16 @@
  *= require_tree .
  */
 
+.pagination
+{
+    border: 1px solid #AAAAAA;
+    float: right;
+    width: 100%;
+    text-align: center;
+}
+
+.pagination em
+{
+   font-weight: bold;
+}
+
