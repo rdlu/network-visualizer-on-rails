@@ -1,8 +1,15 @@
 class PlansController < ApplicationController
+  has_scope :by_connection_profile
+
   # GET /plans
   # GET /plans.json
   def index
-    @plans = Plan.all
+    if params.has_key? :connection_profile_id
+      @conn_profile = ConnectionProfile.find(params[:connection_profile_id])
+      @plans = @conn_profile.plans
+    else
+      @plans = Plan.all
+    end
 
     respond_to do |format|
       format.html # index.html.erb
