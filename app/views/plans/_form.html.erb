@@ -24,6 +24,12 @@
           <%= f.number_field :throughputUp, :placeholder => "Kbps" %>
         </div>
       </div>
+        <div class="control-group">
+          <%= f.label "Perfil de Conexão", :class => "control-label" %>
+          <div class="controls">
+           <%= f.collection_select :connection_profile_id, ConnectionProfile.all, :id, :name %>
+           </div>
+         </div>
       <div class="control-group" >
       <div class="controls">
         <%= f.submit "Salvar", :class => "btn btn-primary btn-large "%>

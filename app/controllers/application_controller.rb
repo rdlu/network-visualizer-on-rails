@@ -9,6 +9,10 @@ class ApplicationController < ActionController::Base
     @accessible_roles = Role.accessible_by(current_ability,:read)
   end
 
+  def accessible_connections
+    @accessible_connections = ConnectionProfile.accessible_by(current_ability,:read)
+  end
+
   def get_user
     @current_user = current_user
   end

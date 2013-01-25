@@ -1,5 +1,5 @@
 class Plan < ActiveRecord::Base
-  attr_accessible :description, :name, :throughputDown, :throughputUp
+  attr_accessible :description, :name, :throughputDown, :throughputUp, :connection_profile_id
 
   validates :name, :presence => true, :length => {:maximum => 255, :minimum => 3}
   validates_uniqueness_of :name

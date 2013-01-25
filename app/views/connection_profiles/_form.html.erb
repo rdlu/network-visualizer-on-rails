@@ -1,29 +1,26 @@
-<%= form_for(@connection_profile) do |f| %>
-  <% if @connection_profile.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@connection_profile.errors.count, "error") %> prohibited this connection_profile from being saved:</h2>
-
-      <ul>
-      <% @connection_profile.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-      </ul>
+<%= form_for @connection_profile, :html => { :class => "form-horizontal" } do |f| %>
+    <div class="control-group">
+      <%= f.label "Nome", :class => "control-label" %>
+      <div class="controls">
+        <%= f.text_field :name %>
+      </div>
     </div>
-  <% end %>
-
-  <div class="field">
-    <%= f.label :name %><br />
-    <%= f.text_field :name %>
+    <div class="control-group">
+      <%= f.label "Descrição", :class => "control-label" %>
+      <div class="controls">
+      <%= f.text_area :notes, :class => "span8", :rows=>"2" %>
+      </div>
   </div>
-  <div class="field">
-    <%= f.label :description %><br />
-    <%= f.text_field :description %>
+    <div class="control-group">
+      <%= f.label "Tipo de Conexão", :class => "control-label" %>
+      <div class="controls">
+        <%= f.select :conn_type, [['Móvel','mobile'], ['Fixo','fixed']]%>
+      </div>
   </div>
-  <div class="field">
-    <%= f.label :type %><br />
-    <%= f.text_field :type %>
-  </div>
-  <div class="actions">
-    <%= f.submit %>
-  </div>
+    <div class="control-group" >
+      <div class="controls">
+        <%= f.submit "Salvar", :class => "btn btn-primary btn-large "%>
+      </div> <br/>
+      <div class="controls"><%= link_to 'Voltar', connection_profiles_path,  :class => "btn btn-inverse btn-large " %></div>
+    </div>
 <% end %>

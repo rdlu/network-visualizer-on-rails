@@ -36,7 +36,7 @@
       <div class="nav-collapse collapse ">
         <ul class="nav pull-right">
           <% if current_user.nil? %>
-               <li><%= link_to "Login",  :controller => "sessions" , :action => "create" %></li>
+               <li><%= link_to "Login", new_user_session_path %></li>
           <% else %>
               <li><%= link_to "Inicio", welcome_index_path, :method => :get %></li>
               <li class="dropdown">

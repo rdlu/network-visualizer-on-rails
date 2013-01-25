@@ -1,20 +1,25 @@
-<p id="notice"><%= notice %></p>
+<h2>Detalhamento do Perfil de Conexão </h2>
 
 <p>
-  <b>Name:</b>
+  <b>Nome:</b>
   <%= @connection_profile.name %>
 </p>
 
 <p>
-  <b>Description:</b>
-  <%= @connection_profile.description %>
+  <b>Descrição:</b>
+  <%= @connection_profile.notes %>
 </p>
 
 <p>
-  <b>Type:</b>
-  <%= @connection_profile.type %>
+  <b>Tipo de Conexão:</b>
+  <%= @connection_profile.conn_type == 'mobile'? 'Móvel':'Fixo' %>
 </p>
 
 
-<%= link_to 'Edit', edit_connection_profile_path(@connection_profile) %> |
-<%= link_to 'Back', connection_profiles_path %>
+<div class="control-group" >
+  <div class="controls">
+    <%= link_to 'Editar', edit_connection_profile_path(@connection_profile), :class => "btn btn-primary btn-large " %>
+    <br/> <br/>
+    <%= link_to 'Voltar', connection_profiles_path, :class => "btn btn-inverse btn-large " %>
+  </div>
+</div>

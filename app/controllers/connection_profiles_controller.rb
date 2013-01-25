@@ -1,7 +1,10 @@
+# coding: utf-8
 class ConnectionProfilesController < ApplicationController
+
   # GET /connection_profiles
   # GET /connection_profiles.json
   def index
+    authorize! :index, self
     @connection_profiles = ConnectionProfile.all
 
     respond_to do |format|
@@ -13,6 +16,7 @@ class ConnectionProfilesController < ApplicationController
   # GET /connection_profiles/1
   # GET /connection_profiles/1.json
   def show
+    authorize! :show, self
     @connection_profile = ConnectionProfile.find(params[:id])
 
     respond_to do |format|
@@ -24,6 +28,7 @@ class ConnectionProfilesController < ApplicationController
   # GET /connection_profiles/new
   # GET /connection_profiles/new.json
   def new
+    authorize! :new, self
     @connection_profile = ConnectionProfile.new
 
     respond_to do |format|
@@ -34,21 +39,25 @@ class ConnectionProfilesController < ApplicationController
 
   # GET /connection_profiles/1/edit
   def edit
+    authorize! :edit, self
     @connection_profile = ConnectionProfile.find(params[:id])
   end
 
   # POST /connection_profiles
   # POST /connection_profiles.json
   def create
+    authorize! :create, self
     @connection_profile = ConnectionProfile.new(params[:connection_profile])
+
+    @connection_profile.name_id = @connection_profile.name
+    @connection_profile.name_id= @connection_profile.name_id.removeaccents
+    @connection_profile.name_id = @connection_profile.name_id.gsub(' ', '-').urlize
 
     respond_to do |format|
       if @connection_profile.save
         format.html { redirect_to @connection_profile, notice: 'Connection profile was successfully created.' }
         format.json { render json: @connection_profile, status: :created, location: @connection_profile }
-      else
-        format.html { render action: "new" }
-        format.json { render json: @connection_profile.errors, status: :unprocessable_entity }
+
       end
     end
   end
@@ -56,6 +65,7 @@ class ConnectionProfilesController < ApplicationController
   # PUT /connection_profiles/1
   # PUT /connection_profiles/1.json
   def update
+    authorize! :update, self
     @connection_profile = ConnectionProfile.find(params[:id])
 
     respond_to do |format|
@@ -72,6 +82,7 @@ class ConnectionProfilesController < ApplicationController
   # DELETE /connection_profiles/1
   # DELETE /connection_profiles/1.json
   def destroy
+    authorize! :destroy, self
     @connection_profile = ConnectionProfile.find(params[:id])
     @connection_profile.destroy
 

@@ -1,27 +1,40 @@
-<h1>Listing connection_profiles</h1>
-
-<table>
+<h2>Lista de Perfis de Conexão </h2>
+<div class="row-fluid">
+  <div class="span12">
+    <% if can? :create, User%>
+        <div class="navbar">
+          <div class="navbar-inner">
+            <div class="span2 offset10">
+              <%= link_to "Novo Perfil", new_connection_profile_path, :class => "btn btn-primary btn-block" %>
+            </div>
+          </div>
+        </div>
+    <%end%>
+  </div>
+</div>
+<table class="table table-bordered table-hover">
   <tr>
-    <th>Name</th>
-    <th>Description</th>
-    <th>Type</th>
-    <th></th>
-    <th></th>
-    <th></th>
+    <th>Nome</th>
+    <th>Descrição</th>
+    <th>Tipo de conexão</th>
+    <th colspan="3" style="text-align: center;">Ações</th>
   </tr>
 
 <% @connection_profiles.each do |connection_profile| %>
   <tr>
     <td><%= connection_profile.name %></td>
-    <td><%= connection_profile.description %></td>
-    <td><%= connection_profile.type %></td>
-    <td><%= link_to 'Show', connection_profile %></td>
-    <td><%= link_to 'Edit', edit_connection_profile_path(connection_profile) %></td>
-    <td><%= link_to 'Destroy', connection_profile, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+    <td><%= connection_profile.notes %></td>
+    <td><%= if connection_profile.conn_type == "mobile"
+              "Móvel"
+           else
+              "Fixo"
+           end%>
+    </td>
+    <td><%= link_to 'Visualizar', connection_profile %></td>
+    <td><%= link_to 'Editar', edit_connection_profile_path(connection_profile) %></td>
+    <td><%= link_to 'Excluir', connection_profile, method: :delete, data: { confirm: 'Você tem certeza que deseja excluir este perfil de conexão?' } %></td>
   </tr>
 <% end %>
 </table>
 
 <br />
-
-<%= link_to 'New Connection profile', new_connection_profile_path %>
