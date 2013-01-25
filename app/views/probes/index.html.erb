@@ -9,7 +9,7 @@
               <select name="by_type" id="probe-type" class="span2">
                 <option value="">Todas</option>
                 <% types.each_with_index do |type,index| %>
-                <option value="<%= type.at(1) %>" <%= params[:by_type].to_s == type.at(1).to_s ? "selected=\"selected\"".html_safe : "" %>><%= type.at(1).humanize %></option>
+                <option value="<%= type.at(1) %>" <%= params[:by_type].to_s == type.at(1).to_s ? "selected=\"selected\"".html_safe : "" %>><%= type.at(0) %></option>
                 <% end %>
               </select>
               <label for="probe-city" class="filter-bar">Cidade:</label>
@@ -47,7 +47,7 @@
             <th>UF</th>
             <th>Ult. Atualização</th>
             <th>Status</th>
-            <th>Ações</th>
+            <th colspan="3">Ações</th>
           </tr>
       </thead>
       <tbody>
@@ -59,15 +59,17 @@
         <% @probes.each do |probe| %>
         <tr>
           <td>
-            <%= image_tag "icons/"+probe.type+"16" %>
-            <%= probe.name %>
+            <%= image_tag "icons/"+probe.type+"16.png" %>
+            <%= link_to probe.name, probe %>
           </td>
-          <td><%= probe.ipaddress %></td>
+          <td><%= link_to probe.ipaddress, probe %></td>
           <td><%= probe.city %></td>
-          <td><%= probe.state %></td>
-          <td><%= probe.updated_at %></td>
+          <td><%= probe.state.upcase %></td>
+          <td><%= probe.updated_at.localtime %></td>
           <td><%= probe.status %></td>
+          <td><%= link_to 'Show', probe %></td>
           <td><%= link_to "Editar", edit_probe_path(probe) %></td>
+          <td><%= link_to 'Destroy', probe, method: :delete, data: { confirm: 'Are you sure?' } %></td>
         </tr>
         <% end %>
       </tbody>

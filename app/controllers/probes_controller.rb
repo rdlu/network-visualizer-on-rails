@@ -57,13 +57,13 @@ class ProbesController < ApplicationController
 
     if @probe.save
       respond_to do |format|
-        format.json { render :json => @user.to_json, :status => 200 }
+        format.json { render :json => @probe.to_json, :status => 200 }
         format.xml  { head :ok }
-        format.html { redirect_to welcome_index_path, :notice =>"Cadastro feito com sucesso. Um e-mail foi enviado para #{@user.email}" }
+        format.html
       end
     else
       respond_to do |format|
-        format.json { render :text => "Usuário não pode ser criado.", :status => :unprocessable_entity } # placeholder
+        format.json { render :text => "Sonda não pode ser criado.", :status => :unprocessable_entity } # placeholder
         format.xml  { head :ok }
         format.html { render :action => :new, :status => :unprocessable_entity }
       end

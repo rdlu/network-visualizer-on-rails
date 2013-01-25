@@ -70,7 +70,7 @@
   <% end %>
 </div>
 <script type="text/javascript">
-    var service = new google.maps.places.AutocompleteService();
+    var service = new google.maps.places.AutocompleteService({componentRestrictions: {country: 'br'}});
     var geocoder = new google.maps.Geocoder();
     var results2;
 
@@ -107,9 +107,9 @@
             });
         },
         updater:function (item) {
-            geocoder.geocode({ address:item + ', Brazil' }, function (results, status) {
+            geocoder.geocode({ address:item }, function (results, status) {
                 if (status != google.maps.GeocoderStatus.OK) {
-                    alert('Endereço não pode ser obtido, Google Maps inacessível');
+                    alert('Endereço não pode ser obtido, Google Maps emitiu erro');
                     return;
                 }
                 $("#probe_latitude").val(results[0].geometry.location.lat());
