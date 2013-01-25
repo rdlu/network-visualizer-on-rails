@@ -12,7 +12,6 @@ class ProbesController < ApplicationController
     authorize! :index, self
 
     @probes = apply_scopes(Probe).all
-
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @probes }
@@ -24,6 +23,13 @@ class ProbesController < ApplicationController
 
   def new
     @probe = Probe.new(params[:probe])
+
+    begin
+      @selected_plan = ConnectionProfile.find(params[:probe][:connection_profile_id]).plans
+    rescue
+      @selected_plan = ConnectionProfile.all.first.plans
+    end
+
     respond_to do |format|
       format.json { render :json => @probe }
       format.xml  { render :xml => @probe }
@@ -37,11 +43,17 @@ class ProbesController < ApplicationController
   def create
     @probe = Probe.new(params[:probe])
 
-    @connection_profile = ConnectionProfile.find(params[:connection_profile])
+    @connection_profile = ConnectionProfile.find(params[:probe][:connection_profile_id])
     @probe.connection_profile = @connection_profile
 
-    @plan = Plan.find(params[:plan])
+    @plan = Plan.find(params[:probe][:plan_id])
     @probe.plan = @plan
+
+    begin
+      @selected_plan = ConnectionProfile.find(params[:probe][:connection_profile_id]).plans
+    rescue
+      @selected_plan = ConnectionProfile.all.first.plans
+    end
 
     if @probe.save
       respond_to do |format|
