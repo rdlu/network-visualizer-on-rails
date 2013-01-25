@@ -40,6 +40,6 @@ plano3g.save!
 conn4g = ConnectionProfile.new({ name_id: "4g-default", name: "4G", notes: "Perfil de conexão para redes 4G LTE", conn_type: "mobile" })
 conn4g.save!
 
-plano4g = Plan.new({ name: "Vivo Internet LTE", description: "Plano iniciado em 2013, utilizando LTE", throughputDown: 4000, throughputUp:100})
+plano4g = Plan.new({ name: "Vivo Internet LTE", description: "Plano iniciado em 2013, utilizando LTE", throughputDown: 4000, throughputUp:1000})
 plano4g.connection_profile = conn4g
 plano4g.save!

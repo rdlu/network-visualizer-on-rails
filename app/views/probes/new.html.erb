@@ -28,10 +28,10 @@
           </div>
         </div>
         <div class="control-group">
-          <%= f.label :connection_profile, "Conexão / Plano", :class => "control-label" %>
+          <%= f.label :connection_profile_id, "Conexão / Plano", :class => "control-label" %>
           <div class="controls">
-            <%= f.collection_select :connection_profile, ConnectionProfile.all, :id, :name %>
-            <%= f.collection_select :plan, ConnectionProfile.all.first.plans, :id, :name_with_throughput %>
+            <%= f.collection_select :connection_profile_id, ConnectionProfile.all, :id, :name %>
+            <%= f.collection_select :plan_id, @selected_plan, :id, :name_with_throughput, {}, :class => "span4" %>
           </div>
         </div>
       </div>
@@ -70,7 +70,7 @@
   <% end %>
 </div>
 <script type="text/javascript">
-    var service = new google.maps.places.AutocompleteService();
+    var service = new google.maps.places.AutocompleteService({componentRestrictions: {country: 'br'}});
     var geocoder = new google.maps.Geocoder();
     var results2;
 
@@ -107,9 +107,9 @@
             });
         },
         updater:function (item) {
-            geocoder.geocode({ address:item + ', Brazil' }, function (results, status) {
+            geocoder.geocode({ address:item }, function (results, status) {
                 if (status != google.maps.GeocoderStatus.OK) {
-                    alert('Endereço não pode ser obtido, Google Maps inacessível');
+                    alert('Endereço não pode ser obtido, Google Maps emitiu erro');
                     return;
                 }
                 $("#probe_latitude").val(results[0].geometry.location.lat());
@@ -129,13 +129,13 @@
         minLength:4
     });
 
-    $("#probe_connection_profile").change(function (evt) {
+    $("#probe_connection_profile_id").change(function (evt) {
         var connProfileID = evt.currentTarget.value;
         jQuery.ajax("<%=request.protocol+request.host_with_port+(url_for ConnectionProfile) %>/"+connProfileID+"/plans",{
              success: function (data,status) {
-                 $("#probe_plan").html("");
+                 $("#probe_plan_id").html("");
                  jQuery.each(data, function(i,plan) {
-                     $("#probe_plan").append('<option value=\"'+plan.id+"\">"+plan.name+"</option>")
+                     $("#probe_plan_id").append('<option value=\"'+plan.id+"\">"+plan.name+" ("+plan.throughputDown+"/"+plan.throughputUp+")</option>")
                  });
              },
              dataType: 'json'

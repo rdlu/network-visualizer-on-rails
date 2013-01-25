@@ -12,7 +12,6 @@ class ProbesController < ApplicationController
     authorize! :index, self
 
     @probes = apply_scopes(Probe).all
-
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @probes }
@@ -24,6 +23,13 @@ class ProbesController < ApplicationController
 
   def new
     @probe = Probe.new(params[:probe])
+
+    begin
+      @selected_plan = ConnectionProfile.find(params[:probe][:connection_profile_id]).plans
+    rescue
+      @selected_plan = ConnectionProfile.all.first.plans
+    end
+
     respond_to do |format|
       format.json { render :json => @probe }
       format.xml  { render :xml => @probe }
@@ -37,21 +43,27 @@ class ProbesController < ApplicationController
   def create
     @probe = Probe.new(params[:probe])
 
-    @connection_profile = ConnectionProfile.find(params[:connection_profile])
+    @connection_profile = ConnectionProfile.find(params[:probe][:connection_profile_id])
     @probe.connection_profile = @connection_profile
 
-    @plan = Plan.find(params[:plan])
+    @plan = Plan.find(params[:probe][:plan_id])
     @probe.plan = @plan
+
+    begin
+      @selected_plan = ConnectionProfile.find(params[:probe][:connection_profile_id]).plans
+    rescue
+      @selected_plan = ConnectionProfile.all.first.plans
+    end
 
     if @probe.save
       respond_to do |format|
-        format.json { render :json => @user.to_json, :status => 200 }
+        format.json { render :json => @probe.to_json, :status => 200 }
         format.xml  { head :ok }
-        format.html { redirect_to welcome_index_path, :notice =>"Cadastro feito com sucesso. Um e-mail foi enviado para #{@user.email}" }
+        format.html
       end
     else
       respond_to do |format|
-        format.json { render :text => "Usuário não pode ser criado.", :status => :unprocessable_entity } # placeholder
+        format.json { render :text => "Sonda não pode ser criado.", :status => :unprocessable_entity } # placeholder
         format.xml  { head :ok }
         format.html { render :action => :new, :status => :unprocessable_entity }
       end
