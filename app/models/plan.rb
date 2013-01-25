@@ -9,4 +9,12 @@ class Plan < ActiveRecord::Base
   #relationships
   has_many :probes
   belongs_to :connection_profile
+
+  #escopos de pesquisa
+  scope :by_connection_profile, proc { |connection_profile| where(:connection_profile => connection_profile)}
+
+
+  def name_with_throughput
+    self.name+" ("+self.throughputDown.to_s+"/"+self.throughputUp.to_s+")"
+  end
 end
