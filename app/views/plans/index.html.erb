@@ -1,9 +1,19 @@
+<h2>Lista de Planos </h2>
 <div class="row-fluid">
-  <div class="span4">
-    <h2>Lista de Planos </h2>
+  <div class="span12">
+    <% if can? :create, User%>
+        <div class="navbar">
+          <div class="navbar-inner">
+            <div class="span2 offset10">
+              <%= link_to "Novo Plano", new_plan_path, :class => "btn btn-primary btn-block" %>
+            </div>
+          </div>
+        </div>
+    <%end%>
   </div>
-
-    <table class="table table-bordered table-hover">
+</div>
+<div class="row-fluid">
+  <table class="table table-bordered table-hover">
       <tr>
         <th>Name</th>
         <th>Description</th>
@@ -26,9 +36,4 @@
     <% end %>
       </tbody>
     </table>
-
-<br />
-  <div class="span2" >
-    <%= link_to 'Novo Plano', new_plan_path, :class => 'btn btn-primary btn-large btn-block' %>
-  </div>
 </div>

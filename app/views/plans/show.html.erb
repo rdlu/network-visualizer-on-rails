@@ -1,20 +1,28 @@
-<p id="notice"><%= notice %></p>
+<h2>Detalhamento do Plano </h2>
 
 <p>
-  <b>Name:</b>
+  <b>Nome:</b>
   <%= @plan.name %>
 </p>
 
 <p>
-  <b>Description:</b>
+  <b>Descrição:</b>
   <%= @plan.description %>
 </p>
 
 <p>
-  <b>Throughput:</b>
-  <%= @plan.throughput %>
+  <b>Throughput Down:</b>
+  <%= @plan.throughputDown %>
+</p>
+<p>
+  <b>Throughput Up:</b>
+  <%= @plan.throughputUp %>
 </p>
 
-
-<%= link_to 'Edit', edit_plan_path(@plan) %> |
-<%= link_to 'Back', plans_path %>
+<div class="control-group" >
+  <div class="controls">
+    <%= link_to 'Editar', edit_plan_path(@plan), :class => "btn btn-primary btn-large " %>
+    <br/> <br/>
+    <%= link_to 'Voltar', plans_path, :class => "btn btn-inverse btn-large " %>
+  </div>
+</div>

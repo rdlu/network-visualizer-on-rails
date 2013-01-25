@@ -1,3 +1,4 @@
+# coding: utf-8
 class PlansController < ApplicationController
   # GET /plans
   # GET /plans.json
@@ -44,7 +45,7 @@ class PlansController < ApplicationController
 
     respond_to do |format|
       if @plan.save
-        format.html { redirect_to @plan, notice: 'Plan was successfully created.' }
+        format.html { redirect_to plans_path, notice: 'Plano criado com sucesso.' }
         format.json { render json: @plan, status: :created, location: @plan }
       else
         format.html { render action: "new" }
@@ -60,7 +61,7 @@ class PlansController < ApplicationController
 
     respond_to do |format|
       if @plan.update_attributes(params[:plan])
-        format.html { redirect_to @plan, notice: 'Plan was successfully updated.' }
+        format.html { redirect_to plans_path, notice: 'Suas alterações foram salvas com sucesso.' }
         format.json { head :no_content }
       else
         format.html { render action: "edit" }

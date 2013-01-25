@@ -1,18 +1,5 @@
 
     <%= form_for @plan, :html => { :class => "form-horizontal" } do |f| %>
-
-      <% if @plan.errors.any? %>
-        <div id="error_explanation">
-          <h2><%= pluralize(@plan.errors.count, "error") %> prohibited this plan from being saved:</h2>
-
-          <ul>
-          <% @plan.errors.full_messages.each do |msg| %>
-            <li><%= msg %></li>
-          <% end %>
-          </ul>
-        </div>
-      <% end %>
-
       <div class="control-group">
         <%= f.label "Nome", :class => "control-label" %>
         <div class="controls">
@@ -37,10 +24,10 @@
           <%= f.number_field :throughputUp, :placeholder => "Kbps" %>
         </div>
       </div>
-
-      <div>
-        <%= f.submit "Salvar", :class => "btn btn-primary btn-large"%>
+      <div class="control-group" >
+      <div class="controls">
+        <%= f.submit "Salvar", :class => "btn btn-primary btn-large "%>
+      </div> <br/>
+       <div class="controls"><%= link_to 'Voltar', plans_path,  :class => "btn btn-inverse btn-large " %></div>
       </div>
-       <div><%= link_to 'Voltar', plans_path,  :class => "btn btn-inverse btn-large" %><div>
-
     <% end %>
