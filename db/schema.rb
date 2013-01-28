@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130124175325) do
+ActiveRecord::Schema.define(:version => 20130128142754) do
 
   create_table "connection_profiles", :force => true do |t|
     t.string   "name"
@@ -87,6 +87,18 @@ ActiveRecord::Schema.define(:version => 20130124175325) do
   add_index "roles_users", ["role_id"], :name => "roles_users_role_id_fk"
   add_index "roles_users", ["user_id"], :name => "roles_users_user_id_fk"
 
+  create_table "schedules", :force => true do |t|
+    t.datetime "start"
+    t.datetime "end"
+    t.integer  "polling"
+    t.string   "status"
+    t.integer  "probe_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "schedules", ["probe_id"], :name => "schedules_probe_id_fk"
+
   create_table "test_profiles", :force => true do |t|
     t.string   "name"
     t.text     "config_parameters"
@@ -99,6 +111,16 @@ ActiveRecord::Schema.define(:version => 20130124175325) do
 
   add_index "test_profiles", ["connection_profile_id"], :name => "test_profiles_connection_profile_id_fk"
   add_index "test_profiles", ["metric_id"], :name => "test_profiles_metric_id_fk"
+
+  create_table "tests", :force => true do |t|
+    t.integer  "schedule_id"
+    t.integer  "test_profile_id"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
+
+  add_index "tests", ["schedule_id"], :name => "tests_schedule_id_fk"
+  add_index "tests", ["test_profile_id"], :name => "tests_test_profile_id_fk"
 
   create_table "thresholds", :force => true do |t|
     t.string   "name"
@@ -148,8 +170,13 @@ ActiveRecord::Schema.define(:version => 20130124175325) do
   add_foreign_key "roles_users", "roles", :name => "roles_users_role_id_fk"
   add_foreign_key "roles_users", "users", :name => "roles_users_user_id_fk"
 
+  add_foreign_key "schedules", "probes", :name => "schedules_probe_id_fk"
+
   add_foreign_key "test_profiles", "connection_profiles", :name => "test_profiles_connection_profile_id_fk"
   add_foreign_key "test_profiles", "metrics", :name => "test_profiles_metric_id_fk"
+
+  add_foreign_key "tests", "schedules", :name => "tests_schedule_id_fk"
+  add_foreign_key "tests", "test_profiles", :name => "tests_test_profile_id_fk"
 
   add_foreign_key "thresholds", "connection_profiles", :name => "thresholds_connection_profile_id_fk"
   add_foreign_key "thresholds", "metrics", :name => "thresholds_metric_id_fk"

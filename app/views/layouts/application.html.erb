@@ -50,11 +50,9 @@
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Administrar<b class="caret"></b></a>
                 <ul class="dropdown-menu"  >
-                  <li><%= link_to "Processos de Medição" %></li>
+                  <li><%= link_to "Agendas e Testes", schedules_path %></li>
                   <li class="divider"></li>
                   <li><%= link_to "Sondas e Agentes", probes_path  %></li>
-                  <li class="divider"></li>
-                  <li><%= link_to "Métricas e Perfis de Teste" %></li>
                   <li class="divider"></li>
                   <li><%= link_to "Controle de Usuário", users_path , :method => :get %></li>
                   <li class="divider"></li>
@@ -67,6 +65,9 @@
                         <ul class="dropdown-menu" style="left: 100%">
                           <li><%= link_to "Planos", plans_path %></li>
                           <li><%= link_to "Perfil de Conexão", connection_profiles_path %></li>
+                          <li class="divider"></li>
+                          <li><%= link_to "Métricas" %></li>
+                          <li><%= link_to "Perfis de Teste" %></li>
                         </ul>
                       </li>
                   <% end %>

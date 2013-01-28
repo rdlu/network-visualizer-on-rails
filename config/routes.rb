@@ -1,4 +1,10 @@
 MomRails::Application.routes.draw do
+  resources :tests
+
+
+  resources :schedules
+
+
   resources :probes
   resources :metrics
   resources :test_profiles
