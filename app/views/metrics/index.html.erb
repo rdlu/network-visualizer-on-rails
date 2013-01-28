@@ -17,10 +17,10 @@
     <table class="table table-bordered table-hover">
       <tr>
         <th>Nome</th>
-        <th>Plugin</th>
+        <th><span class="etooltip" data-title="Valor usado internamente pelo netmetric">Plugin</span></th>
         <th>Descrição</th>
-        <th>Reverse</th>
-        <th>Ordem de apresentação</th>
+        <th><span class="etooltip" data-title="Quanto menor, melhor o resultado">Métrica reversa</span></th>
+        <th><span class="etooltip" data-title="Ordem de preferência na apresentação de relatórios">Ordem de apresentação</span></th>
         <th colspan="2"></th>
       </tr>
 
@@ -39,3 +39,7 @@
     </table>
   </div>
 </div>
+
+<script type="text/javascript">
+    $('.etooltip').tooltip();
+</script>
