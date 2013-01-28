@@ -1,10 +1,7 @@
 MomRails::Application.routes.draw do
+  resources :metrics
   resources :tests
-
-
   resources :schedules
-
-
   resources :probes
   resources :metrics
   resources :test_profiles
@@ -16,9 +13,6 @@ MomRails::Application.routes.draw do
 
   devise_for :users
   resources :users
-  get "registration/new"
-
-  post "registration/create"
 
   devise_for :users #, :controllers => { :registrations => "registrations" }
   resources :users do
