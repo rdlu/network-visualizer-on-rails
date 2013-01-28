@@ -25,6 +25,7 @@ class TestProfilesController < ApplicationController
   # GET /test_profiles/new.json
   def new
     @test_profile = TestProfile.new
+    @test_profile.config_parameters = "{}"
 
     respond_to do |format|
       format.html # new.html.erb
