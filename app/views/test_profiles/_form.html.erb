@@ -4,7 +4,7 @@
   Os perfis de teste devem ser planejados com cautela antes de qualquer cadastramento ou modificação.<br>
   Eles podem mudar todo o comportamento dos testes!
 </div>
-<%= form_for(@test_profile, :html => {:class => "form-horizontal"}) do |f| %>
+<%= form_for(@test_profile, :html => {:class => "form-horizontal form-stop"}) do |f| %>
     <% if @test_profile.errors.any? %>
         <div id="error_explanation">
           <h2><%= pluralize(@test_profile.errors.count, "error") %> prohibited this test_profile from being saved:</h2>
@@ -26,7 +26,7 @@
     <div class="control-group">
       <%= f.label :connection_profile_id,"Perfil de Conexão", :class => "control-label" %>
       <div class="controls">
-        <%= f.text_field :connection_profile_id %>
+        <%= f.collection_select :connection_profile_id, ConnectionProfile.all, :id, :name %>
       </div>
     </div>
     <div class="control-group">
@@ -60,5 +60,11 @@
         jQuery("#confParams").hide();
         editor = new JSONEditor(jQuery("#jsonEditor")[0]);
         editor.set(JSON.parse(jQuery("#test_profile_config_parameters").val()));
+
+        jQuery(".form-stop").submit(function (evt) {
+            evt.preventDefault();
+            jQuery("#test_profile_config_parameters").val(JSON.stringify(editor.get(), null, 2));
+            jQuery(".form-stop").submit();
+        });
     });
 </script>
