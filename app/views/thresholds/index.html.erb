@@ -1,0 +1,43 @@
+<h2>Limiares e Metas Anatel</h2>
+<div class="row-fluid">
+  <div class="span12">
+        <div class="navbar">
+          <div class="navbar-inner">
+            <% if can? :create, Threshold%>
+            <div class="span2 offset10">
+              <%= link_to "Novo Limiar", new_threshold_path, :class => "btn btn-primary btn-block" %>
+            </div>
+            <%end%>
+          </div>
+        </div>
+  </div>
+</div>
+<div class="row-fluid">
+  <div class="span12">
+    <table class="table table-bordered table-hover">
+      <tr>
+        <th>Nome</th>
+        <th>Métrica</th>
+        <th>Conexão</th>
+        <th><span class="etooltip" data-title="Número de casos em que a meta é alcançada">Compliance</span></th>
+        <th><span class="etooltip" data-title="Meta estabelecida, por caso">Meta</span></th>
+        <th>Ações</th>
+      </tr>
+
+      <% @thresholds.each do |threshold| %>
+          <tr>
+            <td><%= threshold.name %></td>
+            <td><%= threshold.metric.name %></td>
+            <td><%= threshold.connection_profile.name %></td>
+            <td><%= threshold.compliance_level %><%= threshold.compliance_period %><%= threshold.compliance_method %></td>
+            <td><%= threshold.goal_level %><%= threshold.goal_period %><%= threshold.goal_method %></td>
+            <td><%= link_to 'Mostrar', threshold %> <%= link_to 'Editar', edit_threshold_path(threshold) %></td>
+          </tr>
+      <% end %>
+    </table>
+  </div>
+</div>
+
+<script type="text/javascript">
+    $('.etooltip').tooltip();
+</script>

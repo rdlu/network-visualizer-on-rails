@@ -8,7 +8,7 @@ MomRails::Application.routes.draw do
   resources :connection_profiles do
     resources :plans
   end
-  resources :threshold
+  resources :thresholds
   resources :plans
 
   devise_for :users

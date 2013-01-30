@@ -13,11 +13,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="apple-touch-icon" href="apple-touch-icon-72x72.png">
   <!-- For iPhone 4 Retina display: -->
-  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="apple-touch-icon-114x114-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/apple-touch-icon-114x114-precomposed.png">
   <!-- For iPad: -->
-  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="apple-touch-icon-72x72-precomposed.png">
-  <link rel="icon" type="image/png" href="favicon.png" />
-  <link rel="shortcut icon" href="favicon.ico">
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/apple-touch-icon-72x72-precomposed.png">
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="shortcut icon" href="/favicon.ico">
 
 </head>
 <body>
@@ -58,11 +58,16 @@
                         <ul class="dropdown-menu" style="left: 100%">
                           <li><%= link_to "Planos", plans_path %></li>
                           <% if can? :read, ConnectionProfile %>
+                              <li class="divider"></li>
                           <li><%= link_to "Perfil de Conexão", connection_profiles_path %></li>
                           <% end %>
                           <% if can? :read, Metric %>
                               <li class="divider"></li>
                               <li><%= link_to "Métricas", metrics_path %></li>
+                          <% end %>
+                          <% if can? :read, Threshold %>
+                              <li class="divider"></li>
+                              <li><%= link_to "Metas Anatel", thresholds_path %></li>
                           <% end %>
                           <% if can? :read, TestProfile %>
                               <li class="divider"></li>

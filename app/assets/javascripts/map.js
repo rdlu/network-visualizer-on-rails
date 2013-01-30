@@ -34,7 +34,7 @@ $(function(){
            values:[
                 {latLng: [-22.904325,-43.209743], tag:"green"},
                 {latLng: [-30.03306,-51.23], tag:"green"},
-                [-22.904325,-45.209743],
+                [-22.904325,-45.209743]
                 ],
 
             cluster:{
@@ -68,7 +68,6 @@ $(function(){
                         {
                             overlay:{
                                 latLng: marker.getPosition()
-
                             }
                         });
                 },
