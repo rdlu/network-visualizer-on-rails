@@ -17,7 +17,8 @@ class Threshold < ActiveRecord::Base
   end
 
   def compliance_methods
-    [["Quociente simples","quotient"]]
+    [["Quociente simples","quotient"],
+    ["Média",'mean']]
   end
 
   def compliance_periods

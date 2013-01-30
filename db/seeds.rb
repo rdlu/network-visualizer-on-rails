@@ -23,11 +23,12 @@ normal_user.roles << normal_role
 normal_user.save!
 
 Metric.create([
-      { name: "throughput", description: "Vazão de dados", order:2, plugin: "throughput", reverse: false },
-      { name: "throughputTCP", description: "Vazão de dados sob TCP", order:1, plugin: "throughputTCP", reverse: false },
-      { name: "capacity", description: "Capacidade no gargalo (experimental)", order:9, plugin: "capacity", reverse: false },
-      { name: "rtt", description: "Latência ida e volta", order:3, plugin: "rtt", reverse: true },
-      { name: "loss", description: "Perda de pacotes transmitidos", order:4, plugin: "loss", reverse: true },
+      { name: "Throughput", description: "Vazão de dados", order:2, plugin: "throughput", reverse: false },
+      { name: "Throughput TCP", description: "Vazão de dados sob TCP", order:1, plugin: "throughputTCP", reverse: false },
+      { name: "Capacity", description: "Capacidade no gargalo (experimental)", order:9, plugin: "capacity", reverse: false },
+      { name: "RTT", description: "Latência ida e volta", order:4, plugin: "rtt", reverse: true },
+      { name: "Perda", description: "Perda de pacotes transmitidos", order:5, plugin: "loss", reverse: true },
+      { name: "Throughput HTTP", description: "Vazão de dados sob HTTP", order:3, plugin: "loss", reverse: true },
               ])
 
 conn3g = ConnectionProfile.new({ name_id: "3g-default", name: "3G Padrão", notes: "Perfil de conexão para redes 3G convencionais", conn_type: "mobile" })
