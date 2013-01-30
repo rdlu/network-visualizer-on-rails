@@ -1,0 +1,79 @@
+<div class="alert alert-warning">
+  Os limiares e metas anatel devem ser planejados, conforme legislação, antes do seu cadastro ou modificação!
+</div>
+<%= form_for(@threshold, :html => {:class => "form-horizontal form-stop"}) do |f| %>
+    <% if @threshold.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(@test_profile.errors.count, "error") %> prohibited this test_profile from being saved:</h2>
+
+          <ul>
+            <% @threshold.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+    <% end %>
+
+    <div class="control-group">
+      <%= f.label :name, "Nome da Meta", :class => "control-label" %>
+      <div class="controls">
+        <%= f.text_field :name %>
+      </div>
+    </div>
+    <div class="control-group">
+      <%= f.label :connection_profile_id,"Perfil de Conexão", :class => "control-label" %>
+      <div class="controls">
+        <%= f.collection_select :connection_profile_id, ConnectionProfile.all, :id, :name %>
+      </div>
+    </div>
+    <div class="control-group">
+      <%= f.label :metric_id,"Métrica Relacionada", :class => "control-label" %>
+      <div class="controls">
+        <%= f.collection_select :metric_id, Metric.all, :id, :name %>
+      </div>
+    </div>
+    <div class="control-group" id="confParams">
+      <%= f.label :goal_level,"Nível de meta", :class => "control-label etooltip","data-title".to_sym => "A unidade de uso depende da métrica, verifique antes junto à metrica" %>
+      <div class="controls">
+        <%= f.text_field :goal_level, :class => "etooltip","data-title".to_sym => "A unidade de uso depende da métrica, verifique antes junto à metrica" %>
+      </div>
+    </div>
+    <div class="control-group">
+      <%= f.label :goal_method,"Método de calc. Meta", :class => "control-label" %>
+      <div class="controls">
+        <%= f.select :goal_method, @threshold.goal_methods %>
+      </div>
+    </div>
+    <div class="control-group">
+      <%= f.label :goal_period,"Período de calc. Meta", :class => "control-label" %>
+      <div class="controls">
+        <%= f.select :goal_period, @threshold.goal_periods %>
+      </div>
+    </div>
+    <div class="control-group">
+      <%= f.label :compliance_level, "Nível de cumprimento (%)", :class => "control-label" %>
+      <div class="controls">
+        <%= f.text_field :compliance_level %>
+      </div>
+    </div>
+    <div class="control-group">
+      <%= f.label :compliance_method,"Método de calc. Cumprimento", :class => "control-label" %>
+      <div class="controls">
+        <%= f.select :compliance_method, @threshold.compliance_methods %>
+      </div>
+    </div>
+    <div class="control-group">
+      <%= f.label :compliance_period,"Período de calc. Cumprimento", :class => "control-label" %>
+      <div class="controls">
+        <%= f.select :compliance_period, @threshold.compliance_periods %>
+      </div>
+    </div>
+    <div class="control-group">
+      <div class="controls">
+        <%= f.submit "Salvar", :class => "btn btn-primary btn-large" %>
+      </div>
+    </div>
+<% end %>
+<script type="text/javascript">
+    $('.etooltip').tooltip();
+</script>
