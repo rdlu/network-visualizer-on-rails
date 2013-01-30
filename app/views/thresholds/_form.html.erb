@@ -21,9 +21,9 @@
       </div>
     </div>
     <div class="control-group">
-      <%= f.label :connection_profile_id,"Perfil de Conexão", :class => "control-label" %>
+      <%= f.label :description, "Descrição (Nome Alternativo)", :class => "control-label" %>
       <div class="controls">
-        <%= f.collection_select :connection_profile_id, ConnectionProfile.all, :id, :name %>
+        <%= f.text_field :description %>
       </div>
     </div>
     <div class="control-group">

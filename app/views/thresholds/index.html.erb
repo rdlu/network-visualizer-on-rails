@@ -18,19 +18,17 @@
       <tr>
         <th>Nome</th>
         <th>Métrica</th>
-        <th>Conexão</th>
         <th><span class="etooltip" data-title="Número de casos em que a meta é alcançada">Compliance</span></th>
-        <th><span class="etooltip" data-title="Meta estabelecida, por caso">Meta</span></th>
+        <th><span class="etooltip" data-title="Meta estabelecida, por caso. A unidade depende da métrica em questão.">Meta</span></th>
         <th>Ações</th>
       </tr>
 
       <% @thresholds.each do |threshold| %>
           <tr>
-            <td><%= threshold.name %></td>
+            <td><%= threshold.name %> (<%= threshold.description %>)</td>
             <td><%= threshold.metric.name %></td>
-            <td><%= threshold.connection_profile.name %></td>
-            <td><%= threshold.compliance_level %><%= threshold.compliance_period %><%= threshold.compliance_method %></td>
-            <td><%= threshold.goal_level %><%= threshold.goal_period %><%= threshold.goal_method %></td>
+            <td><%= threshold.compliance_level %> <%= threshold.find_goal_name :compliance_method %> <%= threshold.find_goal_name :compliance_period %></td>
+            <td><%= threshold.goal_level %> <%= threshold.find_goal_name :goal_method %> <%= threshold.find_goal_name :goal_period %></td>
             <td><%= link_to 'Mostrar', threshold %> <%= link_to 'Editar', edit_threshold_path(threshold) %></td>
           </tr>
       <% end %>

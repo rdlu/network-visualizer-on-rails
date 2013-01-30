@@ -20,8 +20,8 @@ pt-BR:
       timeout: 'A sua sessão expirou, por favor faça login novamente para continuar.'
       inactive: 'A sua conta não foi ativada ainda.'
     sessions:
-      signed_in: 'Autenticado com sucesso.'
-      signed_out: 'Logout feito com sucesso.'
+      signed_in: 'Autenticado com sucesso. Bem vindo ao NetMetric MoM!'
+      signed_out: 'Logout feito com sucesso. Até mais!'
     passwords:
       send_instructions: 'Você receberá um e-mail com instruções sobre como reinicializar sua senha em poucos minutos.'
       updated: 'Sua senha foi alterada com sucesso. Você está logado agora.'

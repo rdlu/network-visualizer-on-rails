@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130128142754) do
+ActiveRecord::Schema.define(:version => 20130130163217) do
 
   create_table "connection_profiles", :force => true do |t|
     t.string   "name"
@@ -134,6 +134,7 @@ ActiveRecord::Schema.define(:version => 20130128142754) do
     t.integer  "metric_id"
     t.datetime "created_at",                                    :null => false
     t.datetime "updated_at",                                    :null => false
+    t.string   "description"
   end
 
   add_index "thresholds", ["connection_profile_id"], :name => "thresholds_connection_profile_id_fk"

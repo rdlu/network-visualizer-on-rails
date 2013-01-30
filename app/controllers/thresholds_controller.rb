@@ -33,11 +33,11 @@ class ThresholdsController < ApplicationController
   end
 
   def create
-    @threshold = Threshold.new(params[:schedule])
+    @threshold = Threshold.new(params[:threshold])
 
     respond_to do |format|
       if @threshold.save
-        format.html { redirect_to @threshold, notice: "Limiar #{@threshold.name} criado com sucesso." }
+        format.html { redirect_to thresholds_path, notice: "Limiar #{@threshold.name} criado com sucesso." }
         format.json { render json: @threshold, status: :created, location: @threshold }
       else
         format.html { render action: "new" }
@@ -50,8 +50,8 @@ class ThresholdsController < ApplicationController
     @threshold = Threshold.find(params[:id])
 
     respond_to do |format|
-      if @threshold.update_attributes(params[:schedule])
-        format.html { redirect_to @threshold, notice: "Limiar #{@threshold.name} was successfully updated." }
+      if @threshold.update_attributes(params[:threshold])
+        format.html { redirect_to thresholds_path, notice: "Limiar #{@threshold.name} was successfully updated." }
         format.json { head :no_content }
       else
         format.html { render action: "edit" }

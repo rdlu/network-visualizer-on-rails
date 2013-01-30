@@ -22,15 +22,20 @@ admin_user.save!
 normal_user.roles << normal_role
 normal_user.save!
 
+#metricas
+
 Metric.create([
-      { name: "Throughput", description: "Vazão de dados", order:2, plugin: "throughput", reverse: false },
       { name: "Throughput TCP", description: "Vazão de dados sob TCP", order:1, plugin: "throughputTCP", reverse: false },
-      { name: "Capacity", description: "Capacidade no gargalo (experimental)", order:9, plugin: "capacity", reverse: false },
+      { name: "Throughput", description: "Vazão de dados", order:2, plugin: "throughput", reverse: false },
+      { name: "Throughput HTTP", description: "Vazão de dados sob HTTP", order:3, plugin: "throughputHTTP", reverse: false },
       { name: "RTT", description: "Latência ida e volta", order:4, plugin: "rtt", reverse: true },
       { name: "Perda", description: "Perda de pacotes transmitidos", order:5, plugin: "loss", reverse: true },
-      { name: "Throughput HTTP", description: "Vazão de dados sob HTTP", order:3, plugin: "loss", reverse: true },
-              ])
+      { name: "Jitter", description: "Flutuação da latência", order:6, plugin: "jitter", reverse: true },
+      { name: "OWD", description: "Latência Unidirecional", order:7, plugin: "owd", reverse: true },
+      { name: "POM", description: "Pacotes fora de ordem", order:8, plugin: "pom", reverse: true },
+])
 
+#perfis de conexao e planos
 conn3g = ConnectionProfile.new({ name_id: "3g-default", name: "3G Padrão", notes: "Perfil de conexão para redes 3G convencionais", conn_type: "mobile" })
 conn3g.save!
 
@@ -44,3 +49,20 @@ conn4g.save!
 plano4g = Plan.new({ name: "Vivo Internet LTE", description: "Plano iniciado em 2013, utilizando LTE", throughputDown: 4000, throughputUp:1000})
 plano4g.connection_profile = conn4g
 plano4g.save!
+
+connfixa = ConnectionProfile.new({ name_id: "fixed", name: "Banda Larga Fixa", notes: "Perfil para redes fixas (ADSL/Cable)", conn_type: "fixed"})
+connfixa.save!
+
+planospeedy = Plan.new({ name: "Vivo Speedy 10Mbps", description: "Plano Speedy ADSL de 10 mega", throughputDown: 10000, throughputUp: 512})
+planospeedy.connection_profile = connfixa
+planospeedy.save!
+
+#limiares anatel
+Threshold.create([
+     { name: "SCM4/SMP10", description: "Taxa de Transmissão Instantanea", compliance_level: "0.95", compliance_period: "monthly", compliance_method: "quotient", goal_level: "0.2", goal_method: "median", goal_period: "daily-rush", metric_id: "3" },
+     { name: "SCM5/SMP11", description: "Taxa de Transmissão Média", compliance_level: "0.6", compliance_period: "monthly", compliance_method: "mean", goal_level: "0.6", goal_method: "median", goal_period: "daily-rush", metric_id: "3" },
+     { name: "SCM6", description: "Latência Bidirecional", compliance_level: "0.85", compliance_period: "monthly", compliance_method: "quotient", goal_level: "80.0", goal_method: "median", goal_period: "daily-rush", metric_id: "4" },
+     { name: "SCM7", description: "Variação de Latência", compliance_level: "0.85", compliance_period: "monthly", compliance_method: "quotient", goal_level: "50.0", goal_method: "median", goal_period: "daily-rush", metric_id: "6" },
+     { name: "SCM8", description: "% Pacotes Descartados", compliance_level: "0.85", compliance_period: "monthly", compliance_method: "quotient", goal_level: "0.02", goal_method: "raw", goal_period: "each-rush", metric_id: "5" },
+     { name: "SCM9", description: "Disponibilidade", compliance_level: "0.85", compliance_period: "monthly", compliance_method: "quotient", goal_level: "0.99", goal_method: "availability", goal_period: "each", metric_id: "5" },
+])
