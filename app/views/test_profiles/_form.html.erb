@@ -16,7 +16,6 @@
           </ul>
         </div>
     <% end %>
-
     <div class="control-group">
       <%= f.label :name, "Nome do Perfil de Teste", :class => "control-label" %>
       <div class="controls">
@@ -24,9 +23,20 @@
       </div>
     </div>
     <div class="control-group">
-      <%= f.label :connection_profile_id,"Perfil de Conexão", :class => "control-label" %>
+      <%= f.label :connection_profile_id, "Perfil de Conexão", :class => "control-label" %>
       <div class="controls">
         <%= f.collection_select :connection_profile_id, ConnectionProfile.all, :id, :name %>
+      </div>
+    </div>
+    <div class="control-group">
+      <span class="control-label etooltip" data-title="Métricas que são medidas por esse perfil. Superposição por perfil não é permitida!">Métricas relacionadas</span>
+      <div class="controls">
+        <% Metric.all.each do |metric| %>
+            <label class="checkbox inline etooltip" data-title="<%= metric.description %>">
+              <%= check_box_tag "test_profile[metric_ids][]", metric.id, @test_profile.metrics.include?(metric) %>
+              <%= metric.name %>
+            </label>
+        <% end %>
       </div>
     </div>
     <div class="control-group">
@@ -56,15 +66,14 @@
 <% end %>
 <script type="text/javascript">
     var editor;
+    $('.etooltip').tooltip();
     jQuery(function (ready) {
         jQuery("#confParams").hide();
         editor = new JSONEditor(jQuery("#jsonEditor")[0]);
         editor.set(JSON.parse(jQuery("#test_profile_config_parameters").val()));
 
         jQuery(".form-stop").submit(function (evt) {
-            evt.preventDefault();
             jQuery("#test_profile_config_parameters").val(JSON.stringify(editor.get(), null, 2));
-            jQuery(".form-stop").submit();
         });
     });
 </script>

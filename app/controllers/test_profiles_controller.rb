@@ -41,6 +41,7 @@ class TestProfilesController < ApplicationController
   # POST /test_profiles
   # POST /test_profiles.json
   def create
+    params[:test_profile][:metric_ids] ||= []
     @test_profile = TestProfile.new(params[:test_profile])
 
     respond_to do |format|
@@ -57,6 +58,7 @@ class TestProfilesController < ApplicationController
   # PUT /test_profiles/1
   # PUT /test_profiles/1.json
   def update
+    params[:test_profile][:metric_ids] ||= []
     @test_profile = TestProfile.find(params[:id])
 
     respond_to do |format|

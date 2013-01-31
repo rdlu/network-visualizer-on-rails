@@ -21,19 +21,26 @@
     <table class="table table-bordered table-hover">
       <tr>
         <th>Nome</th>
+        <th>Métricas medidas</th>
         <th>Método de configuração</th>
-        <th colspan="3"></th>
+        <th>Ações</th>
       </tr>
 
       <% @test_profiles.each do |test_profile| %>
           <tr>
             <td><%= test_profile.name %></td>
+            <td>
+              <% test_profile.metrics.each do |metric| %>
+              <span class="label label-info etooltip" data-title="<%= metric.description %>"><%= metric.name %></span>
+              <% end %>
+            </td>
             <td><%= test_profile.config_method %></td>
-            <td><%= link_to 'Show', test_profile %></td>
-            <td><%= link_to 'Edit', edit_test_profile_path(test_profile) %></td>
-            <td><%= link_to 'Destroy', test_profile, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+            <td><%= link_to 'Show', test_profile %> <%= link_to 'Edit', edit_test_profile_path(test_profile) %></td>
           </tr>
       <% end %>
     </table>
   </div>
 </div>
+<script type="text/javascript">
+    $('.etooltip').tooltip();
+</script>
