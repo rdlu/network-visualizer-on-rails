@@ -18,6 +18,8 @@ gem 'jquery-rails'
 gem 'pry-rails'
 gem 'will_paginate', '~> 3.0'
 gem 'has_scope'
+gem 'snmp'
+gem 'delayed_job_active_record'
 
 # To use ActiveModel has_secure_password
 gem 'bcrypt-ruby', '~> 3.0.0'
