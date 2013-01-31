@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130130163217) do
+ActiveRecord::Schema.define(:version => 20130131115737) do
 
   create_table "connection_profiles", :force => true do |t|
     t.string   "name"
@@ -35,6 +35,14 @@ ActiveRecord::Schema.define(:version => 20130130163217) do
   end
 
   add_index "metrics", ["name"], :name => "index_metrics_on_name", :unique => true
+
+  create_table "metrics_test_profiles", :force => true do |t|
+    t.integer "metric_id"
+    t.integer "test_profile_id"
+  end
+
+  add_index "metrics_test_profiles", ["metric_id"], :name => "metrics_test_profiles_metric_id_fk"
+  add_index "metrics_test_profiles", ["test_profile_id"], :name => "metrics_test_profiles_test_profile_id_fk"
 
   create_table "plans", :force => true do |t|
     t.string   "name"
@@ -104,13 +112,11 @@ ActiveRecord::Schema.define(:version => 20130130163217) do
     t.text     "config_parameters"
     t.string   "config_method"
     t.integer  "connection_profile_id"
-    t.integer  "metric_id"
     t.datetime "created_at",            :null => false
     t.datetime "updated_at",            :null => false
   end
 
   add_index "test_profiles", ["connection_profile_id"], :name => "test_profiles_connection_profile_id_fk"
-  add_index "test_profiles", ["metric_id"], :name => "test_profiles_metric_id_fk"
 
   create_table "tests", :force => true do |t|
     t.integer  "schedule_id"
@@ -163,6 +169,9 @@ ActiveRecord::Schema.define(:version => 20130130163217) do
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
 
+  add_foreign_key "metrics_test_profiles", "metrics", :name => "metrics_test_profiles_metric_id_fk"
+  add_foreign_key "metrics_test_profiles", "test_profiles", :name => "metrics_test_profiles_test_profile_id_fk"
+
   add_foreign_key "plans", "connection_profiles", :name => "plans_connection_profile_id_fk"
 
   add_foreign_key "probes", "connection_profiles", :name => "probes_connection_profile_id_fk"
@@ -174,7 +183,6 @@ ActiveRecord::Schema.define(:version => 20130130163217) do
   add_foreign_key "schedules", "probes", :name => "schedules_probe_id_fk"
 
   add_foreign_key "test_profiles", "connection_profiles", :name => "test_profiles_connection_profile_id_fk"
-  add_foreign_key "test_profiles", "metrics", :name => "test_profiles_metric_id_fk"
 
   add_foreign_key "tests", "schedules", :name => "tests_schedule_id_fk"
   add_foreign_key "tests", "test_profiles", :name => "tests_test_profile_id_fk"

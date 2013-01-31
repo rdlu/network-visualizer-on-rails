@@ -5,6 +5,6 @@ class Metric < ActiveRecord::Base
   validates :plugin, :presence => true, :length => {:maximum => 20, :minimum => 3}, :uniqueness => true,
             :format => {:with => /[a-z0-9]+/}
 
-  has_many :test_profiles
+  has_and_belongs_to_many :test_profiles
   has_many :thresholds
 end
