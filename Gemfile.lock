@@ -41,6 +41,7 @@ GEM
       execjs
     coffee-script-source (1.4.0)
     commonjs (0.2.6)
+    daemons (1.1.9)
     delayed_job (3.0.5)
       activesupport (~> 3.0)
     delayed_job_active_record (0.3.3)
@@ -163,6 +164,13 @@ GEM
       rack (>= 1.0)
     will_paginate (3.0.4)
     yaml_db (0.2.3)
+    yell (1.2.3)
+    yell-adapters-gelf (1.2.0)
+      json
+      yell (~> 1.2)
+    yell-rails (1.2.1)
+      rails (~> 3)
+      yell (~> 1.2.1)
 
 PLATFORMS
   ruby
@@ -171,6 +179,7 @@ DEPENDENCIES
   bcrypt-ruby (~> 3.0.0)
   cancan
   coffee-rails (~> 3.2.2)
+  daemons
   delayed_job_active_record
   devise
   foreigner
@@ -196,3 +205,5 @@ DEPENDENCIES
   unicorn
   will_paginate (~> 3.0)
   yaml_db
+  yell-adapters-gelf
+  yell-rails

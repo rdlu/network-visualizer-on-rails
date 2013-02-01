@@ -12,14 +12,17 @@ gem 'rails-i18n'
 gem 'nokogiri'
 gem 'geocoder'
 gem 'devise'
-gem "cancan"
-gem "rolify"
+gem 'cancan'
+gem 'rolify'
 gem 'jquery-rails'
 gem 'pry-rails'
 gem 'will_paginate', '~> 3.0'
 gem 'has_scope'
 gem 'snmp'
 gem 'delayed_job_active_record'
+gem 'yell-adapters-gelf'
+gem 'yell-rails'
+gem 'daemons'
 
 # To use ActiveModel has_secure_password
 gem 'bcrypt-ruby', '~> 3.0.0'

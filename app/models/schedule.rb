@@ -3,4 +3,9 @@ class Schedule < ActiveRecord::Base
 
   belongs_to :probe
   has_many :tests
+
+  def setup
+
+  end
+
 end
