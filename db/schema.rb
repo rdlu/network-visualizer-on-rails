@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130201161344) do
+ActiveRecord::Schema.define(:version => 20130201184703) do
 
   create_table "connection_profiles", :force => true do |t|
     t.string   "name"
@@ -96,6 +96,26 @@ ActiveRecord::Schema.define(:version => 20130201161344) do
   add_index "probes", ["name"], :name => "index_probes_on_name", :unique => true
   add_index "probes", ["plan_id"], :name => "probes_plan_id_fk"
 
+  create_table "results", :force => true do |t|
+    t.integer  "schedule_id"
+    t.integer  "metric_id"
+    t.string   "schedule_uuid", :limit => 32
+    t.string   "uuid",          :limit => 32
+    t.string   "metric_name"
+    t.datetime "timestamp"
+    t.float    "dsavg"
+    t.float    "sdavg"
+    t.float    "dsmin"
+    t.float    "sdmin"
+    t.float    "dsmax"
+    t.float    "sdmax"
+    t.datetime "created_at",                  :null => false
+    t.datetime "updated_at",                  :null => false
+  end
+
+  add_index "results", ["schedule_id"], :name => "index_results_on_schedule_id"
+  add_index "results", ["uuid"], :name => "index_results_on_uuid"
+
   create_table "roles", :force => true do |t|
     t.string   "name"
     t.datetime "created_at",  :null => false
@@ -117,11 +137,13 @@ ActiveRecord::Schema.define(:version => 20130201161344) do
     t.integer  "polling"
     t.string   "status"
     t.integer  "probe_id"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",               :null => false
+    t.datetime "updated_at",               :null => false
+    t.string   "uuid",       :limit => 32
   end
 
   add_index "schedules", ["probe_id"], :name => "schedules_probe_id_fk"
+  add_index "schedules", ["uuid"], :name => "index_schedules_on_uuid"
 
   create_table "test_profiles", :force => true do |t|
     t.string   "name"

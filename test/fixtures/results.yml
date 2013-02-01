@@ -1,0 +1,25 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  schedule: 
+  schedule_uuid: MyString
+  uuid: MyString
+  timestamp: 2013-02-01 16:47:03
+  dsavg: 1.5
+  sdavg: 1.5
+  dsmin: 1.5
+  sdmin: 1.5
+  dsmax: 1.5
+  sdmax: 1.5
+
+two:
+  schedule: 
+  schedule_uuid: MyString
+  uuid: MyString
+  timestamp: 2013-02-01 16:47:03
+  dsavg: 1.5
+  sdavg: 1.5
+  dsmin: 1.5
+  sdmin: 1.5
+  dsmax: 1.5
+  sdmax: 1.5
