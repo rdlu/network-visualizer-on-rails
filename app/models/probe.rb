@@ -21,6 +21,8 @@ class Probe < ActiveRecord::Base
   #relationships
   belongs_to :plan
   belongs_to :connection_profile
+  has_many :kpis, :as => :destinations, :foreign_key => 'destination_id'
+  has_many :kpis, :as => :sources, :foreign_key => 'source_id'
 
   #escopos de pesquisa
   scope :active, where(:status => 1)
