@@ -51,6 +51,9 @@ end
 group :development do
   gem 'immigrant' #plugin do foreigner que regenera migrations com chaves estrangeiras em nivel de BD
   gem 'foreigner' #sincroniza chaves estrangeiras para o banco de dados
+  gem 'meta_request'
+  gem 'better_errors'
+  gem 'binding_of_caller'
 end
 
 # Use unicorn as the app server
