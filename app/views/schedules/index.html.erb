@@ -1,29 +1,52 @@
-<h1>Listing schedules</h1>
-
-<table>
-  <tr>
-    <th>Start</th>
-    <th>End</th>
-    <th>Polling</th>
-    <th>Status</th>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
-
-<% @schedules.each do |schedule| %>
-  <tr>
-    <td><%= schedule.start %></td>
-    <td><%= schedule.end %></td>
-    <td><%= schedule.polling %></td>
-    <td><%= schedule.status %></td>
-    <td><%= link_to 'Show', schedule %></td>
-    <td><%= link_to 'Edit', edit_schedule_path(schedule) %></td>
-    <td><%= link_to 'Destroy', schedule, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-  </tr>
-<% end %>
-</table>
-
-<br />
-
-<%= link_to 'New Schedule', new_schedule_path %>
+<h2>Agendas e Testes</h2>
+<div class="row-fluid">
+  <div class="span12">
+    <% if can? :create, User %>
+        <div class="navbar">
+          <div class="navbar-inner">
+            <div class="span3 offset9">
+              <%= link_to "Novo Agendamento de Teste", new_schedule_url, :class => "btn btn-primary btn-block" %>
+            </div>
+          </div>
+        </div>
+    <% end %>
+  </div>
+</div>
+<div class="row-fluid">
+  <div class="span12">
+    <table class="table table-bordered table-hover">
+      <thead>
+      <tr>
+        <th>Sonda de Destino</th>
+        <th>Perfil de Teste</th>
+        <th>Sonda de Origem</th>
+        <th>Início</th>
+        <th>Fim</th>
+        <th>Polling</th>
+        <th>Status</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% if @schedules.empty? %>
+          <tr>
+            <td colspan="7">Nenhum agendamento de teste encontrado com os critérios acima.</td>
+          </tr>
+      <% end %>
+      <% @schedules.each do |schedule| %>
+          <tr>
+            <td><%= schedule.destination.name %>(<%= schedule.destination.ipaddress %>)</td>
+            <td><% schedule.test_profiles.each do |test_profile| %>
+                  <span class="label label-info etooltip" data-title="<%= test_profile.name %>"><%= test_profile.name %></span>
+              <% end %></td>
+            <td><%= schedule.source.name %>(<%= schedule.source.ipaddress %>)</td>
+            <td><%= schedule.start %></td>
+            <td><%= schedule.end %></td>
+            <td><%= schedule.polling %></td>
+            <td><%= schedule.status %></td>
+            <td><%= link_to 'Show', schedule %><%= link_to 'Edit', edit_schedule_path(schedule) %><%= link_to 'Destroy', schedule, method: :delete, data: {confirm: 'Are you sure?'} %></td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

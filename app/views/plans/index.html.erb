@@ -1,7 +1,7 @@
 <h2>Lista de Planos </h2>
 <div class="row-fluid">
   <div class="span12">
-    <% if can? :create, User%>
+    <% if can? :create, User %>
         <div class="navbar">
           <div class="navbar-inner">
             <div class="span2 offset10">
@@ -9,31 +9,34 @@
             </div>
           </div>
         </div>
-    <%end%>
+    <% end %>
   </div>
 </div>
 <div class="row-fluid">
-  <table class="table table-bordered table-hover">
+  <div class="span12">
+    <table class="table table-bordered table-hover">
+      <thead>
       <tr>
         <th>Name</th>
         <th>Description</th>
         <th>Throughput Down</th>
         <th>Throughput Up</th>
         <th>Ações</th>
-
       </tr>
+      </thead>
       <tbody>
-    <% @plans.each do |plan| %>
-      <tr>
-        <td><%= plan.name %></td>
-        <td><%= plan.description %></td>
-        <td><%= plan.throughputDown %></td>
-        <td><%= plan.throughputUp %></td>
-        <td><%= link_to 'Visualizar', plan %></td>
-        <td><%= link_to 'Editar', edit_plan_path(plan) %></td>
-        <td><%= link_to 'Excluir', plan, method: :delete, data: { confirm: 'Você tem certeza que deseja excluir este plano?' } %></td>
-      </tr>
-    <% end %>
+      <% @plans.each do |plan| %>
+          <tr>
+            <td><%= plan.name %></td>
+            <td><%= plan.description %></td>
+            <td><%= plan.throughputDown %></td>
+            <td><%= plan.throughputUp %></td>
+            <td><%= link_to 'Visualizar', plan %></td>
+            <td><%= link_to 'Editar', edit_plan_path(plan) %></td>
+            <td><%= link_to 'Excluir', plan, method: :delete, data: {confirm: 'Você tem certeza que deseja excluir este plano?'} %></td>
+          </tr>
+      <% end %>
       </tbody>
     </table>
+  </div>
 </div>
