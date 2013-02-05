@@ -5,7 +5,7 @@
         <div class="navbar">
           <div class="navbar-inner">
             <div class="span3 offset9">
-              <%= link_to "Novo Agendamento de Teste", new_schedule_url, :class => "btn btn-primary btn-block" %>
+              <%= link_to 'Novo Agendamento de Teste', new_schedule_url, :class => "btn btn-primary btn-block" %>
             </div>
           </div>
         </div>
@@ -35,7 +35,7 @@
       <% @schedules.each do |schedule| %>
           <tr>
             <td><%= schedule.destination.name %>(<%= schedule.destination.ipaddress %>)</td>
-            <td><% schedule.test_profiles.each do |test_profile| %>
+            <td><% schedule.profiles.each do |test_profile| %>
                   <span class="label label-info etooltip" data-title="<%= test_profile.name %>"><%= test_profile.name %></span>
               <% end %></td>
             <td><%= schedule.source.name %>(<%= schedule.source.ipaddress %>)</td>

@@ -1,7 +1,7 @@
 <h2>Perfis de Teste</h2>
 <div class="row-fluid">
   <div class="span12">
-    <% if can? :create, TestProfile %>
+    <% if can? :create, Profile %>
         <div class="navbar">
           <div class="navbar-inner">
             <div class="span2 offset10">
@@ -26,7 +26,7 @@
         <th>Ações</th>
       </tr>
 
-      <% @test_profiles.each do |test_profile| %>
+      <% @profiles.each do |test_profile| %>
           <tr>
             <td><%= test_profile.name %></td>
             <td>

@@ -4,7 +4,7 @@
 <%= form_for(@threshold, :html => {:class => "form-horizontal form-stop"}) do |f| %>
     <% if @threshold.errors.any? %>
         <div id="error_explanation">
-          <h2><%= pluralize(@test_profile.errors.count, "error") %> prohibited this test_profile from being saved:</h2>
+          <h2><%= pluralize(@profile.errors.count, "error") %> prohibited this test_profile from being saved:</h2>
 
           <ul>
             <% @threshold.errors.full_messages.each do |msg| %>

@@ -1,11 +1,7 @@
 <%= form_for(@schedule) do |f| %>
   <div class="field">
-    <%= f.label :polling %><br />
+    <%= f.label :polling, 'Intervalo de Medição' %><br />
     <%= f.number_field :polling %>
-  </div>
-  <div class="field">
-    <%= f.label :status %><br />
-    <%= f.text_field :status %>
   </div>
   <div class="actions">
     <%= f.submit %>

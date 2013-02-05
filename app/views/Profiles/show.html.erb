@@ -2,16 +2,16 @@
 
 <p>
   <b>Name:</b>
-  <%= @test_profile.name %>
+  <%= @profile.name %>
 </p>
 <p>
   <b>Config method:</b>
-  <%= @test_profile.config_method %>
+  <%= @profile.config_method %>
 </p>
 
 <p>
   <b>Metrics:</b>
-  <% @test_profile.metrics.each do |metric| %>
+  <% @profile.metrics.each do |metric| %>
       <span class="label label-info etooltip" data-title="<%= metric.description %>"><%= metric.name %></span>
   <% end %>
 </p>
@@ -19,11 +19,11 @@
   <b>Config parameters:</b>
 </p>
   <pre class="prettyprint">
-    <%= @test_profile.config_parameters %>
+    <%= @profile.config_parameters %>
   </pre>
 
 
 
 
-<%= link_to 'Edit', edit_test_profile_path(@test_profile) %> |
+<%= link_to 'Edit', edit_test_profile_path(@profile) %> |
 <%= link_to 'Back', test_profiles_path %>

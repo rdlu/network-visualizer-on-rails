@@ -69,9 +69,9 @@
                               <li class="divider"></li>
                               <li><%= link_to "Metas Anatel", thresholds_path %></li>
                           <% end %>
-                          <% if can? :read, TestProfile %>
+                          <% if can? :read, Profile %>
                               <li class="divider"></li>
-                              <li><%= link_to "Perfis de Teste", test_profiles_path %></li>
+                              <li><%= link_to "Perfis de Teste", profiles_path %></li>
                           <% end %>
                         </ul>
                       </li>

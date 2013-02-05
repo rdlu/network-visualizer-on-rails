@@ -4,7 +4,7 @@ MomRails::Application.routes.draw do
   resources :schedules
   resources :probes
   resources :metrics
-  resources :test_profiles
+  resources :profiles
   resources :connection_profiles do
     resources :plans
   end

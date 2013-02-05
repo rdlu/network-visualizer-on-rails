@@ -7,7 +7,7 @@ class Probe < ActiveRecord::Base
   #validacao
   validates :name, :presence => true, :length => {:maximum => 255, :minimum => 3}, :format => { :with => %r{^[0-9a-zA-Z][0-9a-zA-Z\-\_]+[0-9a-zA-Z]$} },
             :uniqueness => true
-  validates :ipaddress , :presence => true, :length => {:maximum => 255, :minimum => 7}, :uniqueness => true
+  validates :ipaddress , :presence => true, :length => {:maximum => 255, :minimum => 3}, :uniqueness => true
   validate :validate_ipaddress
   #validates :polling, :if => :polling?
   validates :status, :presence => true, :numericality => { :only_integer => true, :greater_than_or_equal_to => -1, :less_than_or_equal_to => 3 }
@@ -23,6 +23,7 @@ class Probe < ActiveRecord::Base
   belongs_to :connection_profile
   has_many :kpis, :as => :destinations, :foreign_key => 'destination_id'
   has_many :kpis, :as => :sources, :foreign_key => 'source_id'
+  has_many :schedules, :foreign_key => 'destination_id'
 
   #escopos de pesquisa
   scope :active, where(:status => 1)
@@ -32,18 +33,19 @@ class Probe < ActiveRecord::Base
 
 
   #funcoes custom de validacao
-  protected
 
   def validate_ipaddress
-    errors.add(:ipaddress," tem um formato inválido") unless ip_or_hostname?
+    errors.add(:ipaddress,' tem um formato inválido') unless ip_or_hostname?
   end
 
   def ip_or_hostname?
-    IPAddress.valid? self.ipaddress || hostname(self.ipaddress)
+    teste1 = IPAddress.valid? self.ipaddress
+    teste2 = hostname(self.ipaddress)
+    teste2 || teste1
   end
 
-  def hostname(address="")
-    address.match(/^(([a-zA-Z0-9\-_]*[a-zA-Z0-9_])\.)*([A-Za-z]|[A-Za-z_][A-Za-z0-9\-]*[A-Za-z0-9_])$/)
+  def hostname(address='')
+    !!(address.match(/^(([a-zA-Z0-9\-_]*[a-zA-Z0-9_])\.)*([A-Za-z]|[A-Za-z_][A-Za-z0-9\-]*[A-Za-z0-9_])$/))
   end
 
   def polling?
