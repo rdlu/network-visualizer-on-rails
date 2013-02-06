@@ -5,7 +5,7 @@
         <div class="navbar">
           <div class="navbar-inner">
             <div class="span2 offset10">
-              <%= link_to "Novo Perfil de Teste", new_test_profile_path, :class => "btn btn-primary btn-block" %>
+              <%= link_to "Novo Perfil de Teste", new_profile_path, :class => "btn btn-primary btn-block" %>
             </div>
           </div>
         </div>
@@ -35,7 +35,7 @@
               <% end %>
             </td>
             <td><%= test_profile.config_method %></td>
-            <td><%= link_to 'Show', test_profile %> <%= link_to 'Edit', edit_test_profile_path(test_profile) %></td>
+            <td><%= link_to 'Show', test_profile %> <%= link_to 'Edit', edit_profile_path(test_profile) %></td>
           </tr>
       <% end %>
     </table>

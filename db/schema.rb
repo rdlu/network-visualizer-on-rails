@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130205181015) do
+ActiveRecord::Schema.define(:version => 20130206123512) do
 
   create_table "connection_profiles", :force => true do |t|
     t.string   "name_id"
@@ -91,13 +91,13 @@ ActiveRecord::Schema.define(:version => 20130205181015) do
 
   add_index "metrics", ["name"], :name => "index_metrics_on_name", :unique => true
 
-  create_table "metrics_test_profiles", :force => true do |t|
+  create_table "metrics_profiles", :force => true do |t|
     t.integer "metric_id"
-    t.integer "test_profile_id"
+    t.integer "profile_id"
   end
 
-  add_index "metrics_test_profiles", ["metric_id"], :name => "metrics_test_profiles_metric_id_fk"
-  add_index "metrics_test_profiles", ["test_profile_id"], :name => "metrics_test_profiles_test_profile_id_fk"
+  add_index "metrics_profiles", ["metric_id"], :name => "metrics_test_profiles_metric_id_fk"
+  add_index "metrics_profiles", ["profile_id"], :name => "metrics_test_profiles_profile_id_fk"
 
   create_table "plans", :force => true do |t|
     t.string   "name"
@@ -241,8 +241,8 @@ ActiveRecord::Schema.define(:version => 20130205181015) do
   add_foreign_key "evaluations", "profiles", :name => "tests_profile_id_fk"
   add_foreign_key "evaluations", "schedules", :name => "tests_schedule_id_fk"
 
-  add_foreign_key "metrics_test_profiles", "metrics", :name => "metrics_test_profiles_metric_id_fk"
-  add_foreign_key "metrics_test_profiles", "profiles", :name => "metrics_test_profiles_test_profile_id_fk", :column => "test_profile_id"
+  add_foreign_key "metrics_profiles", "metrics", :name => "metrics_test_profiles_metric_id_fk"
+  add_foreign_key "metrics_profiles", "profiles", :name => "metrics_test_profiles_profile_id_fk"
 
   add_foreign_key "plans", "connection_profiles", :name => "plans_connection_profile_id_fk"
 

@@ -8,7 +8,7 @@ class ProfilesControllerTest < ActionController::TestCase
   test "should get index" do
     get :index
     assert_response :success
-    assert_not_nil assigns(:Profiles)
+    assert_not_nil assigns(:profiles)
   end
 
   test "should get new" do

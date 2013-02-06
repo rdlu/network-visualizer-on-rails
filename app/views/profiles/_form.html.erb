@@ -70,10 +70,10 @@
     jQuery(function (ready) {
         jQuery("#confParams").hide();
         editor = new JSONEditor(jQuery("#jsonEditor")[0]);
-        editor.set(JSON.parse(jQuery("#test_profile_config_parameters").val()));
+        editor.set(JSON.parse(jQuery("#profile_config_parameters").val()));
 
         jQuery(".form-stop").submit(function (evt) {
-            jQuery("#test_profile_config_parameters").val(JSON.stringify(editor.get(), null, 2));
+            jQuery("#profile_config_parameters").val(JSON.stringify(editor.get(), null, 2));
         });
     });
 </script>

@@ -7,7 +7,6 @@ gem 'rails', '3.2.11'
 
 gem 'less'
 gem 'mysql2'
-gem 'yaml_db'
 gem 'rails-i18n'
 gem 'nokogiri'
 gem 'geocoder'
@@ -54,6 +53,7 @@ group :development do
   gem 'meta_request'
   gem 'better_errors'
   gem 'binding_of_caller'
+  gem 'yaml_db'
 end
 
 # Use unicorn as the app server

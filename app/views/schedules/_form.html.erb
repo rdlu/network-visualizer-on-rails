@@ -1,9 +1,32 @@
-<%= form_for(@schedule) do |f| %>
-  <div class="field">
-    <%= f.label :polling, 'Intervalo de Medição' %><br />
-    <%= f.number_field :polling %>
-  </div>
-  <div class="actions">
-    <%= f.submit %>
-  </div>
+<%= form_for(@schedule, :html => {:class => 'form-horizontal form-stop'}) do |f| %>
+    <div class="row-fluid">
+      <div class="span12">
+        <div class="control-group">
+          <%= f.label :polling, 'Intervalo de Medição', :class => 'control-label' %>
+          <div class="controls">
+            <%= f.number_field :polling %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row-fluid">
+      <% (Profile.all - @schedule.allocated_profiles).each do |unused_profile| %>
+      <div class="span3">
+        <h5><%= unused_profile.name %></h5>
+        <% unused_profile.metrics.each do |metric| %>
+        <span class="label label-info"><%= metric.name %></span>
+        <% end %>
+      </div>
+      <% end %>
+    </div>
+    <div class="row-fluid">
+      <div class="span12">
+        <div class="control-group">
+          <div class="controls">
+            <%= f.submit 'Salvar', :class => 'btn btn-primary btn-large' %>
+          </div>
+        </div>
+      </div>
+    </div>
 <% end %>
+

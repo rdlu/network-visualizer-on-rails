@@ -10,15 +10,15 @@ class Schedule < ActiveRecord::Base
 
   end
 
-  def allocated_test_profiles
-    tests = []
+  def allocated_profiles
+    profiles = []
     if self.destination
       self.destination.schedules do |schedule|
-        tests += schedule.profiles
+        profiles += schedule.profiles
       end
     end
 
-    tests
+    profiles.uniq
   end
 
 end

@@ -1,6 +1,6 @@
 class ProfilesController < ApplicationController
-  # GET /Profiles
-  # GET /Profiles.json
+  # GET /profiles
+  # GET /profiles.json
   def index
     @profiles = Profile.all
 
@@ -10,8 +10,8 @@ class ProfilesController < ApplicationController
     end
   end
 
-  # GET /Profiles/1
-  # GET /Profiles/1.json
+  # GET /profiles/1
+  # GET /profiles/1.json
   def show
     @profile = Profile.find(params[:id])
 
@@ -21,8 +21,8 @@ class ProfilesController < ApplicationController
     end
   end
 
-  # GET /Profiles/new
-  # GET /Profiles/new.json
+  # GET /profiles/new
+  # GET /profiles/new.json
   def new
     @profile = Profile.new
     @profile.config_parameters = '{}'
@@ -33,13 +33,13 @@ class ProfilesController < ApplicationController
     end
   end
 
-  # GET /Profiles/1/edit
+  # GET /profiles/1/edit
   def edit
     @profile = Profile.find(params[:id])
   end
 
-  # POST /Profiles
-  # POST /Profiles.json
+  # POST /profiles
+  # POST /profiles.json
   def create
     params[:profile][:metric_ids] ||= []
     @profile = Profile.new(params[:profile])
@@ -55,8 +55,8 @@ class ProfilesController < ApplicationController
     end
   end
 
-  # PUT /Profiles/1
-  # PUT /Profiles/1.json
+  # PUT /profiles/1
+  # PUT /profiles/1.json
   def update
     params[:profile][:metric_ids] ||= []
     @profile = Profile.find(params[:id])
@@ -72,8 +72,8 @@ class ProfilesController < ApplicationController
     end
   end
 
-  # DELETE /Profiles/1
-  # DELETE /Profiles/1.json
+  # DELETE /profiles/1
+  # DELETE /profiles/1.json
   def destroy
     @profile = Profile.find(params[:id])
     @profile.destroy
