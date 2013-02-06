@@ -19,13 +19,15 @@ MomRails::Application.routes.draw do
     get :active
   end
 
-  get "users/sign_in"
+  get 'users/sign_in'
 
-  get "welcome/index"
+  get 'welcome/index'
 
   #match collect
   match 'collect/id/:destination_id/kpis/:cellID/:brand/:model/:connType/:connTech/:signal/:errorRate/:numberOfIPs/:route/:mtu/:dnsLatency/:lac/:timestamp/:uuid' => 'kpi#create', :via => [:get, :post]
   match 'collect/id/:destination_id/:metric/:ds_max/:ds_min/:ds_avg/:sd_max/:sd_min/:sd_avg/:timestamp/:uuid' => 'results#create', :via => [:get, :post]
+
+  match 'schedules/unused_profiles_form/:source_id/:destination_id' => 'schedules#unused_profiles_form'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

@@ -31,6 +31,10 @@ class Probe < ActiveRecord::Base
   scope :by_state, proc { |state| where(:state => state)}
   scope :by_type, proc { |type| where(:type => type)}
 
+  def pretty_name
+    "#{self.name} (#{self.ipaddress})"
+  end
+
 
   #funcoes custom de validacao
 

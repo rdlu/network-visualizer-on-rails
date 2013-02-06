@@ -25,6 +25,7 @@ class SchedulesController < ApplicationController
   # GET /schedules/new.json
   def new
     @schedule = Schedule.new
+    @connection_profile = ConnectionProfile.find(1)
 
     respond_to do |format|
       format.html # new.html.erb
@@ -79,5 +80,19 @@ class SchedulesController < ApplicationController
       format.html { redirect_to schedules_url }
       format.json { head :no_content }
     end
+  end
+
+  def unused_profiles_form
+    schedules = Schedule.where(:destination_id => params[:destination_id]).where(:source_id => params[:source_id]).all
+    @connection_profile = Probe.find(params[:destination_id]).connection_profile
+    @used_profiles = []
+    schedules.each do |schedule|
+      @used_profiles += schedule.profiles
+    end
+    @used_profiles = @used_profiles.uniq
+    @profiles = Profile.where(:connection_profile_id => @connection_profile.id).all
+    @unused_profiles = @profiles - @used_profiles
+
+    render :layout => false
   end
 end

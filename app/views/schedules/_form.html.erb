@@ -2,25 +2,34 @@
     <div class="row-fluid">
       <div class="span12">
         <div class="control-group">
-          <%= f.label :polling, 'Intervalo de Medição', :class => 'control-label' %>
+          <%= f.label :source_id, 'Sonda de Origem', :class => 'control-label etooltip', 'data-title'.to_sym => 'Sonda que vai disparar as medições' %>
           <div class="controls">
-            <%= f.number_field :polling %>
+            <%= f.collection_select :source_id, Probe.find_all_by_type('linux'), :id, :pretty_name %>
           </div>
         </div>
-      </div>
-    </div>
-    <div class="row-fluid">
-      <% (Profile.all - @schedule.allocated_profiles).each do |unused_profile| %>
-      <div class="span3">
-        <h5><%= unused_profile.name %></h5>
-        <% unused_profile.metrics.each do |metric| %>
-        <span class="label label-info"><%= metric.name %></span>
-        <% end %>
-      </div>
-      <% end %>
-    </div>
-    <div class="row-fluid">
-      <div class="span12">
+        <div class="control-group">
+          <%= f.label :destination_id, 'Sonda de Destino', :class => 'control-label' %>
+          <div class="controls">
+            <%= f.collection_select :destination_id, Probe.all, :id, :pretty_name, :include_blank => "Selecione uma sonda..." %>
+          </div>
+        </div>
+        <div id="unused_profiles">
+          <div class="control-group">
+            <label class="control-label" for="profiles">Perfis de Teste</label>
+            <div class="controls" id="profiles">
+              <div class="span3 alert alert-block">
+                Selecione uma sonda de destino antes.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="alert alert-block">Aqui somente constam os perfis de teste que ainda não foram agendados. Não é permitido a superposição de testes.</div>
+        <div class="control-group">
+          <%= f.label :polling, 'Intervalo de Medição (minutos)', :class => 'control-label' %>
+          <div class="controls">
+            <%= f.number_field :polling, :placeholder => 'Intervalos >= 5 min' %>
+          </div>
+        </div>
         <div class="control-group">
           <div class="controls">
             <%= f.submit 'Salvar', :class => 'btn btn-primary btn-large' %>
@@ -30,3 +39,18 @@
     </div>
 <% end %>
 
+
+<script type="text/javascript">
+    $('.etooltip').tooltip();
+
+    $("#schedule_destination_id").change(function (evt) {
+        var destination_id = evt.currentTarget.value;
+        var source_id =  $("#schedule_source_id").val();
+        jQuery.ajax("<%=request.protocol+request.host_with_port+(url_for Schedule) %>/unused_profiles_form/"+source_id+"/"+destination_id,{
+            success: function (data,status) {
+                $("#unused_profiles").html(data);
+            },
+            dataType: 'html'
+        });
+    });
+</script>
