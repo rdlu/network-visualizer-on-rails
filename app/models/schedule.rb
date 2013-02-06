@@ -1,10 +1,13 @@
 class Schedule < ActiveRecord::Base
-  attr_accessible :end, :polling, :start, :status, :destination_id, :source_id
+  before_save :default_values
+  attr_accessible :end, :polling, :start, :status, :destination_id, :source_id, :profile_ids
 
   has_many :evaluations
   has_many :profiles, :through => :evaluations
   belongs_to :destination, :class_name => 'Probe', :foreign_key => 'destination_id'
   belongs_to :source, :class_name => 'Probe', :foreign_key => 'source_id'
+
+  validates_presence_of :destination_id, :source_id
 
   def setup
 
@@ -19,6 +22,13 @@ class Schedule < ActiveRecord::Base
     end
 
     profiles.uniq
+  end
+
+  def default_values
+    self.status ||= 2
+    self.start ||= DateTime.now
+    self.end ||= DateTime.now.advance(:years => +2).at_midnight
+    self.uuid ||= SecureRandom.uuid.tr('-','')
   end
 
 end
