@@ -1,3 +1,4 @@
+# coding: utf-8
 class SchedulesController < ApplicationController
   # GET /schedules
   # GET /schedules.json
@@ -45,10 +46,11 @@ class SchedulesController < ApplicationController
 
     respond_to do |format|
       if @schedule.save
-        Yell.new(:gelf).info 'Configurações nas sondas iniciadas, parâmetros foram colocados na fila de envios.',
-                             '_schedule_id' => @schedule.id
+        Yell.new(:gelf, :facility=>'netmetric').info 'Configuracoes nas sondas iniciadas, parametros foram colocados na fila de envios.',
+                             '_schedule_id' => @schedule.id, '_destination_name' => @schedule.destination.name,
+                             '_source_name' => @schedule.source.name
         @schedule.delay.setup
-        format.html { redirect_to @schedule, notice: 'Schedule was successfully created.' }
+        format.html { redirect_to @schedule, notice: 'Agenda programada. Aguarde o término das configurações que pode ser visto no log abaixo.' }
         format.json { render json: @schedule, status: :created, location: @schedule }
       else
         format.html { render action: 'new' }

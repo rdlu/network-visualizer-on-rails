@@ -29,14 +29,11 @@ production:
 
   # define multiple adapters: one for notice and one for error messages
   :adapters:
-    # this adapter writes all messages with a log level of warn or lower
-    # and writes to production.log (because this is your Rails.env)
-    - :datefile:
-        :level: 'lte.warn'
-
+    - :gelf:
+        :facility: 'netmetric'
     # this adapter writes all messages with a log level of error or higher
     # and writes to error.log
     - :datefile:
-        :level: 'gte.error'
+        :level: 'gte.fatal'
         :filename: 'log/error.log'
 

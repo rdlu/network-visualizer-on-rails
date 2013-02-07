@@ -1,3 +1,4 @@
+# coding: utf-8
 class Schedule < ActiveRecord::Base
   before_save :default_values
   attr_accessible :end, :polling, :start, :status, :destination_id, :source_id, :profile_ids
@@ -11,7 +12,7 @@ class Schedule < ActiveRecord::Base
   validates_presence_of :destination_id, :source_id
 
   def setup
-    Yell.new(:gelf).info 'Envio de parâmetros iniciado.',
+    Yell.new(:gelf, :facility=>'netmetric').info 'Envio de parametros iniciado.',
                          '_schedule_id' => self.id
   end
 

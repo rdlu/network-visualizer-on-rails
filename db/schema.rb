@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130206123512) do
+ActiveRecord::Schema.define(:version => 20130207155645) do
 
   create_table "connection_profiles", :force => true do |t|
     t.string   "name_id"
@@ -239,7 +239,7 @@ ActiveRecord::Schema.define(:version => 20130206123512) do
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
 
   add_foreign_key "evaluations", "profiles", :name => "tests_profile_id_fk"
-  add_foreign_key "evaluations", "schedules", :name => "tests_schedule_id_fk"
+  add_foreign_key "evaluations", "schedules", :name => "evaluations_schedule_id_fk", :dependent => :delete
 
   add_foreign_key "metrics_profiles", "metrics", :name => "metrics_test_profiles_metric_id_fk"
   add_foreign_key "metrics_profiles", "profiles", :name => "metrics_test_profiles_profile_id_fk"
