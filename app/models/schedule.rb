@@ -14,6 +14,9 @@ class Schedule < ActiveRecord::Base
   def setup
     Yell.new(:gelf, :facility=>'netmetric').info 'Envio de parametros iniciado.',
                          '_schedule_id' => self.id
+    self.profiles.each do |profile|
+      Kernel.const_get((profile.config_method+'_job').camelize.to_sym).profile_setup(profile,self)
+    end
   end
 
   def allocated_profiles
