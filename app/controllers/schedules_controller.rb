@@ -45,10 +45,13 @@ class SchedulesController < ApplicationController
 
     respond_to do |format|
       if @schedule.save
+        Yell.new(:gelf).info 'Configurações nas sondas iniciadas, parâmetros foram colocados na fila de envios.',
+                             '_schedule_id' => @schedule.id
+        @schedule.delay.setup
         format.html { redirect_to @schedule, notice: 'Schedule was successfully created.' }
         format.json { render json: @schedule, status: :created, location: @schedule }
       else
-        format.html { render action: "new" }
+        format.html { render action: 'new' }
         format.json { render json: @schedule.errors, status: :unprocessable_entity }
       end
     end
@@ -64,7 +67,7 @@ class SchedulesController < ApplicationController
         format.html { redirect_to @schedule, notice: 'Schedule was successfully updated.' }
         format.json { head :no_content }
       else
-        format.html { render action: "edit" }
+        format.html { render action: 'edit' }
         format.json { render json: @schedule.errors, status: :unprocessable_entity }
       end
     end

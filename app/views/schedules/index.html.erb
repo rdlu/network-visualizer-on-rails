@@ -20,10 +20,9 @@
         <th>Sonda de Destino</th>
         <th>Perfil de Teste</th>
         <th>Sonda de Origem</th>
-        <th>Início</th>
-        <th>Fim</th>
         <th>Polling</th>
         <th>Status</th>
+        <th>Ações</th>
       </tr>
       </thead>
       <tbody>
@@ -39,11 +38,9 @@
                   <span class="label label-info etooltip" data-title="<%= test_profile.name %>"><%= test_profile.name %></span>
               <% end %></td>
             <td><%= schedule.source.name %>(<%= schedule.source.ipaddress %>)</td>
-            <td><%= schedule.start %></td>
-            <td><%= schedule.end %></td>
-            <td><%= schedule.polling %></td>
+            <td><%= schedule.polling %> min</td>
             <td><%= schedule.status %></td>
-            <td><%= link_to 'Show', schedule %><%= link_to 'Edit', edit_schedule_path(schedule) %><%= link_to 'Destroy', schedule, method: :delete, data: {confirm: 'Are you sure?'} %></td>
+            <td><%= link_to 'Show', schedule %> <%= link_to 'Edit', edit_schedule_path(schedule) %> <%= link_to 'Destroy', schedule, method: :delete, data: {confirm: 'Are you sure?'} %></td>
           </tr>
       <% end %>
       </tbody>

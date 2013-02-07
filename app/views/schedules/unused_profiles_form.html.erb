@@ -4,7 +4,7 @@
     <% @unused_profiles.each do |unused_profile| %>
         <div class="span3">
           <label class="checkbox">
-            <input type="checkbox" name="profiles[]" id="profile-<%=unused_profile.id%>">
+            <input type="checkbox" name="schedule[profile_ids][]" id="profile-<%=unused_profile.id%>"  value="<%= unused_profile.id %>" >
             <%= unused_profile.name.upcase %>
           </label>
           <% unused_profile.metrics.each do |metric| %>
