@@ -35,6 +35,15 @@ class Probe < ActiveRecord::Base
     "#{self.name} (#{self.ipaddress})"
   end
 
+  def real_ipaddress
+    if self.hostname? self.ipaddress
+      require 'resolv'
+      return Resolv::DNS.new(:nameserver => ['143.54.85.34'], :search => ['vivo.com.br'], :ndots => 1).getaddress(self.ipaddress)
+    end
+    return self.ipaddress if IPAddress.valid? self.ipaddress
+    false
+  end
+
 
   #funcoes custom de validacao
 
@@ -44,11 +53,11 @@ class Probe < ActiveRecord::Base
 
   def ip_or_hostname?
     teste1 = IPAddress.valid? self.ipaddress
-    teste2 = hostname(self.ipaddress)
+    teste2 = hostname?(self.ipaddress)
     teste2 || teste1
   end
 
-  def hostname(address='')
+  def hostname?(address='')
     !!(address.match(/^(([a-zA-Z0-9\-_]*[a-zA-Z0-9_])\.)*([A-Za-z]|[A-Za-z_][A-Za-z0-9\-]*[A-Za-z0-9_])$/))
   end
 

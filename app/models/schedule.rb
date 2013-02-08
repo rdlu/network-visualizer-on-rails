@@ -12,9 +12,13 @@ class Schedule < ActiveRecord::Base
   validates_presence_of :destination_id, :source_id
 
   def setup
-    Yell.new(:gelf, :facility=>'netmetric').info 'Envio de parametros iniciado.',
-                         '_schedule_id' => self.id
+    Yell.new(:gelf, :facility=>'netmetric').info 'Envio de parametros iniciado!',
+                         '_schedule_id' => self.id,
+                         '_schedule' => self
     self.profiles.each do |profile|
+      Yell.new(:gelf, :facility=>'netmetric').info "Perfil cadastrado: #{profile.name}",
+                                                   '_schedule_id' => self.id
+      require profile.config_method+'_job'
       Kernel.const_get((profile.config_method+'_job').camelize.to_sym).profile_setup(profile,self)
     end
   end

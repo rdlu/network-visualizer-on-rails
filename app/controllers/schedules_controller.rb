@@ -50,6 +50,7 @@ class SchedulesController < ApplicationController
                              '_schedule_id' => @schedule.id, '_destination_name' => @schedule.destination.name,
                              '_source_name' => @schedule.source.name
         @schedule.delay.setup
+        #@schedule.setup
         format.html { redirect_to @schedule, notice: 'Agenda programada. Aguarde o término das configurações que pode ser visto no log abaixo.' }
         format.json { render json: @schedule, status: :created, location: @schedule }
       else
