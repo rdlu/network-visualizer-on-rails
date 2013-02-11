@@ -12,15 +12,18 @@ class Schedule < ActiveRecord::Base
   validates_presence_of :destination_id, :source_id
 
   def setup
-    Yell.new(:gelf, :facility=>'netmetric').info 'Envio de parametros iniciado!',
-                         '_schedule_id' => self.id,
-                         '_schedule' => self
+    Yell.new(:gelf, :facility => 'netmetric').info 'Envio de parametros iniciado!',
+                                                   '_schedule_id' => self.id,
+                                                   '_schedule' => self
     self.profiles.each do |profile|
-      Yell.new(:gelf, :facility=>'netmetric').info "Perfil cadastrado: #{profile.name}",
-                                                   '_schedule_id' => self.id
       require profile.config_method+'_job'
-      Kernel.const_get((profile.config_method+'_job').camelize.to_sym).profile_setup(profile,self)
+      Kernel.const_get((profile.config_method+'_job').camelize.to_sym).profile_setup(profile, self)
     end
+
+    #TODO: tornar o carregamento da agenttable e managertable dinamico, quando tivermos a especificacao
+    SnmpLegacyJob::agent_setup profiles, self
+    SnmpLegacyJob::manager_setup profiles, self
+
   end
 
   def allocated_profiles
@@ -38,7 +41,7 @@ class Schedule < ActiveRecord::Base
     self.status ||= 'config'
     self.start ||= DateTime.now
     self.end ||= DateTime.now.advance(:years => +2).at_midnight
-    self.uuid ||= SecureRandom.uuid.tr('-','')
+    self.uuid ||= SecureRandom.uuid.tr('-', '')
   end
 
 end
