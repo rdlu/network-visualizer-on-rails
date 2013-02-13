@@ -13,8 +13,7 @@ class Schedule < ActiveRecord::Base
 
   def setup
     Yell.new(:gelf, :facility => 'netmetric').info 'Envio de parametros iniciado!',
-                                                   '_schedule_id' => self.id,
-                                                   '_schedule' => self
+                                                   '_schedule_id' => self.id
     self.profiles.each do |profile|
       require profile.config_method+'_job'
       Kernel.const_get((profile.config_method+'_job').camelize.to_sym).profile_setup(profile, self)
@@ -26,6 +25,8 @@ class Schedule < ActiveRecord::Base
 
     self.status = 'active'
     self.save
+    Yell.new(:gelf, :facility => 'netmetric').info 'Envio de agenda de testes concluida!',
+                                                   '_schedule_id' => self.id, '_probe_id' => self.destination.id
   end
 
   def allocated_profiles

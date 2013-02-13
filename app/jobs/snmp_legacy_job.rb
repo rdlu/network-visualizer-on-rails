@@ -78,11 +78,12 @@ class SnmpLegacyJob
         ['.0.4.'+table_id, schedule.destination.name],
         ['.0.5.'+table_id, schedule.destination.city],
         ['.0.6.'+table_id, schedule.destination.state],
-        ['.0.7.'+table_id, 1],
+        #['.0.7.'+table_id, 1],
         ['.0.8.'+table_id, profile_ids],
         ['.0.10.'+table_id, status],
         ['.0.15.'+table_id,schedule.polling*60],
         ['.0.16.'+table_id,schedule.polling*60],
+        ['.0.18.'+table_id, status^1],
         ['.0.9.'+table_id, 2],
     ]
 

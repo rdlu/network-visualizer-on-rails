@@ -1,2 +1,15 @@
-<h1>Probes#show</h1>
-<p>Find me in app/views/probes/show.html.erb</p>
+<h2>Sonda <%= @probe.name %> (#<%= @probe.id %>)</h2>
+<div class="row-fluid">
+  <div class="span7">
+    <ul>
+      <li>Tipo da sonda: <%= @probe.type.humanize %></li>
+      <li>Hostname: <%= @probe.ipaddress %></li>
+      <li>Endereço: <%= @probe.address %></li>
+      <li>Cidade/UF: <%= @probe.city %>/<%= @probe.state.upcase %></li>
+      <li>Conexão: <%= @probe.connection_profile.name %></li>
+      <li>Plano: <%= @probe.plan.name_with_throughput %></li>
+      <li>Lat/Lon: <%= @probe.latitude %> / <%= @probe.longitude %></li>
+      <li>Endereço IP: <%= @probe.real_ipaddress %> às <%= DateTime.now %></li>
+    </ul>
+  </div>
+</div>

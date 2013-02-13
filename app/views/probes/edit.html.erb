@@ -1,2 +1,144 @@
-<h1>Probes#edit</h1>
-<p>Find me in app/views/probes/edit.html.erb</p>
+<div class="row-fluid">
+  <h2>Editando a sonda <%= @probe.name %> (#<%= @probe.id %>)</h2>
+  <h4>Dados obrigatórios</h4>
+  <%= form_for @probe, :html => {:class => "form-horizontal"} do |f| %>
+      <div class="span12">
+        <div class="control-group">
+          <%= f.label :type, "Tipo da Sonda", :class => "control-label" %>
+          <div class="controls">
+            <%= f.select :type, types %>
+          </div>
+        </div>
+        <div class="control-group">
+          <%= f.label :ipaddress, "Endereço IP", :class => "control-label" %>
+          <div class="controls">
+            <span style="line-height: 30px"><%= @probe.ipaddress %></span>
+          </div>
+        </div>
+        <div class="control-group">
+          <%= f.label :pre_address, "Endereço", :class => "control-label", "data-provide".to_sym => "typeahead" %>
+          <div class="controls">
+            <%= f.text_field :pre_address, :placeholder => "O endereço pode ser qualquer parte (rua, CEP, cidade, bairro), igual ao Google Maps", :class => "span8" %>
+          </div>
+        </div>
+        <div class="control-group">
+          <%= f.label :name, "Nome da sonda", :class => "control-label" %>
+          <div class="controls">
+            <%= f.text_field :name, :placeholder => "Nome da sonda" %>
+          </div>
+        </div>
+        <div class="control-group">
+          <%= f.label :connection_profile_id, "Conexão / Plano", :class => "control-label" %>
+          <div class="controls">
+            <%= f.collection_select :connection_profile_id, ConnectionProfile.all, :id, :name %>
+            <%= f.collection_select :plan_id, @selected_plan, :id, :name_with_throughput, {}, :class => "span4" %>
+          </div>
+        </div>
+      </div>
+      <h4>Dados extras</h4>
+      <div class="span12">
+        <div class="alert">
+          <strong>Atenção!</strong> Altere somente os dados abaixo em caso de necessidade.
+          <em>Por exemplo, medição feita por GPS</em>
+        </div>
+        <div class="control-group">
+          <%= f.label :latitude, "Latitude / Longitude", :class => "control-label" %>
+          <div class="controls">
+            <%= f.text_field :latitude, :placeholder => "Latitude" %>
+            <%= f.text_field :longitude, :placeholder => "Longitude" %>
+          </div>
+        </div>
+        <div class="control-group">
+          <%= f.label :city, "Cidade / UF", :class => "control-label" %>
+          <div class="controls">
+            <%= f.text_field :city, :placeholder => "Cidade" %>
+            <%= f.select :state, states %>
+          </div>
+        </div>
+        <div class="control-group">
+          <%= f.label :address, "Endereço após ajustes", :class => "control-label" %>
+          <div class="controls">
+            <%= f.text_field :address, :placeholder => "Endereço após ajustes do sistema", :class => "span8" %>
+          </div>
+        </div>
+        <div class="control-group">
+          <div class="controls">
+            <%= f.submit "Salvar", :class => "btn btn-primary btn-large" %>
+          </div>
+        </div>
+      </div>
+  <% end %>
+</div>
+<script type="text/javascript">
+    var service = new google.maps.places.AutocompleteService({componentRestrictions: {country: 'br'}});
+    var geocoder = new google.maps.Geocoder();
+    var results2;
+
+    function mapsComponentByType(results, type, short_name, space) {
+        var retorno = "";
+        for (var i = 0; i < results[0].address_components.length; i++) {
+            var addr = results[0].address_components[i];
+            if (addr.types[0] == type) {
+                if (space) retorno += space;
+                if (short_name)
+                    switch (addr.short_name) {
+                        case "São Paulo":
+                            retorno += "sp";
+                            break;
+                        default:
+                            retorno += addr.short_name;
+                    }
+                else
+                    retorno += addr.long_name;
+            }
+
+        }
+        return retorno;
+    }
+
+    $("#probe_pre_address").typeahead({
+        source:function (query, process) {
+            service.getPlacePredictions({ input:query }, function (predictions, status) {
+                if (status == google.maps.places.PlacesServiceStatus.OK) {
+                    process($.map(predictions, function (prediction) {
+                        return prediction.description;
+                    }));
+                }
+            });
+        },
+        updater:function (item) {
+            geocoder.geocode({ address:item }, function (results, status) {
+                if (status != google.maps.GeocoderStatus.OK) {
+                    alert('Endereço não pode ser obtido, Google Maps emitiu erro');
+                    return;
+                }
+                $("#probe_latitude").val(results[0].geometry.location.lat());
+                $("#probe_longitude").val(results[0].geometry.location.lng());
+                $("#probe_city").val(mapsComponentByType(results, "locality"));
+                $("#probe_state").val(mapsComponentByType(results, "administrative_area_level_1", true).toLowerCase());
+                var editedAddress = jQuery.trim(mapsComponentByType(results, "route") + mapsComponentByType(results, "street_number", false, ", ") + mapsComponentByType(results, "sublocality", false, ", "));
+                editedAddress = jQuery.trim(editedAddress.replace(/^,|,$/g, ''));
+                $("#probe_address").val(editedAddress);
+                var nome = mapsComponentByType(results, "administrative_area_level_1", true) + "-" + mapsComponentByType(results, "locality") + mapsComponentByType(results, "sublocality", false, "-");
+                nome = nome.replace(/ /g, "_");
+                $("#probe_name").val(nome.toLowerCase());
+                console.log(results[0]);
+            });
+            return item;
+        },
+        minLength:4
+    });
+
+    $("#probe_connection_profile_id").change(function (evt) {
+        var connProfileID = evt.currentTarget.value;
+        jQuery.ajax("<%=request.protocol+request.host_with_port+(url_for ConnectionProfile) %>/"+connProfileID+"/plans",{
+            success: function (data,status) {
+                $("#probe_plan_id").html("");
+                jQuery.each(data, function(i,plan) {
+                    $("#probe_plan_id").append('<option value=\"'+plan.id+"\">"+plan.name+" ("+plan.throughputDown+"/"+plan.throughputUp+")</option>")
+                });
+            },
+            dataType: 'json'
+        });
+    });
+</script>

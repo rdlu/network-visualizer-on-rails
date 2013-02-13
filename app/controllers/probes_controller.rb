@@ -19,6 +19,7 @@ class ProbesController < ApplicationController
   end
 
   def show
+    @probe = Probe.find(params[:id])
   end
 
   def new
@@ -38,6 +39,13 @@ class ProbesController < ApplicationController
   end
 
   def edit
+    @probe = Probe.find(params[:id])
+
+    begin
+      @selected_plan = ConnectionProfile.find(params[:probe][:connection_profile_id]).plans
+    rescue
+      @selected_plan = ConnectionProfile.all.first.plans
+    end
   end
 
   def create
