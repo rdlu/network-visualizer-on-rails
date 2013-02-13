@@ -24,7 +24,8 @@ class Schedule < ActiveRecord::Base
     SnmpLegacyJob::agent_setup profiles, self
     SnmpLegacyJob::manager_setup profiles, self
 
-
+    self.status = 'active'
+    self.save
   end
 
   def allocated_profiles

@@ -35,19 +35,19 @@ class SnmpLegacyJob
         end
         manager.close
         Yell.new(:gelf, :facility => 'netmetric').info "Perfil #{profile.name} enviado para a sonda #{schedule.source.name}",
-                                                       '_schedule_id' => schedule.id
+                                                       '_schedule_id' => schedule.id, '_probe_id' => schedule.source.id
       else
-        Yell.new(:gelf, :facility => 'netmetric').info "Perfil #{profile.name} já existente na sonda #{schedule.source.name}",
-                                                       '_schedule_id' => schedule.id
+        Yell.new(:gelf, :facility => 'netmetric').info "Perfil #{profile.name} ja existente na sonda #{schedule.source.name}",
+                                                       '_schedule_id' => schedule.id, '_probe_id' => schedule.source.id
       end
     rescue Resolv::ResolvError => error
       Yell.new(:gelf, :facility => 'netmetric').error 'Nao foi possivel enviar os valores: '+error.to_s,
-                                                      '_schedule_id' => schedule.id,
+                                                      '_schedule_id' => schedule.id, '_probe_id' => schedule.source.id,
                                                       '_error' => error
       raise SnmpLegacyJobException, 'Erro na execução do job snmp_legacy'
     rescue Exception => error
       Yell.new(:gelf, :facility => 'netmetric').fatal 'Nao foi possivel enviar os valores: '+error.to_s,
-                                                      '_schedule_id' => schedule.id,
+                                                      '_schedule_id' => schedule.id, '_probe_id' => schedule.source.id,
                                                       '_error_complete' => error
       raise SnmpLegacyJobException 'Fatal error on snmp scheduling process'
     end
@@ -69,17 +69,21 @@ class SnmpLegacyJob
     hostname = schedule.destination.ipaddress
     hostname = hostname + '.vivo.com.br' if (hostname.match('^(?!.*\.vivo.com.br$)[\/\w\.-]+$') && (schedule.destination.hostname? hostname))
 
+    status = schedule.destination.type == 'android' ? 0 : 1
+
     data_array = [
-        ['.0.9'+table_id, 6],
-        ['.0.0'+table_id, hostname],
-        ['.0.1'+table_id, ports],
-        ['.0.4'+table_id, schedule.destination.name],
-        ['.0.5'+table_id, schedule.destination.city],
-        ['.0.6'+table_id, schedule.destination.state],
-        ['.0.7'+table_id, 1],
-        ['.0.8'+table_id, profile_ids],
-        ['.0.10'+table_id, 1],
-        ['.0.9'+table_id, 2],
+        ['.0.9.'+table_id, 6],
+        ['.0.0.'+table_id, hostname],
+        ['.0.1.'+table_id, ports],
+        ['.0.4.'+table_id, schedule.destination.name],
+        ['.0.5.'+table_id, schedule.destination.city],
+        ['.0.6.'+table_id, schedule.destination.state],
+        ['.0.7.'+table_id, 1],
+        ['.0.8.'+table_id, profile_ids],
+        ['.0.10.'+table_id, status],
+        ['.0.15.'+table_id,schedule.polling*60],
+        ['.0.16.'+table_id,schedule.polling*60],
+        ['.0.9.'+table_id, 2],
     ]
 
     base_index = '1.3.6.1.4.1.12000.0'
@@ -95,10 +99,10 @@ class SnmpLegacyJob
       end
       manager.close
       Yell.new(:gelf, :facility => 'netmetric').info "Gerente #{schedule.source.name} liberado para enviar rajadas ao Agente #{schedule.destination.name}",
-                                                     '_schedule_id' => schedule.id
+                                                     '_schedule_id' => schedule.id, '_probe_id' => schedule.source.id
     rescue Exception => error
       Yell.new(:gelf, :facility => 'netmetric').error 'Nao foi possivel enviar o managerTable: '+error.to_s,
-                                                      '_schedule_id' => schedule.id,
+                                                      '_schedule_id' => schedule.id, '_probe_id' => schedule.source.id,
                                                       '_error' => error
       raise SnmpLegacyJobException, 'Erro na execução do job snmp_legacy ao configurar o gerente'
     end
@@ -108,7 +112,7 @@ class SnmpLegacyJob
   def self.agent_setup(profiles, schedule)
     if schedule.destination.type == 'android'
       Yell.new(:gelf, :facility => 'netmetric').info 'Agentes Android devem ter o gerente configurado no próprio aparelho.',
-                                                     '_schedule_id' => schedule.id
+                                                     '_schedule_id' => schedule.id, '_probe_id' => schedule.destination.id
       return nil
     end
 
@@ -126,11 +130,11 @@ class SnmpLegacyJob
     table_id = schedule.source.id.to_s
 
     data_array = [
-        ['.0.3'+table_id, 6],
-        ['.0.0'+table_id, schedule.source.real_ipaddress],
-        ['.0.1'+table_id, ports],
-        ['.0.2'+table_id, protocol_ids],
-        ['.0.3'+table_id, 2],
+        ['.0.3.'+table_id, 6],
+        ['.0.0.'+table_id, schedule.source.real_ipaddress],
+        ['.0.1.'+table_id, ports],
+        ['.0.2.'+table_id, protocol_ids],
+        ['.0.3.'+table_id, 2],
     ]
 
 
@@ -146,11 +150,11 @@ class SnmpLegacyJob
         end
       end
       manager.close
-      Yell.new(:gelf, :facility => 'netmetric').info "Agente #{schedule.destination.name} configurado para receber testes do Ggente #{schedule.source.name}",
-                                                     '_schedule_id' => schedule.id
+      Yell.new(:gelf, :facility => 'netmetric').info "Agente #{schedule.destination.name} configurado para receber testes do Gerente #{schedule.source.name}",
+                                                     '_schedule_id' => schedule.id, '_probe_id' => schedule.destination.id
     rescue Exception => error
       Yell.new(:gelf, :facility => 'netmetric').error 'Nao foi possivel enviar o agentTable: '+error.to_s,
-                                                      '_schedule_id' => schedule.id,
+                                                      '_schedule_id' => schedule.id, '_probe_id' => schedule.destination.id,
                                                       '_error' => error
       raise SnmpLegacyJobException, 'Erro na execução do job snmp_legacy ao configurar o agente'
     end
