@@ -66,10 +66,12 @@ class SnmpLegacyJob
     ports = ports.strip
     profile_ids = profile_ids.strip
     table_id = schedule.destination.id.to_s
+    hostname = schedule.destination.ipaddress
+    hostname = hostname + '.vivo.com.br' if (hostname.match('^(?!.*\.vivo.com.br$)[\/\w\.-]+$') && (schedule.destination.hostname? hostname))
 
     data_array = [
         ['.0.9'+table_id, 6],
-        ['.0.0'+table_id, schedule.destination.real_ipaddress],
+        ['.0.0'+table_id, hostname],
         ['.0.1'+table_id, ports],
         ['.0.4'+table_id, schedule.destination.name],
         ['.0.5'+table_id, schedule.destination.city],
