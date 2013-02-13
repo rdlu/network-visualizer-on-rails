@@ -1,4 +1,9 @@
 # coding: utf-8
+class SnmpLegacyJobException < Exception
+
+end
+
+# coding: utf-8
 class SnmpLegacyJob
   def self.profile_setup(profile, schedule)
     config_hash = JSON.load(profile.config_parameters)
@@ -39,11 +44,12 @@ class SnmpLegacyJob
       Yell.new(:gelf, :facility => 'netmetric').error 'Nao foi possivel enviar os valores: '+error.to_s,
                                                       '_schedule_id' => schedule.id,
                                                       '_error' => error
-      raise DelayedJob::Exception, 'Erro na execução do job snmp_legacy'
+      raise SnmpLegacyJobException, 'Erro na execução do job snmp_legacy'
     rescue Exception => error
       Yell.new(:gelf, :facility => 'netmetric').fatal 'Nao foi possivel enviar os valores: '+error.to_s,
                                                       '_schedule_id' => schedule.id,
                                                       '_error_complete' => error
+      raise SnmpLegacyJobException 'Fatal error on snmp scheduling process'
     end
   end
 
@@ -92,6 +98,7 @@ class SnmpLegacyJob
       Yell.new(:gelf, :facility => 'netmetric').error 'Nao foi possivel enviar o managerTable: '+error.to_s,
                                                       '_schedule_id' => schedule.id,
                                                       '_error' => error
+      raise SnmpLegacyJobException, 'Erro na execução do job snmp_legacy ao configurar o gerente'
     end
   end
 
@@ -143,6 +150,7 @@ class SnmpLegacyJob
       Yell.new(:gelf, :facility => 'netmetric').error 'Nao foi possivel enviar o agentTable: '+error.to_s,
                                                       '_schedule_id' => schedule.id,
                                                       '_error' => error
+      raise SnmpLegacyJobException, 'Erro na execução do job snmp_legacy ao configurar o agente'
     end
   end
 end
