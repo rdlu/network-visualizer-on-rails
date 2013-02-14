@@ -23,6 +23,7 @@ gem 'yell-adapters-gelf'
 gem 'yell-rails'
 gem 'daemons'
 gem 'foreigner' #sincroniza chaves estrangeiras para o banco de dados
+gem 'airbrake'
 
 # To use ActiveModel has_secure_password
 gem 'bcrypt-ruby', '~> 3.0.0'
