@@ -13,7 +13,7 @@
 Airbrake.configure do |config|
   config.api_key = '39a47829635326598561d4efecd6a83e'
   config.host    = 'fringe.inf.ufrgs.br'
-  config.port    = 443
+  config.port    = 80
   config.secure  = config.port == 443
 end
 
