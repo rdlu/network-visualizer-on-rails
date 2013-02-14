@@ -11,7 +11,7 @@
 # -------------------------------------------------------
 
 Airbrake.configure do |config|
-  config.api_key = '39a47829635326598561d4efecd6a83e'
+  config.api_key = '29efe7518b4efce7b17b15ac47bfab2c'
   config.host    = 'fringe.inf.ufrgs.br'
   config.port    = 80
   config.secure  = config.port == 443
