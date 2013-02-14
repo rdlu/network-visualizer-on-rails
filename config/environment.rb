@@ -1,3 +1,6 @@
+#somente necessario se for proxy via nginx
+#ENV["RAILS_RELATIVE_URL_ROOT"] = "/mom"
+
 # Load the rails application
 require File.expand_path('../application', __FILE__)
 

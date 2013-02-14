@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.11'
+gem 'rails', '3.2.12'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -22,6 +22,7 @@ gem 'delayed_job_active_record'
 gem 'yell-adapters-gelf'
 gem 'yell-rails'
 gem 'daemons'
+gem 'foreigner' #sincroniza chaves estrangeiras para o banco de dados
 
 # To use ActiveModel has_secure_password
 gem 'bcrypt-ruby', '~> 3.0.0'
@@ -49,7 +50,6 @@ end
 
 group :development do
   gem 'immigrant' #plugin do foreigner que regenera migrations com chaves estrangeiras em nivel de BD
-  gem 'foreigner' #sincroniza chaves estrangeiras para o banco de dados
   gem 'meta_request'
   gem 'better_errors'
   gem 'binding_of_caller'
