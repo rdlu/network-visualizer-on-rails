@@ -17,6 +17,12 @@ Airbrake.configure do |config|
   config.secure  = config.port == 443
 end
 
+module Airbrake
+  class Sender
+    NOTICES_URI = '/errbit/notifier_api/v2/notices/'.freeze
+  end
+end
+
 # Set up Javascript notifications
 # -------------------------------
 #
