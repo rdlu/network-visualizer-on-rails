@@ -73,6 +73,7 @@ class UsersController < ApplicationController
     if params.has_key? :roles
       @roles = Role.find(params_roles)
       @user.roles = @roles
+      @user.adm_block = true
     else
 
     end
