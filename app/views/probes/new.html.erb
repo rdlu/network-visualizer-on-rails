@@ -10,9 +10,9 @@
           </div>
         </div>
         <div class="control-group">
-          <%= f.label :ipaddress, "Endereço IP", :class => "control-label" %>
+          <%= f.label :ipaddress, "Hostname", :class => "control-label etooltip", 'data-title'.to_sym => 'É o nome do agente configurado no aplicativo android, ou o número do terminal nas sondas linux 3G, ou ainda o endereço IP em sondas linux fixas.' %>
           <div class="controls">
-            <%= f.text_field :ipaddress, :placeholder => "Numérico ou Hostname" %>
+            <%= f.text_field :ipaddress, :placeholder => "Numérico ou Hostname", :class => 'etooltip', 'data-title'.to_sym => 'É o nome do agente configurado no aplicativo android, ou o número do terminal nas sondas linux 3G, ou ainda o endereço IP em sondas linux fixas.' %>
           </div>
         </div>
         <div class="control-group">
@@ -141,4 +141,6 @@
              dataType: 'json'
         });
     });
+
+    $('.etooltip').tooltip();
 </script>

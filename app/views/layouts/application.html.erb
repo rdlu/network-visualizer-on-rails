@@ -88,23 +88,38 @@
   </div>
 </div>
 
+<div id="wrap">
+  <div id="main" class="container">
+    <% if flash[:notice] %>
+        <div class="row-fluid">
+          <div class="span12" style="text-align: center;">
+            <div class="alert"><%= flash[:notice] %></div>
+          </div>
+        </div>
+    <% end %>
+    <% if flash[:alert] %>
+        <div class="row-fluid">
+          <div class="span12" style="text-align: center;">
+            <div class="alert"><%= flash[:alert] %></div>
+          </div>
+        </div>
+    <% end %>
+    <%= yield %>
+  </div>
+  <div class="push"></div>
+</div>
 
-<div class="container" style="margin-bottom: 5px">
-  <% if flash[:notice] %>
-      <div class="row-fluid">
-        <div class="span12" style="text-align: center;">
-          <div class="alert"><%= flash[:notice] %></div>
-        </div>
-      </div>
-  <% end %>
-  <% if flash[:alert] %>
-      <div class="row-fluid">
-        <div class="span12" style="text-align: center;">
-          <div class="alert"><%= flash[:alert] %></div>
-        </div>
-      </div>
-  <% end %>
-  <%= yield %>
+
+<div class="footer">
+  <div class="container">
+    <ul class="footer-links">
+      <li>Vivo / Telefonica</li>
+      <li class="muted"> . </li>
+      <li>PRAV / NetMetric</li>
+      <li class="muted"> . </li>
+      <li>INF / UFRGS</li>
+    </ul>
+  </div>
 </div>
 </body>
 </html>

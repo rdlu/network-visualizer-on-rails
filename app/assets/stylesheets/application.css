@@ -25,3 +25,49 @@
    font-weight: bold;
 }
 
+
+article, aside, details, figcaption, figure, footer, header, hgroup, nav, section {
+    display: block;
+}
+body {
+    color: #333333;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+}
+html {
+    font-size: 100%;
+}
+
+html, body {
+    height:100%;
+}
+#wrap {
+    margin: 0 auto -41px;
+    min-height: 100%;
+}
+
+#main {
+    padding-top: 60px;
+}
+
+.push, .footer {
+    height: 40px;
+}
+
+.footer {
+    background-color: #F5F5F5;
+    border-top: 1px solid #E5E5E5;
+    padding: 0;
+    text-align: center;
+}
+
+.footer-links {
+    margin: 10px 0;
+}
+
+
+.footer-links li {
+    display: inline;
+    padding: 0 2px;
+}
