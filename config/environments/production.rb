@@ -66,4 +66,21 @@ MomRails::Application.configure do
   # Log the query plan for queries taking more than this (works
   # with SQLite, MySQL, and PostgreSQL)
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
+
+  config.action_mailer.default_url_options = { :host => 'fringe.inf.ufrgs.br/mom' }
+
+  config.action_mailer.delivery_method = :smtp
+  #usa o mailcatcher
+  #config.action_mailer.smtp_settings = {:address => "localhost", :port => 1025}
+
+  config.action_mailer.smtp_settings = {
+      :address              => "smtp.gmail.com",
+      :port                 => 587,
+      :domain               => 'fringe.inf.ufrgs.br',
+      :user_name            => 'nmupdates',
+      :password             => 'VivOGparC,.',
+      :authentication       => 'plain',
+      :enable_starttls_auto => true
+  }
+
 end
