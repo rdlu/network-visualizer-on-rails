@@ -32,7 +32,7 @@
       </a>
       <!--ORIGINAL current_user.nil? ? root_url : index_url-->
       <a href="<%= current_user.nil? ? root_url : root_url %>" class="brand asap"><%= image_tag 'logo-menu-40.png', :style => 'vertical-align:middle' %></a>
-      <div class="nav-collapse collapse ">
+      <div class="nav-collapse collapse">
         <ul class="nav pull-right">
           <% if current_user.nil? %>
                <li><%= link_to "Login", new_user_session_path %></li>
@@ -88,7 +88,7 @@
 </div>
 
 <div id="wrap">
-  <div id="main" class="container">
+  <div id="main" class="container-fluid">
     <% if flash[:notice] %>
         <div class="row-fluid">
           <div class="span12" style="text-align: center;">
