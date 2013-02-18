@@ -24,8 +24,41 @@ MomRails::Application.routes.draw do
   get 'welcome/index'
 
   #match collect
-  match 'collect/id/:destination_id/kpis/:cellID/:brand/:model/:connType/:connTech/:signal/:errorRate/:numberOfIPs/:route/:mtu/:dnsLatency/:lac/:timestamp/:uuid' => 'kpi#create', :via => [:get, :post]
-  match 'collect/id/:destination_id/:metric/:ds_max/:ds_min/:ds_avg/:sd_max/:sd_min/:sd_avg/:timestamp/:uuid' => 'results#create', :via => [:get, :post]
+  match 'collect/id' => 'results#index'
+  match 'collect/id/:destination_id/:metric/:ds_max/:ds_min/:ds_avg/:sd_max/:sd_min/:sd_avg/:timestamp/:uuid' => 'results#create',
+        :via => [:get],
+        :as => 'results_create',
+        :constraints => { :destination_id => /\d+/,
+                          :metric => /[a-z_]+/,
+                          :ds_max => /[-]*[0-9]+[.]*[0-9]+/,
+                          :ds_min => /[-]*[0-9]+[.]*[0-9]+/,
+                          :ds_avg => /[-]*[0-9]+[.]*[0-9]+/,
+                          :sd_max => /[-]*[0-9]+[.]*[0-9]+/,
+                          :sd_min => /[-]*[0-9]+[.]*[0-9]+/,
+                          :sd_avg => /[-]*[0-9]+[.]*[0-9]+/,
+                          :timestamp => /\d+/,
+                          :uuid => /[0-9A-Fa-f]+-[0-9A-Fa-f]+-[0-9A-Fa-f]+-[0-9A-Fa-f]+-[0-9A-Fa-f]+/
+        }
+
+  match 'collect/id/:destination_id/kpis/:cellid/:brand/:model/:conntype/:conntech/:signal/:errorrate/:numberofips/:route/:mtu/:dnslatency/:lac/:timestamp/:uuid' => 'kpi#create',
+        :via => [:get],
+        :as => 'kpi_create',
+        :constraints => { :destination_id => /\d+/,
+                          :cellid => /[0-9\-]+/,
+                          :brand => /.+/,
+                          :model => /.+/,
+                          :conntype => /[A-Za-z\-]+/,
+                          :conntech => /[A-Za-z\-]+/,
+                          :signal => /[>|<]*[0-9.\- ]+|Desconhecido|unknown/,
+                          :errorrate => /[>|<]*[0-9.\- ]+|Desconhecido|unknown'/,
+                          :numberofips => /[0-9\-]+/,
+                          :route => /.+/,
+                          :mtu => /[0-9\-]+|Desconhecido/,
+                          :dnslatency => /[0-9.\- ><]+|Desconhecido/,
+                          :lac => /[-]*[0-9 ><]+/,
+                          :timestamp => /\d+/,
+                          :uuid => /[0-9A-Fa-f]+-[0-9A-Fa-f]+-[0-9A-Fa-f]+-[0-9A-Fa-f]+-[0-9A-Fa-f]+/
+        }
 
   match 'schedules/unused_profiles_form/:source_id/:destination_id' => 'schedules#unused_profiles_form'
 
