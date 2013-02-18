@@ -25,42 +25,47 @@ MomRails::Application.routes.draw do
 
   #match collect
   match 'collect/id' => 'results#index'
-  match 'collect/id/:destination_id/:metric/:ds_max/:ds_min/:ds_avg/:sd_max/:sd_min/:sd_avg/:timestamp/:uuid' => 'results#create',
+  match 'collect/id/:destination_id/:metric_name/:dsmax/:dsmin/:dsavg/:sdmax/:sdmin/:sdavg/:timestamp/:uuid' => 'results#create',
         :via => [:get],
         :as => 'results_create',
         :constraints => { :destination_id => /\d+/,
-                          :metric => /[a-z_]+/,
-                          :ds_max => /[-]*[0-9]+[.]*[0-9]+/,
-                          :ds_min => /[-]*[0-9]+[.]*[0-9]+/,
-                          :ds_avg => /[-]*[0-9]+[.]*[0-9]+/,
-                          :sd_max => /[-]*[0-9]+[.]*[0-9]+/,
-                          :sd_min => /[-]*[0-9]+[.]*[0-9]+/,
-                          :sd_avg => /[-]*[0-9]+[.]*[0-9]+/,
+                          :metric_name => /[a-z_]+/,
+                          :dsmax => /[-]*[0-9]+[.]*[0-9]+/,
+                          :dsmin => /[-]*[0-9]+[.]*[0-9]+/,
+                          :dsavg => /[-]*[0-9]+[.]*[0-9]+/,
+                          :sdmax => /[-]*[0-9]+[.]*[0-9]+/,
+                          :sdmin => /[-]*[0-9]+[.]*[0-9]+/,
+                          :sdavg => /[-]*[0-9]+[.]*[0-9]+/,
                           :timestamp => /\d+/,
                           :uuid => /[0-9A-Fa-f]+-[0-9A-Fa-f]+-[0-9A-Fa-f]+-[0-9A-Fa-f]+-[0-9A-Fa-f]+/
         }
 
-  match 'collect/id/:destination_id/kpis/:cellid/:brand/:model/:conntype/:conntech/:signal/:errorrate/:numberofips/:route/:mtu/:dnslatency/:lac/:timestamp/:uuid' => 'kpi#create',
+  #/collect/id/2/kpis/3567/SonyEricsson/R800i/-/-/-101/-/-/-/0/4/1551/1361215988/db14c4a2-1629-4f2e-9fc5-361d3fec4b74
+  match 'collect/id/:destination_id/kpis/:cell_id/:brand/:model/:conn_type/:conn_tech/:signal/:error_rate/:change_of_ips/:route/:mtu/:dns_latency/:lac/:timestamp/:uuid' => 'kpi#create',
         :via => [:get],
         :as => 'kpi_create',
         :constraints => { :destination_id => /\d+/,
-                          :cellid => /[0-9\-]+/,
+                          :cell_id => /[0-9\-]+/,
                           :brand => /.+/,
                           :model => /.+/,
-                          :conntype => /[A-Za-z\-]+/,
-                          :conntech => /[A-Za-z\-]+/,
+                          :conn_type => /[A-Za-z\-]+/,
+                          :conn_tech => /[A-Za-z\-]+/,
                           :signal => /[>|<]*[0-9.\- ]+|Desconhecido|unknown/,
-                          :errorrate => /[>|<]*[0-9.\- ]+|Desconhecido|unknown'/,
-                          :numberofips => /[0-9\-]+/,
+                          :error_rate => /[>|<]*[0-9.\- ]+|Desconhecido|unknown'/,
+                          :change_of_ips => /[0-9\-]+/,
                           :route => /.+/,
                           :mtu => /[0-9\-]+|Desconhecido/,
-                          :dnslatency => /[0-9.\- ><]+|Desconhecido/,
+                          :dns_latency => /[0-9.\- ><]+|Desconhecido/,
                           :lac => /[-]*[0-9 ><]+/,
                           :timestamp => /\d+/,
                           :uuid => /[0-9A-Fa-f]+-[0-9A-Fa-f]+-[0-9A-Fa-f]+-[0-9A-Fa-f]+-[0-9A-Fa-f]+/
         }
 
-  match 'schedules/unused_profiles_form/:source_id/:destination_id' => 'schedules#unused_profiles_form'
+  match 'schedules/unused_profiles_form/:source_id/:destination_id' => 'schedules#unused_profiles_form',
+        :constraints => {
+            :source_id => /\d+/,
+            :destination_id => /\d+/,
+        }
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
