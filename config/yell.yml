@@ -20,7 +20,7 @@ production:
   # you may comine various log levels, like:
   #   # this will only log between :info and :fatal level
   #   :level: 'gte.info lte.fatal'
-  :level: 'gte.info'
+  :level: 'gte.error'
 
   # Keep a max of 7 files for every adapter per default. You can remove this option 
   # if you wish to keep all files, otherwise, Yell will cleanup any :datefile 
@@ -30,7 +30,7 @@ production:
   # define multiple adapters: one for notice and one for error messages
   :adapters:
     - :gelf:
-        :facility: 'netmetric'
+        :facility: 'netmetric-app'
     # this adapter writes all messages with a log level of error or higher
     # and writes to error.log
     - :datefile:

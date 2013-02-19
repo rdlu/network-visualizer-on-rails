@@ -135,7 +135,7 @@
              success: function (data,status) {
                  $("#probe_plan_id").html("");
                  jQuery.each(data, function(i,plan) {
-                     $("#probe_plan_id").append('<option value=\"'+plan.id+"\">"+plan.name+" ("+plan.throughputDown+"/"+plan.throughputUp+")</option>")
+                     $("#probe_plan_id").append('<option value=\"'+plan.id+"\">"+plan.name+" ("+plan.throughputDown+"k&#8659;/"+plan.throughputUp+"k&#8657;)</option>")
                  });
              },
              dataType: 'json'

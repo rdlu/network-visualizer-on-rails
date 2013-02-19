@@ -1,4 +1,9 @@
 MomRails::Application.routes.draw do
+  match 'reports' => 'reports#index', :as => 'reports'
+  get "reports/index", :as => 'index_reports'
+
+  get "reports/graph", :as => 'graph_reports'
+
   resources :metrics
   resources :tests
   resources :schedules
@@ -55,8 +60,8 @@ MomRails::Application.routes.draw do
                           :change_of_ips => /[0-9\-]+/,
                           :route => /.+/,
                           :mtu => /[0-9\-]+|Desconhecido/,
-                          :dns_latency => /[0-9.\- ><]+|Desconhecido/,
-                          :lac => /[-]*[0-9 ><]+/,
+                          :dns_latency => /[%3C]*[0-9.\- ><]+|Desconhecido/,
+                          :lac => /[-]*[0-9]+/,
                           :timestamp => /\d+/,
                           :uuid => /[0-9A-Fa-f]+-[0-9A-Fa-f]+-[0-9A-Fa-f]+-[0-9A-Fa-f]+-[0-9A-Fa-f]+/
         }

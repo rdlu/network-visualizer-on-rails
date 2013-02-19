@@ -7,11 +7,14 @@ class KpiController < ApplicationController
     @kpi = Kpi.new(filtered_params)
 
     #relacionamentos
-    #source_ip = request.remote_ip
-    source_ip = '143.54.85.34'
+    source_ip = request.remote_ip
+    #source_ip = '143.54.85.34'
     @source = Probe.find_by_ipaddress(source_ip)
     @destination = Probe.find(params[:destination_id])
-    @schedule = Schedule.where(:destination_id => @destination.id).where(:source_id => @source.id).all.last
+    @schedule = Schedule.
+        where(:destination_id => @destination.id).
+        where(:source_id => @source.id).
+        all.last
 
     @kpi.schedule = @schedule
     @kpi.destination = @destination
