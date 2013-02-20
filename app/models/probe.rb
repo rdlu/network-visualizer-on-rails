@@ -21,15 +21,22 @@ class Probe < ActiveRecord::Base
   #relationships
   belongs_to :plan
   belongs_to :connection_profile
-  has_many :kpis, :as => :destinations, :foreign_key => 'destination_id'
-  has_many :kpis, :as => :sources, :foreign_key => 'source_id'
+  has_many :destinations, :through => :schedules
+  has_many :sources, :through => :schedules_as_source
   has_many :schedules, :foreign_key => 'destination_id'
+  has_many :schedules_as_source, :class_name => :schedule, :foreign_key => 'source_id'
 
   #escopos de pesquisa
   scope :active, where(:status => 1)
   scope :by_city, proc { |city| where(:city => city)}
   scope :by_state, proc { |state| where(:state => state)}
   scope :by_type, proc { |type| where(:type => type)}
+
+  #destinos retornava a si mesmo sempre, removendo
+  def destinations
+    arr = super
+    arr - [self]
+  end
 
   def pretty_name
     "#{self.name} (#{self.ipaddress})"
