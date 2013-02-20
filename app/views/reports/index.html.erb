@@ -1,10 +1,69 @@
+<%= javascript_include_tag "bootstrap_datepicker" %>
+<%= stylesheet_link_tag "bootstrap_datepicker" %>
+<%= javascript_include_tag "jquery_imask" %>
 <h2>Relatórios</h2>
-<%= form_tag graph_reports_path do %>
+<%= form_tag(graph_reports_path, :class => 'form-horizontal') do %>
     <div class="row-fluid">
-      <div class="span12">
-
+      <div class="span7">
+        <div class="control-group">
+          <label class="control-label" for="destination_id">Sonda de Destino: </label>
+          <div class="controls">
+            <%= collection_select :destination, :id, Probe.all, :id, :pretty_name_with_location, {:include_blank => "Selecione uma sonda..."}, {:class => 'input-block-level'} %>
+          </div>
+        </div>
+        <div class="control-group">
+          <label for="source_id" class="control-label">Sonda de Origem:</label>
+          <div class="controls">
+            <%= collection_select :source, :id, {}, :id, :pretty_name_with_location, {:include_blank => "Selecione a sonda de destino primeiro"}, {:class => 'input-block-level', :disabled => 'disabled'} %>
+          </div>
+        </div>
+      </div>
+      <div class="span5">
+        <div class="control-group">
+          <%= label :date, :start, "Início: ", :class => 'control-label' %>
+          <div class="controls">
+            <div class="input-prepend">
+              <label for="date_start" style="display: inline"><span class="add-on" style="margin-top: 1px;"><i class="icon-calendar"></i></span></label>
+              <%= text_field :date, :start, :class => 'input-small datepicker', :"data-date-format".to_sym => "dd/mm/yyyy", :value => Date.current.prev_week.strftime('%d/%m/%Y') %>
+            </div>
+            <div class="input-prepend">
+              <span class="add-on"><i class="icon-time"></i></span>
+              <%= text_field :time, :start, :class => 'input-mini bootstrap-timepicker', :value => Time.current.strftime('%H:%M') %>
+            </div>
+          </div>
+        </div>
+        <div class="control-group">
+          <%= label :date, :start, "Fim: ", :class => 'control-label' %>
+          <div class="controls">
+            <div class="input-prepend">
+              <label for="date_start" style="display: inline"><span class="add-on" style="margin-top: 1px;"><i class="icon-calendar"></i></span></label>
+              <%= text_field :date, :end, :class => 'input-small datepicker', :"data-date-format".to_sym => "dd/mm/yyyy", :value => Date.current.strftime('%d/%m/%Y') %>
+            </div>
+            <div class="input-prepend">
+              <span class="add-on"><i class="icon-time"></i></span>
+              <%= text_field :time, :end, :class => 'input-mini bootstrap-timepicker', :value => Time.current.strftime('%H:%M') %>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 <% end %>
+
+<script type="text/javascript">
+    jQuery('#date_start')
+            .datepicker()
+            .on('changeDate', this, function(ev){
+                jQuery(this).datepicker('hide');
+                jQuery('#time_start').focus();
+            })
+            .iMask({
+                type : 'fixed',
+                mask : '99/99/9999'
+            });
+
+    jQuery('#time_start')
+            //.timepicker({showMeridian: false,disableFocus:true})
+            .iMask({type : 'fixed', mask : '99:99'});
+</script>
 
 

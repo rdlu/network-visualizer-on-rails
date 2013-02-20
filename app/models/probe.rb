@@ -35,6 +35,10 @@ class Probe < ActiveRecord::Base
     "#{self.name} (#{self.ipaddress})"
   end
 
+  def pretty_name_with_location
+    "#{self.name} (#{self.ipaddress}) - #{self.city}/#{self.state.upcase}"
+  end
+
   def real_ipaddress
     if self.hostname? self.ipaddress
       require 'resolv'

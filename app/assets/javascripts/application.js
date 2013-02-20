@@ -22,4 +22,3 @@
 //= require twitter/bootstrap/bootstrap-tab
 //= require twitter/bootstrap/bootstrap-tooltip
 //= require twitter/bootstrap/bootstrap-typeahead
-
