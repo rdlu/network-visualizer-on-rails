@@ -5,14 +5,14 @@ class Probe < ActiveRecord::Base
                   :connection_profile_id, :plan_id
 
   #validacao
-  validates :name, :presence => true, :length => {:maximum => 255, :minimum => 3}, :format => { :with => %r{^[0-9a-zA-Z][0-9a-zA-Z\-\_]+[0-9a-zA-Z]$} },
+  validates :name, :presence => true, :length => {:maximum => 255, :minimum => 3}, :format => {:with => %r{^[0-9a-zA-Z][0-9a-zA-Z\-\_]+[0-9a-zA-Z]$}},
             :uniqueness => true
-  validates :ipaddress , :presence => true, :length => {:maximum => 255, :minimum => 3}, :uniqueness => true
+  validates :ipaddress, :presence => true, :length => {:maximum => 255, :minimum => 3}, :uniqueness => true
   validate :validate_ipaddress
   #validates :polling, :if => :polling?
-  validates :status, :presence => true, :numericality => { :only_integer => true, :greater_than_or_equal_to => -1, :less_than_or_equal_to => 3 }
-  validates :latitude, :format => { :with => %r{^([-]?[0-9]{1,3}[.][0-9]+)|([-]?[0-9]{1,3})$} }
-  validates :longitude, :format => { :with => %r{^([-]?[0-9]{1,2}[.][0-9]+)|([-]?[0-9]{1,2})$} }
+  validates :status, :presence => true, :numericality => {:only_integer => true, :greater_than_or_equal_to => -1, :less_than_or_equal_to => 3}
+  validates :latitude, :format => {:with => %r{^([-]?[0-9]{1,3}[.][0-9]+)|([-]?[0-9]{1,3})$}}
+  validates :longitude, :format => {:with => %r{^([-]?[0-9]{1,2}[.][0-9]+)|([-]?[0-9]{1,2})$}}
   validates :city, :presence => true
   validates :state, :presence => true
 
@@ -21,16 +21,18 @@ class Probe < ActiveRecord::Base
   #relationships
   belongs_to :plan
   belongs_to :connection_profile
-  has_many :destinations, :through => :schedules
-  has_many :sources, :through => :schedules_as_source
+  has_many :destinations, :through => :schedules_as_source
+  has_many :sources, :through => :schedules
+  #as duas proximas abaixo sao equivalentes
   has_many :schedules, :foreign_key => 'destination_id'
-  has_many :schedules_as_source, :class_name => :schedule, :foreign_key => 'source_id'
+  has_many :schedules_as_destination, :class_name => Schedule, :foreign_key => 'destination_id'
+  has_many :schedules_as_source, :class_name => Schedule, :foreign_key => 'source_id'
 
   #escopos de pesquisa
   scope :active, where(:status => 1)
-  scope :by_city, proc { |city| where(:city => city)}
-  scope :by_state, proc { |state| where(:state => state)}
-  scope :by_type, proc { |type| where(:type => type)}
+  scope :by_city, proc { |city| where(:city => city) }
+  scope :by_state, proc { |state| where(:state => state) }
+  scope :by_type, proc { |type| where(:type => type) }
 
   #destinos retornava a si mesmo sempre, removendo
   def destinations
@@ -59,7 +61,7 @@ class Probe < ActiveRecord::Base
   #funcoes custom de validacao
 
   def validate_ipaddress
-    errors.add(:ipaddress,' tem um formato inválido') unless ip_or_hostname?
+    errors.add(:ipaddress, ' tem um formato inválido') unless ip_or_hostname?
   end
 
   def ip_or_hostname?
