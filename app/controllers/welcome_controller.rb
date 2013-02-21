@@ -14,4 +14,9 @@ class WelcomeController < ApplicationController
     end
   end
 
+  def route_reload
+    reload_routes
+    render :layout => false, :html => 'OK'
+  end
+
 end

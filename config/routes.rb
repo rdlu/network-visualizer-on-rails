@@ -7,7 +7,12 @@ MomRails::Application.routes.draw do
   resources :metrics
   resources :tests
   resources :schedules
-  resources :probes
+  resources :probes do
+    member do
+      get 'destinations'
+      get 'sources'
+    end
+  end
   resources :metrics
   resources :profiles
   resources :connection_profiles do

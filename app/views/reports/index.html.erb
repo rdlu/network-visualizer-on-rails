@@ -64,6 +64,28 @@
     jQuery('#time_start')
             //.timepicker({showMeridian: false,disableFocus:true})
             .iMask({type : 'fixed', mask : '99:99'});
+
+    $("#destination_id").change(function (evt) {
+        var destination_id = evt.currentTarget.value;
+        if(destination_id != '')
+            jQuery.ajax("<%=probes_url %>/"+destination_id+"/sources",{
+                success: function (result,status) {
+                    var options = jQuery('#source_id');
+                    options.html('');
+                    options.removeAttr('disabled');
+                    jQuery.each(result, function(index,item) {
+                        options.append($("<option />").val(item.id).text(item.name+' ('+item.ipaddress+') - '+item.city+'/'+item.state.toUpperCase()));
+                    });
+                    if(result.length == 0) {
+                        options.append($("<option />").val('').text('Essa sonda não recebe testes')).prop('disabled',true);
+                    }
+                },
+                dataType: 'json'
+            });
+        else {
+            jQuery('#source_id').html('').append($("<option />").val('').text('Selecione a sonda de destino primeiro')).prop('disabled',true);
+        }
+    });
 </script>
 
 

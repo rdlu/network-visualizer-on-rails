@@ -34,12 +34,6 @@ class Probe < ActiveRecord::Base
   scope :by_state, proc { |state| where(:state => state) }
   scope :by_type, proc { |type| where(:type => type) }
 
-  #destinos retornava a si mesmo sempre, removendo
-  def destinations
-    arr = super
-    arr - [self]
-  end
-
   def pretty_name
     "#{self.name} (#{self.ipaddress})"
   end

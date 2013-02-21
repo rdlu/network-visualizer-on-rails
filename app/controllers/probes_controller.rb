@@ -84,6 +84,22 @@ class ProbesController < ApplicationController
   def destroy
   end
 
+  def sources
+    probe = Probe.find(params[:id])
+
+    respond_to do |format|
+      format.json { render :json => probe.sources, :status => 200 }
+    end
+  end
+
+  def destinations
+    probe = Probe.find(params[:id])
+
+    respond_to do |format|
+      format.json { render :json => probe.destinations, :status => 200 }
+    end
+  end
+
   protected
 
   def types
