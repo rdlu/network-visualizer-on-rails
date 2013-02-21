@@ -3,8 +3,8 @@ class CreateResults < ActiveRecord::Migration
     create_table :results do |t|
       t.references :schedule
       t.references :metric
-      t.column :schedule_uuid, 'char(32)'
-      t.column :uuid, 'char(32)'
+      t.column :schedule_uuid, 'char(36)'
+      t.column :uuid, 'char(36)'
       t.string :metric_name
       t.timestamp :timestamp
       t.float :dsavg
@@ -20,7 +20,7 @@ class CreateResults < ActiveRecord::Migration
     add_index :results, :uuid
 
     change_table :schedules do |t|
-      t.column :uuid, 'char(32)'
+      t.column :uuid, 'char(36)'
     end
     add_index :schedules, :uuid
   end

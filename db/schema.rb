@@ -51,8 +51,8 @@ ActiveRecord::Schema.define(:version => 20130207155645) do
   add_index "evaluations", ["schedule_id"], :name => "tests_schedule_id_fk"
 
   create_table "kpis", :force => true do |t|
-    t.string   "schedule_uuid",    :limit => 32
-    t.string   "uuid",             :limit => 32
+    t.string   "schedule_uuid",    :limit => 36
+    t.string   "uuid",             :limit => 36
     t.integer  "destination_id"
     t.integer  "source_id"
     t.integer  "schedule_id"
@@ -149,8 +149,8 @@ ActiveRecord::Schema.define(:version => 20130207155645) do
   create_table "results", :force => true do |t|
     t.integer  "schedule_id"
     t.integer  "metric_id"
-    t.string   "schedule_uuid", :limit => 32
-    t.string   "uuid",          :limit => 32
+    t.string   "schedule_uuid", :limit => 36
+    t.string   "uuid",          :limit => 36
     t.string   "metric_name"
     t.datetime "timestamp"
     t.float    "dsavg"
@@ -188,7 +188,7 @@ ActiveRecord::Schema.define(:version => 20130207155645) do
     t.string   "status"
     t.datetime "created_at",                   :null => false
     t.datetime "updated_at",                   :null => false
-    t.string   "uuid",           :limit => 32
+    t.string   "uuid",           :limit => 36
     t.integer  "destination_id"
     t.integer  "source_id"
   end
