@@ -40,6 +40,20 @@ class Schedule < ActiveRecord::Base
     profiles.uniq
   end
 
+  def metrics (sort_by = :order)
+    profiles = self.profiles
+    metrics = []
+    profiles.each do |profile|
+      metrics += profile.metrics
+    end
+    #TODO: Gambiarra para colocar o thourhgput HTTP forcado
+    if metrics.count
+      metrics << Metric.find(3)
+    end
+
+    metrics.uniq.sort_by{ |metric| metric[sort_by]}
+  end
+
   def default_values
     self.status ||= 'config'
     self.start ||= DateTime.now

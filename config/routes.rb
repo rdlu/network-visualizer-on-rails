@@ -13,6 +13,9 @@ MomRails::Application.routes.draw do
       get 'sources'
     end
   end
+
+  match 'probes/:id/metrics/:source_id' => 'probes#metrics', :via => [:get]
+
   resources :metrics
   resources :profiles
   resources :connection_profiles do

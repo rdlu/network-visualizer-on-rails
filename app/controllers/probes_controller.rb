@@ -100,6 +100,17 @@ class ProbesController < ApplicationController
     end
   end
 
+  def metrics
+    source = Probe.find(params[:source_id])
+    destination = Probe.find(params[:id])
+
+    metrics = destination.metrics(source)
+
+    respond_to do |format|
+      format.json { render :json => metrics, :status => 200 }
+    end
+  end
+
   protected
 
   def types

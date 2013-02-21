@@ -51,6 +51,14 @@ class Probe < ActiveRecord::Base
     false
   end
 
+  def metrics (source = self.sources.at(0), sort_by = :order)
+    metrics = []
+    self.schedules.where(:source_id => source.id).each do |schedule|
+      metrics += schedule.metrics
+    end
+    metrics.uniq.sort_by{ |metric| metric[sort_by]}
+  end
+
 
   #funcoes custom de validacao
 

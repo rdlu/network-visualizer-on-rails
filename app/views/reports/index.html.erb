@@ -17,6 +17,12 @@
             <%= collection_select :source, :id, {}, :id, :pretty_name_with_location, {:include_blank => "Selecione a sonda de destino primeiro"}, {:class => 'input-block-level', :disabled => 'disabled'} %>
           </div>
         </div>
+        <div class="control-group">
+          <%= label :metric, :id, "Métrica: ", :class => 'control-label' %>
+          <div class="controls">
+            <%= collection_select :metric, :id, {}, :id, :name, {:include_blank => "Selecione as sonda de origem e de destino primeiro"}, {:class => 'input-block-level', :disabled => 'disabled'} %>
+          </div>
+        </div>
       </div>
       <div class="span5">
         <div class="control-group">
@@ -45,6 +51,11 @@
             </div>
           </div>
         </div>
+        <div class="control-group">
+          <div class="controls">
+            <input class="btn btn-primary span8" type="submit" name="add" value="Adicionar" />
+          </div>
+        </div>
       </div>
     </div>
 <% end %>
@@ -65,7 +76,7 @@
             //.timepicker({showMeridian: false,disableFocus:true})
             .iMask({type : 'fixed', mask : '99:99'});
 
-    $("#destination_id").change(function (evt) {
+    jQuery("#destination_id").change(function (evt) {
         var destination_id = evt.currentTarget.value;
         if(destination_id != '')
             jQuery.ajax("<%=probes_url %>/"+destination_id+"/sources",{
@@ -75,6 +86,7 @@
                     options.removeAttr('disabled');
                     jQuery.each(result, function(index,item) {
                         options.append($("<option />").val(item.id).text(item.name+' ('+item.ipaddress+') - '+item.city+'/'+item.state.toUpperCase()));
+                        jQuery("#source_id").trigger('change');
                     });
                     if(result.length == 0) {
                         options.append($("<option />").val('').text('Essa sonda não recebe testes')).prop('disabled',true);
@@ -84,6 +96,30 @@
             });
         else {
             jQuery('#source_id').html('').append($("<option />").val('').text('Selecione a sonda de destino primeiro')).prop('disabled',true);
+        }
+    });
+
+    jQuery("#source_id").change(function (evt) {
+        var source_id = evt.currentTarget.value;
+        var destination_id = jQuery('#destination_id').val();
+        if(source_id != '')
+            jQuery.ajax("<%=probes_url %>/"+destination_id+"/metrics/"+source_id,{
+                success: function (result,status) {
+                    var options = jQuery('#metric_id');
+                    options.html('');
+                    options.removeAttr('disabled');
+                    jQuery.each(result, function(index,item) {
+                        options.append($("<option />").val(item.id).text(item.name+' ('+item.description+')'));
+                        jQuery("#metric_id").trigger('change');
+                    });
+                    if(result.length == 0) {
+                        options.append($("<option />").val('').text('Essas sonda não possuem testes programados')).prop('disabled',true);
+                    }
+                },
+                dataType: 'json'
+            });
+        else {
+            jQuery('#metric_id').html('').append($("<option />").val('').text('Selecione as sonda de origem e de destino primeiro')).prop('disabled',true);
         }
     });
 </script>
