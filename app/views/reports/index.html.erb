@@ -41,10 +41,10 @@
           </div>
         </div>
         <div class="control-group">
-          <%= label :date, :start, "Fim: ", :class => 'control-label' %>
+          <%= label :date, :end, "Fim: ", :class => 'control-label' %>
           <div class="controls">
             <div class="input-prepend">
-              <label for="date_start" style="display: inline"><span class="add-on" style="margin-top: 1px;"><i class="icon-calendar"></i></span></label>
+              <label for="date_end" style="display: inline"><span class="add-on" style="margin-top: 1px;"><i class="icon-calendar"></i></span></label>
               <%= text_field :date, :end, :class => 'input-small datepicker', :"data-date-format".to_sym => "dd/mm/yyyy", :value => Date.current.strftime('%d/%m/%Y') %>
             </div>
             <div class="input-prepend">
@@ -62,7 +62,7 @@
     </div>
 <% end %>
 
-<div id="graphs-area" class="row-fluid">
+<div id="graphs-area">
 
 </div>
 
@@ -72,6 +72,17 @@
             .on('changeDate', this, function (ev) {
                 jQuery(this).datepicker('hide');
                 jQuery('#time_start').focus();
+            })
+            .iMask({
+                type: 'fixed',
+                mask: '99/99/9999'
+            });
+
+    jQuery('#date_end')
+            .datepicker()
+            .on('changeDate', this, function (ev) {
+                jQuery(this).datepicker('hide');
+                jQuery('#time_end').focus();
             })
             .iMask({
                 type: 'fixed',
@@ -202,7 +213,7 @@
 
         this.draw = function() {
             //cria o container
-            jQuery('#graphs-area').append('<div class=\"span12\" id=\"chart-'+self.idName+'\" style="height:300px;"></div>');
+            jQuery('#graphs-area').append('<div class="row-fluid"><div class=\"span12\"><div id=\"chart-'+self.idName+'\" style="height:300px;"></div></div></div>');
             //desenha
             self.chartObject = new Highcharts.Chart({
                 chart:{
