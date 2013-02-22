@@ -1,8 +1,9 @@
 MomRails::Application.routes.draw do
   match 'reports' => 'reports#index', :as => 'reports'
   get "reports/index", :as => 'index_reports'
-
-  get "reports/graph", :as => 'graph_reports'
+  match 'reports/graph/:source_id/:destination_id/:metric_id' => 'reports#graph', :via => [:get]
+  post 'reports/graph', :as =>'graph_reports'
+  post 'kpi/show' => 'kpi#show', :as => 'show_kpi'
 
   resources :metrics
   resources :tests

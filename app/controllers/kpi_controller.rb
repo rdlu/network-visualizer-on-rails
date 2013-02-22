@@ -31,4 +31,12 @@ class KpiController < ApplicationController
 
     render :file => 'kpis/create', :formats => [:xml], :layout => false
   end
+
+  def show
+    kpi = Kpi.find_by_uuid(params[:uuid])
+
+    respond_to do |format|
+      format.json { render :json => kpi, :status => 200 }
+    end
+  end
 end

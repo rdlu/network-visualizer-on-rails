@@ -2,17 +2,19 @@
 <%= stylesheet_link_tag "bootstrap_datepicker" %>
 <%= javascript_include_tag "jquery_imask" %>
 <h2>Relatórios</h2>
-<%= form_tag(graph_reports_path, :class => 'form-horizontal') do %>
+<%= form_tag(graph_reports_path, :class => 'form-horizontal', :id => 'report-form') do %>
     <div class="row-fluid">
       <div class="span7">
         <div class="control-group">
           <label class="control-label" for="destination_id">Sonda de Destino: </label>
+
           <div class="controls">
             <%= collection_select :destination, :id, Probe.all, :id, :pretty_name_with_location, {:include_blank => "Selecione uma sonda..."}, {:class => 'input-block-level'} %>
           </div>
         </div>
         <div class="control-group">
           <label for="source_id" class="control-label">Sonda de Origem:</label>
+
           <div class="controls">
             <%= collection_select :source, :id, {}, :id, :pretty_name_with_location, {:include_blank => "Selecione a sonda de destino primeiro"}, {:class => 'input-block-level', :disabled => 'disabled'} %>
           </div>
@@ -30,7 +32,7 @@
           <div class="controls">
             <div class="input-prepend">
               <label for="date_start" style="display: inline"><span class="add-on" style="margin-top: 1px;"><i class="icon-calendar"></i></span></label>
-              <%= text_field :date, :start, :class => 'input-small datepicker', :"data-date-format".to_sym => "dd/mm/yyyy", :value => Date.current.prev_week.strftime('%d/%m/%Y') %>
+              <%= text_field :date, :start, :class => 'input-small datepicker', :"data-date-format".to_sym => "dd/mm/yyyy", :value => Date.current.prev_day.strftime('%d/%m/%Y') %>
             </div>
             <div class="input-prepend">
               <span class="add-on"><i class="icon-time"></i></span>
@@ -53,75 +55,233 @@
         </div>
         <div class="control-group">
           <div class="controls">
-            <input class="btn btn-primary span8" type="submit" name="add" value="Adicionar" />
+            <input class="btn btn-primary span8" type="submit" name="add" id="report-add" value="Adicionar"/>
           </div>
         </div>
       </div>
     </div>
 <% end %>
 
+<div id="graphs-area" class="row-fluid">
+
+</div>
+
 <script type="text/javascript">
     jQuery('#date_start')
             .datepicker()
-            .on('changeDate', this, function(ev){
+            .on('changeDate', this, function (ev) {
                 jQuery(this).datepicker('hide');
                 jQuery('#time_start').focus();
             })
             .iMask({
-                type : 'fixed',
-                mask : '99/99/9999'
+                type: 'fixed',
+                mask: '99/99/9999'
             });
 
     jQuery('#time_start')
-            //.timepicker({showMeridian: false,disableFocus:true})
-            .iMask({type : 'fixed', mask : '99:99'});
+        //.timepicker({showMeridian: false,disableFocus:true})
+            .iMask({type: 'fixed', mask: '99:99'});
 
     jQuery("#destination_id").change(function (evt) {
         var destination_id = evt.currentTarget.value;
-        if(destination_id != '')
-            jQuery.ajax("<%=probes_url %>/"+destination_id+"/sources",{
-                success: function (result,status) {
+        if (destination_id != '')
+            jQuery.ajax("<%=probes_url %>/" + destination_id + "/sources", {
+                success: function (result, status) {
                     var options = jQuery('#source_id');
                     options.html('');
                     options.removeAttr('disabled');
-                    jQuery.each(result, function(index,item) {
-                        options.append($("<option />").val(item.id).text(item.name+' ('+item.ipaddress+') - '+item.city+'/'+item.state.toUpperCase()));
+                    jQuery.each(result, function (index, item) {
+                        options.append($("<option />").val(item.id).text(item.name + ' (' + item.ipaddress + ') - ' + item.city + '/' + item.state.toUpperCase()));
                         jQuery("#source_id").trigger('change');
                     });
-                    if(result.length == 0) {
-                        options.append($("<option />").val('').text('Essa sonda não recebe testes')).prop('disabled',true);
+                    if (result.length == 0) {
+                        options.append($("<option />").val('').text('Essa sonda não recebe testes')).prop('disabled', true);
+                        jQuery('#metric_id').html('').append($("<option />").val('').text('Selecione as sonda de origem e de destino primeiro')).prop('disabled', true);
                     }
                 },
                 dataType: 'json'
             });
         else {
-            jQuery('#source_id').html('').append($("<option />").val('').text('Selecione a sonda de destino primeiro')).prop('disabled',true);
+            jQuery('#source_id').html('').append($("<option />").val('').text('Selecione a sonda de destino primeiro')).prop('disabled', true);
+            jQuery('#metric_id').html('').append($("<option />").val('').text('Selecione as sonda de origem e de destino primeiro')).prop('disabled', true);
+            jQuery("#metric_id").trigger('change');
         }
     });
 
     jQuery("#source_id").change(function (evt) {
         var source_id = evt.currentTarget.value;
         var destination_id = jQuery('#destination_id').val();
-        if(source_id != '')
-            jQuery.ajax("<%=probes_url %>/"+destination_id+"/metrics/"+source_id,{
-                success: function (result,status) {
+        if (source_id != '')
+            jQuery.ajax("<%=probes_url %>/" + destination_id + "/metrics/" + source_id, {
+                success: function (result, status) {
                     var options = jQuery('#metric_id');
                     options.html('');
                     options.removeAttr('disabled');
-                    jQuery.each(result, function(index,item) {
-                        options.append($("<option />").val(item.id).text(item.name+' ('+item.description+')'));
+                    jQuery.each(result, function (index, item) {
+                        options.append($("<option />").val(item.id).text(item.name + ' (' + item.description + ')'));
                         jQuery("#metric_id").trigger('change');
                     });
-                    if(result.length == 0) {
-                        options.append($("<option />").val('').text('Essas sonda não possuem testes programados')).prop('disabled',true);
+                    if (result.length == 0) {
+                        options.append($("<option />").val('').text('Essas sonda não possuem testes programados')).prop('disabled', true);
                     }
                 },
                 dataType: 'json'
             });
         else {
-            jQuery('#metric_id').html('').append($("<option />").val('').text('Selecione as sonda de origem e de destino primeiro')).prop('disabled',true);
+            jQuery('#metric_id').html('').append($("<option />").val('').text('Selecione as sonda de origem e de destino primeiro')).prop('disabled', true);
+            jQuery("#metric_id").trigger('change');
         }
     });
+
+    jQuery("#metric_id").change(function (event) {
+        var metric_id = event.currentTarget.value;
+        if (metric_id != '') {
+            jQuery('#report-add').prop('disabled', false);
+        } else {
+            jQuery('#report-add').prop('disabled', true);
+        }
+    });
+
+    jQuery('#report-add').prop('disabled', true);
+
+    jQuery('#report-form').submit(function (event) {
+        event.preventDefault();
+        var destination_id = jQuery('#destination_id').val();
+        var source_id = jQuery('#source_id').val();
+        var metric_id = jQuery('#metric_id').val();
+
+        if (source_id != '' && destination_id != '' && metric_id != '')
+            jQuery.ajax("<%=graph_reports_url %>", {
+                success: function (result, status) {
+                    var graph = new Graph(result.source,result.destination,result.metric,result.range,result.results);
+                    graphs[graph.idName] = graph;
+                    graph.draw();
+                },
+                dataType: 'json',
+                data: $(this).serialize(),
+                method: 'post'
+            });
+        else {
+            jQuery('#report-add').prop('disabled', true);
+        }
+    });
+
+    var graphs = {};
+
+    function Graph(source,destination,metric,range,results) {
+        var self = this;
+        this.source = source;
+        this.destination = destination;
+        this.metric = metric;
+        this.range = { start: moment(range.start), end: moment(range.end)  };
+        this.results = results;
+        this.chartObject = null;
+        this.container = null;
+        this.idName = self.source.id+'-'+self.destination.id+'-'+self.metric.id+'-'+self.range.start.unix()+'-'+self.range.end.unix();
+
+        this.dataset = function(direction) {
+            direction = typeof direction !== 'undefined' ? direction : 'dsavg';
+            var retorno = [];
+            jQuery.each(self.results,function(index,result) {
+                retorno.push({x: moment(result.x).toDate(), y: result[direction], extra: result.extra})
+            });
+            return retorno;
+        };
+
+        this.series = function() {
+            if(self.metric.plugin != 'rtt')
+                var directions = [{name:'dsavg',title:'Upload'},{name:'sdavg',title:'Download'}];
+            else
+                var directions = [{name:'y',title:'Round Trip Time'}];
+            var retorno = [];
+            jQuery.each(directions, function(idx,direction) {
+                retorno.push({name:direction.title,data:self.dataset(direction.name)});
+            });
+            return retorno;
+        };
+
+        this.draw = function() {
+            //cria o container
+            jQuery('#graphs-area').append('<div class=\"span12\" id=\"chart-'+self.idName+'\" style="height:300px;"></div>');
+            //desenha
+            self.chartObject = new Highcharts.Chart({
+                chart:{
+                    renderTo:'chart-'+self.idName,
+                    type:'spline',
+                    zoomType:'x'
+                },
+                title:{
+                    text:'Dados de Medições do NetMetric: '+self.metric.name
+                },
+                subtitle:{
+                    text:'Origem: ' + self.source.name + ' | Destino: ' + self.destination.name + ' | Data: ' + self.range.start.format('YYYY-MM-DD HH:mm:ss Z') + ' à ' + self.range.end.format('YYYY-MM-DD HH:mm:ss Z')
+                },
+                xAxis:{
+                    type:'datetime',
+                    min:self.range.start,
+                    max:self.range.end
+                },
+                yAxis:{
+                    title:{
+                        text:self.metric.name.toUpperCase()
+                    },
+                    min:0
+                },
+                tooltip:{
+                    formatter:function () {
+                        var extras = '';
+                        objLen = $.map(this.point.extra,function (n, i) {
+                            return i;
+                        }).length;
+                        if (objLen > 1) {
+                            var kpi = this.point.extra;
+                            extras += '<b>LAC: </b>' + kpi.lac + '<br />' + '<b>CELLID: </b>' + kpi.cell_id + '<br />';
+                            extras += '<b>Marca: </b>' + kpi.brand + '<br />' + '<b>Modelo: </b>' + kpi.model + '<br />';
+                            extras += '<b>Tec. Conex.: </b>' + kpi.conn_tech + '<br />' + '<b>Sinal: </b>' + kpi.signal + 'dB<br />';
+                            extras += '<b>Atraso DNS: </b>' + kpi.dns_latency + 'ms<br />';
+                        } else if (this.point.extra.uuid) {
+                            extras += 'Clique para obter os KPIs';
+                        } else {
+                            extras += 'Informações KPI não disponíveis para este ponto.';
+                        }
+                        return '<strong>' + this.series.name+': '+conversion.stringFromMetric(self.metric.plugin, this.y) + '</strong><br/><em>' +
+                                moment(this.x).format('YYYY-MM-DD HH:mm:ss Z') + '</em><br />' + extras;
+                    }
+                },
+                plotOptions:{
+                    series:{
+                        cursor:'pointer',
+                        point:{
+                            events:{
+                                click:function (evt) {
+                                    jQuery.ajax({
+                                        url:"<%=show_kpi_url%>",
+                                        type:'post',
+                                        dataType: 'json',
+                                        data:{
+                                            uuid:evt.currentTarget.extra.uuid
+                                        },
+                                        success:function (data) {
+                                            console.log(data);
+                                            evt.currentTarget.extra = data;
+                                            var wtemp = self.chartObject.chartWidth;
+                                            var htemp = self.chartObject.chartHeight;
+                                            self.chartObject.setSize(wtemp-10, htemp-10, false);
+                                            self.chartObject.setSize(wtemp, htemp, false);
+                                        },
+                                        error:function (status, msg, error) {
+                                            //graphReport.objects[metric].tooltip.refresh([evt.currentTarget]);
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    }
+                },
+                series:self.series()
+            });
+        };
+    }
 </script>
 
 

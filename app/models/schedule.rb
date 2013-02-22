@@ -54,6 +54,10 @@ class Schedule < ActiveRecord::Base
     metrics.uniq.sort_by{ |metric| metric[sort_by]}
   end
 
+  def have_metric? (metric)
+    self.metrics.include? metric
+  end
+
   def default_values
     self.status ||= 'config'
     self.start ||= DateTime.now
