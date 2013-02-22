@@ -59,7 +59,7 @@ $(function(){
                 }
             },
             options: {
-                icon: new google.maps.MarkerImage("http://maps.gstatic.com/mapfiles/icon_green.png")
+                icon: new google.maps.MarkerImage("https://maps.gstatic.com/mapfiles/icon_green.png")
             },
             events:{
                 mouseover: function(marker, event, context){
