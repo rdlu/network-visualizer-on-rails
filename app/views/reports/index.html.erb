@@ -93,6 +93,10 @@
         //.timepicker({showMeridian: false,disableFocus:true})
             .iMask({type: 'fixed', mask: '99:99'});
 
+    jQuery('#time_end')
+        //.timepicker({showMeridian: false,disableFocus:true})
+            .iMask({type: 'fixed', mask: '99:99'});
+
     jQuery("#destination_id").change(function (evt) {
         var destination_id = evt.currentTarget.value;
         if (destination_id != '')
