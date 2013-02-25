@@ -26,7 +26,7 @@ normal_user.save!
 
 Metric.create([
       { name: "Throughput TCP", description: "Vazão de dados sob TCP", order:1, plugin: "throughput_tcp", reverse: false },
-      { name: "Throughput", description: "Vazão de dados", order:2, plugin: "throughput", reverse: false },
+      { name: "Throughput", description: "Vazão de dados sob UDP", order:2, plugin: "throughput", reverse: false },
       { name: "Throughput HTTP", description: "Vazão de dados sob HTTP", order:3, plugin: "throughput_http", reverse: false },
       { name: "RTT", description: "Latência ida e volta", order:4, plugin: "rtt", reverse: true },
       { name: "Perda", description: "Perda de pacotes transmitidos", order:5, plugin: "loss", reverse: true },
