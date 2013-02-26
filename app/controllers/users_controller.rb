@@ -96,12 +96,24 @@ class UsersController < ApplicationController
   def update
     @user = User.find(params[:id])
 
-    if params[:user][:password].blank?
+    if params[:user][:current_password].blank?
+      # TODO: alterar para flash[:error] e adicionar no application_layout
+      flash[:notice] = "É necessário fornecer a senha atual para alterar a senha"
+      params[:user].delete(:current_password)
+      redirect_to welcome_index_path
+      return
+    elsif params[:user][:password].blank?
       [:password,:password_confirmation,:current_password].collect{|p| params[:user].delete(p) }
-    elsif params[:user][:current_password].blank?
-      [:current_password].collect{|p| params[:user].delete(p) }
     end
 
+    unless @user.valid_password?(params[:user][:current_password])
+      # TODO: alterar para flash[:error] e adicionar no application_layout
+      flash[:notice] = "Senha inválida"
+      redirect_to welcome_index_path
+      return
+    end
+
+    params[:user].delete(:current_password) # nem faz sentido passar isso adiante a partir daqui
     if @user != @current_user
       go_to = users_path
       if params[:roles].blank?

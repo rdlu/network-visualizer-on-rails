@@ -48,7 +48,7 @@ ActiveRecord::Schema.define(:version => 20130207155645) do
   end
 
   add_index "evaluations", ["profile_id"], :name => "tests_profile_id_fk"
-  add_index "evaluations", ["schedule_id"], :name => "tests_schedule_id_fk"
+  add_index "evaluations", ["schedule_id"], :name => "evaluations_schedule_id_fk"
 
   create_table "kpis", :force => true do |t|
     t.string   "schedule_uuid",    :limit => 36
