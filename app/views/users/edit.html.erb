@@ -3,7 +3,7 @@
   <% if @user == @current_user  %>
     <h1>Minha conta: <%= @user.email %> </h1>
     </div>
-        <%= form_for(@user, :html => { :method => :put }) do |f| %>
+    <%= form_for(@user, :url => { :action => "update_password" }) do |f| %>
           <div class="span4 offset4" style="text-align: center;">
             <h3>Papéis deste usuário</h3>
             <% @user.roles.each do |role| %>
