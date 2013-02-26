@@ -12,9 +12,9 @@ admin_role = Role.create({ name: 'admin', description: 'Administrador'})
 normal_role = Role.create({ name: 'normal', description: 'Configurador' })
 visualizador_role = Role.create({ name: 'visualizador', description: 'Visualizador'})
 
-admin_user = User.new({ email: 'admin@netmetric.com', password: 'admin1', adm_block: true})
-normal_user = User.new({ email: 'normal@netmetric.com', password: 'normal1', adm_block: true})
-visualizador_user = User.new({ email: 'visualizador@netmetric.com', password: 'visualizador1', adm_block: true})
+admin_user = User.new({ email: 'admin@netmetric.com', password: 'admin1', password_confirmation: 'admin1', adm_block: true})
+normal_user = User.new({ email: 'normal@netmetric.com', password: 'normal1', password_confirmation: 'normal1', adm_block: true})
+visualizador_user = User.new({ email: 'visualizador@netmetric.com', password: 'visualizador1', password_confirmation: 'visualizador1', adm_block: true})
 
 admin_user.skip_confirmation!
 normal_user.skip_confirmation!
