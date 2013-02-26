@@ -42,7 +42,7 @@
                   <% accessible_roles.each do |role|
                         %>
                               <label class="checkbox inline">
-                                <input type="checkbox" name="roles[]" value="<%= role.id %>" > <%= role.description %>
+                                <input type="checkbox" name="roles[]" value="<%= role.id %>" <%= @users.roles.include?(role) ? "checked" : "">%> <%= role.description %>
                               </label>
                         <%
                      end %>
