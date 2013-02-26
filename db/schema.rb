@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130226133531) do
+ActiveRecord::Schema.define(:version => 20130226142045) do
 
   create_table "connection_profiles", :force => true do |t|
     t.string   "name_id"
@@ -78,6 +78,23 @@ ActiveRecord::Schema.define(:version => 20130226133531) do
   add_index "kpis", ["destination_id"], :name => "index_kpis_on_destination_id"
   add_index "kpis", ["source_id"], :name => "index_kpis_on_source_id"
   add_index "kpis", ["uuid"], :name => "index_kpis_on_uuid"
+
+  create_table "medians", :force => true do |t|
+    t.integer  "schedule_id"
+    t.integer  "threshold_id"
+    t.string   "schedule_uuid"
+    t.datetime "start_timestamp"
+    t.datetime "end_timestamp"
+    t.integer  "expected_points"
+    t.integer  "total_points"
+    t.float    "dsavg"
+    t.float    "sdavg"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
+
+  add_index "medians", ["schedule_id"], :name => "index_medians_on_schedule_id"
+  add_index "medians", ["threshold_id"], :name => "index_medians_on_threshold_id"
 
   create_table "metrics", :force => true do |t|
     t.string   "name"
