@@ -29,8 +29,8 @@
           <tr>
             <td><%= plan.name %></td>
             <td><%= plan.description %></td>
-            <td><%= plan.throughputDown %></td>
-            <td><%= plan.throughputUp %></td>
+            <td><%= plan.throughput_down %></td>
+            <td><%= plan.throughput_up %></td>
             <td><%= link_to 'Visualizar', plan %></td>
             <td><%= link_to 'Editar', edit_plan_path(plan) %></td>
             <td><%= link_to 'Excluir', plan, method: :delete, data: {confirm: 'Você tem certeza que deseja excluir este plano?'} %></td>

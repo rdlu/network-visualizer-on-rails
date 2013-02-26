@@ -4,8 +4,8 @@ class Plan < ActiveRecord::Base
 
   validates :name, :presence => true, :length => {:maximum => 255, :minimum => 3}
   validates_uniqueness_of :name
-  validates :throughputDown, :presence => true, :numericality => { :only_integer => true }
-  validates :throughputUp, :presence => true, :numericality => { :only_integer => true }
+  validates :throughput_down, :presence => true, :numericality => { :only_integer => true }
+  validates :throughput_up, :presence => true, :numericality => { :only_integer => true }
 
   #relationships
   has_many :probes
@@ -15,7 +15,7 @@ class Plan < ActiveRecord::Base
   scope :by_connection_profile, proc { |connection_profile| where(:connection_profile => connection_profile)}
 
   def name_with_throughput
-    self.name+" ("+self.throughputDown.to_s+"k"+8659.chr+"/"+self.throughputUp.to_s+"k"+8657.chr+")".html_safe
+    self.name+" ("+self.throughput_down.to_s+"k"+8659.chr+"/"+self.throughput_up.to_s+"k"+8657.chr+")".html_safe
   end
 
 end

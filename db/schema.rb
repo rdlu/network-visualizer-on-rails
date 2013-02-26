@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130207155645) do
+ActiveRecord::Schema.define(:version => 20130226133531) do
 
   create_table "connection_profiles", :force => true do |t|
     t.string   "name_id"
@@ -102,11 +102,11 @@ ActiveRecord::Schema.define(:version => 20130207155645) do
   create_table "plans", :force => true do |t|
     t.string   "name"
     t.text     "description"
-    t.integer  "throughputDown"
+    t.integer  "throughput_down"
     t.integer  "connection_profile_id"
     t.datetime "created_at",            :null => false
     t.datetime "updated_at",            :null => false
-    t.integer  "throughputUp"
+    t.integer  "throughput_up"
   end
 
   add_index "plans", ["connection_profile_id"], :name => "plans_connection_profile_id_fk"
