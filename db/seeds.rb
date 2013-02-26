@@ -44,21 +44,21 @@ Metric.create([
 conn3g = ConnectionProfile.new({ name_id: "3g-default", name: "3G Padrão", notes: "Perfil de conexão para redes 3G convencionais", conn_type: "mobile" })
 conn3g.save!
 
-plano3g = Plan.new({ name: "Vivo Internet (2012)", description: "Plano iniciado em 2012, sem a opção Plus (sem HDSPA+)", throughputDown: 1000, throughputUp:300})
+plano3g = Plan.new({ name: "Vivo Internet (2012)", description: "Plano iniciado em 2012, sem a opção Plus (sem HDSPA+)", throughput_down: 1000, throughput_up:300})
 plano3g.connection_profile = conn3g
 plano3g.save!
 
 conn4g = ConnectionProfile.new({ name_id: "4g-default", name: "4G", notes: "Perfil de conexão para redes 4G LTE", conn_type: "mobile" })
 conn4g.save!
 
-plano4g = Plan.new({ name: "Vivo Internet LTE", description: "Plano iniciado em 2013, utilizando LTE", throughputDown: 4000, throughputUp:1000})
+plano4g = Plan.new({ name: "Vivo Internet LTE", description: "Plano iniciado em 2013, utilizando LTE", throughput_down: 4000, throughput_up:1000})
 plano4g.connection_profile = conn4g
 plano4g.save!
 
 connfixa = ConnectionProfile.new({ name_id: "fixed", name: "Banda Larga Fixa", notes: "Perfil para redes fixas (ADSL/Cable)", conn_type: "fixed"})
 connfixa.save!
 
-planospeedy = Plan.new({ name: "Vivo Speedy 10Mbps", description: "Plano Speedy ADSL de 10 mega", throughputDown: 10000, throughputUp: 512})
+planospeedy = Plan.new({ name: "Vivo Speedy 10Mbps", description: "Plano Speedy ADSL de 10 mega", throughput_down: 10000, throughput_up: 512})
 planospeedy.connection_profile = connfixa
 planospeedy.save!
 
