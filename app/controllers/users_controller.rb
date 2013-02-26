@@ -107,12 +107,6 @@ class UsersController < ApplicationController
   def update
     @user = User.find(params[:id])
 
-    if params[:user][:current_password].blank?
-      params[:user].delete(:current_password)
-    elsif params[:user][:password].blank?
-      [:password,:password_confirmation,:current_password].collect{|p| params[:user].delete(p) }
-    end
-
     if @user != @current_user
       go_to = users_path
       if params[:roles].blank?
@@ -124,6 +118,10 @@ class UsersController < ApplicationController
          @user.roles = @roles
       end
     else
+      # TODO: verificar isto
+      if params[:user][:password].blank
+        flash[:notice] = "Senha não foi alterada"
+      end
       go_to = welcome_index_path
     end
 
