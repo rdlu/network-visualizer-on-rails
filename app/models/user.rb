@@ -8,6 +8,8 @@ class User < ActiveRecord::Base
 
   has_and_belongs_to_many :roles
   validate :has_roles?
+  validates :password, :presence => {:message => "não pode ficar em branco"}
+  validates :password_confirmation, :presence => {:message => "não pode ficar em branco"}
 
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :password, :password_confirmation, :remember_me, :adm_block

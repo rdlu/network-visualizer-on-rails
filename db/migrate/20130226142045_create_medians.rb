@@ -14,6 +14,6 @@ class CreateMedians < ActiveRecord::Migration
       t.timestamps
     end
     add_index :medians, :schedule_id
-    add_index :medians, :metric_id
+    add_index :medians, :threshold_id
   end
 end
