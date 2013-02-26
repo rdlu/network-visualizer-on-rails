@@ -14,4 +14,7 @@
 /log/*.log
 /tmp
 
+# Avoid needless conflicts
+db/data.yml
+
 .idea
