@@ -24,7 +24,7 @@ admin_user.roles << admin_role
 admin_user.save!
 normal_user.roles << normal_role
 normal_user.save!
-visualizador_user << visualizador_role
+visualizador_user.roles << visualizador_role
 visualizador_user.save!
 
 #metricas
