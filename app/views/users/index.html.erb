@@ -37,6 +37,8 @@
                       "Administrador"
                     elsif  user.roles.collect(&:name) == ["normal"]
                       "Configurador"
+                    elsif user.roles.collect(&:name) == ["visualizador"]
+                      "Visualizador"
                     else
                       "Administrador/Configurador"
                     end

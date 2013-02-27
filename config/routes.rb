@@ -28,12 +28,12 @@ MomRails::Application.routes.draw do
   resources :thresholds
   resources :plans
 
-  devise_for :users
-  resources :users
-
   devise_for :users #, :controllers => { :registrations => "registrations" }
   resources :users do
     get :active
+  end
+  as :user do
+    put :update_password, :controller => :users
   end
 
   get 'users/sign_in'

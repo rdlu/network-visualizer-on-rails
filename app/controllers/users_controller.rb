@@ -45,6 +45,17 @@ class UsersController < ApplicationController
     respond_to_not_found(:json, :xml, :html)
   end
 
+  def update_password
+    @user = User.find(current_user.id)
+    if @user.update_with_password(params[:user])
+      # Sign in the user by passing validation in case his password changed
+      sign_in @user, :bypass => true
+      redirect_to root_path
+    else
+      render "edit"
+    end
+  end
+
   def destroy
     @user.destroy
 
@@ -96,12 +107,6 @@ class UsersController < ApplicationController
   def update
     @user = User.find(params[:id])
 
-    if params[:user][:password].blank?
-      [:password,:password_confirmation,:current_password].collect{|p| params[:user].delete(p) }
-    elsif params[:user][:current_password].blank?
-      [:current_password].collect{|p| params[:user].delete(p) }
-    end
-
     if @user != @current_user
       go_to = users_path
       if params[:roles].blank?
@@ -113,6 +118,10 @@ class UsersController < ApplicationController
          @user.roles = @roles
       end
     else
+      # TODO: verificar isto
+      if params[:user][:password].blank
+        flash[:notice] = "Senha não foi alterada"
+      end
       go_to = welcome_index_path
     end
 

@@ -5,10 +5,12 @@ class Threshold < ActiveRecord::Base
   belongs_to :connection_profile
   belongs_to :metric
 
+  has_many :medians, :conditions => {:goal_method => 'median'}
+
   def goal_methods
     [%w(Mediana median),
-    ["Valor Bruto","raw"],
-    ["Disponibilidade Composta","availability"]]
+    ['Valor Bruto', 'raw'],
+    ['Disponibilidade Composta', 'availability']]
   end
 
   def goal_periods
@@ -19,8 +21,8 @@ class Threshold < ActiveRecord::Base
   end
 
   def compliance_methods
-    [["Quociente simples","quotient"],
-    ["Quociente da Média",'mean']]
+    [['Quociente simples', 'quotient'],
+    ['Quociente da Média','mean']]
   end
 
   def compliance_periods
@@ -36,6 +38,6 @@ class Threshold < ActiveRecord::Base
       return line.at(0) if line.at(1) == value.to_s
       return line.at(1) if line.at(0) == value.to_s
     end
-    "NameNotFound"
+    'NameNotFound'
   end
 end

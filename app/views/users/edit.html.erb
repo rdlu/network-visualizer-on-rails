@@ -1,15 +1,17 @@
-<div class="row-fluid">
+<A2VuLGfhzuauMfBTdiv class="row-fluid">
     <div class="span12" style="text-align: center;">
   <% if @user == @current_user  %>
     <h1>Minha conta: <%= @user.email %> </h1>
     </div>
-        <%= form_for(@user, :html => { :method => :put }) do |f| %>
+    <%= form_for(@user, :url => { :action => "update_password" }) do |f| %>
           <div class="span4 offset4" style="text-align: center;">
             <h3>Papéis deste usuário</h3>
             <% @user.roles.each do |role| %>
                 <span class="label label-info"><%= role.description %></span>
             <% end %>
             <h3>Alteração de Senha</h3>
+            <div class="field"> <i>Para alterar sua senha, forneça sua senha atual</i><br />
+              <%= f.password_field :current_password, :autocomplete => "off", :placeholder => "Digite sua senha atual" %></div>
             <div class="field"> <i>Deixe em branco caso não queria alterar este campo</i><br />
               <%= f.password_field :password, :autocomplete => "off", :placeholder => "Digite a sua Nova Senha"  %></div>
 
@@ -40,7 +42,11 @@
                   <% accessible_roles.each do |role|
                         %>
                               <label class="checkbox inline">
-                                <input type="checkbox" name="roles[]" value="<%= role.id %>" > <%= role.description %>
+                                <% if @user.roles.include? role %>
+                                  <input type="checkbox" name="roles[]" value="<%= role.id %>" checked="true"> <%= role.description %>
+                                <% else %>
+                                  <input type="checkbox" name="roles[]" value="<%= role.id %>"> <%= role.description %>
+                                <% end %>
                               </label>
                         <%
                      end %>

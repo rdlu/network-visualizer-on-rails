@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130207155645) do
+ActiveRecord::Schema.define(:version => 20130226142045) do
 
   create_table "connection_profiles", :force => true do |t|
     t.string   "name_id"
@@ -48,7 +48,7 @@ ActiveRecord::Schema.define(:version => 20130207155645) do
   end
 
   add_index "evaluations", ["profile_id"], :name => "tests_profile_id_fk"
-  add_index "evaluations", ["schedule_id"], :name => "tests_schedule_id_fk"
+  add_index "evaluations", ["schedule_id"], :name => "evaluations_schedule_id_fk"
 
   create_table "kpis", :force => true do |t|
     t.string   "schedule_uuid",    :limit => 36
@@ -79,6 +79,23 @@ ActiveRecord::Schema.define(:version => 20130207155645) do
   add_index "kpis", ["source_id"], :name => "index_kpis_on_source_id"
   add_index "kpis", ["uuid"], :name => "index_kpis_on_uuid"
 
+  create_table "medians", :force => true do |t|
+    t.integer  "schedule_id"
+    t.integer  "threshold_id"
+    t.string   "schedule_uuid"
+    t.datetime "start_timestamp"
+    t.datetime "end_timestamp"
+    t.integer  "expected_points"
+    t.integer  "total_points"
+    t.float    "dsavg"
+    t.float    "sdavg"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
+
+  add_index "medians", ["schedule_id"], :name => "index_medians_on_schedule_id"
+  add_index "medians", ["threshold_id"], :name => "index_medians_on_threshold_id"
+
   create_table "metrics", :force => true do |t|
     t.string   "name"
     t.string   "plugin"
@@ -102,11 +119,11 @@ ActiveRecord::Schema.define(:version => 20130207155645) do
   create_table "plans", :force => true do |t|
     t.string   "name"
     t.text     "description"
-    t.integer  "throughputDown"
+    t.integer  "throughput_down"
     t.integer  "connection_profile_id"
     t.datetime "created_at",            :null => false
     t.datetime "updated_at",            :null => false
-    t.integer  "throughputUp"
+    t.integer  "throughput_up"
   end
 
   add_index "plans", ["connection_profile_id"], :name => "plans_connection_profile_id_fk"
