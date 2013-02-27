@@ -1,7 +1,9 @@
 class ProfilesController < ApplicationController
+  before_filter :authenticate_user!
   # GET /profiles
   # GET /profiles.json
   def index
+    authorize! :read, self
     @profiles = Profile.all
 
     respond_to do |format|
@@ -13,6 +15,7 @@ class ProfilesController < ApplicationController
   # GET /profiles/1
   # GET /profiles/1.json
   def show
+    authorize! :read, self
     @profile = Profile.find(params[:id])
 
     respond_to do |format|
@@ -24,6 +27,7 @@ class ProfilesController < ApplicationController
   # GET /profiles/new
   # GET /profiles/new.json
   def new
+    authorize! :manage, self
     @profile = Profile.new
     @profile.config_parameters = '{}'
 
@@ -35,12 +39,14 @@ class ProfilesController < ApplicationController
 
   # GET /profiles/1/edit
   def edit
+    authorize! :manage, self
     @profile = Profile.find(params[:id])
   end
 
   # POST /profiles
   # POST /profiles.json
   def create
+    authorize! :manage, self
     params[:profile][:metric_ids] ||= []
     @profile = Profile.new(params[:profile])
 
@@ -58,6 +64,7 @@ class ProfilesController < ApplicationController
   # PUT /profiles/1
   # PUT /profiles/1.json
   def update
+    authorize! :manage, self
     params[:profile][:metric_ids] ||= []
     @profile = Profile.find(params[:id])
 
@@ -75,6 +82,7 @@ class ProfilesController < ApplicationController
   # DELETE /profiles/1
   # DELETE /profiles/1.json
   def destroy
+    authorize! :manage, self
     @profile = Profile.find(params[:id])
     @profile.destroy
 

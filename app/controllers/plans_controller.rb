@@ -1,5 +1,6 @@
 # coding: utf-8
 class PlansController < ApplicationController
+  before_filter :authenticate_user!
   before_filter :accessible_connections, :only => [:new, :edit, :show, :update, :create]
   helper_method :accessible_connections
   has_scope :by_connection_profile
@@ -7,7 +8,7 @@ class PlansController < ApplicationController
   # GET /plans
   # GET /plans.json
   def index
-    authorize! :index, self
+    authorize! :read, self
     if params.has_key? :connection_profile_id
       @conn_profile = ConnectionProfile.find(params[:connection_profile_id])
       @plans = @conn_profile.plans
@@ -24,7 +25,7 @@ class PlansController < ApplicationController
   # GET /plans/1
   # GET /plans/1.json
   def show
-    authorize! :show, self
+    authorize! :read, self
     @plan = Plan.find(params[:id])
 
     respond_to do |format|
@@ -36,7 +37,7 @@ class PlansController < ApplicationController
   # GET /plans/new
   # GET /plans/new.json
   def new
-    authorize! :new, self
+    authorize! :manage, self
     @plan = Plan.new
 
     respond_to do |format|
@@ -52,14 +53,14 @@ class PlansController < ApplicationController
 
   # GET /plans/1/edit
   def edit
-    authorize! :edit, self
+    authorize! :manage, self
     @plan = Plan.find(params[:id])
   end
 
   # POST /plans
   # POST /plans.json
   def create
-    authorize! :create, self
+    authorize! :manage, self
     @plan = Plan.new(params[:plan])
 
     @connection_profile = ConnectionProfile.find(params[:plan][:connection_profile_id])
@@ -79,7 +80,7 @@ class PlansController < ApplicationController
   # PUT /plans/1
   # PUT /plans/1.json
   def update
-    authorize! :update, self
+    authorize! :manage, self
     @plan = Plan.find(params[:id])
 
     respond_to do |format|
@@ -96,7 +97,7 @@ class PlansController < ApplicationController
   # DELETE /plans/1
   # DELETE /plans/1.json
   def destroy
-    authorize! :destroy, self
+    authorize! :manage, self
     @plan = Plan.find(params[:id])
     @plan.destroy
 

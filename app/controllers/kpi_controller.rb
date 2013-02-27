@@ -1,8 +1,11 @@
 class KpiController < ApplicationController
+  before_filter :authenticate_user!
   def index
+    authorize! :read, self
   end
 
   def create
+    authorize! :manage, self
     filtered_params = params.except('controller', 'action', 'destination_id')
     @kpi = Kpi.new(filtered_params)
 
@@ -33,6 +36,7 @@ class KpiController < ApplicationController
   end
 
   def show
+    authorize! :read, self
     kpi = Kpi.find_by_uuid(params[:uuid])
 
     respond_to do |format|

@@ -1,7 +1,9 @@
 # coding: utf-8
 class MetricsController < ApplicationController
+  before_filter :authenticate_user!
 
   def index
+    authorize! :read, self
     @metrics = Metric.order("`order` ASC").all
 
     respond_to do |format|
@@ -11,6 +13,7 @@ class MetricsController < ApplicationController
   end
 
   def new
+    authorize! :manage, self
     @metric = Metric.new
 
     respond_to do |format|
@@ -20,10 +23,12 @@ class MetricsController < ApplicationController
   end
 
   def edit
+    authorize! :manage, self
     @metric = Metric.find(params[:id])
   end
 
   def create
+    authorize! :manage, self
     @metric = Metric.new(params[:metric])
 
     respond_to do |format|
@@ -38,6 +43,7 @@ class MetricsController < ApplicationController
   end
 
   def update
+    authorize! :manage, self
     @metric = Metric.find(params[:id])
 
     respond_to do |format|

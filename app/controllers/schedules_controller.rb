@@ -1,8 +1,10 @@
 # coding: utf-8
 class SchedulesController < ApplicationController
+  before_filter :authenticate_user!
   # GET /schedules
   # GET /schedules.json
   def index
+    authorize! :read, self
     @schedules = Schedule.all
 
     respond_to do |format|
@@ -14,6 +16,7 @@ class SchedulesController < ApplicationController
   # GET /schedules/1
   # GET /schedules/1.json
   def show
+    authorize! :read, self
     @schedule = Schedule.find(params[:id])
 
     respond_to do |format|
@@ -25,6 +28,7 @@ class SchedulesController < ApplicationController
   # GET /schedules/new
   # GET /schedules/new.json
   def new
+    authorize! :manage, self
     @schedule = Schedule.new
     @connection_profile = ConnectionProfile.find(1)
 
@@ -36,12 +40,14 @@ class SchedulesController < ApplicationController
 
   # GET /schedules/1/edit
   def edit
+    authorize! :manage, self
     @schedule = Schedule.find(params[:id])
   end
 
   # POST /schedules
   # POST /schedules.json
   def create
+    authorize! :manage, self
     @schedule = Schedule.new(params[:schedule])
 
     respond_to do |format|
@@ -63,6 +69,7 @@ class SchedulesController < ApplicationController
   # PUT /schedules/1
   # PUT /schedules/1.json
   def update
+    authorize! :manage, self
     @schedule = Schedule.find(params[:id])
 
     respond_to do |format|
@@ -79,6 +86,7 @@ class SchedulesController < ApplicationController
   # DELETE /schedules/1
   # DELETE /schedules/1.json
   def destroy
+    authorize! :manage, self
     @schedule = Schedule.find(params[:id])
     @schedule.destroy
 

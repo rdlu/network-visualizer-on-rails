@@ -1,7 +1,9 @@
 # coding: utf-8
 class ThresholdsController < ApplicationController
+  before_filter :authenticate_user!
 
   def index
+    authorize! :read, self
     @thresholds = Threshold.all
 
     respond_to do |format|
@@ -11,6 +13,7 @@ class ThresholdsController < ApplicationController
   end
 
   def show
+    authorize! :read, self
     @threshold = Threshold.find(params[:id])
 
     respond_to do |format|
@@ -20,6 +23,7 @@ class ThresholdsController < ApplicationController
   end
 
   def new
+    authorize! :manage, self
     @threshold = Threshold.new
 
     respond_to do |format|
@@ -29,10 +33,12 @@ class ThresholdsController < ApplicationController
   end
 
   def edit
+    authorize! :manage, self
     @threshold = Threshold.find(params[:id])
   end
 
   def create
+    authorize! :manage, self
     @threshold = Threshold.new(params[:threshold])
 
     respond_to do |format|
@@ -47,6 +53,7 @@ class ThresholdsController < ApplicationController
   end
 
   def update
+    authorize! :manage, self
     @threshold = Threshold.find(params[:id])
 
     respond_to do |format|
@@ -61,5 +68,6 @@ class ThresholdsController < ApplicationController
   end
 
   def destroy
+    authorize! :manage, self
   end
 end

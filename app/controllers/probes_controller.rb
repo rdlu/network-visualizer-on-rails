@@ -1,5 +1,6 @@
 # coding: utf-8
 class ProbesController < ApplicationController
+  before_filter :authenticate_user!
   helper_method :states
   helper_method :types
 
@@ -9,7 +10,7 @@ class ProbesController < ApplicationController
   has_scope :by_type
 
   def index
-    authorize! :index, self
+    authorize! :read, self
 
     @probes = apply_scopes(Probe).all
     respond_to do |format|
@@ -19,10 +20,12 @@ class ProbesController < ApplicationController
   end
 
   def show
+    authorize! :read, self
     @probe = Probe.find(params[:id])
   end
 
   def new
+    authorize! :manage, self
     @probe = Probe.new(params[:probe])
 
     begin
@@ -39,6 +42,7 @@ class ProbesController < ApplicationController
   end
 
   def edit
+    authorize! :manage, self
     @probe = Probe.find(params[:id])
 
     begin
@@ -49,6 +53,7 @@ class ProbesController < ApplicationController
   end
 
   def create
+    authorize! :manage, self
     @probe = Probe.new(params[:probe])
 
     @connection_profile = ConnectionProfile.find(params[:probe][:connection_profile_id])
@@ -79,9 +84,11 @@ class ProbesController < ApplicationController
   end
 
   def update
+    authorize! :manage, self
   end
 
   def destroy
+    authorize! :manage, self
   end
 
   def sources
