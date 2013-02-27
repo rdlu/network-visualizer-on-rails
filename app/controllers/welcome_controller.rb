@@ -2,7 +2,7 @@ class WelcomeController < ApplicationController
   before_filter :authenticate_user!, :except => [:login]
 
   def index
-    authorize! :index, WelcomeController
+    authorize! :index, self
     render 'index.html.erb'
   end
 

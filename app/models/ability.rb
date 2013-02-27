@@ -12,7 +12,7 @@ class Ability
       can :manage, Probe
       can :manage, Schedule
       can :manage, Profile
-      can :manage, Reports
+      can :manage, ReportsController
       can :manage, user
     elsif user.role? :visualizador
       can :read, :all
