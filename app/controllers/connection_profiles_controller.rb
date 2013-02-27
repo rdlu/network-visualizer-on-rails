@@ -1,10 +1,10 @@
 # coding: utf-8
 class ConnectionProfilesController < ApplicationController
-
+  before_filter :authenticate_user!
   # GET /connection_profiles
   # GET /connection_profiles.json
   def index
-    authorize! :index, self
+    authorize! :read, self
     @connection_profiles = ConnectionProfile.all
 
     respond_to do |format|
@@ -16,7 +16,7 @@ class ConnectionProfilesController < ApplicationController
   # GET /connection_profiles/1
   # GET /connection_profiles/1.json
   def show
-    authorize! :show, self
+    authorize! :read, self
     @connection_profile = ConnectionProfile.find(params[:id])
 
     respond_to do |format|
@@ -28,7 +28,7 @@ class ConnectionProfilesController < ApplicationController
   # GET /connection_profiles/new
   # GET /connection_profiles/new.json
   def new
-    authorize! :new, self
+    authorize! :manage, self
     @connection_profile = ConnectionProfile.new
 
     respond_to do |format|
@@ -39,14 +39,14 @@ class ConnectionProfilesController < ApplicationController
 
   # GET /connection_profiles/1/edit
   def edit
-    authorize! :edit, self
+    authorize! :manage, self
     @connection_profile = ConnectionProfile.find(params[:id])
   end
 
   # POST /connection_profiles
   # POST /connection_profiles.json
   def create
-    authorize! :create, self
+    authorize! :manage, self
     @connection_profile = ConnectionProfile.new(params[:connection_profile])
 
     @connection_profile.name_id = @connection_profile.name
@@ -65,7 +65,7 @@ class ConnectionProfilesController < ApplicationController
   # PUT /connection_profiles/1
   # PUT /connection_profiles/1.json
   def update
-    authorize! :update, self
+    authorize! :manage, self
     @connection_profile = ConnectionProfile.find(params[:id])
 
     respond_to do |format|
@@ -82,7 +82,7 @@ class ConnectionProfilesController < ApplicationController
   # DELETE /connection_profiles/1
   # DELETE /connection_profiles/1.json
   def destroy
-    authorize! :destroy, self
+    authorize! :manage, self
     @connection_profile = ConnectionProfile.find(params[:id])
     @connection_profile.destroy
 

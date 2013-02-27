@@ -1,5 +1,6 @@
 # coding: utf-8
 class UsersController < ApplicationController
+  before_filter :authenticate_user!
   before_filter :get_user, :only => [:index,:new,:edit]
   before_filter :accessible_roles, :only => [:new, :edit, :show, :update, :create]
   load_and_authorize_resource :only => [:show,:new,:destroy,:update]
@@ -12,6 +13,7 @@ class UsersController < ApplicationController
 
 
   def new
+    authorize! :manage, self
     respond_to do |format|
       format.json { render :json => @user }
       format.xml  { render :xml => @user }
@@ -20,6 +22,7 @@ class UsersController < ApplicationController
   end
 
   def show
+    authorize! :read, self
     respond_to do |format|
       format.json { render :json => @user }
       format.xml  { render :xml => @user }
@@ -31,21 +34,23 @@ class UsersController < ApplicationController
   end
 
   def edit
-      @user = User.find(params[:id])
-      if @user != @current_user
-        authorize! :edit, @user
-      end
-      respond_to do |format|
-        format.json { render :json => @user }
-        format.xml  { render :xml => @user }
-        format.html
-       end
+    authorize! :manage, self
+    @user = User.find(params[:id])
+    if @user != @current_user
+      authorize! :edit, @user
+    end
+    respond_to do |format|
+      format.json { render :json => @user }
+      format.xml  { render :xml => @user }
+      format.html
+    end
 
   rescue ActiveRecord::RecordNotFound
     respond_to_not_found(:json, :xml, :html)
   end
 
   def update_password
+    authorize! :manage, self
     @user = User.find(current_user.id)
     if @user.update_with_password(params[:user])
       # Sign in the user by passing validation in case his password changed
@@ -57,6 +62,7 @@ class UsersController < ApplicationController
   end
 
   def destroy
+    authorize! :manage, self
     @user.destroy
 
     if @user != @current_user
@@ -78,6 +84,7 @@ class UsersController < ApplicationController
   end
 
   def create
+    authorize! :manage, self
     @user = User.new(params[:user])
 
     params_roles = (params.has_key? :roles) ? params[:roles] : nil
@@ -105,6 +112,7 @@ class UsersController < ApplicationController
   end
 
   def update
+    authorize! :manage, self
     @user = User.find(params[:id])
 
     if @user != @current_user
@@ -141,14 +149,14 @@ class UsersController < ApplicationController
   end
 
   def index
-    authorize! :index, self
+    authorize! :read, self
     @users = User.paginate(:page       => params[:page],
                            :per_page   => 15,
                            :order      => 'created_at DESC')
   end
 
   def active
-    authorize! :active, self
+    authorize! :read, self
 
     @user = User.find(params[:user_id])
     if @user.confirmation_token == nil

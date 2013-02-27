@@ -1,8 +1,11 @@
 class ResultsController < ApplicationController
+  before_filter :authenticate_user!
   def index
+    authorize! :read, self
   end
 
   def create
+    authorize! :manage, self
     filtered_params = params.except('controller', 'action', 'destination_id')
     @results = Results.new(filtered_params)
 
