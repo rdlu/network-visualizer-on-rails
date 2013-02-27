@@ -12,8 +12,11 @@ MomRails::Application.routes.draw do
     member do
       get 'destinations'
       get 'sources'
+
     end
   end
+
+  post 'probes/load_location',:as=> 'probes_load_location'
 
   match 'probes/:id/metrics/:source_id' => 'probes#metrics', :via => [:get]
 

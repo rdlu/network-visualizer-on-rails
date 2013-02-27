@@ -38,6 +38,19 @@ class Probe < ActiveRecord::Base
     "#{self.name} (#{self.ipaddress})"
   end
 
+  def pretty_status
+    case self.status
+      when 0
+        "inactive"
+      when 1
+        "active"
+      when 2
+        "attention"
+      when 3
+        "error"
+    end
+  end
+
   def pretty_name_with_location
     "#{self.name} (#{self.ipaddress}) - #{self.city}/#{self.state.upcase}"
   end

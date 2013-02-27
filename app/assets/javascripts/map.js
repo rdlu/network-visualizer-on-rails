@@ -9,6 +9,24 @@
 //= require gmap/gmap3.js
 
 
+/*
+aqui função que busca a localização em coordenadas dos agentes
+para mostrar no mapa
+
+function loadProbesLocation(){
+    $.ajax({
+        type:    "POST",
+        url:    "../probes/load_location",
+        error: function(data,errorThrown) {
+            alert("Error=" + errorThrown);
+        },
+
+        success: function(data) {
+            alert(data);
+        }
+    });
+}
+
 $(function(){
     $("#googleMap").gmap3({
         map:{
@@ -31,11 +49,7 @@ $(function(){
             }
         },
         marker: {
-           values:[
-                {latLng: [-22.904325,-43.209743], tag:"green"},
-                {latLng: [-30.03306,-51.23], tag:"green"},
-                [-22.904325,-45.209743]
-                ],
+           values:  loadProbesLocation(),
 
             cluster:{
                 radius:25,
@@ -79,3 +93,4 @@ $(function(){
         }
     });
 });
+ */

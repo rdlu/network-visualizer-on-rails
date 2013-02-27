@@ -111,6 +111,14 @@ class ProbesController < ApplicationController
     end
   end
 
+  def load_location
+    probe = Probe.all
+
+    respond_to do |format|
+      format.json { render :json => probe, :status => 200 }
+    end
+  end
+
   protected
 
   def types
@@ -123,4 +131,7 @@ class ProbesController < ApplicationController
     ["Rio Grande do Sul","rs"],
     ["São Paulo","sp"]]
   end
+
+
+
 end

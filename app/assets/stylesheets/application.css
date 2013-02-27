@@ -12,6 +12,7 @@
  *= require_tree .
  */
 
+
 .pagination
 {
     border: 1px solid #AAAAAA;
@@ -71,3 +72,6 @@ html, body {
     display: inline;
     padding: 0 2px;
 }
+
+
+
