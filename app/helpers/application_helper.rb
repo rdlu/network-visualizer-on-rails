@@ -24,6 +24,7 @@ module ApplicationHelper
     # Lê do cache
     probe = Rails.cache.fetch("probe_#{destination}") do
       # Este bloco será retornado APENAS no caso de um cache miss
+      Probe.find(destination).to_json
     end
     
     end_json[destination][:probe] = ActiveSupport::JSON.decode(probe)
@@ -31,7 +32,7 @@ module ApplicationHelper
     ###########
 
     kpi = Rails.cache.fetch("kpi_#{destination}") do
-
+      
     end
 
     end_json[destination][:kpi] = ActiveSupport::JSON.decode(kpi) 
@@ -39,7 +40,10 @@ module ApplicationHelper
     ###########
 
     schedule = Rails.cache.fetch("schedule_#{source}_#{destination}") do
-
+      Schedule.
+        where(destination_id: destination).
+        where(source_id: source).
+        all.last.to_json
     end
 
     sj = ActiveSupport::JSON.decode(schedule)
