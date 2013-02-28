@@ -16,13 +16,13 @@ class SnmpLegacyJob
       response = []
       SNMP::Manager.open(:host => real_ipaddress) do |manager|
         #SNMP::Manager.open(:host => '143.54.85.34') do |manager|
-        snmp_response = manager.get([base_index+data_array.at(0).to_a.at(0).at(0)])
+        snmp_response = manager.get([base_index+data_array.at(0).to_a.at(0).at(0)+profile.id.to_s])
         snmp_response.each_varbind do |vb|
           response << {:name => vb.name.to_s, :value => vb.value.to_s, :type => vb.value.asn1_type}
         end
       end
 
-      if (response.at(0)[:value] + profile.id.to_s) == 'notSet'
+      if response.at(0)[:value] == 'notSet'
         manager = SNMP::Manager.new(:host => real_ipaddress, :community => 'suppublic')
         data_array.each do |data|
           key = data.to_a.at(0).at(0) + profile.id.to_s
