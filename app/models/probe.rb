@@ -58,7 +58,7 @@ class Probe < ActiveRecord::Base
   def real_ipaddress
     if self.hostname? self.ipaddress
       require 'resolv'
-      return Resolv::DNS.new(:nameserver => ['143.54.85.34'], :search => ['vivo.com.br'], :ndots => 1).getaddress(self.ipaddress)
+      return Resolv::DNS.new(:nameserver => ['143.54.85.34'], :search => ['vivo.com.br'], :ndots => 1).getaddress(self.ipaddress).address
     end
     return self.ipaddress if IPAddress.valid? self.ipaddress
     false
