@@ -23,6 +23,11 @@ class ResultsController < ApplicationController
       @status = 'Fail'
     end
 
+    # write to cache
+    Rails.cache.write "results_#{@schedule.id}" "#{@results.to_json}"
+    Rails.cache.write "schedule_#{@schedule.id}" "#{@schedule.to_json}"
+    Rails.cache.write "probe_#{@destination.id}" "#{@destination.to_json}"
+
     render :file => 'results/create', :formats => [:xml], :layout => false
   end
 end

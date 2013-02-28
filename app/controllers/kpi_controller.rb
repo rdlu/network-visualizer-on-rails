@@ -29,6 +29,10 @@ class KpiController < ApplicationController
       @status = 'Fail'
     end
 
+    # Write to cache
+    Rails.cache.write "kpi_#{@source.id}" "#{@kpi.to_json}"
+    Rails.cache.write "schedule_#{@schedule.id}" "#{@schedule.to_json}"
+
     render :file => 'kpis/create', :formats => [:xml], :layout => false
   end
 
