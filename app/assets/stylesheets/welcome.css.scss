@@ -56,17 +56,10 @@
   font-weight: bold;
   font-size: 5em;
 }
-
-.arrow{
-  position: absolute;
-  left: 45px;
-  height: 0pt;
-  width: 0pt;
-  margin-left: 0pt;
-  border-width: 10px 10px 0pt 0pt;
-  border-color: #2C2C2C transparent transparent;
-  border-style: solid;
+.btn:focus {
+  background-position: 0 !important;
 }
+
 
 .btn-active {
   background-color: rgba(91, 183, 91, 0.23);
