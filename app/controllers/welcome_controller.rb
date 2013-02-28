@@ -19,4 +19,10 @@ class WelcomeController < ApplicationController
     render :layout => false, :html => 'OK'
   end
 
+  def status
+    respond_to do |format|
+      format.json { render json: schedule_for_probes(params[:source], params[:destination])}
+    end
+  end
+
 end
