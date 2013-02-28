@@ -25,7 +25,7 @@ class SnmpLegacyJob
       if response.at(0)[:value] == 'notSet'
         manager = SNMP::Manager.new(:host => real_ipaddress, :community => 'suppublic')
         data_array.each do |data|
-          key = data.to_a.at(0).at(0)
+          key = data.to_a.at(0).at(0) + profile.id.to_s
           value = data.to_a.at(0).at(1)
           if value.is_a? Integer
             manager.set(SNMP::VarBind.new(base_index+key, SNMP::Integer.new(value)))
@@ -63,6 +63,7 @@ class SnmpLegacyJob
       ports << '1200'+profile.id.to_s + ' '
       profile_ids << profile.id.to_s + ' '
     end
+    ports = '12001 12002 12003'
     ports = ports.strip
     profile_ids = profile_ids.strip
     table_id = schedule.destination.id.to_s
@@ -122,10 +123,11 @@ class SnmpLegacyJob
     ports = ''
     protocol_ids = ''
     profiles.each do |profile|
-      ports << '1200'+profile.id.to_s + ' '
+      #ports << '1200'+profile.id.to_s + ' '
       protocol_id = JSON.load(profile.config_parameters)['profile']['data'].at(9).to_a.at(0).at(1)
       protocol_ids << protocol_id.to_s + ' '
     end
+    ports = '12001 12002 12003'
     ports = ports.strip
     protocol_ids = protocol_ids.strip
     table_id = schedule.source.id.to_s
