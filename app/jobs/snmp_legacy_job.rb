@@ -112,54 +112,8 @@ class SnmpLegacyJob
 
   #seta a managerTable
   def self.agent_setup(profiles, schedule)
-    if schedule.destination.type == 'android'
-      Yell.new(:gelf, :facility => 'netmetric').info 'Agentes Android devem ter o gerente configurado no próprio aparelho.',
-                                                     '_schedule_id' => schedule.id, '_probe_id' => schedule.destination.id
-      return nil
-    end
-
-    real_ipaddress = schedule.destination.real_ipaddress
-
-    ports = ''
-    protocol_ids = ''
-    profiles.each do |profile|
-      #ports << '1200'+profile.id.to_s + ' '
-      protocol_id = JSON.load(profile.config_parameters)['profile']['data'].at(9).to_a.at(0).at(1)
-      protocol_ids << protocol_id.to_s + ' '
-    end
-    ports = '12001 12002 12003'
-    ports = ports.strip
-    protocol_ids = protocol_ids.strip
-    table_id = schedule.source.id.to_s
-
-    data_array = [
-        ['.0.3.'+table_id, 6],
-        ['.0.0.'+table_id, schedule.source.real_ipaddress],
-        ['.0.1.'+table_id, ports],
-        ['.0.2.'+table_id, protocol_ids],
-        ['.0.3.'+table_id, 2],
-    ]
-
-
-    base_index = '1.3.6.1.4.1.12000.10'
-
-    begin
-      manager = SNMP::Manager.new(:host => real_ipaddress, :community => 'suppublic')
-      data_array.each do |key, value|
-        if value.is_a? Integer
-          manager.set(SNMP::VarBind.new(base_index+key, SNMP::Integer.new(value)))
-        else
-          manager.set(SNMP::VarBind.new(base_index+key, SNMP::OctetString.new(value)))
-        end
-      end
-      manager.close
-      Yell.new(:gelf, :facility => 'netmetric').info "Agente #{schedule.destination.name} configurado para receber testes do Gerente #{schedule.source.name}",
-                                                     '_schedule_id' => schedule.id, '_probe_id' => schedule.destination.id
-    rescue Exception => error
-      Yell.new(:gelf, :facility => 'netmetric').error 'Nao foi possivel enviar o agentTable: '+error.to_s,
-                                                      '_schedule_id' => schedule.id, '_probe_id' => schedule.destination.id,
-                                                      '_error' => error
-      raise SnmpLegacyJobException, 'Erro na execução do job snmp_legacy ao configurar o agente'
-    end
+    Yell.new(:gelf, :facility => 'netmetric').info 'Agentes de versao recente não necessitam configuração via SNMP.',
+                                                   '_schedule_id' => schedule.id, '_probe_id' => schedule.destination.id
+    return nil
   end
 end
