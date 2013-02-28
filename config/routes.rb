@@ -58,6 +58,7 @@ MomRails::Application.routes.draw do
         }
 
   #/collect/id/2/kpis/3567/SonyEricsson/R800i/-/-/-101/-/-/-/0/4/1551/1361215988/db14c4a2-1629-4f2e-9fc5-361d3fec4b74
+  #/collect/id/3/kpis/-/-/-/-/-/-/-/0/143.54.85.34/1500/2/-/1362063316/44167d08-b2ea-4341-831e-50f7b8b7a4c8
   match 'collect/id/:destination_id/kpis/:cell_id/:brand/:model/:conn_type/:conn_tech/:signal/:error_rate/:change_of_ips/:route/:mtu/:dns_latency/:lac/:timestamp/:uuid' => 'kpi#create',
         :via => [:get],
         :as => 'kpi_create',
@@ -73,7 +74,7 @@ MomRails::Application.routes.draw do
                           :route => /.+/,
                           :mtu => /[0-9\-]+|Desconhecido/,
                           :dns_latency => /[%3C]*[0-9.\- ><]+|Desconhecido/,
-                          :lac => /[-]*[0-9]+/,
+                          :lac => /[0-9\-]+/,
                           :timestamp => /\d+/,
                           :uuid => /[0-9A-Fa-f]+-[0-9A-Fa-f]+-[0-9A-Fa-f]+-[0-9A-Fa-f]+-[0-9A-Fa-f]+/
         }
