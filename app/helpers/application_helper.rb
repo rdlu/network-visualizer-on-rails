@@ -20,6 +20,7 @@ module ApplicationHelper
 
   def schedule_for_probes(source, destination)
     end_json = Hash.new
+    end_json[destination] = Hash.new
     
     # Lê do cache
     probe = Rails.cache.fetch("probe_#{destination}") do
@@ -47,6 +48,7 @@ module ApplicationHelper
     end
 
     sj = ActiveSupport::JSON.decode(schedule)
+    end_json[destination][:schedules] = Hash.new
     end_json[destination][:schedules][sj[:id]] = sj
 
     ###########
@@ -59,7 +61,7 @@ module ApplicationHelper
 
     ###########
     
-    end_json.to_json
+    end_json
   end
 
 end
