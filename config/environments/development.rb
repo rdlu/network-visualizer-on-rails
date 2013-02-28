@@ -14,7 +14,7 @@ MomRails::Application.configure do
 
   # We need caching to serve a reports page
   config.action_controller.perform_caching = true
-  config.cache_store :dalli_store
+  config.cache_store = :dalli_store, 'localhost:11211'
 
   # Don't care if the mailer can't send
   config.action_mailer.raise_delivery_errors = false
