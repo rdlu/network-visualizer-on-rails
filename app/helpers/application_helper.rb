@@ -18,4 +18,10 @@ module ApplicationHelper
     html
   end
 
+  def schedule_for_probes(source, destination)
+    # Lê do cache
+    p = Rails.cache.read("probe_#{source}")
+    p
+  end
+
 end
