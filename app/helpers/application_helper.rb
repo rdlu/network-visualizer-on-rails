@@ -20,8 +20,21 @@ module ApplicationHelper
 
   def schedule_for_probes(source, destination)
     # Lê do cache
-    p = Rails.cache.read("probe_#{source}")
-    p
+    probe = Rails.cache.fetch("probe_#{destination}") do
+      # Este bloco será retornado APENAS no caso de um cache miss
+    end
+
+    kpi = Rails.cache.fetch("kpi_#{destination}") do
+
+    end
+
+    schedule = Rails.cache.fetch("schedule_#{source}_#{destination}") do
+
+    end
+
+    results = Rails.cache.fetch("results_#{source}_#{destination}") do
+
+    end
   end
 
 end
