@@ -1,25 +1,55 @@
-<p id="notice"><%= notice %></p>
+<h2> Visualização da Agenda e Teste</h2>
+<div class="row-fluid">
+    <p id="notice"><%= notice %></p>
 
-<p>
-  <b>Start:</b>
-  <%= @schedule.start %>
-</p>
+    <p>
+      <b>Início:</b>
+      <%= @schedule.start %>
+    </p>
 
-<p>
-  <b>End:</b>
-  <%= @schedule.end %>
-</p>
+    <p>
+      <b>Fim:</b>
+      <%= @schedule.end %>
+    </p>
 
-<p>
-  <b>Polling:</b>
-  <%= @schedule.polling %>
-</p>
+    <p>
+      <b>Polling:</b>
+      <%= @schedule.polling %>
+    </p>
 
-<p>
-  <b>Status:</b>
-  <%= @schedule.status %>
-</p>
+    <p>
+      <b>Status:</b>
+      <%= @schedule.status == "active"? "Ativo" : "Inativo" %>
+    </p>
 
+    <p>
+      <b>Sonda de Origem:</b>
+      <%= @schedule.source.name %>
 
-<%= link_to 'Edit', edit_schedule_path(@schedule) %> |
-<%= link_to 'Back', schedules_path %>
+      <b>Sonda de Destino:</b>
+      <%= @schedule.destination.name %>
+    </p>
+
+    <p><b>Perfil de Teste/Métricas: </b></p>
+    <div class="span12">
+      <% @schedule.profiles.each do |test_profile| %>
+      <div style="float:left; min-width:  120px">
+        <span class="label label-info" data-title="<%= test_profile.name %>"><%= test_profile.name %></span>
+          <ul>
+          <% test_profile.metrics.each do |metric| %>
+           <li> <%= metric.name %></li>
+          <% end %>
+          </ul>
+      </div>
+      <% end %>
+    </div>
+
+  <div class="">
+    <div class="control-group" >
+      <div class="controls">
+        <%= link_to 'Editar', edit_schedule_path(@schedule), :class => "btn btn-primary btn-large "  %>
+        <%= link_to 'Voltar', schedules_path, :class => "btn btn-inverse btn-large " %>
+      </div>
+    </div>
+  </div>
+</div>

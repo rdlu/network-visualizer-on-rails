@@ -1,15 +1,106 @@
-<h2>Sonda <%= @probe.name %> (#<%= @probe.id %>)</h2>
+<%= javascript_include_tag "gmap/gmap3" %>
+
+<h2>Visualização da Sonda <%= @probe.name %> (#<%= @probe.id %>)</h2>
 <div class="row-fluid">
   <div class="span7">
-    <ul>
-      <li>Tipo da sonda: <%= @probe.type.humanize %></li>
-      <li>Hostname: <%= @probe.ipaddress %></li>
-      <li>Endereço: <%= @probe.address %></li>
-      <li>Cidade/UF: <%= @probe.city %>/<%= @probe.state.upcase %></li>
-      <li>Conexão: <%= @probe.connection_profile.name %></li>
-      <li>Plano: <%= @probe.plan.name_with_throughput %></li>
-      <li>Lat/Lon: <%= @probe.latitude %> / <%= @probe.longitude %></li>
-      <li>Endereço IP: <%= @probe.real_ipaddress %> às <%= DateTime.now %></li>
-    </ul>
+      <p>
+        <b>Status:</b>
+        <%= @probe.pretty_status %>
+      </p>
+      <p>
+        <b>Tipo da sonda:</b>
+        <%= @probe.type.humanize %>
+      </p>
+
+      <p>
+        <b>Hostname:</b>
+        <%= @probe.ipaddress %>
+      </p>
+
+      <p>
+        <b>Endereço:</b>
+        <%= @probe.address %>
+      </p>
+
+      <p>
+        <b>Cidade/UF:</b>
+        <%= @probe.city %>/<%= @probe.state.upcase %>
+      </p>
+
+      <p>
+        <b>Conexão:</b>
+        <%= @probe.connection_profile.name %>
+      </p>
+
+      <p>
+        <b>Plano:</b>
+        <%= @probe.plan.name_with_throughput %>
+      </p>
+
+      <p>
+        <b>Lat/Lon:</b>
+        <%= @probe.latitude %> / <%= @probe.longitude %>
+      </p>
+
+      <p>
+        <b>Endereço IP:</b>
+        <%= @probe.real_ipaddress %> às <%= DateTime.now %>
+      </p>
+
+    <div class="control-group" >
+      <div class="controls">
+        <%= link_to 'Editar', edit_probe_path(@probe), :class => "btn btn-primary btn-large "  %>
+        <%= link_to 'Voltar', probes_path, :class => "btn btn-inverse btn-large " %>
+      </div>
+    </div>
   </div>
+
+    <div class="span4">
+      <div id="specMap"  class="googleMap"></div>
+    </div>
+
+
+
 </div>
+
+
+
+<!-- Localização do agente no Mapa -->
+<script type="text/javascript">
+
+    function loadProbe(lat,lng,type){
+      //  {lat: <%= @probe.latitude %>, lng: <%= @probe.longitude %>, options:{icon:'<%= asset_path("icons/pin_green.png")%>'}}
+      if (type == "linux")
+        return [ {lat: lat, lng: lng, options:{icon:'<%= asset_path("icons/pin_linux.png")%>'}}]
+      else
+        return [ {lat: lat, lng: lng, options:{icon:'<%= asset_path("icons/pin_android.png")%>'}}]
+
+    }
+
+    $(function(){
+        $("#specMap").gmap3({
+            map:{
+                options: {
+                    center:[<%= @probe.latitude %>,<%= @probe.longitude %>],
+                    zoom: 14,
+                    zoomControl: true,
+                    zoomControlOptions: {
+                        style: google.maps.ZoomControlStyle.LARGE
+                    },
+                    panControl: true,
+                    mapTypeControl: true,
+                    mapTypeControlOptions: {
+                        style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
+                    },
+                    navigationControl: false,
+                    scrollwheel: true,
+                    streetViewControl: false
+                }
+            },
+            marker: {
+                values:  loadProbe(<%= @probe.latitude %>,<%= @probe.longitude %>,'<%= @probe.type %>')
+
+            }
+        });
+    });
+</script>

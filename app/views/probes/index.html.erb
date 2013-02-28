@@ -69,9 +69,9 @@
           <td><%= probe.connection_profile.name %> / <%= probe.plan.name %></td>
           <td><%= probe.updated_at.localtime %></td>
           <td><%= probe.status %></td>
-          <td><%= link_to 'Show', probe %></td>
+          <td><%= link_to 'Visualizar', probe %></td>
           <td><%= link_to "Editar", edit_probe_path(probe) %></td>
-          <td><%= link_to 'Destroy', probe, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+          <td><%= link_to 'Excluir', probe, method: :delete, data: { confirm: 'Você tem certeza que deseja excluir este Agente?' } %></td>
         </tr>
         <% end %>
       </tbody>
