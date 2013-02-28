@@ -24,9 +24,9 @@ class ResultsController < ApplicationController
     end
 
     # write to cache
-    Rails.cache.write "results_#{@source.id}_#{@destination.id}" "#{@results.to_json}"
-    Rails.cache.write "schedule_#{@source.id}_#{@destination.id}" "#{@schedule.to_json}"
-    Rails.cache.write "probe_#{@destination.id}" "#{@destination.to_json}"
+    Rails.cache.write "results_#{@source.id}_#{@destination.id}", "#{@results.to_json}"
+    Rails.cache.write "schedule_#{@source.id}_#{@destination.id}", "#{@schedule.to_json}"
+    Rails.cache.write "probe_#{@destination.id}", "#{@destination.to_json}"
 
     render :file => 'results/create', :formats => [:xml], :layout => false
   end
