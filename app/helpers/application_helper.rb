@@ -19,22 +19,43 @@ module ApplicationHelper
   end
 
   def schedule_for_probes(source, destination)
+    end_json = Hash.new
+    
     # Lê do cache
     probe = Rails.cache.fetch("probe_#{destination}") do
       # Este bloco será retornado APENAS no caso de um cache miss
     end
+    
+    end_json[destination][:probe] = ActiveSupport::JSON.decode(probe)
+
+    ###########
 
     kpi = Rails.cache.fetch("kpi_#{destination}") do
 
     end
 
+    end_json[destination][:kpi] = ActiveSupport::JSON.decode(kpi) 
+
+    ###########
+
     schedule = Rails.cache.fetch("schedule_#{source}_#{destination}") do
 
     end
 
+    sj = ActiveSupport::JSON.decode(schedule)
+    end_json[destination][:schedules][sj[:id]] = sj
+
+    ###########
+
     results = Rails.cache.fetch("results_#{source}_#{destination}") do
 
     end
+
+    end_json[destination][:results] = ActiveSupport::JSON.decode(results)
+
+    ###########
+    
+    end_json.to_json
   end
 
 end
