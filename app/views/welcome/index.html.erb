@@ -18,7 +18,8 @@
               3- Erro-Vermelho
               -->
             <% Probe.all.each do |probe| %>
-                  <a id="ag<%= probe.id %>"  class="btn btn-<%= probe.pretty_status %>"  title="" href="#" style="margin-bottom: 5px">
+                  <a id="ag<%= probe.id %>" onclick="$(this).popover({html: true, title: '<%= probe.name %>', content: htmlContent('<%=probe.ipaddress %>','<%= probe.connection_profile.name%>','<%= probe.plan.name_with_throughput %>', '<%= probe.status %>' ) })"
+                     class="btn btn-<%= probe.pretty_status %>"  title="" href="#" style="margin-bottom: 5px">
                     <%= image_tag "icons/"+probe.type+"16.png" %>
                     <%= probe.name %><br/>
                     <%= probe.city %>
@@ -43,6 +44,30 @@
     </div>
   </div>
 <script type="text/javascript">
+
+    function htmlContent(ip,con,plan,status){
+        var html="";
+        var st = "";
+
+        switch(status){
+            case '0': st = "INATIVO";
+                break;
+            case '1': st = "ATIVO";
+                break;
+            case '2': st = "ATENÇÃO";
+                break;
+            case '3': st = "ERRO";
+                break;
+        }
+
+        html = "Status: "+st +"<br/>"+
+               "Hostname: "+ ip + "<br/>" +
+               "Conexão: "+ con + "<br/>"+
+               "Plano: "+ plan + "<br/>";
+
+        return html
+    }
+
     function loadProbesLocation(){
         var do_list = [];
         $.ajax({
@@ -64,7 +89,6 @@
                    case 3: do_list.push({lat: data[i]["latitude"], lng:data[i]["longitude"],data:{zip: data[i]["type"],city: data[i]["address"]},options : { icon: '<%= asset_path("icons/pin_red.png")%>'}});
                        break;
                }
-
 
              }
 
@@ -130,7 +154,7 @@
                                         options:{
                                             content:"<div class='infobulle'>" +
                                                     "<div class='bg'></div>" +
-                                                    "<div class='text'>"+ (context.data.zip == "linux"? "<img src="+'<%= asset_path("icons/linux16.png")%>'+">" : "<img src="+'<%= asset_path("icons/android16.png")%>'+">") +" "+ context.data.city +"</div>" +
+                                                    "<div class='text'>"+ (context.data.zip == "linux"? "<img src="+'<%= asset_path("icons/linux16.png")%>'+">" : "<img src="+'<%= asset_path("icons/android.png")%>'+">") +" "+ context.data.city +"</div>" +
                                                     "</div>" +
                                                     "<div class='arrow'></div>",
                                             offset: {
