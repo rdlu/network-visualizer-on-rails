@@ -1,6 +1,6 @@
 MomRails::Application.routes.draw do
   match 'reports' => 'reports#index', :as => 'reports'
-  get "reports/index", :as => 'index_reports'
+  get 'reports/index', :as => 'index_reports'
   match 'reports/graph/:source_id/:destination_id/:metric_id' => 'reports#graph', :via => [:get]
   post 'reports/graph', :as =>'graph_reports'
   post 'kpi/show' => 'kpi#show', :as => 'show_kpi'
@@ -41,6 +41,7 @@ MomRails::Application.routes.draw do
   get 'welcome/index'
 
   #match collect
+  #"/collect/id/3/throughput_http/34504848.484848/34504848.484848/34504848.484848/22143940.658321/22143940.658321/22143940.658321/1362070592/0.0"
   match 'collect/id' => 'results#index'
   match 'collect/id/:destination_id/:metric_name/:dsmax/:dsmin/:dsavg/:sdmax/:sdmin/:sdavg/:timestamp/:uuid' => 'results#create',
         :via => [:get],

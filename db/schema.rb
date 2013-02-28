@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130226142045) do
+ActiveRecord::Schema.define(:version => 20130227173117) do
 
   create_table "connection_profiles", :force => true do |t|
     t.string   "name_id"
@@ -91,6 +91,7 @@ ActiveRecord::Schema.define(:version => 20130226142045) do
     t.float    "sdavg"
     t.datetime "created_at",      :null => false
     t.datetime "updated_at",      :null => false
+    t.string   "type"
   end
 
   add_index "medians", ["schedule_id"], :name => "index_medians_on_schedule_id"
