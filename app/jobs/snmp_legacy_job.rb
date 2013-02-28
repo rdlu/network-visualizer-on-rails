@@ -22,7 +22,7 @@ class SnmpLegacyJob
         end
       end
 
-      if response.at(0)[:value] == 'notSet'
+      if (response.at(0)[:value] + profile.id.to_s) == 'notSet'
         manager = SNMP::Manager.new(:host => real_ipaddress, :community => 'suppublic')
         data_array.each do |data|
           key = data.to_a.at(0).at(0) + profile.id.to_s
