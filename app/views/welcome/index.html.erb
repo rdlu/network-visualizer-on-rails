@@ -18,7 +18,7 @@
               3- Erro-Vermelho
               -->
             <% Probe.all.each do |probe| %>
-                  <a id="ag<%= probe.id %>" onclick="$(this).popover({html: true, title: 'Detalhamento', content: htmlContent('<%=probe.ipaddress %>','<%= probe.connection_profile.name%>','<%= probe.plan.name_with_throughput %>', '<%= probe.status %>' ) })"
+                  <a id="ag<%= probe.id %>" onclick="$(this).popover({html: true, title: '<%= probe.name %>', content: htmlContent('<%=probe.ipaddress %>','<%= probe.connection_profile.name%>','<%= probe.plan.name_with_throughput %>', '<%= probe.status %>' ) })"
                      class="btn btn-<%= probe.pretty_status %>"  title="" href="#" style="margin-bottom: 5px">
                     <%= image_tag "icons/"+probe.type+"16.png" %>
                     <%= probe.name %><br/>
@@ -61,7 +61,7 @@
         }
 
         html = "Status: "+st +"<br/>"+
-               "IP: "+ ip + "<br/>" +
+               "Hostname: "+ ip + "<br/>" +
                "Conexão: "+ con + "<br/>"+
                "Plano: "+ plan + "<br/>";
 
