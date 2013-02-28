@@ -1,8 +1,9 @@
-# Start when system enters runlevel 2 (multi-user mode).
-start on runlevel 2
+#
+start on started mysql
+stop on stopping mysql
 
 # Start delayed_job via the daemon control script.
-exec /usr/bin/env RAILS_ENV=production /usr/share/mom-rails/script/delayed_job start
+exec /usr/bin/env RAILS_ENV=production /usr/share/mom-rails/script/delayed_job start  >> /var/log/delayed_job.log 2>&1'
 
 # Restart the process if it dies with a signal
 # or exit code not given by the 'normal exit' stanza.
@@ -10,3 +11,7 @@ respawn
 
 # Give up if restart occurs 10 times in 90 seconds.
 respawn limit 10 90
+
+#Criar no ubuntu:
+#cd /etc/event.d ou /etc/init ????
+#sudo ln -s /path/to/app/config/delayed_job
