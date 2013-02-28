@@ -30,8 +30,9 @@ class KpiController < ApplicationController
     end
 
     # Write to cache
-    Rails.cache.write "kpi_#{@source.id}" "#{@kpi.to_json}"
-    Rails.cache.write "schedule_#{@schedule.id}" "#{@schedule.to_json}"
+    Rails.cache.write "kpi_#{@destination.id}" "#{@kpi.to_json}"
+    Rails.cache.write "schedule_#{@source.id}_#{@destination.id}" "#{@schedule.to_json}"
+    Rails.cache.write "probe_#{@destination.id}" "#{@destination.to_json}"
 
     render :file => 'kpis/create', :formats => [:xml], :layout => false
   end
