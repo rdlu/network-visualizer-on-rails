@@ -64,4 +64,14 @@ module ApplicationHelper
     end_json
   end
 
+  def schedule_for_all_probes
+    all_probes = Array.new
+
+    Schedule.all.each do |s|
+      all_probes << schedule_for_probes(s.source_id, s.destination_id)
+    end
+
+    all_probes
+  end
+
 end
