@@ -8,12 +8,12 @@ class CalculateMediansJob
 
   end
 
-  def perform
+  def perform (reference_date = Date.yesterday.at_beginning_of_day)
     Schedule.all.each do |schedule|
       schedule.metrics.each do |metric|
         metric.thresholds.each do |threshold|
           if threshold.goal_method == 'median'
-            Median.calculate schedule, threshold, Date.yesterday.at_beginning_of_day
+            Median.calculate schedule, threshold, reference_date
           end
         end
       end
