@@ -8,9 +8,9 @@ class WelcomeController < ApplicationController
 
   def login
     if get_user.nil?
-      redirect_to :controller => "users", :action => "sign_in"
+      redirect_to :controller => 'users', :action => 'sign_in'
     else
-      redirect_to :controller => "welcome", :action => "index"
+      redirect_to :controller => 'welcome', :action => 'index'
     end
   end
 
