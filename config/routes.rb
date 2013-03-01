@@ -1,4 +1,6 @@
 MomRails::Application.routes.draw do
+  get 'route_reload' => 'welcome#route_reload'
+
   match 'reports' => 'reports#index', :as => 'reports'
   get 'reports/index', :as => 'index_reports'
   match 'reports/graph/:source_id/:destination_id/:metric_id' => 'reports#graph', :via => [:get]
