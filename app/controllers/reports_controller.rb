@@ -51,4 +51,8 @@ class ReportsController < ApplicationController
       format.json { render :json => data, :status => 200 }
     end
   end
+
+  def csv
+
+  end
 end

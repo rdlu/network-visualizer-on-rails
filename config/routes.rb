@@ -6,6 +6,7 @@ MomRails::Application.routes.draw do
   match 'reports/graph/:source_id/:destination_id/:metric_id' => 'reports#graph', :via => [:get]
   post 'reports/graph', :as =>'graph_reports'
   post 'kpi/show' => 'kpi#show', :as => 'show_kpi'
+  post 'reports/csv'
 
   resources :metrics
   resources :tests
