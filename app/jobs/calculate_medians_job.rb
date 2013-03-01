@@ -4,17 +4,22 @@ class CalculateMediansJobException < Exception
 end
 
 class CalculateMediansJob
+  def new(reference_date = Date.yesterday.at_beginning_of_day, force_disabled = false)
+    @reference_date = reference_date
+    @force_disabled = force_disabled
+  end
+
   def enqueue(job)
 
   end
 
-  def perform (reference_date = Date.yesterday.at_beginning_of_day, force_disabled = false)
+  def perform
     Schedule.all.each do |schedule|
-      if schedule.destination.status != 0 || force_disabled
+      if schedule.destination.status != 0 || @force_disabled
         schedule.metrics.each do |metric|
           metric.thresholds.each do |threshold|
             if threshold.goal_method == 'median'
-              Median.calculate schedule, threshold, reference_date
+              Median.calculate schedule, threshold, @reference_date
             end
           end
         end
