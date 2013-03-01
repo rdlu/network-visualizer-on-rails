@@ -1,5 +1,6 @@
 class WelcomeController < ApplicationController
   before_filter :authenticate_user!, :except => [:login]
+  include ApplicationHelper
 
   def index
     authorize! :index, self

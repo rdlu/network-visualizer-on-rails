@@ -54,7 +54,7 @@ module ApplicationHelper
     ###########
 
     results = Rails.cache.fetch("results_#{source}_#{destination}") do
-      Result.where(schedule_id: schedule[:id])
+
     end
 
     end_json[destination][:results] = ActiveSupport::JSON.decode(results)
