@@ -33,7 +33,7 @@ module ApplicationHelper
     ###########
 
     kpi = Rails.cache.fetch("kpi_#{destination}") do
-      
+      Kpi.where(:destination_id => destination)
     end
 
     end_json[destination][:kpi] = ActiveSupport::JSON.decode(kpi) 
@@ -54,7 +54,7 @@ module ApplicationHelper
     ###########
 
     results = Rails.cache.fetch("results_#{source}_#{destination}") do
-
+      Result.where(schedule_id: schedule[:id])
     end
 
     end_json[destination][:results] = ActiveSupport::JSON.decode(results)
