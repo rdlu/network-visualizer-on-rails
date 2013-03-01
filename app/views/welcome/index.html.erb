@@ -82,13 +82,13 @@
             success: function(data) {
              for (i=0; i < data.length; i++){
                switch(data[i]["status"]){
-                   case 0: do_list.push({lat: data[i]["latitude"], lng:data[i]["longitude"],data:{zip: data[i]["type"],city: data[i]["address"]},options : { icon: '<%= asset_path("icons/pin_gray.png")%>'}});
+                   case 0: do_list.push({lat: data[i]["latitude"], lng:data[i]["longitude"],data:{type: data[i]["type"],address: data[i]["address"], name: data[i]["name"] },options : { icon: '<%= asset_path("icons/pin_gray.png")%>'}});
                        break;
-                   case 1: do_list.push({lat: data[i]["latitude"], lng:data[i]["longitude"],data:{zip: data[i]["type"],city: data[i]["address"]},options : { icon: '<%= asset_path("icons/pin_green.png")%>'}});
+                   case 1: do_list.push({lat: data[i]["latitude"], lng:data[i]["longitude"],data:{type: data[i]["type"],address: data[i]["address"], name: data[i]["name"]},options : { icon: '<%= asset_path("icons/pin_green.png")%>'}});
                        break;
-                   case 2: do_list.push({lat: data[i]["latitude"], lng:data[i]["longitude"],data:{zip: data[i]["type"],city: data[i]["address"]},options : { icon: '<%= asset_path("icons/pin_yellow.png")%>'}});
+                   case 2: do_list.push({lat: data[i]["latitude"], lng:data[i]["longitude"],data:{type: data[i]["type"],address: data[i]["address"], name: data[i]["name"]},options : { icon: '<%= asset_path("icons/pin_yellow.png")%>'}});
                        break;
-                   case 3: do_list.push({lat: data[i]["latitude"], lng:data[i]["longitude"],data:{zip: data[i]["type"],city: data[i]["address"]},options : { icon: '<%= asset_path("icons/pin_red.png")%>'}});
+                   case 3: do_list.push({lat: data[i]["latitude"], lng:data[i]["longitude"],data:{type: data[i]["type"],address: data[i]["address"], name: data[i]["name"]},options : { icon: '<%= asset_path("icons/pin_red.png")%>'}});
                        break;
                }
 
@@ -156,7 +156,7 @@
                                         options:{
                                             content:"<div class='infobulle'>" +
                                                     "<div class='bg'></div>" +
-                                                    "<div class='text'>"+ (context.data.zip == "linux"? "<img src="+'<%= asset_path("icons/linux16.png")%>'+">" : "<img src="+'<%= asset_path("icons/android.png")%>'+">") +" "+ context.data.city +"</div>" +
+                                                    "<div class='text'>"+ (context.data.type == "linux"? "<img src="+'<%= asset_path("icons/linux16.png")%>'+">" : "<img src="+'<%= asset_path("icons/android.png")%>'+">")+context.data.name+"<p>"+context.data.address +"</p></div>" +
                                                     "</div>" +
                                                     "<div class='arrow'></div>",
                                             offset: {

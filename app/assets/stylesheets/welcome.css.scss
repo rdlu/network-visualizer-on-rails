@@ -43,6 +43,7 @@
   font-size: 3em;
 
 }
+
 .cluster-3{
   //background: url(http://maps.gstatic.com/mapfiles/icon_green.png) no-repeat;
   line-height:66px;
@@ -50,6 +51,7 @@
   font-weight: bold;
   font-size: 5em;
 }
+
 .btn:focus {
   background-position: 0 !important;
 }
@@ -93,13 +95,14 @@
   cursor: default;
   clear: both;
   position: relative;
-  height: 34px;
+  //height: 34px;
   padding: 0pt;
   background-color: rgb(57, 57, 57);
   border-radius: 4px 4px;
   -moz-border-radius: 4px 4px;
   -webkit-border-radius: 4px 4px;
   border: 1px solid #2C2C2C;
+  bottom: 25px;
 }
 .infobulle .bg{
   font-size:1px;
@@ -134,4 +137,5 @@
   border-width: 10px 10px 0pt 0pt;
   border-color: #2C2C2C transparent transparent;
   border-style: solid;
+  bottom: 15px;
 }
