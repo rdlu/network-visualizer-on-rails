@@ -43,6 +43,9 @@ MomRails::Application.routes.draw do
   # /welcome/status/1/2.json
   match 'welcome/status/:source/:destination' => 'welcome#status', :via => [:get]
 
+  # /welcome/stats.json
+  get 'welcome/stats'
+
   #match collect
   match 'collect/id' => 'results#index'
   match 'collect/id/:destination_id/:metric_name/:dsmax/:dsmin/:dsavg/:sdmax/:sdmin/:sdavg/:timestamp/:uuid' => 'results#create',

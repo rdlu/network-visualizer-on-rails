@@ -26,4 +26,10 @@ class WelcomeController < ApplicationController
     end
   end
 
+  def stats
+    respond_to do |format|
+      format.json { render json: schedule_for_all_probes }
+    end
+  end
+
 end
