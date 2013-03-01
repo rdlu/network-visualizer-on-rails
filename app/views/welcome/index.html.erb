@@ -18,8 +18,9 @@
               3- Erro-Vermelho
               -->
             <% Probe.all.each do |probe| %>
-                  <a id="ag<%= probe.id %>" onclick="$(this).popover({html: true, title: '<%= probe.name %>', content: htmlContent('<%=probe.ipaddress %>','<%= probe.connection_profile.name%>','<%= probe.plan.name_with_throughput %>', '<%= probe.status %>' ) })"
-                     class="btn btn-<%= probe.pretty_status %>"  title="" href="#" style="margin-bottom: 5px">
+                  <a id="ag<%= probe.id %>" onmouseover="$(this).tooltip({placement: 'right',html: true, title: htmlContent('<%= probe.name %>','<%=probe.ipaddress %>','<%= probe.connection_profile.name%>','<%= probe.plan.name_with_throughput %>', '<%= probe.status %>' ) })"
+                     class="btn btn-<%= probe.pretty_status %>"
+                     onclick= "$('#gMap').gmap3('get').panTo(new google.maps.LatLng(<%= probe.latitude %>,<%= probe.longitude %>)); $('#gMap').gmap3('get').setZoom(14)"  title="" href="#" style="margin-bottom: 5px">
                     <%= image_tag "icons/"+probe.type+"16.png" %>
                     <%= probe.name %><br/>
                     <%= probe.city %>
@@ -30,7 +31,7 @@
 
           </div>
           <div class="span5">
-            <div id="googleMap"></div>
+            <div id="gMap" class="googleMap"></div>
           </div>
         </div>
 
@@ -45,7 +46,7 @@
   </div>
 <script type="text/javascript">
 
-    function htmlContent(ip,con,plan,status){
+    function htmlContent(name,ip,con,plan,status){
         var html="";
         var st = "";
 
@@ -60,7 +61,8 @@
                 break;
         }
 
-        html = "Status: "+st +"<br/>"+
+        html = "<b>"+name+"</b><br/>"+
+                "Status: "+st +"<br/>"+
                "Hostname: "+ ip + "<br/>" +
                "Conexão: "+ con + "<br/>"+
                "Plano: "+ plan + "<br/>";
@@ -98,7 +100,7 @@
     }
 
     $(function(){
-        $("#googleMap").gmap3({
+        $("#gMap").gmap3({
             map:{
                 options: {
                     center:[-14.904325,-48.209743],
@@ -108,7 +110,7 @@
                         style: google.maps.ZoomControlStyle.LARGE
                     },
                     panControl: true,
-                    mapTypeId: google.maps.MapTypeId.TERRAIN,
+                    //mapTypeId: google.maps.MapTypeId.TERRAIN,
                     mapTypeControl: true,
                     mapTypeControlOptions: {
                         style: google.maps.MapTypeControlStyle.DROPDOWN_MENU

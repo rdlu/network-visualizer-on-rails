@@ -39,8 +39,8 @@
               <% end %></td>
             <td><%= schedule.source.name %>(<%= schedule.source.ipaddress %>)</td>
             <td><%= schedule.polling %> min</td>
-            <td><%= schedule.status %></td>
-            <td><%= link_to 'Show', schedule %> <%= link_to 'Edit', edit_schedule_path(schedule) %> <%= link_to 'Destroy', schedule, method: :delete, data: {confirm: 'Are you sure?'} %></td>
+            <td><%= schedule.status == 'active'? "Ativo": "Inativo" %></td>
+            <td><%= link_to 'Visualizar', schedule %> <%= link_to 'Editar', edit_schedule_path(schedule) %> <%= link_to 'Excluir', schedule, method: :delete, data: {confirm: 'Você tem certeza que deseja excluir esta agenda?'} %></td>
           </tr>
       <% end %>
       </tbody>
