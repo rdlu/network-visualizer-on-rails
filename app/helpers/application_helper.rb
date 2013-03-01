@@ -33,7 +33,7 @@ module ApplicationHelper
     ###########
 
     kpi = Rails.cache.fetch("kpi_#{destination}") do
-      Kpi.where(:destination_id => destination)
+      Kpi.where(:destination_id => destination).to_json
     end
 
     end_json[destination][:kpi] = ActiveSupport::JSON.decode(kpi) 
