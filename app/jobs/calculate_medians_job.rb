@@ -14,6 +14,9 @@ class CalculateMediansJob
   end
 
   def perform
+    #programa a próxima chamada
+    Delayed::Job.enqueue CalculateMediansJob.new, :queue => 'calculate', :run_at => Date.current.end_of_day+1.hour
+
     Schedule.all.each do |schedule|
       if schedule.destination.status != 0 || @force_disabled
         schedule.metrics.each do |metric|
