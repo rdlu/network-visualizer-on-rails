@@ -4,7 +4,8 @@ class CalculateMediansJobException < Exception
 end
 
 class CalculateMediansJob
-  def new(reference_date = Date.yesterday.at_beginning_of_day, force_disabled = false)
+  def initialize(reference_date = Date.yesterday.at_beginning_of_day, force_disabled = false)
+    super
     @reference_date = reference_date
     @force_disabled = force_disabled
   end
