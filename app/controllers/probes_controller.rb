@@ -85,6 +85,17 @@ class ProbesController < ApplicationController
 
   def update
     authorize! :manage, self
+    @probe = Probe.find(params[:id])
+
+    respond_to do |format|
+      if @probe.update_attributes(params[:probe])
+        format.html { redirect_to probes_path, notice: 'Suas alterações foram salvas com sucesso.' }
+        format.json { head :no_content }
+      else
+        format.html { render action: "edit" }
+        format.json { render json: @probe.errors, status: :unprocessable_entity }
+      end
+    end
   end
 
   def destroy
