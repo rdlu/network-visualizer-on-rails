@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class QuotientTest < ActiveSupport::TestCase
+class ComplianceTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

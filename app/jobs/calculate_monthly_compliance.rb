@@ -24,14 +24,7 @@ class CalculateMonthlyCompliance
       if schedule.destination.status != 0 || @force_disabled
         schedule.metrics.each do |metric|
           metric.thresholds.where(:compliance_period => 'monthly').each do |threshold|
-            case threshold.compliance_method
-              when 'quotient'
-                Quotient.calculate schedule, threshold, @reference_date
-              when 'mean'
-                #Median.calculate schedule, threshold, @reference_date
-              else
-
-            end
+            Compliance.calculate schedule, threshold, @reference_date
           end
         end
       end

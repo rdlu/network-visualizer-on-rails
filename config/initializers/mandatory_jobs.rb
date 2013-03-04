@@ -3,4 +3,5 @@ if ((defined?(::Passenger) && defined?(::Passenger::AbstractServer)) || defined?
 
   #calculo de medianas todos os dias
   Delayed::Job.enqueue CalculateMediansJob.new, :queue => 'calculate', :run_at => Date.current.end_of_day+1.hour
+  Delayed::Job.enqueue CalculateMonthlyCompliance.new, :queue => 'calculate', :run_at => Date.current.end_of_day+1.hour
 end
