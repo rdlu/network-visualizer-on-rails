@@ -4,17 +4,12 @@ class CalculateMediansJobException < Exception
 end
 
 class CalculateMediansJob
-  def initialize(reference_date = Date.yesterday.at_beginning_of_day, force_disabled = false)
-    super
-    @reference_date = reference_date
-    @force_disabled = force_disabled
-  end
 
   def enqueue(job)
 
   end
 
-  def perform
+  def perform(reference_date = Date.yesterday.at_beginning_of_day, force_disabled = false)
     #programa a próxima chamada
     Delayed::Job.enqueue CalculateMediansJob.new, :queue => 'calculate', :run_at => Date.current.end_of_day+1.hour
 
