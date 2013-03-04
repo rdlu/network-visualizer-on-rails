@@ -14,6 +14,14 @@ class ResultsController < ApplicationController
 
     @schedule = Schedule.where(:destination_id => @destination.id).where(:source_id => @source.id).all.last
 
+    #atualiza o timestamp
+    @source.status = 1
+    @source.save!
+    @destination.status = 1
+    @destination.save!
+    @schedule.status = 'active'
+    @schedule.save!
+
     @results.schedule = @schedule
     @results.metric = @metric
 
