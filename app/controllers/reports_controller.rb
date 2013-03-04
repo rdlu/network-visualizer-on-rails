@@ -3,8 +3,8 @@ class ReportsController < ApplicationController
   before_filter :authenticate_user!
   def index
     @report_types = [
-        ['Gráfico de Dados Brutos','graph'],
         ['Gráfico de Indicadores Anatel/EAQ','eaq_graph'],
+        ['Gráfico de Dados Brutos','graph'],
         ['Tabela de Indicadores Anatel/EAQ','eaq_table']
     ]
   end

@@ -4,7 +4,7 @@ class CalculateMediansJobException < Exception
 end
 
 class CalculateMediansJob
-  def initialize(reference_date = Date.yesterday.at_beginning_of_day, reeschedule = true, force_disabled = false)
+  def initialize(reference_date = Date.current.at_beginning_of_day, reeschedule = true, force_disabled = false)
     @reference_date= reference_date.to_datetime
     @reeschedule = reeschedule
     @force_disabled = force_disabled

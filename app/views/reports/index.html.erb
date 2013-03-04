@@ -132,7 +132,7 @@
         var destination_id = evt.currentTarget.value;
         var source_id = evt.currentTarget.value;
         if (source_id != '') {
-            jQuery('#report_type').prop('disabled', false).val('graph');
+            jQuery('#report_type').prop('disabled', false).val('eaq_graph');
         } else {
             jQuery('#report_type').prop('disabled', true).val('');
         }
@@ -152,6 +152,9 @@
             case 'eaq_graph':
                 action = 'thresholds';
                 break;
+            case 'eaq_table':
+                action = '';
+                break;
         }
         if (report_type != '')
             jQuery.ajax("<%=probes_url %>/" + destination_id + "/"+action+"/" + source_id, {
@@ -166,6 +169,10 @@
                     if (result.length == 0) {
                         options.append($("<option />").val('').text('Essas sondas não possuem testes programados')).prop('disabled', true);
                     }
+                },
+                error: function(result,status) {
+                    jQuery('#metric_id').html('').append($("<option />").val('').text('Tipo inválido')).prop('disabled', true);
+                    jQuery("#metric_id").trigger('change');
                 },
                 dataType: 'json'
             });
