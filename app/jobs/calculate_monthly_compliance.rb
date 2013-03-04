@@ -1,9 +1,9 @@
 # coding: utf-8
-class CalculateMediansJobException < Exception
+class CalculateMonthlyComplianceException < Exception
 
 end
 
-class CalculateMediansJob
+class CalculateMonthlyCompliance
   def initialize(reference_date = Date.current.at_beginning_of_day, reeschedule = true, force_disabled = false)
     @reference_date= reference_date.to_datetime
     @reeschedule = reeschedule
@@ -23,9 +23,14 @@ class CalculateMediansJob
     Schedule.all.each do |schedule|
       if schedule.destination.status != 0 || @force_disabled
         schedule.metrics.each do |metric|
-          metric.thresholds.each do |threshold|
-            if threshold.goal_method == 'median'
-              Median.calculate schedule, threshold, @reference_date
+          metric.thresholds.where(:compliance_period => 'monthly').each do |threshold|
+            case threshold.compliance_method
+              when 'quotient'
+                #Median.calculate schedule, threshold, @reference_date
+              when 'mean'
+                #Median.calculate schedule, threshold, @reference_date
+              else
+
             end
           end
         end
