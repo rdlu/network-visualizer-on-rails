@@ -41,10 +41,10 @@ class Compliance < ActiveRecord::Base
               download_mean = 0.to_f
               upload_sum = 0.to_f
               medians.each do |median|
-                download_sum += median.dsavg / reference_download_value
-                download_mean += median.dsavg
+                download_sum += median.dsavg.to_f / reference_download_value
+                download_mean += median.dsavg.to_f
                 #puts median.dsavg,reference_download_value,download_sum
-                upload_sum += median.sdavg / reference_upload_value
+                upload_sum += median.sdavg.to_f / reference_upload_value
               end
               download_mean = download_mean / medians.length
               #puts download_mean
@@ -56,8 +56,8 @@ class Compliance < ActiveRecord::Base
               upload_sum = 0
               medians.each do |median|
                 if reference_metric == 'throughput'
-                  download_sum += 1 if median.dsavg >= reference_download_value
-                  upload_sum += 1 if median.sdavg  >= reference_upload_value
+                  download_sum += 1 if median.dsavg.to_f >= reference_download_value
+                  upload_sum += 1 if median.sdavg.to_f  >= reference_upload_value
                 else
                   download_sum += 1 if median.dsavg.to_f + median.sdavg.to_f <= reference_download_value.to_f
                 end

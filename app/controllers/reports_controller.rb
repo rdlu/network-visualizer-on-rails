@@ -51,4 +51,21 @@ class ReportsController < ApplicationController
       format.json { render :json => data, :status => 200 }
     end
   end
+
+  def eaq_graph
+    source = Probe.find(params[:source][:id])
+    destination = Probe.find(params[:destination][:id])
+    schedule = Schedule.where(:destination_id => destination.id).where(:source_id => source.id).all.last
+    threshold = Threshold.find(params[:threshold][:id])
+
+    from = DateTime.parse(params[:date][:start]+' '+params[:time][:start]+' '+DateTime.current.zone).in_time_zone
+    to = DateTime.parse(params[:date][:end]+' '+params[:time][:end]+' '+DateTime.current.zone).in_time_zone
+
+    raw_medians = Median.
+        where(:schedule_id => schedule.id).
+        where(:threshold_id => threshold.id).
+        where(:timestamp => from..to).order('timestamp ASC').all
+
+    results = []
+  end
 end

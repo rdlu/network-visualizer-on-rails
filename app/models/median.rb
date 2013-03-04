@@ -45,14 +45,15 @@ class Median < ActiveRecord::Base
         median.schedule = schedule
         median.threshold = threshold
         median.total_points = len
-        median.expected_points = ((end_period - start_period)/60) / schedule.polling
+        end_time = end_period.to_time.to_i
+        start_time = start_period.to_time.to_i
+        diff_time = end_time - start_time
+        median.expected_points = (diff_time/60) / schedule.polling
         median.start_timestamp=start_period
         median.end_timestamp=end_period
         median.type = threshold.goal_period
 
         median.save!
-
-
     else
       Yell.new(:gelf, :facility => 'netmetric').send 'warn', "Tentativa de calculo de medianas em um limiar que não é do tipo mediana: #{threshold.name}",
                                                      '_schedule_id' => schedule.id, '_probe_id' => schedule.source.id, '_threshold_id' => threshold.id
