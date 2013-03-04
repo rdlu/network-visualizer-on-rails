@@ -17,7 +17,7 @@
               2- Warning-Amarelo
               3- Erro-Vermelho
               -->
-            <% Probe.all.each do |probe| %>
+            <% Probe.order('status').all.each do |probe| %>
                   <a id="ag<%= probe.id %>" onmouseover="$(this).tooltip({placement: 'right',html: true, title: htmlContent('<%= probe.name %>','<%=probe.ipaddress %>','<%= probe.connection_profile.name%>','<%= probe.plan.name_with_throughput %>', '<%= probe.status %>' ) })"
                      class="btn btn-<%= probe.pretty_status %>"
                      onclick= "$('#gMap').gmap3('get').panTo(new google.maps.LatLng(<%= probe.latitude %>,<%= probe.longitude %>)); $('#gMap').gmap3('get').setZoom(14)"  title="" href="#" style="margin-bottom: 5px">
