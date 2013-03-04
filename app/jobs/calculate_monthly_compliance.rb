@@ -4,8 +4,8 @@ class CalculateMonthlyComplianceException < Exception
 end
 
 class CalculateMonthlyCompliance
-  def initialize(reference_date = Date.current.at_beginning_of_day, reeschedule = true, force_disabled = false)
-    @reference_date= reference_date.to_datetime
+  def initialize(reference_date = DateTime.current, reeschedule = true, force_disabled = false)
+    @reference_date= reference_date
     @reeschedule = reeschedule
     @force_disabled = force_disabled
   end
@@ -17,7 +17,7 @@ class CalculateMonthlyCompliance
   def perform
     #programa a próxima chamada
     if @reeschedule
-      Delayed::Job.enqueue CalculateMediansJob.new, :queue => 'calculate', :run_at => Date.current.end_of_day+1.hour
+      Delayed::Job.enqueue CalculateMonthlyCompliance.new, :queue => 'calculate', :run_at => DateTime.current.end_of_day+1.hour
     end
 
     Schedule.all.each do |schedule|
@@ -26,7 +26,7 @@ class CalculateMonthlyCompliance
           metric.thresholds.where(:compliance_period => 'monthly').each do |threshold|
             case threshold.compliance_method
               when 'quotient'
-                #Median.calculate schedule, threshold, @reference_date
+                Quotient.calculate schedule, threshold, @reference_date
               when 'mean'
                 #Median.calculate schedule, threshold, @reference_date
               else

@@ -19,7 +19,7 @@ class Median < ActiveRecord::Base
           start_period = reference_date.beginning_of_day
           end_period = reference_date.end_of_day
         else
-          Yell.new(:gelf, :facility => 'netmetric').alert "Tentativa de calculo de medianas em utilizando período não suportado: #{threshold.goal_period}",
+          Yell.new(:gelf, :facility => 'netmetric').warning "Tentativa de calculo de medianas em utilizando período não suportado: #{threshold.goal_period}",
                                                           '_schedule_id' => schedule.id, '_probe_id' => schedule.source.id, '_threshold_id' => threshold.id
       end
       #agora consulta os valores do periodo e calcula a mediana
@@ -54,7 +54,7 @@ class Median < ActiveRecord::Base
 
 
     else
-      Yell.new(:gelf, :facility => 'netmetric').alert "Tentativa de calculo de medianas em um limiar que não é do tipo mediana: #{threshold.name}",
+      Yell.new(:gelf, :facility => 'netmetric').send 'warn', "Tentativa de calculo de medianas em um limiar que não é do tipo mediana: #{threshold.name}",
                                                      '_schedule_id' => schedule.id, '_probe_id' => schedule.source.id, '_threshold_id' => threshold.id
     end
   end

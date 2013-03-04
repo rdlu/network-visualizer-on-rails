@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130304141153) do
+ActiveRecord::Schema.define(:version => 20130304144025) do
 
   create_table "connection_profiles", :force => true do |t|
     t.string   "name_id"
@@ -176,6 +176,7 @@ ActiveRecord::Schema.define(:version => 20130304141153) do
     t.float    "upload"
     t.datetime "created_at",      :null => false
     t.datetime "updated_at",      :null => false
+    t.string   "type"
   end
 
   add_index "quotients", ["schedule_id"], :name => "index_quotients_on_schedule_id"
