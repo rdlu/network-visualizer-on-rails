@@ -9,16 +9,18 @@ class CalculateMediansJob
 
   end
 
-  def perform(reference_date = Date.yesterday.at_beginning_of_day, force_disabled = false)
+  def perform(reference_date = Date.yesterday.at_beginning_of_day, reeschedule = true, force_disabled = false)
     #programa a próxima chamada
-    Delayed::Job.enqueue CalculateMediansJob.new, :queue => 'calculate', :run_at => Date.current.end_of_day+1.hour
+    if reeschedule
+      Delayed::Job.enqueue CalculateMediansJob.new, :queue => 'calculate', :run_at => Date.current.end_of_day+1.hour
+    end
 
     Schedule.all.each do |schedule|
-      if schedule.destination.status != 0 || @force_disabled
+      if schedule.destination.status != 0 || force_disabled
         schedule.metrics.each do |metric|
           metric.thresholds.each do |threshold|
             if threshold.goal_method == 'median'
-              Median.calculate schedule, threshold, @reference_date
+              Median.calculate schedule, threshold, reference_date
             end
           end
         end
