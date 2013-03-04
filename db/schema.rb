@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130227173117) do
+ActiveRecord::Schema.define(:version => 20130304141153) do
 
   create_table "connection_profiles", :force => true do |t|
     t.string   "name_id"
@@ -164,6 +164,23 @@ ActiveRecord::Schema.define(:version => 20130227173117) do
 
   add_index "profiles", ["connection_profile_id"], :name => "test_profiles_connection_profile_id_fk"
 
+  create_table "quotients", :force => true do |t|
+    t.integer  "schedule_id"
+    t.integer  "threshold_id"
+    t.string   "schedule_uuid"
+    t.datetime "start_timestamp"
+    t.datetime "end_timestamp"
+    t.integer  "expected_days"
+    t.integer  "total_days"
+    t.float    "download"
+    t.float    "upload"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
+
+  add_index "quotients", ["schedule_id"], :name => "index_quotients_on_schedule_id"
+  add_index "quotients", ["threshold_id"], :name => "index_quotients_on_threshold_id"
+
   create_table "results", :force => true do |t|
     t.integer  "schedule_id"
     t.integer  "metric_id"
@@ -228,6 +245,7 @@ ActiveRecord::Schema.define(:version => 20130227173117) do
     t.datetime "created_at",                                    :null => false
     t.datetime "updated_at",                                    :null => false
     t.string   "description"
+    t.integer  "base_year"
   end
 
   add_index "thresholds", ["connection_profile_id"], :name => "thresholds_connection_profile_id_fk"

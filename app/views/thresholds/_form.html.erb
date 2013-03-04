@@ -1,5 +1,5 @@
 <div class="alert alert-warning">
-  Os limiares e metas anatel devem ser planejados, conforme legislação, antes do seu cadastro ou modificação!
+  Os limiares e metas anatel/EAQ devem ser planejados, conforme legislação, antes do seu cadastro ou modificação!
 </div>
 <%= form_for(@threshold, :html => {:class => "form-horizontal form-stop"}) do |f| %>
     <% if @threshold.errors.any? %>
@@ -30,6 +30,12 @@
       <%= f.label :metric_id,"Métrica Relacionada", :class => "control-label" %>
       <div class="controls">
         <%= f.collection_select :metric_id, Metric.all, :id, :name %>
+      </div>
+    </div>
+    <div class="control-group">
+      <%= f.label :base_year,"Ano Base", :class => "control-label" %>
+      <div class="controls">
+        <%= f.select :base_year, @threshold.base_years %>
       </div>
     </div>
     <div class="control-group" id="confParams">

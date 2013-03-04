@@ -1,6 +1,6 @@
 # coding: utf-8
 class Threshold < ActiveRecord::Base
-  attr_accessible :compliance_level, :compliance_period, :compliance_method, :goal_level, :goal_method, :goal_period, :name,:description, :metric_id, :connection_profile_id
+  attr_accessible :compliance_level, :compliance_period, :compliance_method, :goal_level, :goal_method, :goal_period, :name,:description, :metric_id, :connection_profile_id, :base_year
 
   belongs_to :connection_profile
   belongs_to :metric
@@ -27,6 +27,10 @@ class Threshold < ActiveRecord::Base
 
   def compliance_periods
     [%w(Mensal monthly)]
+  end
+
+  def base_years
+    [2013,2014,2015]
   end
 
   def find_goal_name method

@@ -1,4 +1,4 @@
-<h2>Limiares e Metas Anatel</h2>
+<h2>Limiares e Metas Anatel/EAQ</h2>
 <div class="row-fluid">
   <div class="span12">
         <div class="navbar">
@@ -18,6 +18,7 @@
       <tr>
         <th>Nome</th>
         <th>Métrica</th>
+        <th>Ano Base</th>
         <th><span class="etooltip" data-title="Número de casos em que a meta é alcançada">Compliance</span></th>
         <th><span class="etooltip" data-title="Meta estabelecida, por caso. A unidade depende da métrica em questão.">Meta</span></th>
         <th>Ações</th>
@@ -27,6 +28,7 @@
           <tr>
             <td><%= threshold.name %> (<%= threshold.description %>)</td>
             <td><%= threshold.metric.name %></td>
+            <td><%= threshold.base_year %></td>
             <td><%= threshold.compliance_level %> <%= threshold.find_goal_name :compliance_method %> <%= threshold.find_goal_name :compliance_period %></td>
             <td><%= threshold.goal_level %> <%= threshold.find_goal_name :goal_method %> <%= threshold.find_goal_name :goal_period %></td>
             <td><%= link_to 'Mostrar', threshold %> <%= link_to 'Editar', edit_threshold_path(threshold) %></td>
