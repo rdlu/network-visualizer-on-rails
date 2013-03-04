@@ -72,6 +72,15 @@ class Probe < ActiveRecord::Base
     metrics.uniq.sort_by{ |metric| metric[sort_by]}
   end
 
+  def thresholds (source = self.sources.at(0), sort_by = :name)
+    metrics = self.metrics(source)
+    thresholds = []
+    metrics.each do |metric|
+      thresholds += metric.thresholds
+    end
+    thresholds.uniq.sort_by{ |threshold| threshold[sort_by]}
+  end
+
 
   #funcoes custom de validacao
 

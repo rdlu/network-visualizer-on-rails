@@ -1,6 +1,12 @@
+# coding: utf-8
 class ReportsController < ApplicationController
   before_filter :authenticate_user!
   def index
+    @report_types = [
+        ['Gráfico de Dados Brutos','graph'],
+        ['Gráfico de Indicadores Anatel/EAQ','eaq_graph'],
+        ['Tabela de Indicadores Anatel/EAQ','eaq_table']
+    ]
   end
 
   def graph
@@ -56,16 +62,69 @@ class ReportsController < ApplicationController
     source = Probe.find(params[:source][:id])
     destination = Probe.find(params[:destination][:id])
     schedule = Schedule.where(:destination_id => destination.id).where(:source_id => source.id).all.last
-    threshold = Threshold.find(params[:threshold][:id])
+    threshold = Threshold.find(params[:metric][:id])
+    metric = threshold.metric
 
-    from = DateTime.parse(params[:date][:start]+' '+params[:time][:start]+' '+DateTime.current.zone).in_time_zone
-    to = DateTime.parse(params[:date][:end]+' '+params[:time][:end]+' '+DateTime.current.zone).in_time_zone
+    from = DateTime.parse(params[:date][:start]+' '+params[:time][:start]+' '+DateTime.current.zone).beginning_of_day.in_time_zone
+    to = DateTime.parse(params[:date][:end]+' '+params[:time][:end]+' '+DateTime.current.zone).end_of_day.in_time_zone
 
     raw_medians = Median.
         where(:schedule_id => schedule.id).
         where(:threshold_id => threshold.id).
-        where(:timestamp => from..to).order('timestamp ASC').all
+        where('start_timestamp >= ?', from).
+        where('end_timestamp <= ?', to).
+        order('start_timestamp ASC').all
+
+
+    reference_metric = metric.plugin.split('_').at(0)
+    case reference_metric
+      when 'throughput'
+        graph_threshold = {
+            :download => (destination.plan[reference_metric+'_down']*1024) * threshold.goal_level,
+            :upload =>  (destination.plan[reference_metric+'_up']*1024) * threshold.goal_level,
+        }
+      when 'rtt'
+        graph_threshold = {
+            :rtt => threshold.goal_level * 0.001
+        }
+      else
+        graph_threshold = {
+            :download => threshold.goal_level,
+            :upload =>  threshold.goal_level,
+        }
+    end
 
     results = []
+    if metric.plugin != 'rtt'
+      raw_medians.each do |raw_median|
+        results << {
+            :x => raw_median.start_timestamp.midnight,
+            :dsavg => raw_median.dsavg,
+            :sdavg => raw_median.sdavg
+        }
+      end
+    else
+      raw_medians.each do |raw_median|
+        results << {
+            :x => raw_median.start_timestamp.midnight,
+            :y => raw_median.dsavg
+        }
+      end
+    end
+
+    data = {
+        :source => source,
+        :destination => destination,
+        :metric => metric,
+        :threshold => threshold,
+        :schedule => schedule,
+        :range => { :start => from, :end => to },
+        :results => results,
+        :goal_line => graph_threshold
+    }
+
+    respond_to do |format|
+      format.json { render :json => data, :status => 200 }
+    end
   end
 end
