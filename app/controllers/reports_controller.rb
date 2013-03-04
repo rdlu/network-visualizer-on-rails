@@ -53,6 +53,12 @@ class ReportsController < ApplicationController
   end
 
   def csv
+    @result = CSV.generate do |csv|
+      csv << ["titles", "go", "here"]
+    end
 
+    respond_to do |format|
+      format.csv { render text: @result }
+    end
   end
 end
