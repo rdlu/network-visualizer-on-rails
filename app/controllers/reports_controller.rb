@@ -87,6 +87,10 @@ class ReportsController < ApplicationController
         graph_threshold = {
             :rtt => threshold.goal_level * 0.001
         }
+      when 'jitter'
+        graph_threshold = {
+            :jitter => threshold.goal_level * 0.001
+        }
       else
         graph_threshold = {
             :download => threshold.goal_level,
