@@ -219,7 +219,6 @@
             if (jQuery("box-"+self.idName).is(':empty')){
                 jQuery('#graphs-area').prepend('<div id=\"box-'+self.idName+'\" class="row-fluid"><div   class=\"span12\"><div id=\"chart-'+self.idName+'\" style="height:300px;"></div></div></div>');
                 jQuery("#box-"+self.idName).append('<div class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="$(\'#chart-'+self.idName+'\').remove(); $(this).remove()">Remover</div>');
-
             }else{
                 $("#box-"+self.idName).remove();
                 jQuery('#graphs-area').prepend('<div id=\"box-'+self.idName+'\" class="row-fluid"><div   class=\"span12\"><div id=\"chart-'+self.idName+'\" style="height:300px;"></div></div></div>');
