@@ -8,7 +8,7 @@
               <label for="probe-type" class="filter-bar">Tipo da sonda:</label>
               <select name="by_type" id="probe-type" class="span2">
                 <option value="">Todas</option>
-                <% types.each_with_index do |type,index| %>
+                <% Probe.types.each_with_index do |type,index| %>
                 <option value="<%= type.at(1) %>" <%= params[:by_type].to_s == type.at(1).to_s ? "selected=\"selected\"".html_safe : "" %>><%= type.at(0) %></option>
                 <% end %>
               </select>
@@ -18,7 +18,7 @@
               <select name="by_state" id="probe-state" class="span2">
                 <option value="">Todas</option>
 
-                <% states.each do |state| %>
+                <% Probe.states.each do |state| %>
                     <option value="<%= state.at(1) %>" <%= params[:by_state].to_s == state.at(1).to_s ? "selected=\"selected\"".html_safe : "" %>><%= state.at(1).upcase %></option>
                 <% end %>
               </select>

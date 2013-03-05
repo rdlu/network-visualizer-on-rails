@@ -103,6 +103,17 @@ class Probe < ActiveRecord::Base
     self.polling * 1000 >= min_wait
   end
 
+  def self.types
+    [%w(Android android),
+     %w(Linux linux)]
+  end
+
+  def self.states
+    [["Rio de Janeiro","rj"],
+    ["Rio Grande do Sul","rs"],
+    ["São Paulo","sp"]]
+  end
+
   private
 
   def default_values
