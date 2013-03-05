@@ -5,6 +5,7 @@ MomRails::Application.routes.draw do
   get 'reports/index', :as => 'index_reports'
   match 'reports/graph/:source_id/:destination_id/:metric_id' => 'reports#graph', :via => [:get]
   post 'reports/graph', :as =>'graph_reports'
+  post 'reports/eaq_graph', :as =>'eaq_graph_reports'
   post 'kpi/show' => 'kpi#show', :as => 'show_kpi'
 
   resources :metrics
@@ -21,6 +22,7 @@ MomRails::Application.routes.draw do
   post 'probes/load_location',:as=> 'probes_load_location'
 
   match 'probes/:id/metrics/:source_id' => 'probes#metrics', :via => [:get]
+  match 'probes/:id/thresholds/:source_id' => 'probes#thresholds', :via => [:get]
 
   resources :metrics
   resources :profiles

@@ -4,7 +4,7 @@ class CalculateMonthlyComplianceException < Exception
 end
 
 class CalculateMonthlyCompliance
-  def initialize(reference_date = DateTime.current, reeschedule = true, force_disabled = false)
+  def initialize(reference_date = DateTime.current.end_of_day, reeschedule = true, force_disabled = false)
     @reference_date= reference_date
     @reeschedule = reeschedule
     @force_disabled = force_disabled

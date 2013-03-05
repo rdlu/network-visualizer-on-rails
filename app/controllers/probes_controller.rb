@@ -129,6 +129,17 @@ class ProbesController < ApplicationController
     end
   end
 
+  def thresholds
+    source = Probe.find(params[:source_id])
+    destination = Probe.find(params[:id])
+
+    thresholds = destination.thresholds(source)
+
+    respond_to do |format|
+      format.json { render :json => thresholds, :status => 200 }
+    end
+  end
+
   def load_location
     probe = Probe.all
 
