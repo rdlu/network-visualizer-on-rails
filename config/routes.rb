@@ -7,6 +7,7 @@ MomRails::Application.routes.draw do
   post 'reports/graph', :as =>'graph_reports'
   post 'reports/eaq_graph', :as =>'eaq_graph_reports'
   post 'kpi/show' => 'kpi#show', :as => 'show_kpi'
+  post 'reports/csv'
 
   resources :metrics
   resources :tests
