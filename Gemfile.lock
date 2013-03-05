@@ -51,6 +51,7 @@ GEM
     coffee-script-source (1.4.0)
     commonjs (0.2.6)
     daemons (1.1.9)
+    dalli (2.6.2)
     debug_inspector (0.0.2)
     delayed_job (3.0.5)
       activesupport (~> 3.0)
@@ -204,6 +205,7 @@ DEPENDENCIES
   cancan
   coffee-rails (~> 3.2.2)
   daemons
+  dalli
   delayed_job_active_record
   devise
   foreigner

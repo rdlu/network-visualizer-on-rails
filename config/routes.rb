@@ -45,6 +45,12 @@ MomRails::Application.routes.draw do
 
   get 'welcome/index'
 
+  # /welcome/status/1/2.json
+  match 'welcome/status/:source/:destination' => 'welcome#status', :via => [:get]
+
+  # /welcome/stats.json
+  get 'welcome/stats'
+
   #match collect
   #"/collect/id/3/throughput_http/34504848.484848/34504848.484848/34504848.484848/22143940.658321/22143940.658321/22143940.658321/1362070592/0.0"
   match 'collect/id' => 'results#index'
