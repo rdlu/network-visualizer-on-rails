@@ -33,7 +33,7 @@ class DnsController < ApplicationController
 
     if @dns.save
       respond_to do |format|
-        format.html { redirect_to @dns, notice: 'DNS criado' }
+        format.html { redirect_to dns_path(@dns), notice: 'DNS criado' }
       end
     else
       respond_to do |format|
@@ -66,7 +66,7 @@ class DnsController < ApplicationController
     @dns.destroy
 
     respond_to do |format|
-      format.html { render action: 'index' }
+      format.html { redirect_to dns_index_url }
     end
   end
 end
