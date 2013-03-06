@@ -12,6 +12,8 @@ class DnsController < ApplicationController
   end
 
   def show
+    authorize! :read, self
+    @dns = Dns.find(params[:id])
   end
 
   def new

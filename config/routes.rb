@@ -9,10 +9,14 @@ MomRails::Application.routes.draw do
   post 'kpi/show' => 'kpi#show', :as => 'show_kpi'
   post 'reports/csv'
 
+  get 'dns' => 'dns#index', :as => 'dnss'
+  get 'dns/new' => 'dns#new', :as => 'new_dns'
+  get 'dns/show/:id' => 'dns#show', :as => 'show_dns'
+
   resources :metrics
   resources :tests
   resources :schedules
-  resources :dns
+ 
   resources :probes do
     member do
       get 'destinations'
