@@ -42,15 +42,14 @@ gem 'dalli'
 # in production environments by default.
 group :assets do
   gem 'sass-rails',   '~> 3.2.3'
-  gem 'less-rails', '~> 2.2.5'
   gem 'coffee-rails', '~> 3.2.2'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   gem 'therubyracer', :require => 'v8'
 
   gem 'uglifier', '>= 1.3.0'
-  gem 'twitter-bootstrap-rails'
-  gem 'twitter-bootswatch-rails'
+  gem 'bootstrap-sass'
+  gem 'bootswatch-rails'
 end
 
 group :development do

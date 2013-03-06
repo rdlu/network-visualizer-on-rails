@@ -47,7 +47,7 @@ MomRails::Application.configure do
   # Enable serving of images, stylesheets, and JavaScripts from an asset server
   # config.action_controller.asset_host = "http://assets.example.com"
 
-  # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
+  # Precompile additional assets (application.js, application.css.scss, and all non-JS/CSS are already added)
   config.assets.precompile += %w( jsoneditor.js jsoneditor.css map.js gmap/gmap3.js bootstrap_datepicker.js conversion.js jquery_imask.js bootstrap_datepicker.css )
 
   # Disable delivery errors, bad email addresses will be ignored
