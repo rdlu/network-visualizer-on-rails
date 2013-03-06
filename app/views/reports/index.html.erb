@@ -72,6 +72,13 @@
 </div>
 
 <script type="text/javascript">
+    Highcharts.setOptions({
+        // This is for all plots, change Date axis to local timezone
+        global : {
+            useUTC : false
+        }
+    });
+
     jQuery('#date_start')
             .datepicker()
             .on('changeDate', this, function (ev) {
@@ -303,7 +310,8 @@
                 xAxis:{
                     type:'datetime',
                     min:self.range.start,
-                    max:self.range.end
+                    max:self.range.end,
+                    tickInterval: 24 * 3600 * 1000
                 },
                 yAxis:{
                     title:{
@@ -337,19 +345,30 @@
             direction = typeof direction !== 'undefined' ? direction : 'dsavg';
             var retorno = [];
             jQuery.each(self.results,function(index,result) {
-                retorno.push({x: moment(result.x).toDate(), y: result[direction], extra: result.extra})
+                retorno.push({x: moment(result.x), y: result[direction], extra: result.extra})
             });
             return retorno;
         };
 
         this.series = function() {
             if(self.metric.plugin != 'rtt')
-                var directions = [{name:'dsavg',title:'Upload'},{name:'sdavg',title:'Download'}];
+                var directions = [
+                    {name:'dsavg',title:'Upload (avg)',visible:true},
+                    {name:'sdavg',title:'Download (avg)',visible:true},
+                    {name:'dsmin',title:'Upload (min)',visible:false},
+                    {name:'dsmax',title:'Upload (max)',visible:false},
+                    {name:'sdmin',title:'Download (min)',visible:false},
+                    {name:'sdmax',title:'Download (max)',visible:false}
+                ];
             else
-                var directions = [{name:'y',title:'Round Trip Time'}];
+                var directions = [
+                    {name:'dsavg',title:'Round-Trip Time (avg)',visible:true},
+                    {name:'dsmin',title:'Round-Trip Time (min)',visible:false},
+                    {name:'dsmax',title:'Round-Trip Time (max)',visible:false}
+                ];
             var retorno = [];
             jQuery.each(directions, function(idx,direction) {
-                retorno.push({name:direction.title,data:self.dataset(direction.name)});
+                retorno.push({name:direction.title,data:self.dataset(direction.name),visible:direction.visible});
             });
             return retorno;
         };
@@ -423,7 +442,6 @@
                                             uuid:evt.currentTarget.extra.uuid
                                         },
                                         success:function (data) {
-                                            console.log(data);
                                             evt.currentTarget.extra = data;
                                             var wtemp = self.chartObject.chartWidth;
                                             var htemp = self.chartObject.chartHeight;

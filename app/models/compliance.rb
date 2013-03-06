@@ -38,16 +38,12 @@ class Compliance < ActiveRecord::Base
           case threshold.compliance_method
             when 'mean'
               download_sum = 0.to_f
-              download_mean = 0.to_f
               upload_sum = 0.to_f
               medians.each do |median|
-                download_sum += median.dsavg.to_f / reference_download_value
-                download_mean += median.dsavg.to_f
+                download_sum += median.sdavg.to_f / reference_download_value
                 #puts median.dsavg,reference_download_value,download_sum
-                upload_sum += median.sdavg.to_f / reference_upload_value
+                upload_sum += median.dsavg.to_f / reference_upload_value
               end
-              download_mean = download_mean / medians.length
-              #puts download_mean
               #TODO: confirmar numero total de medicoes (exclui valores nulos?)
               compliance.download = download_sum / medians.length
               compliance.upload = upload_sum / medians.length
@@ -56,10 +52,10 @@ class Compliance < ActiveRecord::Base
               upload_sum = 0
               medians.each do |median|
                 if reference_metric == 'throughput'
-                  download_sum += 1 if median.dsavg.to_f >= reference_download_value
-                  upload_sum += 1 if median.sdavg.to_f  >= reference_upload_value
+                  download_sum += 1 if median.sdavg.to_f >= reference_download_value
+                  upload_sum += 1 if median.dsavg.to_f  >= reference_upload_value
                 else
-                  download_sum += 1 if median.dsavg.to_f + median.sdavg.to_f <= reference_download_value.to_f
+                  download_sum += 1 if median.sdavg.to_f + median.dsavg.to_f <= reference_download_value.to_f
                 end
               end
               #TODO: confirmar numero total de medicoes (exclui valores nulos?)
