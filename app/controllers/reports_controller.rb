@@ -211,4 +211,19 @@ class ReportsController < ApplicationController
       format.csv { render text: @end_csv }
     end
   end
+
+  def eaq_table
+    @source = Probe.find(params[:source][:id])
+    @destination = Probe.find(params[:destination][:id])
+    @schedule = Schedule.where(:destination_id => @destination.id).where(:source_id => @source.id).all.last
+
+    @from = DateTime.parse(params[:date][:start]+' '+params[:time][:start]+' '+DateTime.current.zone).in_time_zone
+    @to = DateTime.parse(params[:date][:end]+' '+params[:time][:end]+' '+DateTime.current.zone).in_time_zone
+    @thresholds = @destination.thresholds @source
+
+    respond_to do |format|
+      format.html
+    end
+
+  end
 end

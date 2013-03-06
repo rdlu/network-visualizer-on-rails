@@ -163,7 +163,7 @@
                 action = '';
                 break;
         }
-        if (report_type != '')
+        if (report_type != '' && action != '')
             jQuery.ajax("<%=probes_url %>/" + destination_id + "/"+action+"/" + source_id, {
                 success: function (result, status) {
                     var options = jQuery('#metric_id');
@@ -178,11 +178,15 @@
                     }
                 },
                 error: function(result,status) {
-                    jQuery('#metric_id').html('').append($("<option />").val('').text('Tipo inválido')).prop('disabled', true);
+                    jQuery('#metric_id').html('').append($("<option />").val('tb_invalid').text('Tipo inválido')).prop('disabled', true);
                     jQuery("#metric_id").trigger('change');
                 },
                 dataType: 'json'
             });
+        else if (action == ''){
+            jQuery('#metric_id').html('').append($("<option />").val('tb_invalid').text('Tabela Anatel')).prop('disabled', false);
+            jQuery("#metric_id").trigger('change');
+        }
         else {
             jQuery('#metric_id').html('').append($("<option />").val('').text('Selecione o tipo de relatório primeiro')).prop('disabled', true);
             jQuery("#metric_id").trigger('change');
@@ -191,7 +195,7 @@
 
     jQuery("#metric_id").change(function (event) {
         var metric_id = event.currentTarget.value;
-        if (metric_id != '') {
+        if (metric_id != '' || metric_id == 'tb_invalid') {
             jQuery('#report-add').prop('disabled', false);
         } else {
             jQuery('#report-add').prop('disabled', true);
@@ -221,11 +225,14 @@
                             graphs[eaqgraph.idName] = eaqgraph;
                             eaqgraph.draw();
                             break;
+                        case 'eaq_table':
+                              jQuery("#graphs-area").prepend(result);
+                            break;
                     }
 
 
                 },
-                dataType: 'json',
+                //dataType: 'json',
                 data: $(this).serialize(),
                 method: 'post'
             });
@@ -233,6 +240,7 @@
             jQuery('#report-add').prop('disabled', true);
         }
     });
+
 
     var graphs = {};
 
@@ -285,10 +293,9 @@
 
         this.draw = function() {
             //cria o container
-            if (jQuery("box-"+self.idName).is(':empty')){
+            if (jQuery("#box-"+self.idName).is(':empty')){
                 jQuery('#graphs-area').prepend('<div id=\"box-'+self.idName+'\" class="row-fluid"><div   class=\"span12\"><div id=\"chart-'+self.idName+'\" style="height:300px;"></div></div></div>');
                 jQuery("#box-"+self.idName).append('<div class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="$(\'#chart-'+self.idName+'\').remove(); $(this).remove()">Remover</div>');
-
             }else{
                 $("#box-"+self.idName).remove();
                 jQuery('#graphs-area').prepend('<div id=\"box-'+self.idName+'\" class="row-fluid"><div   class=\"span12\"><div id=\"chart-'+self.idName+'\" style="height:300px;"></div></div></div>');
