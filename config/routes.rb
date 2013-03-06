@@ -7,6 +7,7 @@ MomRails::Application.routes.draw do
   post 'reports/graph', :as =>'graph_reports'
   post 'reports/eaq_graph', :as =>'eaq_graph_reports'
   post 'kpi/show' => 'kpi#show', :as => 'show_kpi'
+  post 'reports/csv'
 
   resources :metrics
   resources :tests
@@ -43,6 +44,12 @@ MomRails::Application.routes.draw do
   get 'users/sign_in'
 
   get 'welcome/index'
+
+  # /welcome/status/1/2.json
+  match 'welcome/status/:source/:destination' => 'welcome#status', :via => [:get]
+
+  # /welcome/stats.json
+  get 'welcome/stats'
 
   #match collect
   #"/collect/id/3/throughput_http/34504848.484848/34504848.484848/34504848.484848/22143940.658321/22143940.658321/22143940.658321/1362070592/0.0"

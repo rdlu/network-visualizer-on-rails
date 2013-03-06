@@ -1,8 +1,6 @@
 # coding: utf-8
 class ProbesController < ApplicationController
   before_filter :authenticate_user!
-  helper_method :states
-  helper_method :types
 
   #escopos
   has_scope :by_city
@@ -147,20 +145,4 @@ class ProbesController < ApplicationController
       format.json { render :json => probe, :status => 200 }
     end
   end
-
-  protected
-
-  def types
-    [%w(Android android),
-     %w(Linux linux)]
-  end
-
-  def states
-    [["Rio de Janeiro","rj"],
-    ["Rio Grande do Sul","rs"],
-    ["São Paulo","sp"]]
-  end
-
-
-
 end

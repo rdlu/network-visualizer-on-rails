@@ -6,7 +6,7 @@
         <div class="control-group">
           <%= f.label :type, "Tipo da Sonda", :class => "control-label" %>
           <div class="controls">
-            <%= f.select :type, types %>
+            <%= f.select :type, Probe.types %>
           </div>
         </div>
         <div class="control-group">
@@ -52,7 +52,7 @@
           <%= f.label :city, "Cidade / UF", :class => "control-label" %>
           <div class="controls">
             <%= f.text_field :city, :placeholder => "Cidade" %>
-            <%= f.select :state, states %>
+            <%= f.select :state, Probe.states %>
           </div>
         </div>
         <div class="control-group">

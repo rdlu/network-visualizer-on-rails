@@ -103,6 +103,42 @@ class Probe < ActiveRecord::Base
     self.polling * 1000 >= min_wait
   end
 
+  def self.types
+    [%w(Android android),
+     %w(Linux linux)]
+  end
+
+  def self.states
+    [
+      ["Acre", "ac"],
+      ["Alagoas", "al"],
+      ["Amapá", "ap"],
+      ["Amazonas", "am"],
+      ["Bahia", "ba"],
+      ["Ceará", "ce"],
+      ["Distrito Federal", "df"],
+      ["Espirito Santo", "es"],
+      ["Goiás", "go"],
+      ["Maranhão", "ma"],
+      ["Mato Grosso", "mt"],
+      ["Mato Grosso do Sul", "ms"],
+      ["Minas Gerais", "mg"],
+      ["Pará", "pa"],
+      ["Paraíba", "pb"],
+      ["Pernambuco", "pe"],
+      ["Piauí", "pi"],
+      ["Rio de Janeiro","rj"],
+      ["Rio Grande do Norte", "rn"],
+      ["Rio Grande do Sul","rs"],
+      ["Rondônia", "ro"],
+      ["Roraima", "rr"],
+      ["Santa Catarina", "sc"],
+      ["São Paulo","sp"],
+      ["Sergipe", "se"],
+      ["Tocantins", "to"]
+    ]
+  end
+
   private
 
   def default_values

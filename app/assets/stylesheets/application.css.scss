@@ -1,0 +1,35 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or vendor/assets/stylesheets of plugins, if any, can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the top of the
+ * compiled file, but it's generally better to create a new file per style scope.
+ *
+ *= require_self
+ *= require_tree .
+ */
+
+@import url('https://fonts.googleapis.com/css?family=Asap');
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:400,700,600");
+
+$sansFontFamily: "Open Sans", Helvetica, Arial, sans-serif;
+$headingsFontFamily: 'Open Sans', sans-serif;
+$navbarBackground: #375d81;
+$infoText: darken(#908A62, 5%);
+
+@import "bootswatch/cerulean/variables";
+
+// Then bootstrap itself
+@import "bootstrap";
+
+// Responsive styles go here in case you want them
+@import "bootstrap-responsive";
+
+// And finally bootswatch style itself
+@import "bootswatch/cerulean/bootswatch";
+
+// Whatever application styles you have go last
+@import "base";
