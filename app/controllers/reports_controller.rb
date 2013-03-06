@@ -213,10 +213,13 @@ class ReportsController < ApplicationController
 
     @from = DateTime.parse(params[:date][:start]+' '+params[:time][:start]+' '+DateTime.current.zone).in_time_zone
     @to = DateTime.parse(params[:date][:end]+' '+params[:time][:end]+' '+DateTime.current.zone).in_time_zone
+
+
+
     @thresholds = @destination.thresholds @source
 
     respond_to do |format|
-      format.html
+      format.html {render :layout=> false}
     end
 
   end

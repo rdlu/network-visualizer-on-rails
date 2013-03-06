@@ -1,24 +1,36 @@
 
-<div id="box-<%=@source.name %>" class="row-fluid">
+<div id="box-<%=@source.id %>" class="row-fluid">
  <div   class="span12">
-   <div id="table-<%= @source.name %>" >
-    <table class="table">
+   <div id="table-<%= @source.id %>" >
+    <table class="table table-bordered table-hover table-condensed">
       <thead>
         <tr>
           <th></th>
         <%  @thresholds.each do |threshold| %>
-          <th><%= threshold.name %></th>
+          <th style="text-align: center"><%= threshold.name %></th>
         <% end %>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td></td>
+          <td style="min-width: 50px"></td>
+          <%  @thresholds.each do |threshold| %>
+           <td style="text-align: center"><%= threshold.description %> <br/>Meta: <%= threshold.goal_level %></td>
+          <% end %>
         </tr>
+        <tr>
+          <td style="font-weight: bold"><%= @from  %></td>
+          <%  @thresholds.each do |threshold| %>
+          <td><%= threshold.compliance_level %></td>
+          <% end %>
+        </tr>
+
       </tbody>
     </table>
    </div>
  </div>
+  <div class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="$('#table-<%= @source.id %>').remove(); $(this).remove()">Remover</div>
+
 </div>
 
 
