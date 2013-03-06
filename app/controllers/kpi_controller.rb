@@ -40,6 +40,10 @@ class KpiController < ApplicationController
   def show
     kpi = Kpi.find_by_uuid(params[:uuid])
 
+    if kpi.nil?
+      kpi = {}
+    end
+
     respond_to do |format|
       format.json { render :json => kpi, :status => 200 }
     end

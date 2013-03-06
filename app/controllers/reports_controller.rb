@@ -28,29 +28,35 @@ class ReportsController < ApplicationController
     if metric.plugin != 'rtt'
       raw_results.each do |raw_result|
         results << {
-            'x' => raw_result.timestamp,
-            'dsavg' => raw_result.dsavg,
-            'sdavg' => raw_result.sdavg,
-            'extra' => { 'uuid' => raw_result.uuid }
+            :x => raw_result.timestamp,
+            :dsavg => raw_result.dsavg,
+            :sdavg => raw_result.sdavg,
+            :dsmin => raw_result.dsmin,
+            :dsmax => raw_result.dsmax,
+            :sdmin => raw_result.sdmin,
+            :sdmax => raw_result.sdmax,
+            :extra => { :uuid => raw_result.uuid }
         }
       end
     else
       raw_results.each do |raw_result|
         results << {
-            'x' => raw_result.timestamp,
-            'y' => raw_result.dsavg,
-            'extra' => { 'uuid' => raw_result.uuid }
+            :x => raw_result.timestamp,
+            :dsavg => raw_result.dsavg,
+            :dsmin => raw_result.dsmin,
+            :dsmax => raw_result.dsmax,
+            :extra => { :uuid => raw_result.uuid }
         }
       end
     end
 
     data = {
-        'source' => source,
-        'destination' => destination,
-        'metric' => metric,
-        'schedule' => schedule,
-        'range' => { 'start' => from, 'end' => to },
-        'results' => results
+        :source => source,
+        :destination => destination,
+        :metric => metric,
+        :schedule => schedule,
+        :range => { :start => from, :end => to },
+        :results => results
     }
 
     respond_to do |format|
