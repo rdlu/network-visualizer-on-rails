@@ -9,9 +9,14 @@ MomRails::Application.routes.draw do
   post 'kpi/show' => 'kpi#show', :as => 'show_kpi'
   post 'reports/csv'
 
-  get 'dns' => 'dns#index', :as => 'dnss'
+  get 'dns' => 'dns#index', :as => 'dns'
+  get 'dns' => 'dns#index', :as => 'dns_index'
   get 'dns/new' => 'dns#new', :as => 'new_dns'
-  get 'dns/show/:id' => 'dns#show', :as => 'show_dns'
+  get 'dns/:id' => 'dns#show', :as => 'dns'
+  get 'dns/edit/:id' => 'dns#edit', :as => 'edit_dns'
+  post 'dns' => 'dns#create', :as => 'create_dns'
+  put 'dns/:id' => 'dns#update', :as => 'dns'
+  delete 'dns/:id' => 'dns#destroy', :as => 'dns'
 
   resources :metrics
   resources :tests
