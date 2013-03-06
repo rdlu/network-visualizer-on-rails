@@ -1,0 +1,26 @@
+
+<div id="box-<%=@source.name %>" class="row-fluid">
+ <div   class="span12">
+   <div id="table-<%= @source.name %>" >
+    <table class="table">
+      <thead>
+        <tr>
+          <th></th>
+        <%  @thresholds.each do |threshold| %>
+          <th><%= threshold.name %></th>
+        <% end %>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+   </div>
+ </div>
+</div>
+
+
+
+
