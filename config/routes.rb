@@ -1,12 +1,4 @@
 MomRails::Application.routes.draw do
-  get "dns/index"
-
-  get "dns/show"
-
-  get "dns/new"
-
-  get "dns/delete"
-
   get 'route_reload' => 'welcome#route_reload'
 
   match 'reports' => 'reports#index', :as => 'reports'
@@ -20,6 +12,7 @@ MomRails::Application.routes.draw do
   resources :metrics
   resources :tests
   resources :schedules
+  resources :dns
   resources :probes do
     member do
       get 'destinations'
