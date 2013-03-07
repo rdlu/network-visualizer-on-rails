@@ -1,24 +1,41 @@
 
-<div id="box-<%=@source.name %>" class="row-fluid">
+<div id="box-<%=@source.id %>" class="row-fluid">
  <div   class="span12">
-   <div id="table-<%= @source.name %>" >
-    <table class="table">
+   <div id="table-<%= @source.id %>" >
+    <text style="color: #3E576F;font-size:  16px">Tabela de Indicadores Anatel: <%= @source.name %> / <%= @destination.name %> ( Início: <%= @from.strftime("%d/%m/%y") %> Fim: <%= @to.strftime("%d/%m/%y") %> )</text>
+    <table class="table table-bordered table-hover table-condensed" >
       <thead>
         <tr>
           <th></th>
         <%  @thresholds.each do |threshold| %>
-          <th><%= threshold.name %></th>
+          <th style="text-align: center"><%= threshold.name %></th>
         <% end %>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td></td>
+          <td style="min-width: 50px"></td>
+          <%  @thresholds.each do |threshold| %>
+           <td style="text-align: center"><%= threshold.description %> <br/>Meta: <%= threshold.compliance_level* 100 %>%</td>
+          <% end %>
         </tr>
+        <% @months.each do |month| %>
+        <tr>
+          <td style="font-weight: bold"><%= month.strftime("%b/%Y") == Time.new.strftime("%b/%Y") ? (month.strftime("%b/%Y")+' (Parcial)'):month.strftime("%b/%Y") %></td>
+          <%  @thresholds.each do |threshold| %>
+          <td style="text-align: center"><% dados = Compliance.where(:threshold_id => threshold.id).where(:schedule_id => @schedule.id).where(:start_timestamp => month.to_datetime.in_time_zone).first_or_create %>
+          <%= (dados.download.to_f*100).to_s + '%' %><%=  dados.upload.to_f == 0.0? '': ('/' + (dados.upload.to_f*100).to_s+'%') %>
+          </td>
+          <% end %>
+        </tr>
+      <% end %>
+
       </tbody>
     </table>
    </div>
  </div>
+  <div class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="$('#table-<%= @source.id %>').remove(); $(this).remove()">Remover</div>
+
 </div>
 
 

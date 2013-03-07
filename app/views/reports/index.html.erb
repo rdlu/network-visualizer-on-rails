@@ -226,7 +226,13 @@
                             eaqgraph.draw();
                             break;
                         case 'eaq_table':
-                              jQuery("#graphs-area").prepend(result);
+
+                            if (jQuery("box-"+source_id).is(':empty')){
+                                jQuery('#graphs-area').prepend(result);
+                            }else{
+                                $("#box-"+source_id).remove();
+                                jQuery('#graphs-area').prepend(result);
+                            }
                             break;
                     }
 
