@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130306175307) do
+ActiveRecord::Schema.define(:version => 20130307184331) do
 
   create_table "compliances", :force => true do |t|
     t.integer  "schedule_id"
@@ -77,7 +77,7 @@ ActiveRecord::Schema.define(:version => 20130306175307) do
   end
 
   add_index "evaluations", ["profile_id"], :name => "tests_profile_id_fk"
-  add_index "evaluations", ["schedule_id"], :name => "tests_schedule_id_fk"
+  add_index "evaluations", ["schedule_id"], :name => "evaluations_schedule_id_fk"
 
   create_table "kpis", :force => true do |t|
     t.string   "schedule_uuid",    :limit => 36
@@ -145,6 +145,16 @@ ActiveRecord::Schema.define(:version => 20130306175307) do
 
   add_index "metrics_profiles", ["metric_id"], :name => "metrics_test_profiles_metric_id_fk"
   add_index "metrics_profiles", ["profile_id"], :name => "metrics_test_profiles_profile_id_fk"
+
+  create_table "nameservers", :force => true do |t|
+    t.string   "address"
+    t.string   "name"
+    t.boolean  "primary"
+    t.boolean  "vip"
+    t.boolean  "internal"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "plans", :force => true do |t|
     t.string   "name"

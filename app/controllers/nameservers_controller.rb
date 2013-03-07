@@ -1,0 +1,83 @@
+class NameserversController < ApplicationController
+  # GET /nameservers
+  # GET /nameservers.json
+  def index
+    @nameservers = Nameserver.all
+
+    respond_to do |format|
+      format.html # index.html.erb
+      format.json { render json: @nameservers }
+    end
+  end
+
+  # GET /nameservers/1
+  # GET /nameservers/1.json
+  def show
+    @nameserver = Nameserver.find(params[:id])
+
+    respond_to do |format|
+      format.html # show.html.erb
+      format.json { render json: @nameserver }
+    end
+  end
+
+  # GET /nameservers/new
+  # GET /nameservers/new.json
+  def new
+    @nameserver = Nameserver.new
+
+    respond_to do |format|
+      format.html # new.html.erb
+      format.json { render json: @nameserver }
+    end
+  end
+
+  # GET /nameservers/1/edit
+  def edit
+    @nameserver = Nameserver.find(params[:id])
+  end
+
+  # POST /nameservers
+  # POST /nameservers.json
+  def create
+    @nameserver = Nameserver.new(params[:nameserver])
+
+    respond_to do |format|
+      if @nameserver.save
+        format.html { redirect_to @nameserver, notice: 'Nameserver was successfully created.' }
+        format.json { render json: @nameserver, status: :created, location: @nameserver }
+      else
+        format.html { render action: "new" }
+        format.json { render json: @nameserver.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # PUT /nameservers/1
+  # PUT /nameservers/1.json
+  def update
+    @nameserver = Nameserver.find(params[:id])
+
+    respond_to do |format|
+      if @nameserver.update_attributes(params[:nameserver])
+        format.html { redirect_to @nameserver, notice: 'Nameserver was successfully updated.' }
+        format.json { head :no_content }
+      else
+        format.html { render action: "edit" }
+        format.json { render json: @nameserver.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # DELETE /nameservers/1
+  # DELETE /nameservers/1.json
+  def destroy
+    @nameserver = Nameserver.find(params[:id])
+    @nameserver.destroy
+
+    respond_to do |format|
+      format.html { redirect_to nameservers_url }
+      format.json { head :no_content }
+    end
+  end
+end
