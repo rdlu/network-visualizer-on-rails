@@ -1,7 +1,9 @@
 class NameserversController < ApplicationController
+  before_filter :authenticate_user!
   # GET /nameservers
   # GET /nameservers.json
   def index
+    authorize! :read, self
     @nameservers = Nameserver.all
 
     respond_to do |format|
@@ -13,6 +15,7 @@ class NameserversController < ApplicationController
   # GET /nameservers/1
   # GET /nameservers/1.json
   def show
+    authorize! :read, self
     @nameserver = Nameserver.find(params[:id])
 
     respond_to do |format|
@@ -24,6 +27,7 @@ class NameserversController < ApplicationController
   # GET /nameservers/new
   # GET /nameservers/new.json
   def new
+    authorize! :manage, self
     @nameserver = Nameserver.new
 
     respond_to do |format|
@@ -34,12 +38,14 @@ class NameserversController < ApplicationController
 
   # GET /nameservers/1/edit
   def edit
+    authorize! :manage, self
     @nameserver = Nameserver.find(params[:id])
   end
 
   # POST /nameservers
   # POST /nameservers.json
   def create
+    authorize! :manage, self
     @nameserver = Nameserver.new(params[:nameserver])
 
     respond_to do |format|
@@ -56,6 +62,7 @@ class NameserversController < ApplicationController
   # PUT /nameservers/1
   # PUT /nameservers/1.json
   def update
+    authorize! :manage, self
     @nameserver = Nameserver.find(params[:id])
 
     respond_to do |format|
@@ -72,6 +79,7 @@ class NameserversController < ApplicationController
   # DELETE /nameservers/1
   # DELETE /nameservers/1.json
   def destroy
+    authorize! :manage, self
     @nameserver = Nameserver.find(params[:id])
     @nameserver.destroy
 
