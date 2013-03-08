@@ -24,7 +24,7 @@
           <td style="font-weight: bold"><%= month.strftime("%b/%Y") == Time.new.strftime("%b/%Y") ? (month.strftime("%b/%Y")+' (Parcial)'):month.strftime("%b/%Y") %></td>
           <%  @thresholds.each do |threshold| %>
           <td style="text-align: center"><% dados = Compliance.where(:threshold_id => threshold.id).where(:schedule_id => @schedule.id).where(:start_timestamp => month.to_datetime.in_time_zone).first_or_create %>
-          <%= (dados.download.to_f*100).to_s + '%' %><%=  dados.upload.to_f == 0.0? '': ('/' + (dados.upload.to_f*100).to_s+'%') %>
+          <%= (dados.download.to_f*100).round(2).to_s + '%' %><%=  dados.upload.to_f == 0.0? '': ('/' + (dados.upload.to_f*100).round(2).to_s+'%') %>
           </td>
           <% end %>
         </tr>

@@ -6,11 +6,11 @@
           case threshold.metric.plugin
             when /^throughput/
               if(threshold.compliance_method == 'mean')
-                down = (threshold.goal_level * 100).to_s + "%"
-                up =   (threshold.goal_level * 100).to_s + "%"
+                down = (threshold.goal_level * 100).round(3).to_s + "%"
+                up =   (threshold.goal_level * 100).round(3).to_s + "%"
                 else
-                  down = ((@destination.plan.throughput_down / 1000) * threshold.goal_level).to_s + "Mbps"
-                  up =   ((@destination.plan.throughput_up / 1000) * threshold.goal_level).to_s + "Mbps"
+                  down = ((@destination.plan.throughput_down / 1000) * threshold.goal_level).round(3).to_s + "Mbps"
+                  up =   ((@destination.plan.throughput_up / 1000) * threshold.goal_level).round(3).to_s + "Mbps"
               end
               down+'/'+up
             when 'jitter'
