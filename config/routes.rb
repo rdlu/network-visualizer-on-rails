@@ -31,7 +31,10 @@ MomRails::Application.routes.draw do
   match 'probes/:id/thresholds/:source_id' => 'probes#thresholds', :via => [:get]
 
   resources :metrics
+
+  get 'profiles/new_dns' => 'profiles#new_dns', :as => 'new_dns_profile'
   resources :profiles
+
   resources :connection_profiles do
     resources :plans
   end

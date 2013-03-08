@@ -37,6 +37,17 @@ class ProfilesController < ApplicationController
     end
   end
 
+  # GET /profiles/new_dns
+  def new_dns
+    authorize! :manage, self
+    @profile = Profile.new
+    @profile.config_parameters = '{}'
+
+    respond_to do |format|
+      format.html
+    end
+  end
+
   # GET /profiles/1/edit
   def edit
     authorize! :manage, self
