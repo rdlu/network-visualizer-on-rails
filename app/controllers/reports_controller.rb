@@ -230,4 +230,17 @@ class ReportsController < ApplicationController
     end
 
   end
+
+  def detail_eaq_table
+    @source = Probe.find(params[:source])
+    @destination = Probe.find(params[:destination])
+    @thresholds = @destination.thresholds @source
+    @month = params[:month]
+    @schedule = Schedule.find(params[:schedule])
+
+    respond_to do |format|
+      format.html {render :layout=> false}
+    end
+  end
+
 end

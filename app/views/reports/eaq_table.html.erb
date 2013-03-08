@@ -20,7 +20,7 @@
           <% end %>
         </tr>
         <% @months.each do |month| %>
-        <tr>
+        <tr onclick="toggleTable('<%= month.strftime("%Y-%m-%d")%>');">
           <td style="font-weight: bold"><%= month.strftime("%b/%Y") == Time.new.strftime("%b/%Y") ? (month.strftime("%b/%Y")+' (Parcial)'):month.strftime("%b/%Y") %></td>
           <%  @thresholds.each do |threshold| %>
           <td style="text-align: center"><% dados = Compliance.where(:threshold_id => threshold.id).where(:schedule_id => @schedule.id).where(:start_timestamp => month.to_datetime.in_time_zone).first_or_create %>
@@ -28,8 +28,11 @@
           </td>
           <% end %>
         </tr>
+          <tr id="<%= month.strftime("%Y-%m-%d")%>" style="display: none"  >
+            <td  colspan="7" style="font-weight: bold; background-color: #777777;text-align: center">Diário <%= month.strftime("%B/%Y")%></td>
+          </tr>
+          <tbody colspan="7" style="display: none;" id="detail<%= month.strftime("%Y-%m-%d")%>"></tbody>
       <% end %>
-
       </tbody>
     </table>
    </div>
@@ -38,6 +41,29 @@
 
 </div>
 
+<script>
+  function toggleTable(id){
+      var e = document.getElementById(id);
 
+      if (e.style.display == 'table-row'){
+        e.style.display = 'none';
+        document.getElementById('detail'+id).style.display = 'none';
+      }else{
+          if($('#detail'+id).is(':empty')){
+              $.ajax({
+                  type: 'POST',
+                  url: "<%= detail_eaq_table_reports_url %>",
+                  data: { source: <%= @source.id %>, destination: <%= @destination.id %>, month: id, schedule:<%= @schedule.id %>},
+                  success: function(data){
+                      $('#detail'+id).html(data);
+                  }
+              });
+          }
+        e.style.display = 'table-row';
+        document.getElementById('detail'+id).style.display = '';
+      }
+  }
+
+</script>
 
 
