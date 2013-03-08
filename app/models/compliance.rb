@@ -59,8 +59,8 @@ class Compliance < ActiveRecord::Base
                 end
               end
               #TODO: confirmar numero total de medicoes (exclui valores nulos?)
-              compliance.download = download_sum / medians.length
-              compliance.upload = upload_sum / medians.length
+              compliance.download = download_sum.to_f / medians.length.to_f
+              compliance.upload = upload_sum.to_f / medians.length.to_f
             else
               Yell.new(:gelf, :facility => 'netmetric').send 'warn', "Tentativa de calculo de quocientes com método de cumprimento não suportado: #{threshold.compliance_method}",
                                                              '_schedule_id' => schedule.id, '_probe_id' => schedule.source.id, '_threshold_id' => threshold.id

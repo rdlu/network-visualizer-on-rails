@@ -6,6 +6,7 @@ MomRails::Application.routes.draw do
   match 'reports/graph/:source_id/:destination_id/:metric_id' => 'reports#graph', :via => [:get]
   post 'reports/graph', :as =>'graph_reports'
   post 'reports/eaq_graph', :as =>'eaq_graph_reports'
+  post 'reports/eaq_compliance_graph', :as =>'eaq_compliance_graph_reports'
   post 'reports/eaq_table', :as =>'eaq_table_reports'
   post 'reports/detail_eaq_table', :as =>'detail_eaq_table_reports'
   post 'kpi/show' => 'kpi#show', :as => 'show_kpi'
@@ -80,8 +81,8 @@ MomRails::Application.routes.draw do
                           :cell_id => /[0-9\-]+/,
                           :brand => /.+/,
                           :model => /.+/,
-                          :conn_type => /[A-Za-z\-]+/,
-                          :conn_tech => /[A-Za-z\-]+/,
+                          :conn_type => /[A-Za-z+\-]+/,
+                          :conn_tech => /[A-Za-z+\-]+/,
                           :signal => /[>|<]*[0-9.\- ]+|Desconhecido|unknown/,
                           :error_rate => /[>|<]*[0-9.\- ]+|Desconhecido|unknown'/,
                           :change_of_ips => /[0-9\-]+/,

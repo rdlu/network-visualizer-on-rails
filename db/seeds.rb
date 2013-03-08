@@ -31,7 +31,7 @@ visualizador_user.save!
 
 Metric.create([
       { name: "Throughput TCP", description: "Vazão de dados sob TCP", order:1, plugin: "throughput_tcp", reverse: false },
-      { name: "Throughput", description: "Vazão de dados sob UDP", order:2, plugin: "throughput", reverse: false },
+      { name: "Throughput UDP", description: "Vazão de dados sob UDP", order:2, plugin: "throughput", reverse: false },
       { name: "Throughput HTTP", description: "Vazão de dados sob HTTP", order:3, plugin: "throughput_http", reverse: false },
       { name: "RTT", description: "Latência ida e volta", order:4, plugin: "rtt", reverse: true },
       { name: "Perda", description: "Perda de pacotes transmitidos", order:5, plugin: "loss", reverse: true },
@@ -64,10 +64,10 @@ planospeedy.save!
 
 #limiares anatel
 Threshold.create([
-     { name: "SCM4/SMP10", description: "Taxa de Transmissão Instantanea", compliance_level: "0.95", compliance_period: "monthly", compliance_method: "quotient", goal_level: "0.2", goal_method: "median", goal_period: "daily-rush", metric_id: "3" },
-     { name: "SCM5/SMP11", description: "Taxa de Transmissão Média", compliance_level: "0.6", compliance_period: "monthly", compliance_method: "mean", goal_level: "0.6", goal_method: "median", goal_period: "daily-rush", metric_id: "3" },
-     { name: "SCM6", description: "Latência Bidirecional", compliance_level: "0.85", compliance_period: "monthly", compliance_method: "quotient", goal_level: "80.0", goal_method: "median", goal_period: "daily-rush", metric_id: "4" },
-     { name: "SCM7", description: "Variação de Latência", compliance_level: "0.85", compliance_period: "monthly", compliance_method: "quotient", goal_level: "50.0", goal_method: "median", goal_period: "daily-rush", metric_id: "6" },
-     { name: "SCM8", description: "% Pacotes Descartados", compliance_level: "0.85", compliance_period: "monthly", compliance_method: "quotient", goal_level: "0.02", goal_method: "raw", goal_period: "each-rush", metric_id: "5" },
-     { name: "SCM9", description: "Disponibilidade", compliance_level: "0.85", compliance_period: "monthly", compliance_method: "quotient", goal_level: "0.99", goal_method: "availability", goal_period: "each", metric_id: "5" },
+     { name: "SCM4/SMP10", description: "Taxa de Transmissão Instantanea", compliance_level: "0.95", compliance_period: "monthly", compliance_method: "quotient", goal_level: "0.2", goal_method: "median", goal_period: "daily-rush", metric_id: "3", base_year: '2013' },
+     { name: "SCM5/SMP11", description: "Taxa de Transmissão Média", compliance_level: "0.6", compliance_period: "monthly", compliance_method: "mean", goal_level: "0.6", goal_method: "median", goal_period: "daily-rush", metric_id: "3", base_year: '2013' },
+     { name: "SCM6", description: "Latência Bidirecional", compliance_level: "0.85", compliance_period: "monthly", compliance_method: "quotient", goal_level: "80.0", goal_method: "median", goal_period: "daily-rush", metric_id: "4", base_year: '2013' },
+     { name: "SCM7", description: "Variação de Latência", compliance_level: "0.85", compliance_period: "monthly", compliance_method: "quotient", goal_level: "50.0", goal_method: "median", goal_period: "daily-rush", metric_id: "6", base_year: '2013' },
+     { name: "SCM8", description: "% Pacotes Descartados", compliance_level: "0.85", compliance_period: "monthly", compliance_method: "quotient", goal_level: "0.02", goal_method: "raw", goal_period: "each-rush", metric_id: "5", base_year: '2013' },
+     { name: "SCM9", description: "Disponibilidade", compliance_level: "0.85", compliance_period: "monthly", compliance_method: "quotient", goal_level: "0.99", goal_method: "availability", goal_period: "each", metric_id: "5", base_year: '2013' },
 ])

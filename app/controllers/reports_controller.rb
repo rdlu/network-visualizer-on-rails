@@ -3,7 +3,8 @@ class ReportsController < ApplicationController
   before_filter :authenticate_user!
   def index
     @report_types = [
-        ['Gráfico de Indicadores Anatel/EAQ','eaq_graph'],
+        ['Gráfico de Indicadores Anatel/EAQ - Consolidação Diária','eaq_graph'],
+        ['Gráfico de Indicadores Anatel/EAQ - Consolidação Mensal','eaq_compliance_graph'],
         ['Gráfico de Dados Brutos','graph'],
         ['Tabela de Indicadores Anatel/EAQ','eaq_table']
     ]
@@ -131,6 +132,57 @@ class ReportsController < ApplicationController
         :range => { :start => from, :end => to },
         :results => results,
         :goal_line => graph_threshold
+    }
+
+    respond_to do |format|
+      format.json { render :json => data, :status => 200 }
+    end
+  end
+
+  def eaq_compliance_graph
+    source = Probe.find(params[:source][:id])
+    destination = Probe.find(params[:destination][:id])
+    schedule = Schedule.where(:destination_id => destination.id).where(:source_id => source.id).all.last
+    threshold = Threshold.find(params[:metric][:id])
+    metric = threshold.metric
+
+    from = DateTime.parse(params[:date][:start]+' '+params[:time][:start]+' '+DateTime.current.zone).beginning_of_day.in_time_zone('GMT')
+    to = DateTime.parse(params[:date][:end]+' '+params[:time][:end]+' '+DateTime.current.zone).end_of_day.in_time_zone('GMT')
+
+    raw_compliances = Compliance.
+        where(:schedule_id => schedule.id).
+        where(:threshold_id => threshold.id).
+        where('start_timestamp >= ?', from).
+        where('end_timestamp <= ?', to).
+        order('start_timestamp ASC').all
+
+    results = []
+    reference_metric = metric.plugin.split('_').at(0)
+    if reference_metric == 'throughput'
+      raw_compliances.each do |raw_compliance|
+        results << {
+            :x => raw_compliance.start_timestamp.midnight,
+            :download => raw_compliance.download,
+            :upload => raw_compliance.upload
+        }
+      end
+    else
+      raw_compliances.each do |raw_compliance|
+        results << {
+            :x => raw_compliance.start_timestamp.midnight,
+            :y => raw_compliance.download
+        }
+      end
+    end
+
+    data = {
+        :source => source,
+        :destination => destination,
+        :metric => metric,
+        :threshold => threshold,
+        :schedule => schedule,
+        :range => { :start => from, :end => to },
+        :results => results
     }
 
     respond_to do |format|

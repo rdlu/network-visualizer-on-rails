@@ -16,10 +16,13 @@ class ResultsController < ApplicationController
 
     #atualiza o timestamp
     @source.status = 1
+    @source.updated_at=DateTime.current
     @source.save!
     @destination.status = 1
+    @destination.updated_at=DateTime.current
     @destination.save!
     @schedule.status = 'active'
+    @schedule.updated_at=DateTime.current
     @schedule.save!
 
     @results.schedule = @schedule
