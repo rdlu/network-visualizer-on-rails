@@ -1,6 +1,3 @@
-<%= javascript_include_tag "bootstrap_datepicker" %>
-<%= stylesheet_link_tag "bootstrap_datepicker" %>
-<%= javascript_include_tag "jquery_imask" %>
 <h2>Relatórios</h2>
 <%= form_tag(graph_reports_path, :class => 'form-horizontal', :id => 'report-form') do %>
     <div class="row-fluid">
@@ -157,6 +154,9 @@
                 action = 'metrics';
                 break;
             case 'eaq_graph':
+                action = 'thresholds';
+                break;
+            case 'eaq_compliance_graph':
                 action = 'thresholds';
                 break;
             case 'eaq_table':
