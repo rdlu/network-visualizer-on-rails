@@ -28,8 +28,8 @@ class Compliance < ActiveRecord::Base
           reference_download_value = 0
           reference_upload_value = 0
           if reference_metric == 'throughput'
-            reference_download_value = (schedule.destination.plan[reference_metric+'_down']*1024)
-            reference_upload_value = (schedule.destination.plan[reference_metric+'_up']*1024)
+            reference_download_value = (schedule.destination.plan[reference_metric+'_down']*1024) * threshold.goal_level
+            reference_upload_value = (schedule.destination.plan[reference_metric+'_up']*1024) * threshold.goal_level
           else
             reference_download_value = threshold.goal_level
             reference_upload_value =  threshold.goal_level
@@ -52,8 +52,8 @@ class Compliance < ActiveRecord::Base
               upload_sum = 0
               medians.each do |median|
                 if reference_metric == 'throughput'
-                  download_sum += 1 if median.sdavg.to_f >= reference_download_value
-                  upload_sum += 1 if median.dsavg.to_f  >= reference_upload_value
+                  download_sum += 1 if median.sdavg.to_f >= reference_download_value.to_f
+                  upload_sum += 1 if median.dsavg.to_f  >= reference_upload_value.to_f
                 else
                   download_sum += 1 if median.sdavg.to_f + median.dsavg.to_f <= reference_download_value.to_f
                 end
