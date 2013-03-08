@@ -2,7 +2,23 @@
     <tr>
       <td style="font-weight: bold">Dia\Meta</td>
       <%  @thresholds.each do |threshold| %>
-      <td style="text-align: center"><%= @destination.plan.throughput_down %>/<%= @destination.plan.throughput_up %></td>
+      <td style="text-align: center; font-weight: bold"><%=
+          case threshold.metric.plugin
+            when /^throughput/
+              if(threshold.compliance_method == 'mean')
+                down = (threshold.goal_level * 100).to_s + "%"
+                up =   (threshold.goal_level * 100).to_s + "%"
+                else
+                  down = ((@destination.plan.throughput_down / 1000) * threshold.goal_level).to_s + "Mbps"
+                  up =   ((@destination.plan.throughput_up / 1000) * threshold.goal_level).to_s + "Mbps"
+              end
+              down+'/'+up
+            when 'jitter'
+              threshold.goal_level.to_s + "ms"
+            when 'rtt'
+              threshold.goal_level.to_s + "ms"
+          end
+      %></td>
     <% end %>
     </tr>
     <!--Medidas obtidas para cada dia do mês -->
@@ -19,10 +35,9 @@
                   if(threshold.compliance_method == 'mean')
                     up = ((median.dsavg.to_f / 1000)/@destination.plan.throughput_up).round(2).to_s + "%"
                     down = ((median.sdavg.to_f / 1000)/@destination.plan.throughput_down).round(2).to_s + "%"
-
-                  else
-                    up = (median.dsavg.to_f / 1000000).round(2).to_s + "Mbps"
-                    down = (median.sdavg.to_f / 1000000).round(2).to_s + "Mbps"
+                      else
+                        up = (median.dsavg.to_f / 1000000).round(2).to_s + "Mbps"
+                        down = (median.sdavg.to_f / 1000000).round(2).to_s + "Mbps"
                   end
                   (down+'/'+up)
                 when 'rtt'
