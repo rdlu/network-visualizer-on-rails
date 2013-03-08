@@ -28,8 +28,7 @@
               color_down = data_down >= threshold.compliance_level* 100 ? 'green': 'red'
               data_up = (dados.upload.to_f*100).round(2)
               color_up = data_up >=  threshold.compliance_level* 100 ? 'green': 'red'
-              "<span style=\"color:#{color_down}\">#{data_down}%</span>".html_safe %>
-            <%=  dados.upload.to_f == 0.0? '': "/<span style=\"color:#{color_up}\">#{data_up}%</span>".html_safe %>
+              "<span style=\"color:#{color_down}\">#{data_down}%</span>".html_safe %><%= threshold.metric.plugin =~ /^throughput/ ? "/<span style=\"color:#{color_up}\">#{data_up}%</span>".html_safe : ''  %>
           </td>
           <% end %>
         </tr>
