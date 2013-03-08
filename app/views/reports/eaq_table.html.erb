@@ -24,7 +24,11 @@
           <td style="font-weight: bold"><%= month.strftime("%b/%Y") == Time.new.strftime("%b/%Y") ? (month.strftime("%b/%Y")+' (Parcial)'):month.strftime("%b/%Y") %></td>
           <%  @thresholds.each do |threshold| %>
           <td style="text-align: center"><% dados = Compliance.where(:threshold_id => threshold.id).where(:schedule_id => @schedule.id).where(:start_timestamp => month.to_datetime.in_time_zone).first_or_create %>
-          <%= (dados.download.to_f*100).round(2).to_s + '%' %><%=  dados.upload.to_f == 0.0? '': ('/' + (dados.upload.to_f*100).round(2).to_s+'%') %>
+          <%= data_down = (dados.download.to_f*100).round(2)
+              color_down = data_down >= threshold.compliance_level* 100 ? 'green': 'red'
+              data_up = (dados.upload.to_f*100).round(2)
+              color_up = data_up >=  threshold.compliance_level* 100 ? 'green': 'red'
+              "<span style=\"color:#{color_down}\">#{data_down}%</span".html_safe %><%=  dados.upload.to_f == 0.0? '': "/<span style=\"color:#{color_up}\">#{data_up}%</span".html_safe %>
           </td>
           <% end %>
         </tr>
