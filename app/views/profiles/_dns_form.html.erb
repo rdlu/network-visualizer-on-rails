@@ -1,5 +1,3 @@
-<%= javascript_include_tag "jsoneditor" %>
-<%= stylesheet_link_tag "jsoneditor" %>
 <div class="alert alert-warning">
   Os perfis de teste devem ser planejados com cautela antes de qualquer cadastramento ou modificação.<br>
   Eles podem mudar todo o comportamento dos testes!
@@ -40,21 +38,14 @@
       </div>
     </div>
     <div class="control-group">
-      <%= f.label :config_method, "Método de Configuração", :class => "control-label" %>
+      <span class="control-label etooltip" data-title="Servidores de nome a serem inclusos no perfil">Servidores de Nome</span>
       <div class="controls">
-        <%= f.text_field :config_method %>
-      </div>
-    </div>
-    <div class="control-group" id="confParams">
-      <%= f.label :config_parameters, :class => "control-label" %>
-      <div class="controls">
-        <%= f.text_area :config_parameters, :class => "span10" %>
-      </div>
-    </div>
-    <div class="control-group">
-      <%= f.label "Parâmetros de configuração", :class => "control-label" %>
-      <div class="controls">
-        <div id="jsonEditor" class="span10" style="min-height: 100px;"></div>
+        <% @nameservers.each do |nameserver| %>
+          <label class="checkbox" data-title="<%= nameserver.pretty_name %>">
+            <%= check_box_tag "profile[nameservers[]", nameserver.id, false %>
+            <%= nameserver.pretty_name %>
+          </label>
+        <% end %>
       </div>
     </div>
 
