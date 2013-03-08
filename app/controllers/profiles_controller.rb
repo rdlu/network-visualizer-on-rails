@@ -43,6 +43,8 @@ class ProfilesController < ApplicationController
     @profile = Profile.new
     @profile.config_parameters = '{}'
 
+    @nameservers = Nameserver.all
+
     respond_to do |format|
       format.html
     end
