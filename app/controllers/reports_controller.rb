@@ -146,8 +146,8 @@ class ReportsController < ApplicationController
     threshold = Threshold.find(params[:metric][:id])
     metric = threshold.metric
 
-    from = DateTime.parse(params[:date][:start]+' '+params[:time][:start]+' '+DateTime.current.zone).beginning_of_day.in_time_zone
-    to = DateTime.parse(params[:date][:end]+' '+params[:time][:end]+' '+DateTime.current.zone).end_of_day.in_time_zone
+    from = DateTime.parse(params[:date][:start]+' '+params[:time][:start]+' '+DateTime.current.zone).beginning_of_day.in_time_zone('GMT')
+    to = DateTime.parse(params[:date][:end]+' '+params[:time][:end]+' '+DateTime.current.zone).end_of_day.in_time_zone('GMT')
 
     raw_compliances = Compliance.
         where(:schedule_id => schedule.id).
