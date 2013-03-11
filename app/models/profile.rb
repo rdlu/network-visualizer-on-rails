@@ -8,11 +8,11 @@ class Profile < ActiveRecord::Base
 
   accepts_nested_attributes_for :metrics
 
-  def nameservers=(*ns)
-
+  def nameservers=(ns)
+    self.config_parameters = ns.to_json
   end
 
   def nameservers
-
+    self.config_parameters if self.config_method == "dns"
   end
 end
