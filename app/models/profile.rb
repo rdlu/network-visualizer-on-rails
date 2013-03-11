@@ -1,5 +1,5 @@
 class Profile < ActiveRecord::Base
-  attr_accessible :config_method, :config_parameters, :name, :connection_profile_id, :metric_ids
+  attr_accessible :config_method, :config_parameters, :name, :connection_profile_id, :metric_ids, :nameservers
 
   #relationships
   belongs_to :connection_profile
@@ -7,4 +7,12 @@ class Profile < ActiveRecord::Base
   has_many :schedules, :through => :evaluations
 
   accepts_nested_attributes_for :metrics
+
+  def nameservers=(*ns)
+
+  end
+
+  def nameservers
+
+  end
 end

@@ -78,6 +78,7 @@ class ProfilesController < ApplicationController
     authorize! :manage, self
 
     @profile = Profile.new(params[:profile])
+    @profile.config_method = "dns"
 
     respond_to do |format|
       if @profile.save
