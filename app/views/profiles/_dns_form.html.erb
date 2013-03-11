@@ -2,7 +2,7 @@
   Os perfis de teste devem ser planejados com cautela antes de qualquer cadastramento ou modificação.<br>
   Eles podem mudar todo o comportamento dos testes!
 </div>
-<%= form_for(@profile, :html => {:class => "form-horizontal form-stop"}) do |f| %>
+<%= form_for(@profile, :url => {:action => "create_dns"}, :html => {:class => "form-horizontal form-stop"}) do |f| %>
     <% if @profile.errors.any? %>
         <div id="error_explanation">
           <h2><%= pluralize(@profile.errors.count, "error") %> prohibited this test_profile from being saved:</h2>

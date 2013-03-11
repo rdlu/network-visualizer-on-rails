@@ -33,6 +33,7 @@ MomRails::Application.routes.draw do
   resources :metrics
 
   get 'profiles/new_dns' => 'profiles#new_dns', :as => 'new_dns_profile'
+  post 'profiles/create_dns' => 'profiles#create_dns', :as => 'create_dns_profile'
   resources :profiles
 
   resources :connection_profiles do
