@@ -74,6 +74,20 @@ class ProfilesController < ApplicationController
     end
   end
 
+  def create_dns
+    authorize! :manage, self
+
+    @profile = Profile.new(params[:profile])
+
+    respond_to do |format|
+      if @profile.save
+        format.html { redirect_to @profile, notice: "Novo perfil criado."}
+      else
+        format.html { render action: "new_dns" }
+      end
+    end
+  end
+
   # PUT /profiles/1
   # PUT /profiles/1.json
   def update
