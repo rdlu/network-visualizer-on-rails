@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130304164546) do
+ActiveRecord::Schema.define(:version => 20130307184331) do
 
   create_table "compliances", :force => true do |t|
     t.integer  "schedule_id"
@@ -29,8 +29,7 @@ ActiveRecord::Schema.define(:version => 20130304164546) do
     t.string   "calc_method"
   end
 
-  add_index "compliances", ["schedule_id"], :name => "index_quotients_on_schedule_id"
-  add_index "compliances", ["threshold_id"], :name => "index_quotients_on_threshold_id"
+  add_index "compliances", ["schedule_id", "threshold_id", "start_timestamp"], :name => "compliances_sched_thresh_sttimesmp", :unique => true
 
   create_table "connection_profiles", :force => true do |t|
     t.string   "name_id"
@@ -113,8 +112,7 @@ ActiveRecord::Schema.define(:version => 20130304164546) do
     t.string   "type"
   end
 
-  add_index "medians", ["schedule_id"], :name => "index_medians_on_schedule_id"
-  add_index "medians", ["threshold_id"], :name => "index_medians_on_threshold_id"
+  add_index "medians", ["schedule_id", "threshold_id", "start_timestamp"], :name => "medians_sched_thresh_sttimestamp", :unique => true
 
   create_table "metrics", :force => true do |t|
     t.string   "name"
@@ -135,6 +133,16 @@ ActiveRecord::Schema.define(:version => 20130304164546) do
 
   add_index "metrics_profiles", ["metric_id"], :name => "metrics_test_profiles_metric_id_fk"
   add_index "metrics_profiles", ["profile_id"], :name => "metrics_test_profiles_profile_id_fk"
+
+  create_table "nameservers", :force => true do |t|
+    t.string   "address"
+    t.string   "name"
+    t.boolean  "primary"
+    t.boolean  "vip"
+    t.boolean  "internal"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "plans", :force => true do |t|
     t.string   "name"
@@ -200,8 +208,7 @@ ActiveRecord::Schema.define(:version => 20130304164546) do
     t.datetime "updated_at",                  :null => false
   end
 
-  add_index "results", ["schedule_id"], :name => "index_results_on_schedule_id"
-  add_index "results", ["uuid"], :name => "index_results_on_uuid"
+  add_index "results", ["schedule_id", "metric_id", "timestamp"], :name => "sched_metric_timestamp_uniq", :unique => true
 
   create_table "roles", :force => true do |t|
     t.string   "name"

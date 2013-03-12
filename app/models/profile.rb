@@ -1,5 +1,5 @@
 class Profile < ActiveRecord::Base
-  attr_accessible :config_method, :config_parameters, :name, :connection_profile_id, :metric_ids
+  attr_accessible :config_method, :config_parameters, :name, :connection_profile_id, :metric_ids, :nameservers
 
   #relationships
   belongs_to :connection_profile
@@ -7,4 +7,16 @@ class Profile < ActiveRecord::Base
   has_many :schedules, :through => :evaluations
 
   accepts_nested_attributes_for :metrics
+
+  def nameservers=(ns)
+    self.config_parameters = ns.to_json
+  end
+
+  def nameservers
+    if self.config_method == "dns"
+      ActiveSupport::JSON.decode(self.config_parameters)
+    else 
+      []
+    end
+  end
 end

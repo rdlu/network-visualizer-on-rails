@@ -1,4 +1,7 @@
 MomRails::Application.routes.draw do
+  resources :nameservers
+
+
   get 'route_reload' => 'welcome#route_reload'
 
   match 'reports' => 'reports#index', :as => 'reports'
@@ -15,6 +18,7 @@ MomRails::Application.routes.draw do
   resources :metrics
   resources :tests
   resources :schedules
+ 
   resources :probes do
     member do
       get 'destinations'
@@ -29,7 +33,10 @@ MomRails::Application.routes.draw do
   match 'probes/:id/thresholds/:source_id' => 'probes#thresholds', :via => [:get]
 
   resources :metrics
+
   resources :profiles
+  resources :dns_profiles
+
   resources :connection_profiles do
     resources :plans
   end

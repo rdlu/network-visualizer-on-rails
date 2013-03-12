@@ -18,6 +18,11 @@ class ProfilesController < ApplicationController
     authorize! :read, self
     @profile = Profile.find(params[:id])
 
+    if @profile.config_method == "dns"
+      redirect_to dns_profile_path(@profile)
+      return
+    end
+
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @profile }
@@ -41,6 +46,9 @@ class ProfilesController < ApplicationController
   def edit
     authorize! :manage, self
     @profile = Profile.find(params[:id])
+    if @profile.config_method == "dns"
+      redirect_to edit_dns_profile_path(@profile)
+    end
   end
 
   # POST /profiles
@@ -67,6 +75,11 @@ class ProfilesController < ApplicationController
     authorize! :manage, self
     params[:profile][:metric_ids] ||= []
     @profile = Profile.find(params[:id])
+
+    if @profile.config_method == "dns"
+      redirect_to update_dns_profile_path(@profile)
+      return
+    end
 
     respond_to do |format|
       if @profile.update_attributes(params[:profile])
