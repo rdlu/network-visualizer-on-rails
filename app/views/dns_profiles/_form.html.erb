@@ -42,7 +42,7 @@
       <div class="controls">
         <% @nameservers.each do |nameserver| %>
           <label class="checkbox" data-title="<%= nameserver.pretty_name %>">
-            <%= check_box_tag "profile[nameservers[]", nameserver.id, false %>
+            <%= check_box_tag "profile[nameservers[]", nameserver.id, @profile.nameservers.include?(nameserver.id.to_s) %>
             <%= nameserver.pretty_name %>
           </label>
         <% end %>

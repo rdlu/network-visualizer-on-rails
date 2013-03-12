@@ -13,6 +13,10 @@ class Profile < ActiveRecord::Base
   end
 
   def nameservers
-    self.config_parameters if self.config_method == "dns"
+    if self.config_method == "dns"
+      ActiveSupport::JSON.decode(self.config_parameters)
+    else 
+      []
+    end
   end
 end
