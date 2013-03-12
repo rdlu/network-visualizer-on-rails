@@ -19,8 +19,12 @@ class ProfilesController < ApplicationController
     @profile = Profile.find(params[:id])
 
     respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @profile }
+      if @profile.config_method == "dns"
+        redirect_to show_dns_profile_path(@profile)
+      else
+        format.html # show.html.erb
+        format.json { render json: @profile }
+      end
     end
   end
 
@@ -37,29 +41,13 @@ class ProfilesController < ApplicationController
     end
   end
 
-  # GET /profiles/new_dns
-  def new_dns
-    authorize! :manage, self
-    @profile = Profile.new
-    @profile.config_parameters = '{}'
-
-    @nameservers = Nameserver.all
-
-    respond_to do |format|
-      format.html
-    end
-  end
-
   # GET /profiles/1/edit
   def edit
     authorize! :manage, self
     @profile = Profile.find(params[:id])
-  end
-
-  def edit_dns
-    authorize! :manage, self
-    @profile = Profile.find(params[:id])
-    @nameservers = Nameserver.all
+    if @profile.config_method == "dns"
+      redirect_to edit_dns_profile_path(@profile)
+    end
   end
 
   # POST /profiles
@@ -80,21 +68,6 @@ class ProfilesController < ApplicationController
     end
   end
 
-  def create_dns
-    authorize! :manage, self
-
-    @profile = Profile.new(params[:profile])
-    @profile.config_method = "dns"
-
-    respond_to do |format|
-      if @profile.save
-        format.html { redirect_to @profile, notice: "Novo perfil criado."}
-      else
-        format.html { render action: "new_dns" }
-      end
-    end
-  end
-
   # PUT /profiles/1
   # PUT /profiles/1.json
   def update
@@ -103,12 +76,16 @@ class ProfilesController < ApplicationController
     @profile = Profile.find(params[:id])
 
     respond_to do |format|
-      if @profile.update_attributes(params[:profile])
-        format.html { redirect_to @profile, notice: 'Evaluation profile was successfully updated.' }
-        format.json { head :no_content }
+      if @profile.config_method == "dns"
+        redirect_to update_dns_profile_path(@profile)
       else
-        format.html { render action: "edit" }
-        format.json { render json: @profile.errors, status: :unprocessable_entity }
+        if @profile.update_attributes(params[:profile])
+          format.html { redirect_to @profile, notice: 'Evaluation profile was successfully updated.' }
+          format.json { head :no_content }
+        else
+          format.html { render action: "edit" }
+          format.json { render json: @profile.errors, status: :unprocessable_entity }
+        end
       end
     end
   end
