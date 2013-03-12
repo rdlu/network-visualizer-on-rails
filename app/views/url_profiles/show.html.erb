@@ -1,0 +1,43 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @profile.name %>
+</p>
+<p>
+  <b>Config method:</b>
+  <%= @profile.config_method %>
+</p>
+
+<p>
+  <b>Metrics:</b>
+  <% @profile.metrics.each do |metric| %>
+      <span class="label label-info etooltip" data-title="<%= metric.description %>"><%= metric.name %></span>
+  <% end %>
+</p>
+ 
+<h3>Sites</h3>
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>URL</th>
+      <th>VIP/Top100</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @sites.each do |site| %>
+      <tr>
+        <td><%= site.id %></td>
+        <td><%= site.url %></td>
+        <td><%= site.vip ? "VIP" : "Top100" %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+
+
+
+<%= link_to 'Edit', edit_profile_path(@profile) %> |
+<%= link_to 'Back', profiles_path %>

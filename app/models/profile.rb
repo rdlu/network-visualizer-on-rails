@@ -1,5 +1,5 @@
 class Profile < ActiveRecord::Base
-  attr_accessible :config_method, :config_parameters, :name, :connection_profile_id, :metric_ids, :nameservers
+  attr_accessible :config_method, :config_parameters, :name, :connection_profile_id, :metric_ids, :nameservers, :sites
 
   #relationships
   belongs_to :connection_profile
@@ -16,6 +16,18 @@ class Profile < ActiveRecord::Base
     if self.config_method == "dns"
       ActiveSupport::JSON.decode(self.config_parameters)
     else 
+      []
+    end
+  end
+
+  def sites=(sis)
+    self.config_parameters = sis.to_json
+  end
+
+  def sites
+    if self.config_method == "url"
+      ActiveSupport::JSON.decode(self.config_parameters)
+    else
       []
     end
   end
