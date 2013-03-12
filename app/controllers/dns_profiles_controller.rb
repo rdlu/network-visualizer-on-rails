@@ -30,7 +30,7 @@ class DnsProfilesController < ApplicationController
 
     respond_to do |format|
       if @profile.save
-        format.html { redirect_to @profile, notice: "Novo perfil criado."}
+        format.html { redirect_to dns_profile_path(@profile), notice: "Novo perfil criado."}
       else
         format.html { render action: "new" }
       end
