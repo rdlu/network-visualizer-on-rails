@@ -194,7 +194,7 @@ class ReportsController < ApplicationController
     source = Probe.find(params[:source][:id])
     destination = Probe.find(params[:destination][:id])
     metric = Metric.find(params[:metric][:id])
-    schedule = Schedule.where(:destination_id => destination.id).where(:source_id => source.id).all.last
+    schedule = Schedule.where(:destination_id => destination).where(:source_id => source).all.last
 
     from = DateTime.parse(params[:date][:start]+' '+params[:time][:start]+' '+DateTime.current.zone).in_time_zone
     to = DateTime.parse(params[:date][:end]+' '+params[:time][:end]+' '+DateTime.current.zone).in_time_zone
@@ -259,7 +259,7 @@ class ReportsController < ApplicationController
       end
     end
 
-    respond_to do |format|
+  respond_to do |format|
       format.csv { render text: @end_csv }
     end
   end
@@ -273,8 +273,6 @@ class ReportsController < ApplicationController
     @to = DateTime.parse(params[:date][:end])
 
     @months = @from.all_months_until @to
-
-
     @thresholds = @destination.thresholds @source
 
     respond_to do |format|

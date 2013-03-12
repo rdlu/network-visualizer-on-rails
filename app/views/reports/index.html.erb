@@ -231,7 +231,6 @@
                             eaqcompliancegraph.draw();
                             break;
                         case 'eaq_table':
-
                             if (jQuery("box-"+source_id).is(':empty')){
                                 jQuery('#graphs-area').prepend(result);
                             }else{
@@ -566,6 +565,17 @@
                 series:self.series()
             });
         };
+    }
+
+    function exportCSV(){
+        $.ajax({
+            type: 'POST',
+            url: "<%= reports_csv_url %>",
+            data: { source: <%= @source.id %>, destination: <%= @destination.id %>, schedule:<%= @schedule.id %>},
+            success: function(data){
+                alert('CSV gerado com sucesso!');
+            }
+        });
     }
 </script>
 

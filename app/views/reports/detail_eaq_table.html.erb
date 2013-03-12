@@ -35,19 +35,27 @@
                   if(threshold.compliance_method == 'mean')
                     up = (((median.dsavg.to_f / 1000)/@destination.plan.throughput_up.to_f)*100).round(2)
                     down = (((median.sdavg.to_f / 1000)/@destination.plan.throughput_down.to_f)*100).round(2)
-                    color_up = up >=(threshold.goal_level * 100).round(3) ? 'green' : 'red'
-                    color_down = down >= (threshold.goal_level * 100).round(3) ? 'green' : 'red'
+                    if (up >=(threshold.goal_level * 100).round(3) || down >= (threshold.goal_level * 100).round(3))
+                      color = 'green'
+                      else
+                      color ='red'
+                    end
                     up = up.to_s + "%"
                     down = down.to_s + "%"
-                    result = "<span style=\"color:#{color_down}\">#{down}</span>/<span style=\"color:#{color_up}\">#{up}</span>".html_safe
+                    result = "<span style=\"color:#{color}\">#{down}</span>/<span style=\"color:#{color}\">#{up}</span>".html_safe
                       else
                         up = (median.dsavg.to_f / 1000000).round(3)
                         down = (median.sdavg.to_f / 1000000).round(3)
-                        color_up = up >=((@destination.plan.throughput_down.to_f / 1000) * threshold.goal_level.to_f).round(3) ? 'green' : 'red'
-                        color_down = down >= ((@destination.plan.throughput_down.to_f / 1000) * threshold.goal_level.to_f).round(3) ? 'green' : 'red'
+
+                        if (up >=((@destination.plan.throughput_down.to_f / 1000) * threshold.goal_level.to_f).round(3) || down >= ((@destination.plan.throughput_down.to_f / 1000) * threshold.goal_level.to_f).round(3))
+                          color = 'green'
+                          else
+                          color = 'red'
+                        end
+
                         up = up.to_s + "Mbps"
                         down = down.to_s + "Mbps"
-                        result = "<span style=\"color:#{color_down}\">#{down}</span>/<span style=\"color:#{color_up}\">#{up}</span>".html_safe
+                        result = "<span style=\"color:#{color}\">#{down}</span>/<span style=\"color:#{color}\">#{up}</span>".html_safe
                   end
                 when 'rtt'
                   color = (median.dsavg.to_f * 1000).round(2) <= threshold.goal_level ? 'green' : 'red'
