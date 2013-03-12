@@ -20,7 +20,7 @@ class ProfilesController < ApplicationController
 
     respond_to do |format|
       if @profile.config_method == "dns"
-        redirect_to show_dns_profile_path(@profile)
+        redirect_to dns_profile_path(@profile)
       else
         format.html # show.html.erb
         format.json { render json: @profile }

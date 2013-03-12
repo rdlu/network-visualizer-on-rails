@@ -2,7 +2,7 @@
   Os perfis de teste devem ser planejados com cautela antes de qualquer cadastramento ou modificação.<br>
   Eles podem mudar todo o comportamento dos testes!
 </div>
-<%= form_for(@profile, :html => {:class => "form-horizontal form-stop"}) do |f| %>
+<%= form_for(@profile, :url => dns_profiles_path, :html => {:class => "form-horizontal form-stop"}) do |f| %>
     <% if @profile.errors.any? %>
         <div id="error_explanation">
           <h2><%= pluralize(@profile.errors.count, "error") %> prohibited this test_profile from being saved:</h2>
@@ -42,7 +42,7 @@
       <div class="controls">
         <% @nameservers.each do |nameserver| %>
           <label class="checkbox" data-title="<%= nameserver.pretty_name %>">
-            <%= check_box_tag "profile[nameservers[]", nameserver.id, @profile.nameservers.include?(nameserver.id.to_s) %>
+            <%= check_box_tag "profile[nameservers[]", nameserver.id, @profile.nameservers.include?(nameserver) %>
             <%= nameserver.pretty_name %>
           </label>
         <% end %>

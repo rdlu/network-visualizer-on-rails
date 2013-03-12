@@ -27,7 +27,7 @@ class DnsProfilesController < ApplicationController
       if @profile.save
         format.html { redirect_to @profile, notice: "Novo perfil criado."}
       else
-        format.html { render action: "new_dns" }
+        format.html { render action: "new" }
       end
     end
   end
