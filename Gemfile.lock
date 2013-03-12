@@ -145,6 +145,7 @@ GEM
       json (~> 1.4)
     ref (1.0.2)
     rolify (3.2.0)
+    ruby-units (1.4.2)
     sass (3.2.6)
     sass-rails (3.2.6)
       railties (~> 3.2.0)
@@ -217,6 +218,7 @@ DEPENDENCIES
   rails (= 3.2.12)
   rails-i18n
   rolify
+  ruby-units
   sass-rails (~> 3.2.3)
   snmp
   therubyracer

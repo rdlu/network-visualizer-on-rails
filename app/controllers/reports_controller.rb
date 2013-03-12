@@ -153,7 +153,7 @@ class ReportsController < ApplicationController
         where(:schedule_id => schedule.id).
         where(:threshold_id => threshold.id).
         where('start_timestamp >= ?', from).
-        where('end_timestamp <= ?', to).
+        where('end_timestamp <= ?', to.end_of_month).
         order('start_timestamp ASC').all
 
     results = []
@@ -161,7 +161,7 @@ class ReportsController < ApplicationController
     if reference_metric == 'throughput'
       raw_compliances.each do |raw_compliance|
         results << {
-            :x => raw_compliance.start_timestamp.midnight,
+            :x => raw_compliance.end_timestamp.beginning_of_month,
             :download => raw_compliance.download,
             :upload => raw_compliance.upload
         }
@@ -169,7 +169,7 @@ class ReportsController < ApplicationController
     else
       raw_compliances.each do |raw_compliance|
         results << {
-            :x => raw_compliance.start_timestamp.midnight,
+            :x => raw_compliance.end_timestamp.beginning_of_month,
             :y => raw_compliance.download
         }
       end
