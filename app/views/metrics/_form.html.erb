@@ -1,44 +1,56 @@
 <%= form_for @metric, :html => {:class => "form-horizontal"} do |f| %>
-  <% if @metric.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@metric.errors.count, "error") %> prohibited this metric from being saved:</h2>
+    <% if @metric.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(@metric.errors.count, "error") %> prohibited this metric from being saved:</h2>
 
-      <ul>
-      <% @metric.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
+          <ul>
+            <% @metric.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+    <% end %>
 
-  <div class="control-group">
-    <%= f.label :name, :class => "control-label" %>
-    <div class="controls">
-      <%= f.text_field :name %>
+    <div class="control-group">
+      <%= f.label :name, :class => "control-label" %>
+      <div class="controls">
+        <%= f.text_field :name %>
+      </div>
     </div>
-  </div>
-  <div class="control-group">
-    <%= f.label :plugin, :class => "control-label" %>
-    <div class="controls">
-      <%= f.text_field :plugin %>
+    <div class="control-group">
+      <%= f.label :plugin, :class => "control-label" %>
+      <div class="controls">
+        <%= f.text_field :plugin %>
+      </div>
     </div>
-  </div>
-  <div class="control-group">
-    <%= f.label :description, :class => "control-label" %>
-    <div class="controls">
-      <%= f.text_field :description %>
+    <div class="control-group">
+      <%= f.label :description, :class => "control-label" %>
+      <div class="controls">
+        <%= f.text_field :description %>
+      </div>
     </div>
-  </div>
-  <div class="control-group">
-    <%= f.label :reverse, :class => "control-label" %>
-    <div class="controls">
-      <%= f.check_box :reverse %>
+    <div class="control-group">
+      <%= f.label :view_unit, "Unidade preferencial", :class => "control-label" %>
+      <div class="controls">
+        <%= f.text_field :view_unit, :input_html => { :value => @metric.view_unit } %>
+      </div>
     </div>
-  </div>
+    <div class="control-group">
+      <%= f.label :db_unit, "Unidade no BD", :class => "control-label" %>
+      <div class="controls">
+        <%= f.text_field :db_unit, :input_html => { :value => @metric.db_unit } %>
+      </div>
+    </div>
+    <div class="control-group">
+      <%= f.label :reverse, :class => "control-label" %>
+      <div class="controls">
+        <%= f.check_box :reverse %>
+      </div>
+    </div>
 
-  <div class="control-group">
-    <div class="controls">
-      <%= f.submit "Salvar", :class => "btn btn-primary btn-large" %>
+    <div class="control-group">
+      <div class="controls">
+        <%= f.submit "Salvar", :class => "btn btn-primary btn-large" %>
+      </div>
     </div>
-  </div>
 <% end %>

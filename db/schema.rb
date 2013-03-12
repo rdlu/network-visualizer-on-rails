@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130307184331) do
+ActiveRecord::Schema.define(:version => 20130312170617) do
 
   create_table "compliances", :force => true do |t|
     t.integer  "schedule_id"
@@ -122,6 +122,8 @@ ActiveRecord::Schema.define(:version => 20130307184331) do
     t.integer  "order"
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
+    t.string   "view_unit"
+    t.string   "db_unit"
   end
 
   add_index "metrics", ["name"], :name => "index_metrics_on_name", :unique => true
