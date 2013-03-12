@@ -47,13 +47,14 @@ class DnsProfilesController < ApplicationController
       @nameservers << nstmp unless nstmp.nil?
     end
 
+    unless @profile.config_method == "dns"
+      redirect_to profile_path(@profile)
+      return
+    end
+
     respond_to do |format|
-      unless @profile.config_method == "dns"
-        redirect_to profile_path(@profile)
-      else
-        format.html
-        format.json { render json: @profile }
-      end
+      format.html
+      format.json { render json: @profile }
     end
   end
 
@@ -62,18 +63,18 @@ class DnsProfilesController < ApplicationController
     params[:profile][:metric_ids] ||= []
     @profile = Profile.find(params[:id])
 
+    unless @profile.config_method == "dns"
+      redirect_to update_profile_path(@profile)
+    end
+
     respond_to do |format|
-      unless @profile.config_method == "dns"
-        redirect_to update_profile_path(@profile)
+      if @profile.update_attributes(params[:profile])
+        format.html { redirect_to dns_profile_path(@profile), notice: 'Updated!' }
+        format.json { head :no_content }
       else
-        if @profile.update_attributes(params[:profile])
-          format.html { redirect_to dns_profile_path(@profile), notice: 'Updated!' }
-          format.json { head :no_content }
-        else
-          format.html { render action: 'edit' }
-          format.json { render json: @profile.errors, status: :unprocessable_entity }
-        end 
-      end
+        format.html { render action: 'edit' }
+        format.json { render json: @profile.errors, status: :unprocessable_entity }
+      end 
     end
   end
 end

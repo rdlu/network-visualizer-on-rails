@@ -18,13 +18,14 @@ class ProfilesController < ApplicationController
     authorize! :read, self
     @profile = Profile.find(params[:id])
 
+    if @profile.config_method == "dns"
+      redirect_to dns_profile_path(@profile)
+      return
+    end
+
     respond_to do |format|
-      if @profile.config_method == "dns"
-        redirect_to dns_profile_path(@profile)
-      else
-        format.html # show.html.erb
-        format.json { render json: @profile }
-      end
+      format.html # show.html.erb
+      format.json { render json: @profile }
     end
   end
 
@@ -75,17 +76,18 @@ class ProfilesController < ApplicationController
     params[:profile][:metric_ids] ||= []
     @profile = Profile.find(params[:id])
 
+    if @profile.config_method == "dns"
+      redirect_to update_dns_profile_path(@profile)
+      return
+    end
+
     respond_to do |format|
-      if @profile.config_method == "dns"
-        redirect_to update_dns_profile_path(@profile)
+      if @profile.update_attributes(params[:profile])
+        format.html { redirect_to @profile, notice: 'Evaluation profile was successfully updated.' }
+        format.json { head :no_content }
       else
-        if @profile.update_attributes(params[:profile])
-          format.html { redirect_to @profile, notice: 'Evaluation profile was successfully updated.' }
-          format.json { head :no_content }
-        else
-          format.html { render action: "edit" }
-          format.json { render json: @profile.errors, status: :unprocessable_entity }
-        end
+        format.html { render action: "edit" }
+        format.json { render json: @profile.errors, status: :unprocessable_entity }
       end
     end
   end
