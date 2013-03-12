@@ -35,7 +35,12 @@
               <% end %>
             </td>
             <td><%= test_profile.config_method %></td>
-            <td><%= link_to 'Mostrar', test_profile %> <%= link_to 'Editar', edit_profile_path(test_profile) %></td>
+            <td><%= link_to 'Mostrar', test_profile %> 
+            <% if test_profile.config_method == "dns" %>
+              <%= link_to 'Editar', edit_dns_profile_path(test_profile) %>
+            <% else %>
+              <%= link_to 'Editar', edit_profile_path(test_profile) %></td>
+            <% end %>
           </tr>
       <% end %>
     </table>

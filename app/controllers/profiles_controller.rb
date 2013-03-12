@@ -56,6 +56,12 @@ class ProfilesController < ApplicationController
     @profile = Profile.find(params[:id])
   end
 
+  def edit_dns
+    authorize! :manage, self
+    @profile = Profile.find(params[:id])
+    @nameservers = Nameserver.all
+  end
+
   # POST /profiles
   # POST /profiles.json
   def create
