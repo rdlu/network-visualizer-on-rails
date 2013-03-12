@@ -15,12 +15,32 @@
       <span class="label label-info etooltip" data-title="<%= metric.description %>"><%= metric.name %></span>
   <% end %>
 </p>
-<p>
-  <b>Config parameters:</b>
-</p>
-  <pre class="prettyprint">
-    <%= @profile.config_parameters %>
-  </pre>
+ 
+<h3>Nameservers configurados</h3>
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Endereço</th>
+      <th>Nome</th>
+      <th>Interno/Externo</th>
+      <th>Primário/Secundário</th>
+      <th>VIP/Principal</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @nameservers.each do |ns| %>
+      <tr>
+        <td><%= ns.id %></td>
+        <td><%= ns.address %></td>
+        <td><%= ns.name %></td>
+        <td><%= ns.internal ? "Interno" : "Externo" %></td>
+        <td><%= ns.primary ? "Primário" : "Secundário" %></td>
+        <td><%= ns.vip ? "VIP" : "Principal" %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
 
 
 

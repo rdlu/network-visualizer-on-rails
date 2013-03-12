@@ -41,6 +41,12 @@ class DnsProfilesController < ApplicationController
     authorize! :manage, self
     @profile = Profile.find(params[:id])
 
+    @nameservers = []
+    @profile.nameservers.each do |ns|
+      nstmp = Nameserver.find(ns)
+      @nameservers << nstmp unless nstmp.nil?
+    end
+
     respond_to do |format|
       unless @profile.config_method == "dns"
         redirect_to profile_path(@profile)
