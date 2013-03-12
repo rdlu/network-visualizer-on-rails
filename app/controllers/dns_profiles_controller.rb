@@ -61,10 +61,12 @@ class DnsProfilesController < ApplicationController
   def update
     authorize! :manage, self
     params[:profile][:metric_ids] ||= []
+    params[:profile][:nameservers] ||= []
     @profile = Profile.find(params[:id])
 
     unless @profile.config_method == "dns"
       redirect_to update_profile_path(@profile)
+      return
     end
 
     respond_to do |format|

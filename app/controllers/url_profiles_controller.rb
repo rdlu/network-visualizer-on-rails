@@ -41,7 +41,7 @@ class UrlProfilesController < ApplicationController
     authorize! :manage, self
     @profile = Profile.find(params[:id])
 
-    @sites = Site.all
+    @sites = []
     @profile.sites.each do |site|
       sitetmp = Site.find(site)
       @sites << sitetmp unless sitetmp.nil?
@@ -61,6 +61,7 @@ class UrlProfilesController < ApplicationController
   def update
     authorize! :manage, self
     params[:profile][:metric_ids] ||= []
+    params[:profile][:sites] ||= []
     @profile = Profile.find(params[:id])
 
     unless @profile.config_method == "url"
