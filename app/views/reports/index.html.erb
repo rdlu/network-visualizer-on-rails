@@ -265,7 +265,7 @@
         this.results = results;
         this.chartObject = null;
         this.container = null;
-        this.idName = self.source.id+'-'+self.destination.id+'-'+self.threshold.id+'-'+self.range.start.unix()+'-'+self.range.end.unix();
+        this.idName = 'daily-'+self.source.id+'-'+self.destination.id+'-'+self.threshold.id+'-'+self.range.start.unix()+'-'+self.range.end.unix();
 
         this.dataset = function(direction) {
             direction = typeof direction !== 'undefined' ? direction : 'dsavg';
@@ -327,8 +327,7 @@
                 xAxis:{
                     type:'datetime',
                     min:self.range.start,
-                    max:self.range.end,
-                    tickInterval: 24 * 3600 * 1000
+                    max:self.range.end
                 },
                 yAxis:{
                     title:{
@@ -357,7 +356,7 @@
         this.results = results;
         this.chartObject = null;
         this.container = null;
-        this.idName = self.source.id+'-'+self.destination.id+'-'+self.threshold.id+'-'+self.range.start.unix()+'-'+self.range.end.unix();
+        this.idName = 'monthly-'+self.source.id+'-'+self.destination.id+'-'+self.threshold.id+'-'+self.range.start.unix()+'-'+self.range.end.unix();
 
         this.dataset = function(direction) {
             direction = typeof direction !== 'undefined' ? direction : 'download';
