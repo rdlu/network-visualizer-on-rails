@@ -4,8 +4,12 @@
     <% if can? :create, Profile %>
         <div class="navbar">
           <div class="navbar-inner">
-            <div class="span2 offset10">
+            <div class="span4 offset6">
+              <%= link_to "Novo Perfil de Teste de DNS", new_dns_profile_path, :class => "btn btn-primary btn-block" %>
+            </div>
+            <div class="span2">
               <%= link_to "Novo Perfil de Teste", new_profile_path, :class => "btn btn-primary btn-block" %>
+            </div>
             </div>
           </div>
         </div>
