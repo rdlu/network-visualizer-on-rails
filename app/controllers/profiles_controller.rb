@@ -21,6 +21,9 @@ class ProfilesController < ApplicationController
     if @profile.config_method == "dns"
       redirect_to dns_profile_path(@profile)
       return
+    elsif @profile.config_method == "url"
+      redirect_to url_profile_path(@profile)
+      return
     end
 
     respond_to do |format|
@@ -48,6 +51,8 @@ class ProfilesController < ApplicationController
     @profile = Profile.find(params[:id])
     if @profile.config_method == "dns"
       redirect_to edit_dns_profile_path(@profile)
+    elsif @profile.config_method == "url"
+      redirect_to edit_url_profile_path(@profile)
     end
   end
 
@@ -78,6 +83,9 @@ class ProfilesController < ApplicationController
 
     if @profile.config_method == "dns"
       redirect_to update_dns_profile_path(@profile)
+      return
+    elsif @profile.config_method == "url"
+      redirect_to update_url_profile_path(@profile)
       return
     end
 

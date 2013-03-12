@@ -1,0 +1,57 @@
+<div class="alert alert-warning">
+  Os perfis de teste devem ser planejados com cautela antes de qualquer cadastramento ou modificação.<br>
+  Eles podem mudar todo o comportamento dos testes!
+</div>
+<%= form_for([:url, @profile], :html => {:class => "form-horizontal form-stop"}) do |f| %>
+    <% if @profile.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(@profile.errors.count, "error") %> prohibited this test_profile from being saved:</h2>
+
+          <ul>
+            <% @profile.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+    <% end %>
+    <div class="control-group">
+      <%= f.label :name, "Nome do Perfil de Teste", :class => "control-label" %>
+      <div class="controls">
+        <%= f.text_field :name %>
+      </div>
+    </div>
+    <div class="control-group">
+      <%= f.label :connection_profile_id, "Perfil de Conexão", :class => "control-label" %>
+      <div class="controls">
+        <%= f.collection_select :connection_profile_id, ConnectionProfile.all, :id, :name %>
+      </div>
+    </div>
+    <div class="control-group">
+      <span class="control-label etooltip" data-title="Métricas que são medidas por esse perfil. Superposição por perfil não é permitida!">Métricas relacionadas</span>
+      <div class="controls">
+        <% Metric.all.each do |metric| %>
+            <label class="checkbox inline etooltip" data-title="<%= metric.description %>">
+              <%= check_box_tag "profile[metric_ids][]", metric.id, @profile.metrics.include?(metric) %>
+              <%= metric.name %>
+            </label>
+        <% end %>
+      </div>
+    </div>
+    <div class="control-group">
+      <span class="control-label etooltip" data-title="Sites a serem inclusos no perfil">Sites</span>
+      <div class="controls">
+        <% @sites.each do |site| %>
+          <label class="checkbox" data-title="<%= site.url %>">
+            <%= check_box_tag "profile[sites[]", site.id, @profile.sites.include?(site.id.to_s) %>
+            <%= site.url %>
+          </label>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <div class="controls">
+        <%= f.submit "Salvar", :class => "btn btn-primary btn-large" %>
+      </div>
+    </div>
+<% end %>

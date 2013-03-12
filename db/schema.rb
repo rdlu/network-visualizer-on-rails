@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130312170617) do
+ActiveRecord::Schema.define(:version => 20130312181117) do
 
   create_table "compliances", :force => true do |t|
     t.integer  "schedule_id"
@@ -242,6 +242,13 @@ ActiveRecord::Schema.define(:version => 20130312170617) do
   add_index "schedules", ["destination_id"], :name => "schedules_destination_id_fk"
   add_index "schedules", ["source_id"], :name => "schedules_source_id_fk"
   add_index "schedules", ["uuid"], :name => "index_schedules_on_uuid"
+
+  create_table "sites", :force => true do |t|
+    t.string   "url"
+    t.boolean  "vip"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "thresholds", :force => true do |t|
     t.string   "name"
