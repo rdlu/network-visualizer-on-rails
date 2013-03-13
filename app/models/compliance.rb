@@ -21,7 +21,7 @@ class Compliance < ActiveRecord::Base
             where(:threshold_id => threshold.id).where('dsavg IS NOT NULL').
             all
 
-        compliance = Compliance.
+        compliance = Compliancel.
             where(:schedule_id => schedule.id).
             where(:threshold_id => threshold.id).
             where(:start_timestamp => start_period).first

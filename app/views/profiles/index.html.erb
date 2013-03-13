@@ -4,8 +4,15 @@
     <% if can? :create, Profile %>
         <div class="navbar">
           <div class="navbar-inner">
-            <div class="span2 offset10">
+            <div class="span4 offset2">
+              <%= link_to "Novo Perfil de Teste de DNS", new_dns_profile_path, :class => "btn btn-primary btn-block" %>
+            </div>
+            <div class="span4">
+              <%= link_to "Novo Perfil de Teste de URL", new_url_profile_path, :class => "btn btn-primary btn-block" %>
+            </div>
+            <div class="span2">
               <%= link_to "Novo Perfil de Teste", new_profile_path, :class => "btn btn-primary btn-block" %>
+            </div>
             </div>
           </div>
         </div>
@@ -35,7 +42,17 @@
               <% end %>
             </td>
             <td><%= test_profile.config_method %></td>
-            <td><%= link_to 'Mostrar', test_profile %> <%= link_to 'Editar', edit_profile_path(test_profile) %></td>
+            <td>
+            <% if test_profile.config_method == "dns" %>
+              <%= link_to 'Mostrar', dns_profile_path(test_profile) %> 
+              <%= link_to 'Editar', edit_dns_profile_path(test_profile) %>
+            <% elsif test_profile.config_method == "url" %>
+              <%= link_to 'Mostrar', url_profile_path(test_profile) %> 
+              <%= link_to 'Editar', edit_url_profile_path(test_profile) %>
+            <% else %>
+              <%= link_to 'Mostrar', test_profile %> 
+              <%= link_to 'Editar', edit_profile_path(test_profile) %></td>
+            <% end %>
           </tr>
       <% end %>
     </table>
