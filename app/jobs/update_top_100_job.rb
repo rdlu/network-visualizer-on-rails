@@ -29,19 +29,19 @@ class UpdateTop100
   end
 
   def before(job)
-
+    Yell.new(:gelf, :facility => 'netmetric').info 'Update do Top100 Sites iniciando...'
   end
 
   def after(job)
-
+    Yell.new(:gelf, :facility => 'netmetric').info 'Update do Top100 Sites encerrado'
   end
 
   def success(job)
-
+    Yell.new(:gelf, :facility => 'netmetric').info 'Update do Top100 Sites encerrado com sucesso'
   end
 
   def error(job, exception)
-
+    Yell.new(:gelf, :facility => 'netmetric').info 'Bad server, no donut for you [Update Top100 falhou]'
   end
 
   def failure
