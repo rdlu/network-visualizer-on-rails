@@ -7,6 +7,61 @@ class Median < ActiveRecord::Base
   #quero o 'type' para meus propositos
   @inheritance_column = 'type2'
 
+  def download
+    self.sdavg
+  end
+
+  def upload
+    self.dsavg
+  end
+
+  def view_unit
+    self.threshold.metric.view_unit
+  end
+
+  def db_unit
+    self.threshold.metric.db_unit
+  end
+
+  def metric
+    self.threshold.metric
+  end
+
+  def download_with_unit
+    "#{self.download} #{self.metric.raw_db_unit}".to_unit
+  end
+
+  def pretty_download(auto_choose_unit = false)
+    if auto_choose_unit
+      if (self.download_with_view_unit =~ '1 Mb/s'.to_unit) && (self.download_with_view_unit > '1 Mb/s'.to_unit)
+        return self.download_with_view_unit.convert_to('Mb/s').to_s('%0.2f').gsub(/b\/s|B\/s/,'b/s' => 'bps', 'B/s' => 'Bps')
+      end
+    end
+    self.download_with_view_unit.to_s('%0.2f').gsub(/b\/s|B\/s/,'b/s' => 'bps', 'B/s' => 'Bps')
+  end
+
+  def upload_with_unit
+    "#{self.upload} #{self.metric.raw_db_unit}".to_unit
+  end
+
+  def pretty_upload(auto_choose_unit = false)
+    if auto_choose_unit
+      if (self.upload_with_view_unit =~ '1 Mb/s'.to_unit) && (self.upload_with_view_unit > '1 Mb/s'.to_unit)
+        return self.upload_with_view_unit.convert_to('Mb/s').to_s('%0.2f').gsub(/b\/s|B\/s/,'b/s' => 'bps', 'B/s' => 'Bps')
+      end
+    end
+    self.upload_with_view_unit.to_s('%0.2f').gsub(/b\/s|B\/s/,'b/s' => 'bps', 'B/s' => 'Bps')
+  end
+
+  #pode ser formatado com .to_s("%0.3f"), ou seja fixed com 3 casas depois da virgula
+  def download_with_view_unit
+    "#{self.download} #{self.metric.raw_db_unit}".to_unit(self.metric.raw_view_unit)
+  end
+
+  def upload_with_view_unit
+    "#{self.upload} #{self.metric.raw_db_unit}".to_unit(self.metric.raw_view_unit)
+  end
+
   def self.calculate (schedule, threshold, reference_date)
     if threshold.goal_method == 'median'
       start_period = reference_date

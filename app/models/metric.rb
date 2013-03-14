@@ -11,12 +11,20 @@ class Metric < ActiveRecord::Base
     self[:db_unit].to_s.gsub(/b\/s|B\/s/,'b/s' => 'bps', 'B/s' => 'Bps')
   end
 
+  def raw_db_unit
+    self[:db_unit]
+  end
+
   def db_unit= (value)
     self[:db_unit] = value.gsub(/bps|Bps/,'bps' => 'b/s', 'Bps' => 'B/s')
   end
 
   def view_unit
     self[:view_unit].to_s.gsub(/b\/s|B\/s/,'b/s' => 'bps', 'B/s' => 'Bps')
+  end
+
+  def raw_view_unit
+    self[:view_unit]
   end
 
   def view_unit= (value)

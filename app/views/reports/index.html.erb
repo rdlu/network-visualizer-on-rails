@@ -565,17 +565,6 @@
             });
         };
     }
-
-    function exportCSV(){
-        $.ajax({
-            type: 'POST',
-            url: "<%= reports_csv_url %>",
-            data: { source: <%= @source.id %>, destination: <%= @destination.id %>, schedule:<%= @schedule.id %>},
-            success: function(data){
-                alert('CSV gerado com sucesso!');
-            }
-        });
-    }
 </script>
 
 
