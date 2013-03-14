@@ -16,7 +16,7 @@ class UpdateTopSitesJob
     Delayed::Job.enqueue UpdateTopSitesJob.new, :queue => 'updatetop100', :run_at => DateTime.current.end_of_day
 
     # For each page
-    (0..4).each do |page|
+    (0..3).each do |page|
       # open said page
       doc = Nokogiri::HTML(open("http://www.alexa.com/topsites/countries;#{page}/BR"))
 
