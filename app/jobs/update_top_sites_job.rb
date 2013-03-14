@@ -1,14 +1,10 @@
 # coding: utf-8
 
-class UpdateTop100Exception < Exception
+class UpdateTopSitesJobException < Exception
 
 end
 
-class UpdateTop100Job
-  def initialize
-
-  end
-
+class UpdateTopSitesJob
   def enqueue(job)
 
   end
@@ -16,7 +12,7 @@ class UpdateTop100Job
   def perform
     # Programa a próxima execução
     
-    Delayed::Job.enqueue UpdateTop100Job.new, :queue => 'updatetop100', :run_at => DateTime.current.end_of_day
+    Delayed::Job.enqueue UpdateTopSitesJob.new, :queue => 'updatetop100', :run_at => DateTime.current.end_of_day
 
     # For each page
     (0..4).each do |page|
