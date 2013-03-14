@@ -4,7 +4,7 @@ class UpdateTop100Exception < Exception
 
 end
 
-class UpdateTop100
+class UpdateTop100Job
   def initialize
 
   end
@@ -14,6 +14,10 @@ class UpdateTop100
   end
 
   def perform
+    # Programa a próxima execução
+    
+    Delayed::Job.enqueue UpdateTop100Job.new, :queue => 'updatetop100', :run_at => DateTime.current.end_of_day
+
     # For each page
     (0..4).each do |page|
       # open said page
