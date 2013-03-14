@@ -1,4 +1,5 @@
 # coding: utf-8
+require 'open-uri'
 
 class UpdateTopSitesJobException < Exception
 
