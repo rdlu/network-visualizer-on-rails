@@ -21,7 +21,7 @@ class Compliance < ActiveRecord::Base
             where(:threshold_id => threshold.id).where('dsavg IS NOT NULL').
             all
 
-        compliance = Compliancel.
+        compliance = Compliance.
             where(:schedule_id => schedule.id).
             where(:threshold_id => threshold.id).
             where(:start_timestamp => start_period).first
@@ -33,21 +33,23 @@ class Compliance < ActiveRecord::Base
           reference_download_value = 0
           reference_upload_value = 0
           if reference_metric == 'throughput'
-            reference_download_value = (schedule.destination.plan[reference_metric+'_down']*1024) * threshold.goal_level
-            reference_upload_value = (schedule.destination.plan[reference_metric+'_up']*1024) * threshold.goal_level
+            reference_download_value = (schedule.destination.plan[reference_metric+'_down'].to_unit('kb/s')) * threshold.goal_level
+            reference_upload_value = (schedule.destination.plan[reference_metric+'_up'].to_unit('kb/s')) * threshold.goal_level
           else
-            reference_download_value = threshold.goal_level
-            reference_upload_value =  threshold.goal_level
+            reference_download_value = threshold.goal_level.to_unit(medians.first.raw_view_unit)
+            reference_upload_value =  threshold.goal_level.to_unit(medians.first.raw_view_unit)
           end
 
           case threshold.compliance_method
             when 'mean'
               download_sum = 0.to_f
               upload_sum = 0.to_f
+              scalar_reference_down = schedule.destination.plan[reference_metric+'_down'].to_unit('kb/s').scalar
+              scalar_reference_up = schedule.destination.plan[reference_metric+'_up'].to_unit('kb/s').scalar
               medians.each do |median|
-                download_sum += median.sdavg.to_f / reference_download_value
-                #puts median.dsavg,reference_download_value,download_sum
-                upload_sum += median.dsavg.to_f / reference_upload_value
+                scalar_download = median.download_with_unit.convert_to('kb/s').scalar.to_f
+                download_sum += scalar_download / scalar_reference_down
+                upload_sum += median.upload_with_unit.convert_to('kb/s').scalar / scalar_reference_up
               end
               #TODO: confirmar numero total de medicoes (exclui valores nulos?)
               compliance.download = download_sum / medians.length
@@ -57,10 +59,10 @@ class Compliance < ActiveRecord::Base
               upload_sum = 0
               medians.each do |median|
                 if reference_metric == 'throughput'
-                  download_sum += 1 if median.sdavg.to_f >= reference_download_value.to_f
-                  upload_sum += 1 if median.dsavg.to_f  >= reference_upload_value.to_f
+                  download_sum += 1 if median.download_with_unit >= reference_download_value
+                  upload_sum += 1 if median.upload_with_unit  >= reference_upload_value
                 else
-                  download_sum += 1 if median.sdavg.to_f + median.dsavg.to_f <= reference_download_value.to_f
+                  download_sum += 1 if median.download_with_unit + median.upload_with_unit <= reference_download_value
                 end
               end
               #TODO: confirmar numero total de medicoes (exclui valores nulos?)

@@ -84,11 +84,11 @@ class Median < ActiveRecord::Base
       end_period = reference_date
       case threshold.goal_period
         when 'daily-rush'
-          start_period = reference_date.beginning_of_day + 8.hours
-          end_period = reference_date.beginning_of_day + 22.hours
+          start_period = reference_date.beginning_of_day.in_time_zone('GMT') + 8.hours
+          end_period = reference_date.beginning_of_day.in_time_zone('GMT') + 22.hours
         when 'daily'
-          start_period = reference_date.beginning_of_day
-          end_period = reference_date.end_of_day
+          start_period = reference_date.beginning_of_day.in_time_zone('GMT')
+          end_period = reference_date.end_of_day.in_time_zone('GMT')
         else
           Yell.new(:gelf, :facility => 'netmetric').warning "Tentativa de calculo de medianas em utilizando período não suportado: #{threshold.goal_period}",
                                                           '_schedule_id' => schedule.id, '_probe_id' => schedule.source.id, '_threshold_id' => threshold.id
