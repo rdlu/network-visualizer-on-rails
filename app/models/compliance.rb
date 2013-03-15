@@ -28,11 +28,9 @@ class Compliance < ActiveRecord::Base
         compliance = Compliance.new if compliance.nil?
 
         if medians.length > 0
-          reference_metric = threshold.metric.plugin.split('_').at(0)
+          reference_metric = threshold.metric.plugin
 
-          reference_download_value = 0
-          reference_upload_value = 0
-          if reference_metric == 'throughput'
+          if reference_metric =~ /^throughput/
             reference_download_value = (schedule.destination.plan[reference_metric+'_down'].to_unit('kb/s')) * threshold.goal_level
             reference_upload_value = (schedule.destination.plan[reference_metric+'_up'].to_unit('kb/s')) * threshold.goal_level
           else
@@ -58,9 +56,9 @@ class Compliance < ActiveRecord::Base
               download_sum = 0
               upload_sum = 0
               medians.each do |median|
-                if reference_metric == 'throughput'
+                if reference_metric =~ /^throughput/
                   download_sum += 1 if median.download_with_unit >= reference_download_value
-                  upload_sum += 1 if median.upload_with_unit  >= reference_upload_value
+                  upload_sum += 1 if median.upload_with_unit >= reference_upload_value
                 else
                   download_sum += 1 if median.download_with_unit + median.upload_with_unit <= reference_download_value
                 end
