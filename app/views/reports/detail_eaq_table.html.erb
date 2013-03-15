@@ -33,7 +33,7 @@
             <%
                case threshold.metric.plugin
                  when /^throughput/
-                   if (threshold.compliance_method == 'mean')
+                   if threshold.compliance_method == 'mean'
                      up = (((median.dsavg.to_f / 1000)/@destination.plan.throughput_up.to_f)*100).round(2)
                      down = (((median.sdavg.to_f / 1000)/@destination.plan.throughput_down.to_f)*100).round(2)
                      color_up = up >=(threshold.goal_level * 100).round(3) ? 'green' : 'red'
