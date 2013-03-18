@@ -42,9 +42,13 @@ class Median < ActiveRecord::Base
   def pretty_download(auto_choose_unit = false)
     begin
       if auto_choose_unit
+        if self.download.nil?
+          return 'Sem dados'
+        else
         if (self.download_with_view_unit =~ '1 Mb/s'.to_unit) && (self.download_with_view_unit > '1 Mb/s'.to_unit)
           return self.download_with_view_unit.convert_to('Mb/s').to_s('%0.2f').gsub(/b\/s|B\/s/,'b/s' => 'bps', 'B/s' => 'Bps')
         end
+          end
       end
       return self.download_with_view_unit.to_s('%0.2f').gsub(/b\/s|B\/s/,'b/s' => 'bps', 'B/s' => 'Bps')
     rescue Exception => e
@@ -59,6 +63,9 @@ class Median < ActiveRecord::Base
   def pretty_upload(auto_choose_unit = false)
     begin
       if auto_choose_unit
+        if self.upload.nil?
+          return 'Sem dados'
+        end
         if (self.upload_with_view_unit =~ '1 Mb/s'.to_unit) && (self.upload_with_view_unit > '1 Mb/s'.to_unit)
           return self.upload_with_view_unit.convert_to('Mb/s').to_s('%0.2f').gsub(/b\/s|B\/s/,'b/s' => 'bps', 'B/s' => 'Bps')
         end
