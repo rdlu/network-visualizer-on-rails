@@ -191,13 +191,13 @@ class ReportsController < ApplicationController
   end
 
   def csv
-    source = Probe.find(params[:source][:id])
-    destination = Probe.find(params[:destination][:id])
-    metric = Metric.find(params[:metric][:id])
+    source = Probe.find(params[:source])
+    destination = Probe.find(params[:destination])
+    metric = Metric.find(params[:metric])
     schedule = Schedule.where(:destination_id => destination).where(:source_id => source).all.last
 
-    from = DateTime.parse(params[:date][:start]+' '+params[:time][:start]+' '+DateTime.current.zone).in_time_zone
-    to = DateTime.parse(params[:date][:end]+' '+params[:time][:end]+' '+DateTime.current.zone).in_time_zone
+    from = params[:from]
+    to = params[:to]
 
     raw_results = Results.
         where(:schedule_id => schedule.id).
@@ -250,21 +250,22 @@ class ReportsController < ApplicationController
                 from,
                 to,
                 # result
-                result.x,
+                result.dsavg,
                 unless metric.plugin == 'rtt' then result.dsavg end,
                 unless metric.plugin == 'rtt' then result.sdavg end,
                 if metric.plugin == 'rtt' then result.y end,
-                result.extra
+                result.dsavg
         ]
       end
     end
 
   respond_to do |format|
-      format.csv { render text: @end_csv }
+      format.csv { send_data @end_csv}
     end
   end
 
   def eaq_table
+
     @source = Probe.find(params[:source][:id])
     @destination = Probe.find(params[:destination][:id])
     @schedule = Schedule.where(:destination_id => @destination.id).where(:source_id => @source.id).all.last
