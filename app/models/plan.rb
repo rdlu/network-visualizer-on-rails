@@ -18,4 +18,24 @@ class Plan < ActiveRecord::Base
     self.name+" ("+self.throughput_down.to_s+"k"+8659.chr+"/"+self.throughput_up.to_s+"k"+8657.chr+")".html_safe
   end
 
+  def throughput_down_with_unit(auto_choose_unit = false)
+    throughput = self.throughput_down.to_unit('kb/s')
+    if auto_choose_unit
+      if throughput > '1 Mb/s'.to_unit
+        return throughput.convert_to('Mb/s')
+      end
+    end
+    throughput
+  end
+
+  def throughput_up_with_unit(auto_choose_unit = false)
+    throughput = self.throughput_up.to_unit('kb/s')
+    if auto_choose_unit
+      if throughput > '1 Mb/s'.to_unit
+        return throughput.convert_to('Mb/s')
+      end
+    end
+    throughput
+  end
+
 end
