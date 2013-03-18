@@ -57,16 +57,22 @@ class Compliance < ActiveRecord::Base
             when 'quotient'
               download_sum = 0
               upload_sum = 0
+              combined_sum = 0
               medians.each do |median|
-                if reference_metric == 'throughput'
-                  download_sum += 1 if median.download_with_unit >= reference_download_value
-                  upload_sum += 1 if median.upload_with_unit >= reference_upload_value
-                else
-                  download_sum += 1 if median.download_with_unit + median.upload_with_unit <= reference_download_value
+                case reference_metric
+                  when 'throughput'
+                    download_sum += 1 if median.download_with_unit >= reference_download_value
+                    upload_sum += 1 if median.upload_with_unit >= reference_upload_value
+                    combined_sum += 1 if median.upload_with_unit >= reference_upload_value && median.download_with_unit >= reference_download_value
+                  when 'jitter'
+                    combined_sum += 1 if median.upload_with_unit >= reference_upload_value && median.download_with_unit >= reference_download_value
+                  else
+                    download_sum += 1 if median.download_with_unit + median.upload_with_unit <= reference_download_value
+                    combined_sum = download_sum
                 end
               end
               #TODO: confirmar numero total de medicoes (exclui valores nulos?)
-              compliance.download = download_sum.to_f / medians.length.to_f
+              compliance.download = combined_sum.to_f / medians.length.to_f
               compliance.upload = upload_sum.to_f / medians.length.to_f
             else
               Yell.new(:gelf, :facility => 'netmetric').send 'warn', "Tentativa de calculo de quocientes com método de cumprimento não suportado: #{threshold.compliance_method}",
