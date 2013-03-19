@@ -6,6 +6,8 @@ class Schedule < ActiveRecord::Base
   has_many :evaluations
   has_many :profiles, :through => :evaluations
   has_many :medians
+  has_many :kpis
+
   accepts_nested_attributes_for :profiles
   belongs_to :destination, :class_name => 'Probe', :foreign_key => 'destination_id'
   belongs_to :source, :class_name => 'Probe', :foreign_key => 'source_id'
