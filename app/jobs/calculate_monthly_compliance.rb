@@ -6,7 +6,7 @@ end
 class CalculateMonthlyCompliance
   def initialize(reference_date = Time.now.end_of_day, reeschedule = true, force_disabled = false)
     @reference_date= reference_date.to_time
-    @reeschedule = reeschedule.to_time
+    @reeschedule = reeschedule
     @force_disabled = force_disabled
   end
 
