@@ -91,7 +91,7 @@ class Median < ActiveRecord::Base
       end_period = reference_date
       case threshold.goal_period
         when 'daily-rush'
-          start_period = reference_date.beginning_of_day.in_time_zone('GMT') + 8.hours
+          start_period = reference_date.beginning_of_day.in_time_zone('GMT') + 10.hours
           end_period = reference_date.beginning_of_day.in_time_zone('GMT') + 22.hours
         when 'daily'
           start_period = reference_date.beginning_of_day.in_time_zone('GMT')
