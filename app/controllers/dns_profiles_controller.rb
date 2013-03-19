@@ -5,6 +5,7 @@ class DnsProfilesController < ApplicationController
     @profile.config_parameters = '{}'
 
     @nameservers = Nameserver.all
+    @sites = Site.all
 
     respond_to do |format|
       format.html
@@ -15,6 +16,7 @@ class DnsProfilesController < ApplicationController
     authorize! :manage, self
     @profile = Profile.find(params[:id])
     @nameservers = Nameserver.all
+    @sites = Site.all
 
     unless @profile.config_method == "dns"
       redirect_to edit_profile_path(@profile)
@@ -25,6 +27,7 @@ class DnsProfilesController < ApplicationController
     authorize! :manage, self
 
     params[:profile][:nameservers] ||= []
+    params[:profile][:sites] ||= []
     @profile = Profile.new(params[:profile])
     @profile.config_method = "dns"
 
@@ -47,6 +50,12 @@ class DnsProfilesController < ApplicationController
       @nameservers << nstmp unless nstmp.nil?
     end
 
+    @sites = []
+    @profile.sites.each do |s|
+      stmp = Site.find(s)
+      @sites << stmp unless stmp.nil?
+    end
+
     unless @profile.config_method == "dns"
       redirect_to profile_path(@profile)
       return
@@ -62,6 +71,7 @@ class DnsProfilesController < ApplicationController
     authorize! :manage, self
     params[:profile][:metric_ids] ||= []
     params[:profile][:nameservers] ||= []
+    params[:profile][:sites] ||= []
     @profile = Profile.find(params[:id])
 
     unless @profile.config_method == "dns"

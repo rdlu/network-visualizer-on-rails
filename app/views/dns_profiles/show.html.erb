@@ -42,8 +42,23 @@
   </tbody>
 </table>
 
-
-
+<h3>Sites a serem testados</h3>
+<table class="table table-bordered table-striped">
+  <thead>
+    <th>ID</th>
+    <th>URL</th>
+    <th>VIP/Top100?</th>
+  </thead>
+  <tbody>
+    <% @sites.each do |s| %>
+      <tr>
+        <td><%= s.id %></td>
+        <td><%= s.url %></td>
+        <td><%= s.vip ? "VIP" : "Top100" %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
 
 <%= link_to 'Edit', edit_profile_path(@profile) %> |
 <%= link_to 'Back', profiles_path %>

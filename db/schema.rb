@@ -210,7 +210,7 @@ ActiveRecord::Schema.define(:version => 20130312181117) do
     t.datetime "updated_at",                  :null => false
   end
 
-  add_index "results", ["schedule_id", "metric_id", "timestamp"], :name => "sched_metric_timestamp_uniq", :unique => true
+  add_index "results", ["schedule_id", "metric_id", "timestamp"], :name => "results_sched_metric_timestamp", :unique => true
 
   create_table "roles", :force => true do |t|
     t.string   "name"

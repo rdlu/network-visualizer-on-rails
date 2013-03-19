@@ -70,10 +70,45 @@ module ApplicationHelper
   end
 
   def schedule_for_all_probes
-    all_probes = Array.new
+    all_probes = Hash.new
 
-    Schedule.all.each do |s|
-      all_probes << schedule_for_probes(s.source_id, s.destination_id)
+    Probe.order("name ASC").all.each do |probe|
+      all_probes["#{probe.id}"] = Hash.new
+      all_probes["#{probe.id}"][:name] = probe.name
+      all_probes["#{probe.id}"][:city] = probe.city
+      all_probes["#{probe.id}"][:state] = probe.state
+      all_probes["#{probe.id}"][:ipaddress] = probe.ipaddress
+      all_probes["#{probe.id}"][:latitude] = probe.latitude
+      all_probes["#{probe.id}"][:longitude] = probe.longitude
+      all_probes["#{probe.id}"][:type] = probe.type
+      all_probes["#{probe.id}"][:status] = probe.status
+      all_probes["#{probe.id}"][:pretty_status] = probe.pretty_status
+
+      schedule = probe.schedules_as_destination.last
+      unless schedule.kpis.nil?
+        all_probes["#{probe.id}"][:kpi] = Hash.new
+        all_probes["#{probe.id}"][:kpi][:uuid] = schedule.kpis.last.uuid
+        all_probes["#{probe.id}"][:kpi][:brand] = schedule.kpis.last.brand
+        all_probes["#{probe.id}"][:kpi][:conn_tech] = schedule.kpis.last.conn_tech
+        all_probes["#{probe.id}"][:kpi][:conn_type] = schedule.kpis.last.conn_type
+        all_probes["#{probe.id}"][:kpi][:dns_latency] = schedule.kpis.last.dns_latency
+        all_probes["#{probe.id}"][:kpi][:lac] = schedule.kpis.last.lac
+        all_probes["#{probe.id}"][:kpi][:model] = schedule.kpis.last.model
+        all_probes["#{probe.id}"][:kpi][:signal] = schedule.kpis.last.signal
+        all_probes["#{probe.id}"][:kpi][:timestamp] = schedule.kpis.last.timestamp.strftime("%Y-%m-%d %H:%M:%S %z")
+        all_probes["#{probe.id}"][:kpi][:cell_id] = schedule.kpis.last.cell_id
+
+        all_probes["#{probe.id}"][:results] = Hash.new
+        probe.metrics.each do |metric|
+          all_probes["#{probe.id}"][:results]["#{metric.plugin}"] = Hash.new
+
+          results = Results.where(:uuid => schedule.kpis.last.uuid).all.to_a
+
+          result = results.select { |r| r.metric_id == metric.id }
+
+          puts result
+        end
+      end
     end
 
     all_probes

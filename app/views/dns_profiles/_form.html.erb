@@ -47,6 +47,16 @@
           </label>
         <% end %>
       </div>
+      <div class="control-group">
+        <span class="control-label etooltip" data-title="Sites a serem testados pelo perfil">Sites</span>
+        <div class="controls">
+          <% @sites.each do |site| %>
+            <label class="checkbox" data-title="<%= site.url %>">
+              <%= check_box_tag "profile[sites[]", site.id, @profile.sites.include?(site.id.to_s) %>
+              <%= site.url %>
+            </label>
+          <% end %>
+        </div>
     </div>
 
     <div class="control-group">
