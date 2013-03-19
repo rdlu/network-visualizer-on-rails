@@ -9,24 +9,40 @@ class Profile < ActiveRecord::Base
   accepts_nested_attributes_for :metrics
 
   def nameservers=(ns)
-    self.config_parameters = ns.to_json
+    # if config_parameters is empty, build it. Otherwise, leave it alone
+    self.config_parameters ||= {nameservers: [], urls: []}.to_json
+    # decode current config_parameters into a hash
+    cfg_params = ActiveSupport::JSON.decode(self.config_parameters)
+    # set just the nameservers key to the new array
+    cfg_params["nameservers"] = ns
+    # and update config_parameters with the new hash
+    self.config_parameters = cfg_params.to_json
   end
 
   def nameservers
-    if self.config_method == "dns"
-      ActiveSupport::JSON.decode(self.config_parameters)
-    else 
-      []
-    end
+      a = ActiveSupport::JSON.decode(self.config_parameters)["nameservers"]
+      if a
+        a
+      else
+        []
+      end
   end
 
   def sites=(sis)
-    self.config_parameters = sis.to_json
+    # if config_parameters is empty, build it. Otherwise, leave it alone
+    self.config_parameters ||= {nameservers: [], urls: []}.to_json
+    # decode current config_parameters into a hash
+    cfg_params = ActiveSupport::JSON.decode(self.config_parameters)
+    # set just the urls key to the new array
+    cfg_params["urls"] = sis
+    # and update config_parameters with the new hash
+    self.config_parameters = cfg_params.to_json
   end
 
   def sites
-    if self.config_method == "url"
-      ActiveSupport::JSON.decode(self.config_parameters)
+    a =ActiveSupport::JSON.decode(self.config_parameters)["urls"]
+    if a
+      a
     else
       []
     end
