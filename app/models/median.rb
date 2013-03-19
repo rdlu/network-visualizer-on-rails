@@ -123,12 +123,12 @@ class Median < ActiveRecord::Base
         median.schedule = schedule
         median.threshold = threshold
         median.total_points = len
-        end_time = end_period.to_time.to_i
-        start_time = start_period.to_time.to_i
+        end_time = end_period
+        start_time = start_period
         diff_time = end_time - start_time
         median.expected_points = (diff_time/60) / schedule.polling
-        median.start_timestamp=start_period
-        median.end_timestamp=end_period
+        median.start_timestamp=start_period.in_time_zone('GMT')
+        median.end_timestamp=end_period.in_time_zone('GMT')
         median.type = threshold.goal_period
 
         median.save!
