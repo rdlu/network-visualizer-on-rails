@@ -87,8 +87,8 @@ class Median < ActiveRecord::Base
 
   def self.calculate (schedule, threshold, reference_date)
     if threshold.goal_method == 'median'
-      start_period = reference_date
-      end_period = reference_date
+      start_period = reference_date.to_time
+      end_period = reference_date.to_time
       case threshold.goal_period
         when 'daily-rush'
           start_period = reference_date.beginning_of_day.in_time_zone('GMT') + 10.hours
@@ -127,8 +127,8 @@ class Median < ActiveRecord::Base
         start_time = start_period
         diff_time = end_time - start_time
         median.expected_points = (diff_time/60) / schedule.polling
-        median.start_timestamp=start_period.in_time_zone('Brasilia')
-        median.end_timestamp=end_period.in_time_zone('Brasilia')
+        median.start_timestamp = start_period
+        median.end_timestamp = end_period
         median.type = threshold.goal_period
 
         median.save!
