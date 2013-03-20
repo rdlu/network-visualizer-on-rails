@@ -48,10 +48,6 @@
                   <li class="divider"></li>
                   <li><%= link_to "Controle de Usuário", users_path , :method => :get %></li>
                   <li class="divider"></li>
-                  <li><%= link_to "Name Servers", nameservers_path %></li>
-                  <li class="divider"></li>
-                  <li><%= link_to "Sites", sites_path %></li>
-                  <li class="divider"></li>
                   <% #TEM QUE DEIXAR O GET_USER para o roteamento funcionar ok %>
                   <li><%= link_to "Minha Conta", edit_user_path(get_user) %></li>
                   <% if can? :edit, Plan %>
@@ -59,6 +55,10 @@
                       <li class="dropdown-submenu">
                         <a tabindex="-1" href="#">Configurações Avançadas</a>
                         <ul class="dropdown-menu" style="left: 100%">
+                          <li><%= link_to "DNS para teste", nameservers_path %></li>
+                          <li class="divider"></li>
+                          <li><%= link_to "Sites para teste", sites_path %></li>
+                          <li class="divider"></li>
                           <li><%= link_to "Planos", plans_path %></li>
                           <% if can? :read, ConnectionProfile %>
                               <li class="divider"></li>
