@@ -85,7 +85,11 @@ module ApplicationHelper
       all_probes["#{probe.id}"][:pretty_status] = probe.pretty_status
 
       schedule = probe.schedules_as_destination.last
-      unless schedule.kpis.nil?
+
+      # Caso isso permaneça nil, não temos agenda para essa probe
+      all_probes["#{probe.id}"][:kpi] = nil
+
+      unless schedule.nil? || schedule.kpis.last.nil?
         all_probes["#{probe.id}"][:kpi] = Hash.new
         all_probes["#{probe.id}"][:kpi][:uuid] = schedule.kpis.last.uuid
         all_probes["#{probe.id}"][:kpi][:brand] = schedule.kpis.last.brand
@@ -100,13 +104,23 @@ module ApplicationHelper
 
         all_probes["#{probe.id}"][:results] = Hash.new
         probe.metrics.each do |metric|
-          all_probes["#{probe.id}"][:results]["#{metric.plugin}"] = Hash.new
 
           results = Results.where(:uuid => schedule.kpis.last.uuid).all.to_a
 
           result = results.select { |r| r.metric_id == metric.id }
 
-          puts result
+          result = result.first
+
+          all_probes["#{probe.id}"][:results]["#{metric.plugin}"] = nil
+
+          unless result.nil?
+            all_probes["#{probe.id}"][:results]["#{metric.plugin}"] = Hash.new
+            all_probes["#{probe.id}"][:results]["#{metric.plugin}"][:download] = result.download
+            all_probes["#{probe.id}"][:results]["#{metric.plugin}"][:upload] = result.upload
+            all_probes["#{probe.id}"][:results]["#{metric.plugin}"][:timestamp] = result.timestamp.strftime("%Y-%m-%d %H:%M:%S %z")
+            all_probes["#{probe.id}"][:results]["#{metric.plugin}"][:view_unit] = result.view_unit
+            all_probes["#{probe.id}"][:results]["#{metric.plugin}"][:db_unit] = result.db_unit
+          end
         end
       end
     end
