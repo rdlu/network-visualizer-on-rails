@@ -37,10 +37,18 @@
 
       </div>
       <div class="tab-pane" id="tab2">
-        <p>Sintetização com os dados anatel.</p>
+        <div class="row-fluid">
+          <div class="span12">
+           <p> Sintetização com os dados anatel.</p>
+          </div>
+        </div>
       </div>
       <div class="tab-pane" id="tab3">
-        <p>Sintetização com os dados brutos de medições.</p>
+        <div class="row-fluid">
+          <div class="span12">
+            <div id="all_probes"></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -174,5 +182,89 @@
 
             }
         });
+    });
+
+    $(function(){
+         $('#all_probes').html('carregando dados...');
+            $.ajax({
+                type: 'GET',
+                url: "<%= welcome_stats_url %>",
+                datatype: "json",
+                //data: {},
+                success: function(response){
+                   //alert(response.length);
+                   var context = ''+
+                    '<div id="table_resumo_med" class="row-fluid">'+
+                       '<div   class="span12">'+
+                       '<table class="table table-bordered table-hover table-condensed" >'+
+                          '<thead>' +
+                           '<tr>' +
+                             '<th></th>' +
+                             '<th style="text-align: center">Sonda</th>'+
+                             '<th style="text-align: center">Localização</th>'+
+                             '<th style="text-align: center">Última Atualização</th>'+
+                             '<th style="text-align: center">Throughput TCP<br/>up/down (Mbps)</th>'+
+                             '<th style="text-align: center">Throughput<br/>up/down (Mbps)</th>'+
+                             '<th style="text-align: center">RTT (ms)</th>'+
+                             '<th style="text-align: center">Jitter<br/>up/down (ms)</th>'+
+                             '<th style="text-align: center">Loss<br/>up/down (%)</th>'+
+                             '<th style="text-align: center">Pom<br/>up/down (%)</th>'+
+                           '</tr>'+
+                           '</thead><tbody>';
+                   for(var i in response){
+                         context = context +
+                                 '<tr>' +
+                                 '<td style="background-color: rgba(9,187,8,0.30);width: 25px;"></td>' +
+                                 '<td style="text-align: center">'+response[i]['name']+'</td>' +
+                                 '<td style="text-align: center">'+response[i]['city']+' -'+response[i]['state']+'</td>';
+
+                       if (typeof(response[i]['results'])  != 'undefined'){
+
+                       if (typeof(response[i]['kpi']) == 'undefined' || response[i]['kpi'] == null)
+                           context = context + '<td style="text-align: center">NULL</td>';
+                       else  context = context +  '<td style="text-align: center">'+response[i]['kpi']['timestamp']+'</td>';
+
+                       if (typeof(response[i]['results']['throughput_tcp']) == 'undefined')
+                           context = context + '<td style="text-align: center">NULL</td>';
+                       else  context = context +  '<td style="text-align: center">'+response[i]['results']['throughput_tcp']['download']+'/'+response[i]['results']['throughput_tcp']['upload']+'</td>';
+
+                       if (response[i]['results']['throughput'] == null)
+                           context = context + '<td style="text-align: center">NULL</td>';
+                       else context = context + '<td style="text-align: center">'+
+                               response[i]['results']['throughput']['download']
+                                +'/'+
+                             response[i]['results']['throughput']['upload']+'</td>';
+
+                       if (typeof(response[i]['results']['rtt']) == 'undefined')
+                           context = context + '<td style="text-align: center">NULL</td>';
+                       else context = context +'<td style="text-align: center">'+response[i]['results']['rtt']['upload']+'</td>';
+
+                       if (typeof(response[i]['results']['jitter']) == 'undefined')
+                           context = context + '<td style="text-align: center">NULL</td>';
+                       else context = context + '<td style="text-align: center">'+response[i]['results']['jitter']['download']+'/'+response[i]['results']['jitter']['upload']+'</td>';
+
+                       if (typeof(response[i]['results']['loss']) == 'undefined')
+                           context = context + '<td style="text-align: center">NULL</td>';
+                       else context = context +'<td style="text-align: center">'+response[i]['results']['loss']['download']+'/'+response[i]['results']['loss']['upload']+'</td>';
+
+                       if (typeof(response[i]['results']['pom']) == 'undefined')
+                           context = context + '<td style="text-align: center">NULL</td>';
+                       else context = context +'<td style="text-align: center">'+response[i]['results']['pom']['download']+'/'+response[i]['results']['pom']['download']+'</td>';
+
+
+                       context = context + '</tr>';
+                    }else {
+                           context = context + '<td colspan="8"  style="background-color: rgba(170,170,170,0.57) ;text-align: center">Não há dados para esta sonda.</td>';
+                       }
+
+                   }
+                   context = context + '</tbody></table>';
+                   $('#all_probes').html(context);
+                },
+                error: function(e){
+                    alert(e.message);
+                }
+            });
+
     });
 </script>

@@ -99,7 +99,7 @@ module ApplicationHelper
         all_probes["#{probe.id}"][:kpi][:lac] = schedule.kpis.last.lac
         all_probes["#{probe.id}"][:kpi][:model] = schedule.kpis.last.model
         all_probes["#{probe.id}"][:kpi][:signal] = schedule.kpis.last.signal
-        all_probes["#{probe.id}"][:kpi][:timestamp] = schedule.kpis.last.timestamp.strftime("%Y-%m-%d %H:%M:%S %z")
+        all_probes["#{probe.id}"][:kpi][:timestamp] = schedule.kpis.last.timestamp.strftime("%d/%m/%Y %H:%M")
         all_probes["#{probe.id}"][:kpi][:cell_id] = schedule.kpis.last.cell_id
 
         all_probes["#{probe.id}"][:results] = Hash.new
@@ -117,7 +117,7 @@ module ApplicationHelper
             all_probes["#{probe.id}"][:results]["#{metric.plugin}"] = Hash.new
             all_probes["#{probe.id}"][:results]["#{metric.plugin}"][:download] = result.download
             all_probes["#{probe.id}"][:results]["#{metric.plugin}"][:upload] = result.upload
-            all_probes["#{probe.id}"][:results]["#{metric.plugin}"][:timestamp] = result.timestamp.strftime("%Y-%m-%d %H:%M:%S %z")
+            all_probes["#{probe.id}"][:results]["#{metric.plugin}"][:timestamp] = result.timestamp.strftime("%d/%m/%Y %H:%M")
             all_probes["#{probe.id}"][:results]["#{metric.plugin}"][:view_unit] = result.view_unit
             all_probes["#{probe.id}"][:results]["#{metric.plugin}"][:db_unit] = result.db_unit
           end
