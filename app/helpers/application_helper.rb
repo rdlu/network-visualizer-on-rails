@@ -104,17 +104,23 @@ module ApplicationHelper
 
         all_probes["#{probe.id}"][:results] = Hash.new
         probe.metrics.each do |metric|
-          all_probes["#{probe.id}"][:results]["#{metric.plugin}"] = Hash.new
 
           results = Results.where(:uuid => schedule.kpis.last.uuid).all.to_a
 
           result = results.select { |r| r.metric_id == metric.id }
 
-          all_probes["#{probe.id}"][:results]["#{metric.plugin}"][:download] = result.download
-          all_probes["#{probe.id}"][:results]["#{metric.plugin}"][:upload] = result.upload
-          all_probes["#{probe.id}"][:results]["#{metric.plugin}"][:timestamp] = result.timestamp.strftime("%Y-%m-%d %H:%M:%S %z")
-          all_probes["#{probe.id}"][:results]["#{metric.plugin}"][:view_unit] = result.view_unit
-          all_probes["#{probe.id}"][:results]["#{metric.plugin}"][:db_unit] = result.db_unit
+          result = result.first
+
+          all_probes["#{probe.id}"][:results]["#{metric.plugin}"] = nil
+
+          unless result.nil?
+            all_probes["#{probe.id}"][:results]["#{metric.plugin}"] = Hash.new
+            all_probes["#{probe.id}"][:results]["#{metric.plugin}"][:download] = result.download
+            all_probes["#{probe.id}"][:results]["#{metric.plugin}"][:upload] = result.upload
+            all_probes["#{probe.id}"][:results]["#{metric.plugin}"][:timestamp] = result.timestamp.strftime("%Y-%m-%d %H:%M:%S %z")
+            all_probes["#{probe.id}"][:results]["#{metric.plugin}"][:view_unit] = result.view_unit
+            all_probes["#{probe.id}"][:results]["#{metric.plugin}"][:db_unit] = result.db_unit
+          end
         end
       end
     end
