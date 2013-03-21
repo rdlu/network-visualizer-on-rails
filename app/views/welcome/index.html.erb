@@ -203,18 +203,27 @@
                              '<th style="text-align: center">Sonda</th>'+
                              '<th style="text-align: center">Localização</th>'+
                              '<th style="text-align: center">Última Atualização</th>'+
-                             '<th style="text-align: center">Throughput TCP<br/>up/down (Mbps)</th>'+
-                             '<th style="text-align: center">Throughput<br/>up/down (Mbps)</th>'+
+                             '<th style="text-align: center">Throughput TCP<br/>up/down (Kbps)</th>'+
+                             '<th style="text-align: center;min-width: 135px;">Throughput HTTP<br/>up/down (Kbps)</th>'+
+                             '<th style="text-align: center">Throughput UDP<br/>up/down (Kbps)</th>'+
                              '<th style="text-align: center">RTT (ms)</th>'+
                              '<th style="text-align: center">Jitter<br/>up/down (ms)</th>'+
                              '<th style="text-align: center">Loss<br/>up/down (%)</th>'+
                              '<th style="text-align: center">Pom<br/>up/down (%)</th>'+
                            '</tr>'+
                            '</thead><tbody>';
+
                    for(var i in response){
+                         var color = '';
+                         switch(response[i]['status']){
+                             case 0: color = 'rgba(94,91,91,0.37)';break;
+                             case 1: color = 'rgba(9,187,8,0.30)';break;
+                             case 2: color = 'rgba(210,208,26,0.49)';break;
+                             case 3: color = 'rgba(210,10,20,0.46)';break;
+                         };
                          context = context +
                                  '<tr>' +
-                                 '<td style="background-color: rgba(9,187,8,0.30);width: 25px;"></td>' +
+                                 '<td style="background-color:'+color+';width: 25px;"></td>' +
                                  '<td style="text-align: center">'+response[i]['name']+'</td>' +
                                  '<td style="text-align: center">'+response[i]['city']+' -'+response[i]['state']+'</td>';
 
@@ -222,11 +231,16 @@
 
                        if (typeof(response[i]['kpi']) == 'undefined' || response[i]['kpi'] == null)
                            context = context + '<td style="text-align: center">NULL</td>';
-                       else  context = context +  '<td style="text-align: center">'+response[i]['kpi']['timestamp']+'</td>';
+                       else  context = context +  '<td style="text-align: center">'+moment(response[i]['kpi']['timestamp']).format("DD/MM/YYYY HH:mm")+'</td>';
 
-                       if (typeof(response[i]['results']['throughput_tcp']) == 'undefined')
+                       if (response[i]['results']['throughput_tcp'] == null)
                            context = context + '<td style="text-align: center">NULL</td>';
-                       else  context = context +  '<td style="text-align: center">'+response[i]['results']['throughput_tcp']['download']+'/'+response[i]['results']['throughput_tcp']['upload']+'</td>';
+                       else  context = context +  '<td style="text-align: center">'+$u(response[i]['results']['throughput_tcp']['download'],response[i]['results']['throughput_tcp']['db_unit']).as(response[i]['results']['throughput_tcp']['view_unit']).val()+
+                               '/'+$response[i]['results']['throughput_tcp']['upload']+'</td>';
+
+                       if (response[i]['results']['throughput_http'] == null)
+                           context = context + '<td style="text-align: center">NULL</td>';
+                       else  context = context +  '<td style="text-align: center">'+$u(response[i]['results']['throughput_http']['download'],response[i]['results']['throughput_http']['db_unit']).as(response[i]['results']['throughput_http']['view_unit']).val()+'/'+response[i]['results']['throughput_http']['upload']+'</td>';
 
                        if (response[i]['results']['throughput'] == null)
                            context = context + '<td style="text-align: center">NULL</td>';
@@ -235,19 +249,19 @@
                                 +'/'+
                              response[i]['results']['throughput']['upload']+'</td>';
 
-                       if (typeof(response[i]['results']['rtt']) == 'undefined')
+                       if (response[i]['results']['rtt'] == null)
                            context = context + '<td style="text-align: center">NULL</td>';
                        else context = context +'<td style="text-align: center">'+response[i]['results']['rtt']['upload']+'</td>';
 
-                       if (typeof(response[i]['results']['jitter']) == 'undefined')
+                       if (response[i]['results']['jitter'] == null)
                            context = context + '<td style="text-align: center">NULL</td>';
                        else context = context + '<td style="text-align: center">'+response[i]['results']['jitter']['download']+'/'+response[i]['results']['jitter']['upload']+'</td>';
 
-                       if (typeof(response[i]['results']['loss']) == 'undefined')
+                       if (response[i]['results']['loss'] == null)
                            context = context + '<td style="text-align: center">NULL</td>';
                        else context = context +'<td style="text-align: center">'+response[i]['results']['loss']['download']+'/'+response[i]['results']['loss']['upload']+'</td>';
 
-                       if (typeof(response[i]['results']['pom']) == 'undefined')
+                       if (response[i]['results']['pom'] == null)
                            context = context + '<td style="text-align: center">NULL</td>';
                        else context = context +'<td style="text-align: center">'+response[i]['results']['pom']['download']+'/'+response[i]['results']['pom']['download']+'</td>';
 
@@ -262,7 +276,7 @@
                    $('#all_probes').html(context);
                 },
                 error: function(e){
-                    alert(e.message);
+                    console.log(e.message);
                 }
             });
 
