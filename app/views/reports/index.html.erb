@@ -306,12 +306,12 @@
             if (jQuery("#box-"+self.idName).is(':empty')){
                 jQuery('#graphs-area').prepend('<div id=\"box-'+self.idName+'\" class="row-fluid"><div   class=\"span12\"><div id=\"chart-'+self.idName+'\" style="height:300px;"></div></div></div>');
                 jQuery("#box-"+self.idName).append('<div class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="$(\'#chart-'+self.idName+'\').remove(); $(this).remove();$(\'#export-'+self.idName+'\').remove()">Remover</div>');
-                jQuery("#box-"+self.idName).append('<div id=\"export-'+self.idName+'\"  class="btn btn-success" style="float:right; margin-right: 5px ;margin-bottom: 20px" onclick="exportCSV('+self.source.id+','+self.destination.id+','+self.metric.id+',\"'+self.range.start.format('YYYY-MM-DD HH:mm')+'\",\"'+self.range.end.format('YYYY-MM-DD HH:mm')+'\")">Exportar</div>');
+                jQuery("#box-"+self.idName).append('<div id=\"export-'+self.idName+'\"  class="btn btn-success" style="float:right; margin-right: 5px ;margin-bottom: 20px" onclick="exportCSV(\''+self.idName+'\')">Exportar</div>');
             }else{
                 $("#box-"+self.idName).remove();
                 jQuery('#graphs-area').prepend('<div id=\"box-'+self.idName+'\" class="row-fluid"><div   class=\"span12\"><div id=\"chart-'+self.idName+'\" style="height:300px;"></div></div></div>');
                 jQuery("#box-"+self.idName).append('<div class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="$(\'#chart-'+self.idName+'\').remove(); $(this).remove();$(\'#export-'+self.idName+'\').remove()">Remover</div>');
-                jQuery("#box-"+self.idName).append('<div id=\"export-'+self.idName+'\"  class="btn btn-success" style="float:right; margin-right: 5px ;margin-bottom: 20px" onclick="exportCSV('+self.source.id+','+self.destination.id+','+self.metric.id+',\"'+self.range.start.format('YYYY-MM-DD HH:mm')+'\",\"'+self.range.end.format('YYYY-MM-DD HH:mm')+'\")">Exportar</div>');
+                jQuery("#box-"+self.idName).append('<div id=\"export-'+self.idName+'\"  class="btn btn-success" style="float:right; margin-right: 5px ;margin-bottom: 20px" onclick="exportCSV(\''+self.idName+'\')">Exportar</div>');
             }
             //desenha
             self.chartObject = new Highcharts.Chart({
@@ -396,12 +396,12 @@
             if (jQuery("#box-"+self.idName).is(':empty')){
                 jQuery('#graphs-area').prepend('<div id=\"box-'+self.idName+'\" class="row-fluid"><div   class=\"span12\"><div id=\"chart-'+self.idName+'\" style="height:300px;"></div></div></div>');
                 jQuery("#box-"+self.idName).append('<div class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="$(\'#chart-'+self.idName+'\').remove(); $(this).remove();$(\'#export-'+self.idName+'\').remove()">Remover</div>');
-                jQuery("#box-"+self.idName).append('<div id=\"export-'+self.idName+'\"  class="btn btn-success" style="float:right; margin-right: 5px ;margin-bottom: 20px" onclick="exportCSV('+self.source.id+','+self.destination.id+','+self.metric.id+',\"'+self.range.start.format('YYYY-MM-DD HH:mm')+'\",\"'+self.range.end.format('YYYY-MM-DD HH:mm')+'\")">Exportar</div>');
+                jQuery("#box-"+self.idName).append('<div id=\"export-'+self.idName+'\"  class="btn btn-success" style="float:right; margin-right: 5px ;margin-bottom: 20px" onclick="exportCSV(\''+self.idName+'\')">Exportar</div>');
             }else{
                 $("#box-"+self.idName).remove();
                 jQuery('#graphs-area').prepend('<div id=\"box-'+self.idName+'\" class="row-fluid"><div   class=\"span12\"><div id=\"chart-'+self.idName+'\" style="height:300px;"></div></div></div>');
                 jQuery("#box-"+self.idName).append('<div class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="$(\'#chart-'+self.idName+'\').remove(); $(this).remove();$(\'#export-'+self.idName+'\').remove()">Remover</div>');
-                jQuery("#box-"+self.idName).append('<div id=\"export-'+self.idName+'\"  class="btn btn-success" style="float:right; margin-right: 5px ;margin-bottom: 20px" onclick="exportCSV('+self.source.id+','+self.destination.id+','+self.metric.id+',\"'+self.range.start.format('YYYY-MM-DD HH:mm')+'\",\"'+self.range.end.format('YYYY-MM-DD HH:mm')+'\")">Exportar</div>');
+                jQuery("#box-"+self.idName).append('<div id=\"export-'+self.idName+'\"  class="btn btn-success" style="float:right; margin-right: 5px ;margin-bottom: 20px" onclick="exportCSV(\''+self.idName+'\')">Exportar</div>');
             }
             //desenha
             self.chartObject = new Highcharts.Chart({
@@ -448,6 +448,16 @@
         this.chartObject = null;
         this.container = null;
         this.idName = self.source.id+'-'+self.destination.id+'-'+self.metric.id+'-'+self.range.start.unix()+'-'+self.range.end.unix();
+        this.fileName = self.destination.name+'-'+self.metric.plugin+'-'+self.range.start.format("YYYYMMDD_HHmmss")+'-'+self.range.end.format("YYYYMMDD_HHmmss");
+        this.params = function() {
+            return jQuery.param({
+                'source': self.source.id,
+                'destination': self.destination.id,
+                'metric': self.metric.id,
+                'from': self.range.start.format("YYYY-MM-DD HH:mm:ss Z"),
+                'to': self.range.end.format("YYYY-MM-DD HH:mm:ss Z")
+            })
+        };
 
         this.dataset = function(direction) {
             direction = typeof direction !== 'undefined' ? direction : 'dsavg';
@@ -486,12 +496,12 @@
             if (jQuery("box-"+self.idName).is(':empty')){
                 jQuery('#graphs-area').prepend('<div id=\"box-'+self.idName+'\" class="row-fluid"><div   class=\"span12\"><div id=\"chart-'+self.idName+'\" style="height:300px;"></div></div></div>');
                 jQuery("#box-"+self.idName).append('<div class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="$(\'#chart-'+self.idName+'\').remove(); $(this).remove();$(\'#export-'+self.idName+'\').remove()">Remover</div>');
-                jQuery("#box-"+self.idName).append('<div id=\"export-'+self.idName+'\"  class="btn btn-success" style="float:right; margin-right: 5px ;margin-bottom: 20px" onclick="exportCSV('+self.source.id+','+self.destination.id+','+self.metric.id+',&quot '+self.range.start.format('YYYY-MM-DD HH:mm')+' &quot,&quot '+self.range.end.format('YYYY-MM-DD HH:mm')+'&quot)">Exportar</div>');
+                jQuery("#box-"+self.idName).append('<div id=\"export-'+self.idName+'\"  class="btn btn-success" style="float:right; margin-right: 5px ;margin-bottom: 20px" href="<%= reports_csv_url '' %>'+self.fileName+'.csv?'+this.params()+'">Exportar</div>');
             }else{
                 $("#box-"+self.idName).remove();
                 jQuery('#graphs-area').prepend('<div id=\"box-'+self.idName+'\" class="row-fluid"><div   class=\"span12\"><div id=\"chart-'+self.idName+'\" style="height:300px;"></div></div></div>');
-                jQuery("#box-"+self.idName).append('<div class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="$(\'#chart-'+self.idName+'\').remove(); $(this).remove();$(\'#export-'+self.idName+'\').remove()">Remover</div>');
-                jQuery("#box-"+self.idName).append('<div id=\"export-'+self.idName+'\"  class="btn btn-success" style="float:right; margin-right: 5px ;margin-bottom: 20px" onclick="exportCSV('+self.source.id+','+self.destination.id+','+self.metric.id+',&quot '+self.range.start.format('YYYY-MM-DD HH:mm')+'&quot,&quot '+self.range.end.format('YYYY-MM-DD HH:mm')+'&quot);">Exportar</div>');
+                jQuery("#box-"+self.idName).append('<a class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="$(\'#chart-'+self.idName+'\').remove(); $(this).remove();$(\'#export-'+self.idName+'\').remove()">Remover</a>');
+                jQuery("#box-"+self.idName).append('<a id=\"export-'+self.idName+'\"  class="btn btn-success" style="float:right; margin-right: 5px ;margin-bottom: 20px" href="<%= reports_csv_url '' %>'+self.fileName+'.csv?'+this.params()+'">Exportar CSV</a>');
             }
            //desenha
             self.chartObject = new Highcharts.Chart({
@@ -572,18 +582,19 @@
         };
     }
 
-    function exportCSV(source,destination,metric,from,to){
+    function exportCSV(graphIdName){
+        var graph = graphs[graphIdName];
         $.ajax({
             type: 'POST',
-            url: "<%= reports_csv_url %>",
-            data: { source:  source , destination: destination , metric: metric, from: from, to: to},
-            success: function(response){
-               var uriContent = "data:text/csv;charset=utf-8;filename=hahah.csv," + encodeURIComponent(response);
-                var myWindow = window.open(uriContent);
-                myWindow.focus();
-
-            }
-
+            url: "<%= reports_csv_url '' %>"+graph.destination.name+'-'+graph.metric.plugin+'-'+graph.range.start.format("YYYYMMDD_HHmmss")+'-'+graph.range.end.format("YYYYMMDD_HHmmss")+'.csv',
+            data: {
+                'source': graph.source.id,
+                'destination': graph.destination.id,
+                'metric': graph.metric.id,
+                'from': graph.range.start.format("YYYY-MM-DD HH:mm:ss Z"),
+                'to': graph.range.end.format("YYYY-MM-DD HH:mm:ss Z")
+            },
+            dataType: 'text'
         });
 
 
