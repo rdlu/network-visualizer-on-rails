@@ -4,7 +4,7 @@
     <ul class="nav nav-tabs ">
       <li class="active"><a href="#tab1" data-toggle="tab">Status dos Agentes</a></li>
       <li><a href="#tab2" data-toggle="tab">Resumo Anatel</a></li>
-      <li><a href="#tab3" data-toggle="tab">Resumo Medições</a></li>
+      <li><a id="tab_resumo_med" href="#tab3" data-toggle="tab" >Resumo Medições</a></li>
     </ul>
     <div class="tab-content tab-content-border">
       <div class="tab-pane active" id="tab1">
@@ -38,7 +38,7 @@
       </div>
       <div class="tab-pane" id="tab2">
         <div class="row-fluid">
-          <div class="span12">
+          <div class="span12" >
            <p> Sintetização com os dados anatel.</p>
           </div>
         </div>
@@ -53,6 +53,12 @@
     </div>
   </div>
 <script type="text/javascript">
+
+    $(function(){
+      $('#tab_resumo_med').bind('click',function (e){
+           reload();
+        });
+    });
 
     function htmlContent(name,ip,con,plan,status){
         var html="";
@@ -184,7 +190,8 @@
         });
     });
 
-    $(function(){
+
+    function reload(){
          $('#all_probes').html('carregando dados...');
             $.ajax({
                 type: 'GET',
@@ -199,17 +206,17 @@
                        '<table class="table table-bordered table-hover table-condensed" >'+
                           '<thead>' +
                            '<tr>' +
-                             '<th></th>' +
+                             '<th> <div class="btn btn-info"  onclick="reload()"><i class="icon-refresh"></i></div></th>' +
                              '<th style="text-align: center">Sonda</th>'+
                              '<th style="text-align: center">Localização</th>'+
                              '<th style="text-align: center">Última Atualização</th>'+
-                             '<th style="text-align: center">Throughput TCP<br/>up/down (Kbps)</th>'+
-                             '<th style="text-align: center;min-width: 135px;">Throughput HTTP<br/>up/down (Kbps)</th>'+
-                             '<th style="text-align: center">Throughput UDP<br/>up/down (Kbps)</th>'+
+                             '<th style="text-align: center">Throughput TCP<br/>&dArr;/&uArr;(Kbps)</th>'+
+                             '<th style="text-align: center;">Throughput HTTP<br/>&dArr;/&uArr; (Kbps)</th>'+
+                             '<th style="text-align: center">Throughput UDP<br/>&dArr;/&uArr; (Kbps)</th>'+
                              '<th style="text-align: center">RTT (ms)</th>'+
-                             '<th style="text-align: center">Jitter<br/>up/down (ms)</th>'+
-                             '<th style="text-align: center">Loss<br/>up/down (%)</th>'+
-                             '<th style="text-align: center">Pom<br/>up/down (%)</th>'+
+                             '<th style="text-align: center">Jitter<br/>&dArr;/&uArr; (ms)</th>'+
+                             '<th style="text-align: center">Loss<br/>&dArr;/&uArr; (%)</th>'+
+                             '<th style="text-align: center">Pom<br/>&dArr;/&uArr; (%)</th>'+
                            '</tr>'+
                            '</thead><tbody>';
 
@@ -236,35 +243,49 @@
                        if (response[i]['results']['throughput_tcp'] == null)
                            context = context + '<td style="text-align: center">NULL</td>';
                        else  context = context +  '<td style="text-align: center">'+$u(response[i]['results']['throughput_tcp']['download'],response[i]['results']['throughput_tcp']['db_unit']).as(response[i]['results']['throughput_tcp']['view_unit']).val()+
-                               '/'+$response[i]['results']['throughput_tcp']['upload']+'</td>';
+                               '/'+$u(response[i]['results']['throughput_tcp']['upload'],response[i]['results']['throughput_tcp']['db_unit']).as(response[i]['results']['throughput_tcp']['view_unit']).val()+'</td>';
 
                        if (response[i]['results']['throughput_http'] == null)
                            context = context + '<td style="text-align: center">NULL</td>';
-                       else  context = context +  '<td style="text-align: center">'+$u(response[i]['results']['throughput_http']['download'],response[i]['results']['throughput_http']['db_unit']).as(response[i]['results']['throughput_http']['view_unit']).val()+'/'+response[i]['results']['throughput_http']['upload']+'</td>';
+                       else  context = context +  '<td style="text-align: center">'+$u(response[i]['results']['throughput_http']['download'],response[i]['results']['throughput_http']['db_unit']).as(response[i]['results']['throughput_http']['view_unit']).val()+
+                               '/'+$u(response[i]['results']['throughput_http']['upload'],response[i]['results']['throughput_http']['db_unit']).as(response[i]['results']['throughput_tcp']['view_unit']).val()+'</td>';
 
                        if (response[i]['results']['throughput'] == null)
                            context = context + '<td style="text-align: center">NULL</td>';
                        else context = context + '<td style="text-align: center">'+
-                               response[i]['results']['throughput']['download']
+                               $u(response[i]['results']['throughput']['download'],response[i]['results']['throughput']['db_unit']).as(response[i]['results']['throughput']['view_unit']).val()
                                 +'/'+
-                             response[i]['results']['throughput']['upload']+'</td>';
+                             $u(response[i]['results']['throughput']['upload'],response[i]['results']['throughput']['db_unit']).as(response[i]['results']['throughput_tcp']['view_unit']).val()+'</td>';
 
                        if (response[i]['results']['rtt'] == null)
                            context = context + '<td style="text-align: center">NULL</td>';
-                       else context = context +'<td style="text-align: center">'+response[i]['results']['rtt']['upload']+'</td>';
+                       else context = context +'<td style="text-align: center">'+
+                               $u(response[i]['results']['rtt']['upload'],response[i]['results']['rtt']['db_unit']).as(response[i]['results']['rtt']['view_unit']).val()+'</td>';
 
                        if (response[i]['results']['jitter'] == null)
                            context = context + '<td style="text-align: center">NULL</td>';
-                       else context = context + '<td style="text-align: center">'+response[i]['results']['jitter']['download']+'/'+response[i]['results']['jitter']['upload']+'</td>';
+                       else context = context + '<td style="text-align: center">'+
+                               $u(response[i]['results']['jitter']['download'],response[i]['results']['jitter']['db_unit']).as(response[i]['results']['jitter']['view_unit']).val()+
+                               '/'+ $u(response[i]['results']['jitter']['upload'],response[i]['results']['jitter']['db_unit']).as(response[i]['results']['jitter']['view_unit']).val()+'</td>';
 
                        if (response[i]['results']['loss'] == null)
                            context = context + '<td style="text-align: center">NULL</td>';
-                       else context = context +'<td style="text-align: center">'+response[i]['results']['loss']['download']+'/'+response[i]['results']['loss']['upload']+'</td>';
+                       else context = context +'<td style="text-align: center">'+
+                               $u(response[i]['results']['loss']['download'],response[i]['results']['loss']['db_unit']).as(response[i]['results']['loss']['view_unit']).val()+
+                               '/'+$u(response[i]['results']['loss']['upload'],response[i]['results']['loss']['db_unit']).as(response[i]['results']['loss']['view_unit']).val()+'</td>';
 
                        if (response[i]['results']['pom'] == null)
                            context = context + '<td style="text-align: center">NULL</td>';
                        else context = context +'<td style="text-align: center">'+response[i]['results']['pom']['download']+'/'+response[i]['results']['pom']['download']+'</td>';
+/*
+ if (response[i]['results']['pom'] == null)
+ context = context + '<td style="text-align: center">NULL</td>';
+ else context = context +'<td style="text-align: center">'+
+ $u(response[i]['results']['pom']['download'],response[i]['results']['pom']['db_unit']).as(response[i]['results']['pom']['view_unit']).val()+
+ '/'+$u(response[i]['results']['pom']['updload'],response[i]['results']['pom']['db_unit']).as(response[i]['results']['pom']['view_unit']).val()+'</td>';
 
+
+ */
 
                        context = context + '</tr>';
                     }else {
@@ -280,5 +301,5 @@
                 }
             });
 
-    });
+    };
 </script>
