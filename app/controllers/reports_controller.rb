@@ -204,7 +204,7 @@ class ReportsController < ApplicationController
         where(:metric_id => metric.id).
         where(:timestamp => from..to).order('timestamp ASC').all
 
-    @end_csv = CSV.generate do |csv|
+    @end_csv = CSV.generate(col_sep: ';') do |csv|
       csv << [# source
               "source name",
               "source status",

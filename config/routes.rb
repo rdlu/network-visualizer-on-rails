@@ -16,7 +16,7 @@ MomRails::Application.routes.draw do
   post 'reports/eaq_table', :as =>'eaq_table_reports'
   post 'reports/detail_eaq_table', :as =>'detail_eaq_table_reports'
   post 'kpi/show' => 'kpi#show', :as => 'show_kpi'
-  post 'reports/csv'
+  match 'reports/csv/:filename' => 'reports#csv', :as => 'reports_csv', :via => [:get]
 
   resources :metrics
   resources :tests
