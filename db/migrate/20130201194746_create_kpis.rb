@@ -1,8 +1,8 @@
 class CreateKpis < ActiveRecord::Migration
   def change
     create_table :kpis do |t|
-      t.column :schedule_uuid, 'char(36)'
-      t.column :uuid, 'char(36)'
+      t.column :schedule_uuid, 'uuid'
+      t.column :uuid, 'uuid'
       t.references :destination
       t.references :source
       t.references :schedule

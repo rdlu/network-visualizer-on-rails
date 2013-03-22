@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130312181117) do
+ActiveRecord::Schema.define(:version => 20130322180233) do
 
   create_table "compliances", :force => true do |t|
     t.integer  "schedule_id"
@@ -67,8 +67,8 @@ ActiveRecord::Schema.define(:version => 20130312181117) do
   end
 
   create_table "kpis", :force => true do |t|
-    t.string   "schedule_uuid",    :limit => 36
-    t.string   "uuid",             :limit => 36
+    t.string   "schedule_uuid",    :limit => nil
+    t.string   "uuid",             :limit => nil
     t.integer  "destination_id"
     t.integer  "source_id"
     t.integer  "schedule_id"
@@ -87,8 +87,8 @@ ActiveRecord::Schema.define(:version => 20130312181117) do
     t.integer  "mtu"
     t.integer  "dns_latency"
     t.text     "route"
-    t.datetime "created_at",                     :null => false
-    t.datetime "updated_at",                     :null => false
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
   end
 
   add_index "kpis", ["destination_id"], :name => "index_kpis_on_destination_id"
@@ -98,15 +98,15 @@ ActiveRecord::Schema.define(:version => 20130312181117) do
   create_table "medians", :force => true do |t|
     t.integer  "schedule_id"
     t.integer  "threshold_id"
-    t.string   "schedule_uuid"
+    t.string   "schedule_uuid",   :limit => nil
     t.datetime "start_timestamp"
     t.datetime "end_timestamp"
     t.integer  "expected_points"
     t.integer  "total_points"
     t.float    "dsavg"
     t.float    "sdavg"
-    t.datetime "created_at",      :null => false
-    t.datetime "updated_at",      :null => false
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
     t.string   "type"
   end
 
@@ -187,8 +187,8 @@ ActiveRecord::Schema.define(:version => 20130312181117) do
   create_table "results", :force => true do |t|
     t.integer  "schedule_id"
     t.integer  "metric_id"
-    t.string   "schedule_uuid", :limit => 36
-    t.string   "uuid",          :limit => 36
+    t.string   "schedule_uuid", :limit => nil
+    t.string   "uuid",          :limit => nil
     t.string   "metric_name"
     t.datetime "timestamp"
     t.float    "dsavg"
@@ -197,11 +197,12 @@ ActiveRecord::Schema.define(:version => 20130312181117) do
     t.float    "sdmin"
     t.float    "dsmax"
     t.float    "sdmax"
-    t.datetime "created_at",                  :null => false
-    t.datetime "updated_at",                  :null => false
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
   end
 
-  add_index "results", ["schedule_id"], :name => "index_results_on_schedule_id"
+  add_index "results", ["schedule_id", "metric_id", "timestamp"], :name => "index_results_on_schedule_id_and_metric_id_and_timestamp", :unique => true
+  add_index "results", ["schedule_uuid"], :name => "index_results_on_schedule_uuid"
   add_index "results", ["uuid"], :name => "index_results_on_uuid"
 
   create_table "roles", :force => true do |t|
@@ -221,9 +222,9 @@ ActiveRecord::Schema.define(:version => 20130312181117) do
     t.datetime "end"
     t.integer  "polling"
     t.string   "status"
-    t.datetime "created_at",                   :null => false
-    t.datetime "updated_at",                   :null => false
-    t.string   "uuid",           :limit => 36
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
+    t.string   "uuid",           :limit => nil
     t.integer  "destination_id"
     t.integer  "source_id"
   end
@@ -276,8 +277,17 @@ ActiveRecord::Schema.define(:version => 20130312181117) do
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
 
+  add_foreign_key "compliances", "schedules", :name => "compliances_schedule_id_fk", :dependent => :delete
+  add_foreign_key "compliances", "thresholds", :name => "compliances_threshold_id_fk", :dependent => :delete
+
   add_foreign_key "evaluations", "profiles", :name => "tests_profile_id_fk"
   add_foreign_key "evaluations", "schedules", :name => "evaluations_schedule_id_fk", :dependent => :delete
+
+  add_foreign_key "kpis", "probes", :name => "kpis_destination_id_fk", :column => "destination_id"
+  add_foreign_key "kpis", "schedules", :name => "kpis_schedule_id_fk", :dependent => :delete
+
+  add_foreign_key "medians", "schedules", :name => "medians_schedule_id_fk", :dependent => :delete
+  add_foreign_key "medians", "thresholds", :name => "medians_threshold_id_fk", :dependent => :delete
 
   add_foreign_key "metrics_profiles", "metrics", :name => "metrics_test_profiles_metric_id_fk"
   add_foreign_key "metrics_profiles", "profiles", :name => "metrics_test_profiles_profile_id_fk"
@@ -288,6 +298,9 @@ ActiveRecord::Schema.define(:version => 20130312181117) do
   add_foreign_key "probes", "plans", :name => "probes_plan_id_fk"
 
   add_foreign_key "profiles", "connection_profiles", :name => "test_profiles_connection_profile_id_fk"
+
+  add_foreign_key "results", "metrics", :name => "results_metric_id_fk", :dependent => :delete
+  add_foreign_key "results", "schedules", :name => "results_schedule_id_fk", :dependent => :delete
 
   add_foreign_key "roles_users", "roles", :name => "roles_users_role_id_fk"
   add_foreign_key "roles_users", "users", :name => "roles_users_user_id_fk"
