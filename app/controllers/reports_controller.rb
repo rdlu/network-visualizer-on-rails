@@ -205,58 +205,16 @@ class ReportsController < ApplicationController
         where(:timestamp => from..to).order('timestamp ASC').all
 
     @end_csv = CSV.generate(col_sep: ';') do |csv|
-      csv << [# source
-              "source name",
-              "source status",
-              "source location",
-              # destination
-              "destination name",
-              "destination status",
-              "destination location",
-              # metric
-              "metric name",
-              # schedule
-              "schedule start",
-              "schedule end",
-              "schedule polling",
-              "schedule status",
-              # date
-              "start date",
-              "end date",
-              # result
-              "x",
-              unless metric.plugin == 'rtt' then "dsavg" end,
-              unless metric.plugin == 'rtt' then  "sdavg" end,
-              if metric.plugin == 'rtt' then "y" end,
-              "extra"
-      ]
+	  csv << ["Sonda de Destino:", destination.pretty_name, "#{destination.city}/#{destination.state}"]
+	  csv << ["Sonda de Origem:", origin.pretty_name, "#{origin.city}/#{origin.state}"]
+	  csv << ["Métrica:", metric.name, "Formato:", metric.db_unit]
+	  csv << ["Início:", schedule.start]
+	  csv << ["Fim:", schedule.end]
+	  csv << [] # Linha em branco pra ficar bonito
+
       raw_results.each do |result|
-        csv << [# source
-                source.pretty_name,
-                source.pretty_status,
-                "#{source.city}/#{source.state.upcase}",
-                # destination
-                destination.pretty_name,
-                destination.pretty_status,
-                "#{destination.city}/#{destination.state.upcase}",
-                # metric
-                metric.name,
-                # schedule
-                schedule.start,
-                schedule.end,
-                schedule.polling,
-                schedule.status,
-                # date
-                from,
-                to,
-                # result
-                result.dsavg,
-                unless metric.plugin == 'rtt' then result.dsavg end,
-                unless metric.plugin == 'rtt' then result.sdavg end,
-                if metric.plugin == 'rtt' then result.y end,
-                result.dsavg
-        ]
-      end
+		csv << [metric.sdavg, metric.dsavg, metric.sdmax, metric.dsmax, metric.sdmin, metric.dsmin, metric.timestamp]
+	  end
     end
 
   respond_to do |format|
