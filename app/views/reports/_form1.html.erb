@@ -1,0 +1,67 @@
+<%= form_tag(graph_reports_path, :class => 'form-horizontal', :id => 'report-form') do %>
+    <!--div class="row-fluid">
+      <div class="span5"-->
+        <div class="control-group">
+          <label class="control-label" for="destination_id">Sonda de Destino: </label>
+
+          <div class="controls">
+            <%= collection_select :destination, :id, Probe.all, :id, :pretty_name_with_location, {:include_blank => "Selecione uma sonda..."}, {:class => 'input-block-level'} %>
+          </div>
+        </div>
+        <div class="control-group">
+          <label for="source_id" class="control-label">Sonda de Origem:</label>
+
+          <div class="controls">
+            <%= collection_select :source, :id, {}, :id, :pretty_name_with_location, {:include_blank => "Selecione a sonda de destino primeiro"}, {:class => 'input-block-level', :disabled => 'disabled'} %>
+          </div>
+        </div>
+        <div class="control-group">
+          <%= label :report, :type, "Tipo de Relatório: ", :class => 'control-label' %>
+          <div class="controls">
+            <%= select :report, :type, @report_types,{:include_blank => "Selecione as sonda de origem e de destino primeiro"}, {:class => 'input-block-level', :disabled => 'disabled'} %>
+          </div>
+        </div>
+        <div class="control-group">
+          <%= label :metric, :id, "Métrica/Indicador: ", :class => 'control-label' %>
+          <div class="controls">
+            <%= collection_select :metric, :id, {}, :id, :name, {:include_blank => "Selecione o tipo de relatório primeiro"}, {:class => 'input-block-level', :disabled => 'disabled'} %>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <%= label :date, :start, "Início: ", :class => 'control-label' %>
+          <div class="controls">
+            <div class="input-prepend">
+              <label for="date_start" style="display: inline"><span class="add-on" style="margin-top: 1px;"><i class="icon-calendar"></i></span></label>
+              <%= text_field :date, :start, :class => 'input-small datepicker', :"data-date-format".to_sym => "dd/mm/yyyy", :value => Date.current.prev_day.strftime('%d/%m/%Y') %>
+            </div>
+            <div class="input-prepend">
+              <span class="add-on"><i class="icon-time"></i></span>
+              <%= text_field :time, :start, :class => 'input-mini bootstrap-timepicker', :value => Time.current.strftime('%H:%M') %>
+            </div>
+          </div>
+        </div>
+        <div class="control-group">
+          <%= label :date, :end, "Fim: ", :class => 'control-label' %>
+          <div class="controls">
+            <div class="input-prepend">
+              <label for="date_end" style="display: inline"><span class="add-on" style="margin-top: 1px;"><i class="icon-calendar"></i></span></label>
+              <%= text_field :date, :end, :class => 'input-small datepicker', :"data-date-format".to_sym => "dd/mm/yyyy", :value => Date.current.strftime('%d/%m/%Y') %>
+            </div>
+            <div class="input-prepend">
+              <span class="add-on"><i class="icon-time"></i></span>
+              <%= text_field :time, :end, :class => 'input-mini bootstrap-timepicker', :value => Time.current.strftime('%H:%M') %>
+            </div>
+          </div>
+        </div>
+        <div class="control-group">
+          <div class="controls">
+            <input class="btn btn-primary span3 " type="submit" name="add" id="report-add" value="Adicionar" data-toggle="collapse" data-target="#accordion_forms"/>
+          </div>
+        </div>
+
+      <!--/div>
+
+    </div-->
+
+<% end %>

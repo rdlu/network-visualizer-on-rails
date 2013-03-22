@@ -206,7 +206,7 @@ class ReportsController < ApplicationController
 
     @end_csv = CSV.generate(col_sep: ';') do |csv|
 	  csv << ["Sonda de Destino:", destination.pretty_name, "#{destination.city}/#{destination.state}"]
-	  csv << ["Sonda de Origem:", origin.pretty_name, "#{origin.city}/#{origin.state}"]
+	  csv << ["Sonda de Origem:", source.pretty_name, "#{source.city}/#{source.state}"]
 	  csv << ["Métrica:", metric.name, "Formato:", metric.db_unit]
 	  csv << ["Início:", schedule.start.strftime("%Y-%m-%d %H:%M:%S %z")]
 	  csv << ["Fim:", schedule.end.strftime("%Y-%m-%d %H:%M:%S %z")]
