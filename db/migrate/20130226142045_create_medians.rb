@@ -3,7 +3,7 @@ class CreateMedians < ActiveRecord::Migration
     create_table :medians do |t|
       t.references :schedule
       t.references :threshold
-      t.string :schedule_uuid
+      t.column :schedule_uuid, 'uuid'
       t.datetime :start_timestamp
       t.datetime :end_timestamp
       t.integer :expected_points
