@@ -1,8 +1,12 @@
 namespace :db do
   desc "Pull production database into the local development environment."
   task :pull do
-    puts cmd = "pg_dump -h fringe.inf.ufrgs.br -U mom-rails mom-rails_production | psql -U mom-rails mom-rails_development"
+    puts cmd = "pg_dump -h fringe.inf.ufrgs.br -U mom-rails mom-rails_production -W > production.sql"
     system cmd
+	puts cmd = "cat production.sql | psql -U mom-rails mom-rails_development -W"
+	system cmd
+	puts cmd = "rm production.sql"
+	system cmd
     puts "Done."
   end
 
