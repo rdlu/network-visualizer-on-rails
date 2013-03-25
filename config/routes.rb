@@ -21,6 +21,7 @@ MomRails::Application.routes.draw do
   resources :metrics
   resources :tests
   resources :schedules
+  get 'schedules/win/schedule' => 'schedules#win', :as => 'windows_schedules'
  
   resources :probes do
     member do

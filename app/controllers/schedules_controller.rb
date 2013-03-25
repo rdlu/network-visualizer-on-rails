@@ -109,4 +109,10 @@ class SchedulesController < ApplicationController
 
     render :layout => false
   end
+
+  def win
+	  respond_to do |format|
+		  format.xml
+	  end
+  end
 end
