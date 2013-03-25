@@ -10,7 +10,7 @@ class ProbesController < ApplicationController
   def index
     authorize! :read, self
 
-    @probes = apply_scopes(Probe).all
+    @probes = apply_scopes(Probe).order(:name).all
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @probes }
