@@ -4,7 +4,7 @@ class MetricsController < ApplicationController
 
   def index
     authorize! :read, self
-    @metrics = Metric.order("`order` ASC").all
+    @metrics = Metric.order('"order" ASC').all
 
     respond_to do |format|
       format.html # index.html.erb
