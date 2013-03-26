@@ -254,7 +254,17 @@ class ReportsController < ApplicationController
 
   # Send é chamado pela sonda para enviar reports novos
   def send
+	report = Nokogiri::XML(params[:report])
 
+	user = report.xpath("report/user").children.to_s
+	uuid = report.xpath("report/uuid").children.to_s
+	timestamp = report.xpath("report/timestamp").children.to_s
+	agent_type = report.xpath("report/agent_type").children.to_s
+
+	results = report.xpath("report/results").children
+
+	results.each do |result|
+	end
   end
 
 end
