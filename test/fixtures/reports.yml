@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  user: MyString
+  uuid: 
+  timestamp: 2013-03-26 14:06:41
+  agent_type: MyString
+
+two:
+  user: MyString
+  uuid: 
+  timestamp: 2013-03-26 14:06:41
+  agent_type: MyString
