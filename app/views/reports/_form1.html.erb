@@ -5,7 +5,7 @@
           <label class="control-label" for="destination_id">Sonda de Destino: </label>
 
           <div class="controls">
-            <%= collection_select :destination, :id, Probe.all, :id, :pretty_name_with_location, {:include_blank => "Selecione uma sonda..."}, {:class => 'input-block-level'} %>
+            <%= collection_select :destination, :id, Probe.order(:name).all, :id, :pretty_name_with_location, {:include_blank => "Selecione uma sonda..."}, {:class => 'input-block-level'} %>
           </div>
         </div>
         <div class="control-group">
