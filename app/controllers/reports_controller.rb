@@ -281,7 +281,8 @@ class ReportsController < ApplicationController
 								 start_timestamp: DateTime.strptime(timestamp, '%s').beginning_of_day,
 								 end_timestamp: DateTime.strptime(timestamp, '%s').end_of_day,
 								 expected_points: total,
-								 total_points: success
+								 total_points: success,
+                 dsavg: success.to_f/total.to_f
 								)
 			@median.schedule = @schedule
 			@median.threshold = @threshold
