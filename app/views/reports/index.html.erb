@@ -2,18 +2,18 @@
 
 <div id="ops" class="accordion" >
 <div class="accordion-group">
-  <div class="accordion-heading">
-    <h4  style="margin-left: 5px; padding: 0" class="accordion-toggle" data-toggle="collapse" data-parent="#ops" href="#accordion_forms">
-      Opções
+  <div class="accordion-heading" >
+    <h4 id="acc_name" onclick="toggleOP()" name="open" style="margin-left: 5px; padding: 0" class="accordion-toggle" data-toggle="collapse" data-parent="#ops" href="#accordion_forms">
+      Opções &#10548
     </h4>
   </div>
    <div id="accordion_forms" class="accordion-body collapse in">
      <div class="accordion-inner">
        <div class="tabbable">
          <ul class="nav nav-tabs ">
-           <li class="active"><a href="#form_1" data-toggle="tab">Modelo 1</a></li>
-           <li><a href="#form_2" data-toggle="tab">Modelo 2</a></li>
-           <li><a  href="#form_3" data-toggle="tab" >Modelo 3</a></li>
+           <li class="active"><a href="#form_1" data-toggle="tab">Formato 1</a></li>
+           <li><a href="#form_2" data-toggle="tab">Formato 2</a></li>
+           <li><a  href="#form_3" data-toggle="tab" >Formato 3</a></li>
          </ul>
          <div class="tab-content tab-content-border" style="min-height: 50px !important">
            <div class="tab-pane active" id="form_1">
@@ -38,15 +38,15 @@
 
 <script type="text/javascript">
 
-    function toggleRadio(name,form){
-     var elements = document.getElementsByName(name);
-
-     for(var i=0; i < elements.length; i++){
-         elements[i].style.display = "none";
-     }
-
-     document.getElementById(form).style.display ="block";
-
+    function toggleOP(){
+        var text = document.getElementById('acc_name').getAttribute('name');
+        if (text == 'open'){
+         $("#acc_name").html('Opções &#10549');
+         $("#acc_name").attr('name','closed');
+        }else{
+            $("#acc_name").html('Opções &#10548');
+            $("#acc_name").attr('name','open');
+        }
     }
 
     Highcharts.setOptions({
