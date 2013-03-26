@@ -261,9 +261,34 @@ class ReportsController < ApplicationController
 	timestamp = report.xpath("report/timestamp").children.to_s
 	agent_type = report.xpath("report/agent_type").children.to_s
 
+	@rep = Report.create(user: user, uuid: uuid, timestamp: timestamp, agent_type: agent_type)
+
 	results = report.xpath("report/results").children
 
 	results.each do |result|
+		case result.name	
+		when "availability"
+			total = result.xpath("total").children.text.to_i
+			success = result.xpath("success").children.text.to_i
+
+			@probe = Probe.find_by_name(user)
+			@schedule = @probe.schedules.last
+
+			@metric = Metric.find_by_plugin("availability")
+
+			@treshold = Treshold.find_by_goal_method("availability")
+
+			@median = Median.create(schedule_id: @schedule.id,
+								 threshold_id: @treshold.id,
+								 schedule_uuid: @schedule.uuid,
+								 start_timestamp: DateTime.strptime(timestamp, '%s').beginning_of_day,
+								 end_timestamp: DateTime.strptime(timestamp, '%s').end_of_day,
+								 expected_points: total,
+								 total_points: success
+								)
+		else
+			# do nothing
+		end
 	end
   end
 
