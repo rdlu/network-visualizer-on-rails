@@ -1,8 +1,14 @@
+DB_CONFIG = YAML.load_file(File.expand_path("../../../config/database.yml", __FILE__))
+
 namespace :db do
   desc "Pull production database into the local development environment."
   task :pull do
-    puts cmd = "mysqldump -h fringe.inf.ufrgs.br -u mom-rails-ro --password=Onk37EJd mom-rails_production --set-gtid-purged=OFF --skip-lock-tables | mysql -u mom-rails --password=A2VuLGfhzuauMfBT mom-rails_development"
+    puts cmd = "pg_dump -h fringe.inf.ufrgs.br -U mom-rails mom-rails_production -W > production.sql"
     system cmd
+	puts cmd = "cat production.sql | psql -U mom-rails mom-rails_development -W"
+	system cmd
+	puts cmd = "rm production.sql"
+	system cmd
     puts "Done."
   end
 
