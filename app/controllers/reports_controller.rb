@@ -252,4 +252,9 @@ class ReportsController < ApplicationController
     end
   end
 
+  # Send é chamado pela sonda para enviar reports novos
+  def send
+
+  end
+
 end
