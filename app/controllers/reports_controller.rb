@@ -1,6 +1,5 @@
 # coding: utf-8
 class ReportsController < ApplicationController
-  before_filter :authenticate_user!
   def index
     @report_types = [
         ['Gráfico de Indicadores Anatel/EAQ - Consolidação Diária','eaq_graph'],
@@ -253,7 +252,7 @@ class ReportsController < ApplicationController
   end
 
   # Send é chamado pela sonda para enviar reports novos
-  def send
+  def send_report
 	report = Nokogiri::XML(params[:report])
 
 	user = report.xpath("report/user").children.to_s
@@ -261,7 +260,7 @@ class ReportsController < ApplicationController
 	timestamp = report.xpath("report/timestamp").children.to_s
 	agent_type = report.xpath("report/agent_type").children.to_s
 
-	@rep = Report.create(user: user, uuid: uuid, timestamp: timestamp, agent_type: agent_type)
+	@rep = Report.create(user: user, uuid: uuid, timestamp: DateTime.strptime(timestamp, '%s'), agent_type: agent_type)
 
 	results = report.xpath("report/results").children
 
@@ -271,24 +270,30 @@ class ReportsController < ApplicationController
 			total = result.xpath("total").children.text.to_i
 			success = result.xpath("success").children.text.to_i
 
-			@probe = Probe.find_by_name(user)
+			@probe = Probe.find_by_ipaddress(user)
 			@schedule = @probe.schedules.last
 
 			@metric = Metric.find_by_plugin("availability")
 
-			@treshold = Treshold.find_by_goal_method("availability")
+			@threshold = Threshold.find_by_goal_method("availability")
 
-			@median = Median.create(schedule_id: @schedule.id,
-								 threshold_id: @treshold.id,
-								 schedule_uuid: @schedule.uuid,
+			@median = Median.new(schedule_uuid: @schedule.uuid,
 								 start_timestamp: DateTime.strptime(timestamp, '%s').beginning_of_day,
 								 end_timestamp: DateTime.strptime(timestamp, '%s').end_of_day,
 								 expected_points: total,
 								 total_points: success
 								)
+			@median.schedule = @schedule
+			@median.threshold = @threshold
+
+			@median.save
 		else
 			# do nothing
 		end
+	end
+
+	respond_to do |format|
+		format.xml { render xml: "<report><status>OK</status></report>" }
 	end
   end
 
