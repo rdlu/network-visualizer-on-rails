@@ -86,8 +86,8 @@ class ReportsController < ApplicationController
     case reference_metric
       when 'throughput'
         graph_threshold = {
-            :download => (destination.plan[reference_metric+'_down']*1024) * threshold.goal_level,
-            :upload =>  (destination.plan[reference_metric+'_up']*1024) * threshold.goal_level,
+            :download => (destination.plan[reference_metric+'_down']*1000) * threshold.goal_level,
+            :upload =>  (destination.plan[reference_metric+'_up']*1000) * threshold.goal_level,
         }
       when 'rtt'
         graph_threshold = {
