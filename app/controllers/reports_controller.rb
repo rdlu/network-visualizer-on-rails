@@ -1,6 +1,5 @@
 # coding: utf-8
 class ReportsController < ApplicationController
-  before_filter :authenticate_user!
   def index
     @report_types = [
         ['Gráfico de Indicadores Anatel/EAQ - Consolidação Diária','eaq_graph'],
@@ -87,8 +86,8 @@ class ReportsController < ApplicationController
     case reference_metric
       when 'throughput'
         graph_threshold = {
-            :download => (destination.plan[reference_metric+'_down']*1024) * threshold.goal_level,
-            :upload =>  (destination.plan[reference_metric+'_up']*1024) * threshold.goal_level,
+            :download => (destination.plan[reference_metric+'_down']*1000) * threshold.goal_level,
+            :upload =>  (destination.plan[reference_metric+'_up']*1000) * threshold.goal_level,
         }
       when 'rtt'
         graph_threshold = {
@@ -250,6 +249,53 @@ class ReportsController < ApplicationController
     respond_to do |format|
       format.html {render :layout=> false}
     end
+  end
+
+  # Send é chamado pela sonda para enviar reports novos
+  def send_report
+	report = Nokogiri::XML(params[:report])
+
+	user = report.xpath("report/user").children.to_s
+	uuid = report.xpath("report/uuid").children.to_s
+	timestamp = report.xpath("report/timestamp").children.to_s
+	agent_type = report.xpath("report/agent_type").children.to_s
+
+	@rep = Report.create(user: user, uuid: uuid, timestamp: DateTime.strptime(timestamp, '%s'), agent_type: agent_type)
+
+	results = report.xpath("report/results").children
+
+	results.each do |result|
+		case result.name	
+		when "availability"
+			total = result.xpath("total").children.text.to_i
+			success = result.xpath("success").children.text.to_i
+
+			@probe = Probe.find_by_ipaddress(user)
+			@schedule = @probe.schedules.last
+
+			@metric = Metric.find_by_plugin("availability")
+
+			@threshold = Threshold.find_by_goal_method("availability")
+
+			@median = Median.new(schedule_uuid: @schedule.uuid,
+								 start_timestamp: DateTime.strptime(timestamp, '%s').beginning_of_day,
+								 end_timestamp: DateTime.strptime(timestamp, '%s').end_of_day,
+								 expected_points: total,
+								 total_points: success,
+                 dsavg: success.to_f/total.to_f
+								)
+			@median.schedule = @schedule
+			@median.threshold = @threshold
+
+			@median.save
+		else
+			# do nothing
+		end
+	end
+
+	respond_to do |format|
+		format.xml { render xml: "<report><status>OK</status></report>" }
+	end
   end
 
 end
