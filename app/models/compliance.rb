@@ -99,6 +99,7 @@ class Compliance < ActiveRecord::Base
 			  where('start_timestamp >= ?', start_period).
 			  where('end_timestamp <= ?', end_period).
 			  where(:schedule_id => schedule.id).
+			  where(:threshold_id => threshold.id).
 			  all
 
 		  compliance = Compliance.
@@ -122,7 +123,7 @@ class Compliance < ActiveRecord::Base
 			  end
 		  else
 			  # Não temos dados, mas download não pode ficar nulo
-			  complicance.download = 0
+			  compliance.download = 0
 		  end
 
 		  compliance.schedule = schedule
