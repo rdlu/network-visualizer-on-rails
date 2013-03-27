@@ -14,7 +14,7 @@ namespace :db do
 
   desc "Updates the PostgreSQL Sequences after importation from SQL scripts"
   task :pgsql_fix_seq do
-	ActiveRecord::Base.establish_connection(DB_CONFIG['development'])
+	ActiveRecord::Base.establish_connection(DB_CONFIG[Rails.env])
     ActiveRecord::Base.connection.tables.each do |table|
       begin
         result = ActiveRecord::Base.connection.execute("SELECT id FROM #{table} ORDER BY id DESC LIMIT 1")
