@@ -17,6 +17,8 @@
               threshold.goal_level.to_s + "ms"
             when 'rtt'
               threshold.goal_level.to_s + "ms"
+            when 'loss'
+             (threshold.goal_level * 100).round(3).to_s + "%"
           end
       %></td>
   <% end %>
@@ -56,6 +58,12 @@
                    color_up = (median.sdavg.to_f * 1000).round(2) <= threshold.goal_level ? 'green' : 'red'
                    result = "<span style=\"color:#{color_down}\">#{median.pretty_download(true)}</span>" +
                             "/<span style=\"color:#{color_up}\">#{median.pretty_upload(true)}</span>"
+                 when 'loss'
+                   color_down = (median.dsavg.to_f * 1000).round(2) <= threshold.goal_level ? 'green' : 'red'
+                   color_up = (median.sdavg.to_f * 1000).round(2) <= threshold.goal_level ? 'green' : 'red'
+                   result = "<span style=\"color:#{color_down}\">#{median.pretty_download(true)}</span>" +
+                           "/<span style=\"color:#{color_up}\">#{median.pretty_upload(true)}</span>"
+
                  else
                    result =""
                end
