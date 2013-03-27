@@ -45,12 +45,12 @@ class Median < ActiveRecord::Base
         if self.download.nil?
           return 'Sem dados'
         else
-        if (self.download_with_view_unit =~ '1 Mb/s'.to_unit) && (self.download_with_view_unit > '1 Mb/s'.to_unit)
-          return self.download_with_view_unit.convert_to('Mb/s').to_s('%0.2f').gsub(/b\/s|B\/s/,'b/s' => 'bps', 'B/s' => 'Bps')
-        end
+          if (self.download_with_view_unit =~ '1 Mb/s'.to_unit) && (self.download_with_view_unit > '1 Mb/s'.to_unit)
+            return self.download_with_view_unit.convert_to('Mb/s').to_s('%0.2f').gsub(/b\/s|B\/s/, 'b/s' => 'bps', 'B/s' => 'Bps')
           end
+        end
       end
-      return self.download_with_view_unit.to_s('%0.2f').gsub(/b\/s|B\/s/,'b/s' => 'bps', 'B/s' => 'Bps')
+      return self.download_with_view_unit.to_s('%0.2f').gsub(/b\/s|B\/s/, 'b/s' => 'bps', 'B/s' => 'Bps')
     rescue Exception => e
       return 'Sem dados'
     end
@@ -67,10 +67,10 @@ class Median < ActiveRecord::Base
           return 'Sem dados'
         end
         if (self.upload_with_view_unit =~ '1 Mb/s'.to_unit) && (self.upload_with_view_unit > '1 Mb/s'.to_unit)
-          return self.upload_with_view_unit.convert_to('Mb/s').to_s('%0.2f').gsub(/b\/s|B\/s/,'b/s' => 'bps', 'B/s' => 'Bps')
+          return self.upload_with_view_unit.convert_to('Mb/s').to_s('%0.2f').gsub(/b\/s|B\/s/, 'b/s' => 'bps', 'B/s' => 'Bps')
         end
       end
-      self.upload_with_view_unit.to_s('%0.2f').gsub(/b\/s|B\/s/,'b/s' => 'bps', 'B/s' => 'Bps')
+      self.upload_with_view_unit.to_s('%0.2f').gsub(/b\/s|B\/s/, 'b/s' => 'bps', 'B/s' => 'Bps')
     rescue Exception => e
       return 'Sem dados'
     end
@@ -86,39 +86,31 @@ class Median < ActiveRecord::Base
   end
 
   def self.calculate (schedule, threshold, reference_date)
-    if threshold.goal_method == 'median'
-      start_period = reference_date.to_time
-      end_period = reference_date.to_time
-      case threshold.goal_period
-        when 'daily-rush'
-          start_period = reference_date.beginning_of_day.in_time_zone('GMT') + 10.hours
-          end_period = reference_date.beginning_of_day.in_time_zone('GMT') + 22.hours
-        when 'daily'
-          start_period = reference_date.beginning_of_day.in_time_zone('GMT')
-          end_period = reference_date.end_of_day.in_time_zone('GMT')
-        else
-          Yell.new(:gelf, :facility => 'netmetric').warning "Tentativa de calculo de medianas em utilizando período não suportado: #{threshold.goal_period}",
-                                                          '_schedule_id' => schedule.id, '_probe_id' => schedule.source.id, '_threshold_id' => threshold.id
-      end
-      #agora consulta os valores do periodo e calcula a mediana
-      results = Results.where(:timestamp => start_period..end_period).where(:schedule_id => schedule.id).where(:metric_id => threshold.metric.id).all
-      len = results.length
+    start_period = reference_date.to_time
+    end_period = reference_date.to_time
 
-        median = Median.
-            where(:schedule_id => schedule.id).
-            where(:threshold_id => threshold.id).
-            where(:start_timestamp => start_period).
-            where(:end_timestamp => end_period).first
-        median = Median.new if median.nil?
-      if len > 0
-        #mediana do download
-        results_ordered_by_dsavg = results.sort_by {|hsh| hsh[:dsavg]}
-        median.dsavg = len % 2 == 1 ? results_ordered_by_dsavg[len/2].dsavg : (results_ordered_by_dsavg[len/2 - 1].dsavg + results_ordered_by_dsavg[len/2].dsavg).to_f / 2
+    #agora consulta os valores do periodo e calcula a mediana
+    results = Results.where(:timestamp => start_period..end_period).where(:schedule_id => schedule.id).where(:metric_id => threshold.metric.id).all
+    len = results.length
 
-        #mediana do upload
-        results_ordered_by_sdavg = results.sort_by {|hsh| hsh[:sdavg]}
-        median.sdavg = len % 2 == 1 ? results_ordered_by_sdavg[len/2].sdavg : (results_ordered_by_sdavg[len/2 - 1].sdavg + results_ordered_by_sdavg[len/2].sdavg).to_f / 2
-      end
+    median = Median.
+        where(:schedule_id => schedule.id).
+        where(:threshold_id => threshold.id).
+        where(:start_timestamp => start_period).
+        where(:end_timestamp => end_period).first
+    median = Median.new if median.nil?
+
+    case threshold.goal_method
+      when 'median'
+        if len > 0
+          #mediana do upload
+          results_ordered_by_dsavg = results.sort_by { |hsh| hsh[:dsavg] }
+          median.dsavg = len % 2 == 1 ? results_ordered_by_dsavg[len/2].dsavg : (results_ordered_by_dsavg[len/2 - 1].dsavg + results_ordered_by_dsavg[len/2].dsavg).to_f / 2
+
+          #mediana do download
+          results_ordered_by_sdavg = results.sort_by { |hsh| hsh[:sdavg] }
+          median.sdavg = len % 2 == 1 ? results_ordered_by_sdavg[len/2].sdavg : (results_ordered_by_sdavg[len/2 - 1].sdavg + results_ordered_by_sdavg[len/2].sdavg).to_f / 2
+        end
         #outros dados da mediana
         median.schedule = schedule
         median.threshold = threshold
@@ -132,9 +124,34 @@ class Median < ActiveRecord::Base
         median.type = threshold.goal_period
 
         median.save!
-    else
-      Yell.new(:gelf, :facility => 'netmetric').send 'warn', "Tentativa de calculo de medianas em um limiar que não é do tipo mediana: #{threshold.name}",
-                                                     '_schedule_id' => schedule.id, '_probe_id' => schedule.source.id, '_threshold_id' => threshold.id
+      when 'raw'
+        if len > 0
+          raw_sum_ds = 0
+          raw_sum_sd = 0
+          results.each do |result|
+            raw_sum_ds += result.dsavg
+            raw_sum_sd += result.sdavg
+          end
+          median.sdavg = raw_sum_sd / len.to_f
+          median.dsavg = raw_sum_ds / len.to_f
+          median.schedule = schedule
+          median.threshold = threshold
+          median.total_points = len
+          end_time = end_period
+          start_time = start_period
+          diff_time = end_time - start_time
+          median.expected_points = (diff_time/60) / schedule.polling
+          median.start_timestamp = start_period
+          median.end_timestamp = end_period
+          median.type = threshold.goal_period
+
+          median.save!
+        end
+      when 'availability'
+        #nothing to do, already saved by report#send
+      else
+        Yell.new(:gelf, :facility => 'netmetric').send 'warn', "Tentativa de calculo de medianas em um limiar que não é do tipo mediana: #{threshold.name}",
+                                                       '_schedule_id' => schedule.id, '_probe_id' => schedule.source.id, '_threshold_id' => threshold.id
     end
   end
 end
