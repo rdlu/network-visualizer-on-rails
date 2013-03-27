@@ -86,8 +86,8 @@ class ReportsController < ApplicationController
     case reference_metric
       when 'throughput'
         graph_threshold = {
-            :download => (destination.plan[reference_metric+'_down']*1024) * threshold.goal_level,
-            :upload =>  (destination.plan[reference_metric+'_up']*1024) * threshold.goal_level,
+            :download => (destination.plan[reference_metric+'_down']*1000) * threshold.goal_level,
+            :upload =>  (destination.plan[reference_metric+'_up']*1000) * threshold.goal_level,
         }
       when 'rtt'
         graph_threshold = {
@@ -281,7 +281,8 @@ class ReportsController < ApplicationController
 								 start_timestamp: DateTime.strptime(timestamp, '%s').beginning_of_day,
 								 end_timestamp: DateTime.strptime(timestamp, '%s').end_of_day,
 								 expected_points: total,
-								 total_points: success
+								 total_points: success,
+                 dsavg: success.to_f/total.to_f
 								)
 			@median.schedule = @schedule
 			@median.threshold = @threshold

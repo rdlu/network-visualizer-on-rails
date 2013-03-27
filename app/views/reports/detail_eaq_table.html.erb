@@ -34,11 +34,13 @@
                case threshold.metric.plugin
                  when /^throughput/
                    if threshold.compliance_method == 'mean'
-                     up = (((median.dsavg.to_f / 1000)/@destination.plan.throughput_up.to_f)*100).round(2)
-                     down = (((median.sdavg.to_f / 1000)/@destination.plan.throughput_down.to_f)*100).round(2)
-                     color_up = up >=(threshold.goal_level * 100).round(3) ? 'green' : 'red'
-                     color_down = down >= (threshold.goal_level * 100).round(3) ? 'green' : 'red'
-                     result = "<span style=\"color:#{color_down}\">#{median.pretty_download(true)}</span>/<span style=\"color:#{color_up}\">#{median.pretty_upload(true)}</span>".html_safe
+                    up = (((median.dsavg.to_f / 1000)/@destination.plan.throughput_up.to_f)*100).round(2)
+                    down = (((median.sdavg.to_f / 1000)/@destination.plan.throughput_down.to_f)*100).round(2)
+                    color_up = up >=(threshold.goal_level * 100).round(3) ? 'green' : 'red'
+                    color_down = down >= (threshold.goal_level * 100).round(3) ? 'green' : 'red'
+                    up = up.to_s + "%"
+                    down = down.to_s + "%"
+                     result = "<span style=\"color:#{color_down}\">#{down}</span>/<span style=\"color:#{color_up}\">#{up}</span>".html_safe
                    else
                      up = (median.dsavg.to_f / 1000000).round(3)
                      down = (median.sdavg.to_f / 1000000).round(3)
@@ -50,8 +52,10 @@
                    color = (median.dsavg.to_f * 1000).round(2) <= threshold.goal_level ? 'green' : 'red'
                    result = "<span style=\"color:#{color}\">#{median.pretty_upload(true)}</span>"
                  when 'jitter'
-                   color = (median.dsavg.to_f * 1000).round(2) <= threshold.goal_level ? 'green' : 'red'
-                   result = "<span style=\"color:#{color}\">#{median.pretty_upload(true)}</span>"
+                   color_down = (median.dsavg.to_f * 1000).round(2) <= threshold.goal_level ? 'green' : 'red'
+                   color_up = (median.sdavg.to_f * 1000).round(2) <= threshold.goal_level ? 'green' : 'red'
+                   result = "<span style=\"color:#{color_down}\">#{median.pretty_download(true)}</span>" +
+                            "/<span style=\"color:#{color_up}\">#{median.pretty_upload(true)}</span>"
                  else
                    result =""
                end
