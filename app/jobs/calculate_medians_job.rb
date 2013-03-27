@@ -24,9 +24,7 @@ class CalculateMediansJob
       if schedule.destination.status != 0 || @force_disabled
         schedule.metrics.each do |metric|
           metric.thresholds.each do |threshold|
-            if threshold.goal_method == 'median'
-              Median.calculate schedule, threshold, @reference_date
-            end
+            Median.calculate schedule, threshold, @reference_date
           end
         end
       end
