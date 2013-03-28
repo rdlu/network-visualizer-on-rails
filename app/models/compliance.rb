@@ -8,8 +8,8 @@ class Compliance < ActiveRecord::Base
 
   def self.calculate (schedule, threshold, reference_date)
     #periodo de calculo
-    start_period = reference_date.at_beginning_of_month
-    end_period = reference_date
+    start_period = reference_date.to_time.at_beginning_of_month
+    end_period = reference_date.to_time
 
     #agora consulta os valores do periodo e calcula o quociente
     medians = Median.
@@ -122,6 +122,27 @@ class Compliance < ActiveRecord::Base
         compliance.save!
       when 'raw'
         #scm 8 como exemplo
+        results = Results.where(:timestamp => start_period..end_period).where(:schedule_id => schedule.id).where(:metric_id => threshold.metric.id).all
+        len = results.length
+
+        raw_sum_ds = 0
+        raw_sum_sd = 0
+        results.each do |result|
+          raw_sum_ds += result.dsavg
+          raw_sum_sd += result.sdavg
+        end
+
+        compliance.download = raw_sum_sd / len.to_f
+        compliance.upload = raw_sum_ds / len.to_f
+        compliance.schedule = schedule
+        compliance.threshold = threshold
+        compliance.total_days = medians.length
+        compliance.expected_days = (end_period.to_date - start_period.to_date).to_i
+        compliance.start_timestamp = start_period.to_datetime.in_time_zone('GMT')
+        compliance.end_timestamp = end_period.to_datetime.in_time_zone('GMT')
+        compliance.type = threshold.goal_period
+        compliance.calc_method = threshold.compliance_method
+        compliance.save!
       else
         Yell.new(:gelf, :facility => 'netmetric').send 'warn', "Tentativa de calculo de quocientes com método de meta não suportado: #{threshold.goal_method}",
                                                        '_schedule_id' => schedule.id, '_probe_id' => schedule.source.id, '_threshold_id' => threshold.id

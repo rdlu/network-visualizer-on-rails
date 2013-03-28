@@ -88,7 +88,23 @@ class Median < ActiveRecord::Base
   def self.calculate (schedule, threshold, reference_date)
     start_period = reference_date.to_time
     end_period = reference_date.to_time
-
+    case threshold.goal_period
+      when 'daily-rush'
+        start_period = reference_date.beginning_of_day.in_time_zone('GMT') + 10.hours
+        end_period = reference_date.beginning_of_day.in_time_zone('GMT') + 22.hours
+      when 'daily'
+        start_period = reference_date.beginning_of_day.in_time_zone('GMT')
+        end_period = reference_date.end_of_day.in_time_zone('GMT')
+      when 'each'
+        start_period = reference_date.beginning_of_day.in_time_zone('GMT')
+        end_period = reference_date.end_of_day.in_time_zone('GMT')
+      when 'each-rush'
+        start_period = reference_date.beginning_of_day.in_time_zone('GMT') + 10.hours
+        end_period = reference_date.beginning_of_day.in_time_zone('GMT') + 22.hours
+      else
+        Yell.new(:gelf, :facility => 'netmetric').send 'warn', "Tentativa de calculo de medianas em utilizando período não suportado: #{threshold.goal_period}",
+                                                          '_schedule_id' => schedule.id, '_probe_id' => schedule.source.id, '_threshold_id' => threshold.id
+    end
     #agora consulta os valores do periodo e calcula a mediana
     results = Results.where(:timestamp => start_period..end_period).where(:schedule_id => schedule.id).where(:metric_id => threshold.metric.id).all
     len = results.length
