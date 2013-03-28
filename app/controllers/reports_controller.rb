@@ -278,8 +278,8 @@ class ReportsController < ApplicationController
 			@threshold = Threshold.find_by_goal_method("availability")
 
 			@median = Median.new(schedule_uuid: @schedule.uuid,
-								 start_timestamp: DateTime.strptime(timestamp, '%s').beginning_of_day,
-								 end_timestamp: DateTime.strptime(timestamp, '%s').end_of_day,
+								 start_timestamp: (DateTime.strptime(timestamp, '%s') - 23.hours - 59.minutes - 59.seconds),
+								 end_timestamp: DateTime.strptime(timestamp, '%s'),
 								 expected_points: total,
 								 total_points: success,
                  dsavg: success.to_f/total.to_f
