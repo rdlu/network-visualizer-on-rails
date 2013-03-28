@@ -123,7 +123,7 @@ class Compliance < ActiveRecord::Base
       when 'raw'
         #scm 8 como exemplo
         results = Results.where(:timestamp => start_period..end_period).where(:schedule_id => schedule.id).where(:metric_id => threshold.metric.id).all
-        len = results.length
+        len = results.length.to_i
 
         raw_sum_ds = 0
         raw_sum_sd = 0
@@ -132,8 +132,8 @@ class Compliance < ActiveRecord::Base
           raw_sum_sd += result.sdavg
         end
 
-        compliance.download = raw_sum_sd / len.to_f
-        compliance.upload = raw_sum_ds / len.to_f
+        compliance.download = len == 0 ? 0 : raw_sum_sd / len.to_f
+        compliance.upload = len == 0 ? 0 : raw_sum_ds / len.to_f
         compliance.schedule = schedule
         compliance.threshold = threshold
         compliance.total_days = medians.length
