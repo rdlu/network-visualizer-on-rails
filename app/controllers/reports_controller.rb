@@ -189,7 +189,7 @@ class ReportsController < ApplicationController
     end
   end
 
-  def csv
+  def csv_bruto
     source = Probe.find(params[:source])
     destination = Probe.find(params[:destination])
     metric = Metric.find(params[:metric])
@@ -216,9 +216,23 @@ class ReportsController < ApplicationController
 	  end
     end
 
-  respond_to do |format|
+	respond_to do |format|
       format.csv { send_data @end_csv}
     end
+  end
+
+  def csv_mensal
+	  @end_csv = nil
+	  respond_to do |format|
+		  format.csv { send_data @end_csv}
+	  end
+  end
+
+  def csv_diario
+	  @end_csv = nil
+	  respond_to do |format|
+		  format.csv { send_data @end_csv}
+	  end
   end
 
   def eaq_table

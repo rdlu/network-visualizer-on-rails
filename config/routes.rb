@@ -16,7 +16,9 @@ MomRails::Application.routes.draw do
   post 'reports/eaq_table', :as =>'eaq_table_reports'
   post 'reports/detail_eaq_table', :as =>'detail_eaq_table_reports'
   post 'kpi/show' => 'kpi#show', :as => 'show_kpi'
-  match 'reports/csv/:filename' => 'reports#csv', :as => 'reports_csv', :via => [:get]
+  match 'reports/csv_bruto/:filename' => 'reports#csv_bruto', :as => 'reports_csv_bruto', :via => [:get]
+  match 'reports/csv_diario/:filename' => 'reports#csv_diario', :as => 'reports_csv_diario', :via => [:get]
+  match 'reports/csv_mensal/:filename' => 'reports#csv_mensal', :as => 'reports_csv_mensal', :via => [:get]
   post 'reports/send' => 'reports#send_report', :as => 'send_reports'
 
   resources :metrics
