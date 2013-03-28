@@ -224,7 +224,7 @@ class ReportsController < ApplicationController
   def csv_mensal
 	  source = Probe.find(params[:source])
 	  destination = Probe.find(params[:destination])
-	  threshold = Metric.find(params[:threshold])
+	  threshold = Threshold.find(params[:threshold])
 	  schedule = Schedule.where(:destination_id => destination).where(:source_id => source).all.last
 
 	  from = DateTime.parse(params[:from]).beginning_of_month.in_time_zone('GMT')
@@ -258,7 +258,7 @@ class ReportsController < ApplicationController
   def csv_diario
 	  source = Probe.find(params[:source])
 	  destination = Probe.find(params[:destination])
-	  threshold = Metric.find(params[:threshold])
+	  threshold = Threshold.find(params[:threshold])
 	  schedule = Schedule.where(:destination_id => destination).where(:source_id => source).all.last
 
 	  from = DateTime.parse(params[:from]).beginning_of_month.in_time_zone('GMT')
