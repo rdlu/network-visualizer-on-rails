@@ -145,7 +145,7 @@ class ReportsController < ApplicationController
     threshold = Threshold.find(params[:metric][:id])
     metric = threshold.metric
 
-    from = DateTime.parse(params[:date][:start]+' '+params[:time][:start]+' '+DateTime.current.zone).beginning_of_day.in_time_zone('GMT')
+    from = DateTime.parse(params[:date][:start]+' '+params[:time][:start]+' '+DateTime.current.zone).beginning_of_month.in_time_zone('GMT')
     to = DateTime.parse(params[:date][:end]+' '+params[:time][:end]+' '+DateTime.current.zone).end_of_day.in_time_zone('GMT')
 
     raw_compliances = Compliance.
@@ -212,7 +212,7 @@ class ReportsController < ApplicationController
 	  csv << [] # Linha em branco pra ficar bonito
 
       raw_results.each do |result|
-		csv << [metric.sdavg, metric.dsavg, metric.sdmax, metric.dsmax, metric.sdmin, metric.dsmin, metric.timestamp.strftime("%Y-%m-%d %H:%M:%S %z")]
+		csv << [result.sdavg, result.dsavg, result.sdmax, result.dsmax, result.sdmin, result.dsmin, result.timestamp.strftime("%Y-%m-%d %H:%M:%S %z")]
 	  end
     end
 
@@ -222,14 +222,68 @@ class ReportsController < ApplicationController
   end
 
   def csv_mensal
-	  @end_csv = nil
+	  source = Probe.find(params[:source])
+	  destination = Probe.find(params[:destination])
+	  threshold = Metric.find(params[:threshold])
+	  schedule = Schedule.where(:destination_id => destination).where(:source_id => source).all.last
+
+	  from = DateTime.parse(params[:from]).beginning_of_month.in_time_zone('GMT')
+	  to = DateTime.parse(params[:to]).end_of_day.in_time_zone('GMT')
+
+	  compliances = Compliance.
+		  where(:schedule_id => schedule.id).
+		  where(:threshold_id => threshold.id).
+		  where('start_timestamp >= ?', from).
+		  where('end_timestamp <= ?', to).order('start_timestamp ASC').all
+
+	  @end_csv = CSV.generate(col_sep: ';') do |csv|
+		  csv << ["Sonda de Destino:", destination.pretty_name, "#{destination.city}/#{destination.state}"]
+		  csv << ["Sonda de Origem:", source.pretty_name, "#{source.city}/#{source.state}"]
+		  csv << ["Métrica:", threshold.metric.name, "Meta:", threshold.name]
+		  csv << ["Início:", schedule.start.strftime("%Y-%m-%d %H:%M:%S %z")]
+		  csv << ["Fim:", schedule.end.strftime("%Y-%m-%d %H:%M:%S %z")]
+		  csv << [] # Linha em branco pra ficar bonito
+
+		  csv << ["Timestamp Início", "Timestamp Fim", "Download", "Upload", "Dias Esperados", "Dias Totais"]
+		  compliances.each do |compliance|
+			  csv << [compliance.start_timestamp, compliance.end_timestamp, compliance.download, compliance.upload, compliance.expected_days, compliance.total_days]
+		  end
+	  end
+
 	  respond_to do |format|
 		  format.csv { send_data @end_csv}
 	  end
   end
 
   def csv_diario
-	  @end_csv = nil
+	  source = Probe.find(params[:source])
+	  destination = Probe.find(params[:destination])
+	  threshold = Metric.find(params[:threshold])
+	  schedule = Schedule.where(:destination_id => destination).where(:source_id => source).all.last
+
+	  from = DateTime.parse(params[:from]).beginning_of_month.in_time_zone('GMT')
+	  to = DateTime.parse(params[:to]).end_of_day.in_time_zone('GMT')
+
+	  medians = Median.
+		  where(:schedule_id => schedule.id).
+		  where(:threshold_id => threshold.id).
+		  where('start_timestamp >= ?', from).
+		  where('end_timestamp <= ?', to).order('start_timestamp ASC').all
+
+	  @end_csv = CSV.generate(col_sep: ';') do |csv|
+		  csv << ["Sonda de Destino:", destination.pretty_name, "#{destination.city}/#{destination.state}"]
+		  csv << ["Sonda de Origem:", source.pretty_name, "#{source.city}/#{source.state}"]
+		  csv << ["Métrica:", threshold.metric.name, "Meta:", threshold.name]
+		  csv << ["Início:", schedule.start.strftime("%Y-%m-%d %H:%M:%S %z")]
+		  csv << ["Fim:", schedule.end.strftime("%Y-%m-%d %H:%M:%S %z")]
+		  csv << [] # Linha em branco pra ficar bonito
+
+		  csv << ["Timestamp Início", "Timestamp Fim", "Pontos Esperados", "Pontos Totais", "DSAVG", "SDAVG"]
+		  medians.each do |median|
+			csv << [median.start_timestamp, median.end_timestamp, median.expected_points, median.total_points, median.dsavg, median.sdavg]
+		  end
+	  end
+
 	  respond_to do |format|
 		  format.csv { send_data @end_csv}
 	  end
