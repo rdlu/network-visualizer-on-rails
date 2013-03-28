@@ -212,7 +212,7 @@ class ReportsController < ApplicationController
 	  csv << [] # Linha em branco pra ficar bonito
 
       raw_results.each do |result|
-		csv << [metric.sdavg, metric.dsavg, metric.sdmax, metric.dsmax, metric.sdmin, metric.dsmin, metric.timestamp.strftime("%Y-%m-%d %H:%M:%S %z")]
+		csv << [result.sdavg, result.dsavg, result.sdmax, result.dsmax, result.sdmin, result.dsmin, result.timestamp.strftime("%Y-%m-%d %H:%M:%S %z")]
 	  end
     end
 
