@@ -14,7 +14,7 @@ class Compliance < ActiveRecord::Base
     #agora consulta os valores do periodo e calcula o quociente
     medians = Median.
         where('start_timestamp >= ?', start_period).
-        where('end_timestamp <= ?', end_period).
+        where('end_timestamp <= ?', end_period + 1.day).
         where(:schedule_id => schedule.id).
         where(:threshold_id => threshold.id).where('dsavg IS NOT NULL').
         all
