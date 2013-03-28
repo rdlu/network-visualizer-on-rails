@@ -161,13 +161,13 @@ class UsersController < ApplicationController
     @user = User.find(params[:user_id])
     if @user.confirmation_token == nil
       @user.skip_confirmation!
-      @user.confirmed_at= DateTime.current
-      @user.confirmation_token= Devise.token_authentication_key
-      @user.adm_block = 0
+      @user.confirmed_at = DateTime.current
+      @user.confirmation_token = Devise.token_authentication_key
+      @user.adm_block = 1
     else
       @user.confirmed_at= nil
       @user.confirmation_token= nil
-      @user.adm_block = 1
+      @user.adm_block = 0
     end
 
     @user.save!
