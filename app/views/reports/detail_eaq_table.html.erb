@@ -58,11 +58,19 @@
                    color_up = (median.sdavg.to_f * 1000).round(2) <= threshold.goal_level ? 'green' : 'red'
                    result = "<span style=\"color:#{color_down}\">#{median.pretty_download(true)}</span>" +
                             "/<span style=\"color:#{color_up}\">#{median.pretty_upload(true)}</span>"
+                 when 'loss'
+                   if threshold.goal_method == 'availability'
+                     per = (median.dsavg.to_f * 100).round(3)
+                     color = per >= threshold.goal_level ? 'green' : 'red'
+                     result = "<span style=\"color:#{color}\">#{per.to_s} %</span>"
+                   else
+                     per = (median.dsavg.to_f * 100).round(3)
+                     color = per >= threshold.goal_level ? 'green' : 'red'
+                     result = "<span style=\"color:#{color}\">#{per.to_s} %</span>"
+                   end
+
                  else
-                   color_down = (median.dsavg.to_f * 1000).round(2) <= threshold.goal_level ? 'green' : 'red'
-                   color_up = (median.sdavg.to_f * 1000).round(2) <= threshold.goal_level ? 'green' : 'red'
-                   result = "<span style=\"color:#{color_down}\">#{median.pretty_download(true)}</span>" +
-                           "/<span style=\"color:#{color_up}\">#{median.pretty_upload(true)}</span>"
+                   result =""
                end
             %>
             <%= result.html_safe %>
