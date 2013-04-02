@@ -67,9 +67,7 @@ gem 'unicorn'
 
 group :test, :development do
 	gem 'rspec-rails'
-	gem 'factory_girl'
-	gem 'factory_girl_rails'
-	gem 'mocha'
+	gem 'fabrication'
 end
 
 # Deploy with Capistrano

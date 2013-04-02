@@ -66,7 +66,7 @@ module MomRails
 	config.generators do |g|
 		g.test_framework :rspec, :fixture => true, :views => false
 		g.integration_tool :rspec
-		g.fixture_replacement :factory_girl, :dir => "spec/factories"
+		g.fixture_replacement :fabrication
 	end
   end
 end

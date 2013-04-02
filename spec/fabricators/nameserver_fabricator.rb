@@ -1,0 +1,2 @@
+Fabricator(:nameserver) do
+end
