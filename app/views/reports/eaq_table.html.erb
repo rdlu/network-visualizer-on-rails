@@ -1,7 +1,7 @@
 
-<div id="box-<%=@source.id %>" class="row-fluid">
+<div id="box-<%=@source.id %>-<%=@destination.id %>-<%=@from %>-<%=@to %>" class="row-fluid">
  <div   class="span12">
-   <div id="table-<%= @source.id %>" >
+   <div id="table-<%=@source.id %><%=@destination.id %>" >
     <text style="color: #3E576F;font-size:  16px">Tabela de Indicadores Anatel: <%= @source.name %> / <%= @destination.name %> ( Início: <%= @from.strftime("%d/%m/%y") %> Fim: <%= @to.strftime("%d/%m/%y") %> )</text>
     <table class="table table-bordered table-hover table-condensed" >
       <thead>
@@ -43,7 +43,7 @@
     </table>
    </div>
  </div>
-  <div id="remove-<%= @source.id %>"  class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="$('#table-<%= @source.id %>').remove(); $(this).remove();">Remover</div>
+  <div id="remove-<%=@source.id %>-<%=@destination.id %>-<%=@from %>-<%=@to %>"  class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="$('#table-<%=@source.id %><%=@destination.id %>').remove(); $(this).remove();">Remover</div>
 
 </div>
 
