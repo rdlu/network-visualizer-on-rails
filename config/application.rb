@@ -64,8 +64,9 @@ module MomRails
     config.assets.version = '1.0'
 
 	config.generators do |g|
-		g.test_framework :mini_test, :spec => true, :fixture => true
-		g.integration_tool :mini_test
+		g.test_framework :rspec, :fixture => true, :views => false
+		g.integration_tool :rspec
+		g.fixture_replacement :factory_girl, :dir => "spec/factories"
 	end
   end
 end

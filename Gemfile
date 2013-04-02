@@ -66,10 +66,10 @@ end
 gem 'unicorn'
 
 group :test, :development do
-	gem 'minitest-rails'
-	gem 'minitest-matchers'
-	gem 'shoulda-matchers'
-	gem 'turn'
+	gem 'rspec-rails'
+	gem 'factory_girl'
+	gem 'factory_girl_rails'
+	gem 'mocha'
 end
 
 # Deploy with Capistrano

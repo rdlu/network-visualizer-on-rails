@@ -32,7 +32,6 @@ GEM
       activesupport
       builder
       json
-    ansi (1.4.3)
     arel (3.0.2)
     bcrypt-ruby (3.0.1)
     better_errors (0.7.2)
@@ -44,8 +43,6 @@ GEM
       sass (~> 3.2)
     bootswatch-rails (0.4.0)
       railties (>= 3.1)
-    bourne (1.4.0)
-      mocha (~> 0.13.2)
     builder (3.0.4)
     cancan (1.6.9)
     coderay (1.0.9)
@@ -70,9 +67,15 @@ GEM
       orm_adapter (~> 0.1)
       railties (~> 3.1)
       warden (~> 1.2.1)
+    diff-lcs (1.2.2)
     erubis (2.7.0)
     execjs (1.4.0)
       multi_json (~> 1.0)
+    factory_girl (4.2.0)
+      activesupport (>= 3.0.0)
+    factory_girl_rails (4.2.1)
+      factory_girl (~> 4.2.0)
+      railties (>= 3.0.0)
     foreigner (1.4.0)
       activerecord (>= 3.0.0)
     geocoder (1.1.6)
@@ -106,12 +109,6 @@ GEM
     metaclass (0.0.1)
     method_source (0.8.1)
     mime-types (1.21)
-    minitest (4.7.0)
-    minitest-matchers (1.2.0)
-      minitest (>= 2.5.0)
-    minitest-rails (0.9.1)
-      minitest (~> 4.7)
-      rails (>= 3.0)
     mocha (0.13.3)
       metaclass (~> 0.0.1)
     multi_json (1.6.1)
@@ -157,15 +154,23 @@ GEM
       json (~> 1.4)
     ref (1.0.2)
     rolify (3.2.0)
+    rspec-core (2.13.1)
+    rspec-expectations (2.13.0)
+      diff-lcs (>= 1.1.3, < 2.0)
+    rspec-mocks (2.13.0)
+    rspec-rails (2.13.0)
+      actionpack (>= 3.0)
+      activesupport (>= 3.0)
+      railties (>= 3.0)
+      rspec-core (~> 2.13.0)
+      rspec-expectations (~> 2.13.0)
+      rspec-mocks (~> 2.13.0)
     ruby-units (1.4.2)
     sass (3.2.7)
     sass-rails (3.2.6)
       railties (~> 3.2.0)
       sass (>= 3.1.10)
       tilt (~> 1.3)
-    shoulda-matchers (1.5.6)
-      activesupport (>= 3.0.0)
-      bourne (~> 1.3)
     slop (3.4.4)
     snmp (1.1.1)
     sprockets (2.2.2)
@@ -181,8 +186,6 @@ GEM
     treetop (1.4.12)
       polyglot
       polyglot (>= 0.3.1)
-    turn (0.9.6)
-      ansi
     tzinfo (0.3.37)
     uglifier (1.3.0)
       execjs (>= 0.3.0)
@@ -219,6 +222,8 @@ DEPENDENCIES
   dalli
   delayed_job_active_record
   devise
+  factory_girl
+  factory_girl_rails
   foreigner
   geocoder
   has_scope
@@ -229,20 +234,18 @@ DEPENDENCIES
   jquery-rails
   less
   meta_request
-  minitest-matchers
-  minitest-rails
+  mocha
   nokogiri
   pg
   pry-rails
   rails (= 3.2.12)
   rails-i18n
   rolify
+  rspec-rails
   ruby-units
   sass-rails (~> 3.2.3)
-  shoulda-matchers
   snmp
   therubyracer
-  turn
   uglifier (>= 1.3.0)
   unicorn
   will_paginate (~> 3.0)
