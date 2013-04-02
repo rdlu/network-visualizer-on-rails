@@ -221,6 +221,25 @@ class ReportsController < ApplicationController
     end
   end
 
+  def xls_bruto
+    @source = Probe.find(params[:source])
+    @destination = Probe.find(params[:destination])
+    @metric = Metric.find(params[:metric])
+    @schedule = Schedule.where(:destination_id => @destination).where(:source_id => @source).all.last
+
+    @from = params[:from]
+    @to = params[:to]
+
+    @raw_results = Results.
+        where(:schedule_id => @schedule.id).
+        where(:metric_id => @metric.id).
+        where(:timestamp => @from..@to).order('timestamp ASC').all
+
+	respond_to do |format|
+		format.xls
+	end
+  end
+
   def csv_mensal
 	  source = Probe.find(params[:source])
 	  destination = Probe.find(params[:destination])
@@ -255,6 +274,26 @@ class ReportsController < ApplicationController
 	  end
   end
 
+  def xls_mensal
+	  @source = Probe.find(params[:source])
+	  @destination = Probe.find(params[:destination])
+	  @threshold = Threshold.find(params[:threshold])
+	  @schedule = Schedule.where(:destination_id => @destination).where(:source_id => @source).all.last
+
+	  @from = DateTime.parse(params[:from]).beginning_of_month.in_time_zone('GMT')
+	  @to = DateTime.parse(params[:to]).end_of_day.in_time_zone('GMT')
+
+	  @compliances = Compliance.
+		  where(:schedule_id => @schedule.id).
+		  where(:threshold_id => @threshold.id).
+		  where('start_timestamp >= ?', @from).
+		  where('end_timestamp <= ?', @to).order('start_timestamp ASC').all
+
+	  respond_to do |format|
+		  format.xls
+	  end
+  end
+
   def csv_diario
 	  source = Probe.find(params[:source])
 	  destination = Probe.find(params[:destination])
@@ -286,6 +325,26 @@ class ReportsController < ApplicationController
 
 	  respond_to do |format|
 		  format.csv { send_data @end_csv}
+	  end
+  end
+
+  def xls_diario
+	  @source = Probe.find(params[:source])
+	  @destination = Probe.find(params[:destination])
+	  @threshold = Threshold.find(params[:threshold])
+	  @schedule = Schedule.where(:destination_id => @destination).where(:source_id => @source).all.last
+
+	  @from = DateTime.parse(params[:from]).beginning_of_month.in_time_zone('GMT')
+	  @to = DateTime.parse(params[:to]).end_of_day.in_time_zone('GMT')
+
+	  @medians = Median.
+		  where(:schedule_id => @schedule.id).
+		  where(:threshold_id => @threshold.id).
+		  where('start_timestamp >= ?', @from).
+		  where('end_timestamp <= ?', @to).order('start_timestamp ASC').all
+	  
+	  respond_to do |format|
+		  format.xls
 	  end
   end
 

@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+  xmlns:o="urn:schemas-microsoft-com:office:office"
+  xmlns:x="urn:schemas-microsoft-com:office:excel"
+  xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+  xmlns:html="http://www.w3.org/TR/REC-html40">
+  <Worksheet ss:Name="Sheet1">
+    <Table>
+	  <Row>
+	  	<Cell><Data ss:Type="String">Sonda de Destino:</Data></Cell>
+		<Cell><Data ss:Type="String"><%= @destination.pretty_name %></Data></Cell>
+		<Cell><Data ss:Type="String"><%= #{@destination.city}/#{@destination.state} %></Data></Cell>
+	  </Row>
+	  <Row>
+	  	<Cell><Data ss:Type="String">Sonda de Origem:</Data></Cell>
+		<Cell><Data ss:Type="String"><%= @source.pretty_name %></Data></Cell>
+		<Cell><Data ss:Type="String"><%= #{@source.city}/#{@source.state} %></Data></Cell>
+	  </Row>
+	  <Row>
+	  	<Cell><Data ss:Type="String">Métrica:</Data></Cell>
+		<Cell><Data ss:Type="String"><%= @threshold.metric.name %></Data></Cell>
+		<Cell><Data ss:Type="String">Meta:</Data></Cell>
+		<Cell><Data ss:Type="String"><%= @threshold.name %></Data></Cell>
+	  </Row>
+	  <Row>
+	  	<Cell><Data ss:Type="String">Inínio:</Data></Cell>
+		<Cell><Data ss:Type="DateTime"><%= @schedule.start.strftime("%Y-%m-%d %H:%M:%S %z") %></Data></Cell>
+	  </Row>
+	  <Row>
+	  	<Cell><Data ss:Type="String">Fim:</Data></Cell>
+		<Cell><Data ss:Type="DateTime"><%= @schedule.end.strftime("%Y-%m-%d %H:%M:%S %z") %></Data></Cell>
+	  </Row>
+	  <Row>
+	  </Row>
+      <Row>
+        <Cell><Data ss:Type="String">Timestamp Início</Data></Cell>
+        <Cell><Data ss:Type="String">Timestamp Fim</Data></Cell>
+        <Cell><Data ss:Type="String">Download</Data></Cell>
+        <Cell><Data ss:Type="String">Upload</Data></Cell>
+        <Cell><Data ss:Type="String">Dias Esperados</Data></Cell>
+        <Cell><Data ss:Type="String">Dias Totais</Data></Cell>
+      </Row>
+    <% @compliances.each do |compliance| %>
+      <Row>
+        <Cell><Data ss:Type="DateTime"><%= compliance.start_timestamp %></Data></Cell>
+		<Cell><Data ss:Type="DateTime"><%= compliance.end_timestamp %></Data></Cell>
+        <Cell><Data ss:Type="Number"><%= compliance.download %></Data></Cell>
+        <Cell><Data ss:Type="Number"><%= compliance.upload %></Data></Cell>
+        <Cell><Data ss:Type="Number"><%= compliance.expected_days %></Data></Cell>
+        <Cell><Data ss:Type="Number"><%= compliance.total_days %></Data></Cell>
+      </Row>
+    <% end %>
+    </Table>
+  </Worksheet>
+</Workbook>

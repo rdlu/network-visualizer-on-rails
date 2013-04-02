@@ -19,6 +19,9 @@ MomRails::Application.routes.draw do
   match 'reports/csv_bruto/:filename' => 'reports#csv_bruto', :as => 'reports_csv_bruto', :via => [:get]
   match 'reports/csv_diario/:filename' => 'reports#csv_diario', :as => 'reports_csv_diario', :via => [:get]
   match 'reports/csv_mensal/:filename' => 'reports#csv_mensal', :as => 'reports_csv_mensal', :via => [:get]
+  match 'reports/xls_bruto/:filename' => 'reports#xls_bruto', :as => 'reports_xls_bruto', :via => [:get]
+  match 'reports/xls_diario/:filename' => 'reports#xls_diario', :as => 'reports_xls_diario', :via => [:get]
+  match 'reports/xls_mensal/:filename' => 'reports#xls_mensal', :as => 'reports_xls_mensal', :via => [:get]
   post 'reports/send' => 'reports#send_report', :as => 'send_reports'
 
   resources :metrics
