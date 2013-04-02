@@ -18,7 +18,7 @@
         <div class="control-group">
           <%= label :report, :type, "Tipo de Relatório: ", :class => 'control-label' %>
           <div class="controls">
-            <%= select :report, :type, @report_types,{:include_blank => "Selecione as sonda de origem e de destino primeiro"}, {:class => 'input-block-level', :disabled => 'disabled'} %>
+            <%= select :report, :type, @report_types,{:include_blank => "Selecione as sonda de origem e de destino primeiro"}, {:class => 'input-block-level', :disabled => 'disabled', :onchange=>'toggleOpDates(this.value)'} %>
           </div>
         </div>
         <div class="control-group">
@@ -28,13 +28,17 @@
           </div>
         </div>
         </div>
-        <div class="span5">
+        <div id="op_col2"  class="span5" style="display: none">
+         <div class="control-group">
+            <div id="sel_date" class="controls">
+            </div>
+         </div>
         <div class="control-group">
           <%= label :date, :start, "Início: ", :class => 'control-label' %>
           <div class="controls">
             <div class="input-prepend">
               <label for="date_start" style="display: inline"><span class="add-on" style="margin-top: 1px;"><i class="icon-calendar"></i></span></label>
-              <%= text_field :date, :start, :class => 'input-small datepicker', :"data-date-format".to_sym => "dd/mm/yyyy", :value => Date.current.prev_day.strftime('%d/%m/%Y') %>
+              <%= text_field :date, :start, :class => 'input-small datepicker', :"data-date-format".to_sym => "dd/mm/yyyy"  %>
             </div>
             <div class="input-prepend">
               <span class="add-on"><i class="icon-time"></i></span>
@@ -47,7 +51,7 @@
           <div class="controls">
             <div class="input-prepend">
               <label for="date_end" style="display: inline"><span class="add-on" style="margin-top: 1px;"><i class="icon-calendar"></i></span></label>
-              <%= text_field :date, :end, :class => 'input-small datepicker', :"data-date-format".to_sym => "dd/mm/yyyy", :value => Date.current.strftime('%d/%m/%Y') %>
+              <%= text_field :date, :end, :class => 'input-small datepicker', :"data-date-format".to_sym => "dd/mm/yyyy" %>
             </div>
             <div class="input-prepend">
               <span class="add-on"><i class="icon-time"></i></span>
@@ -64,3 +68,53 @@
 
     </div>
 <% end %>
+
+<script>
+  function toggleOpDates(selected){
+      $('#op_col2').attr('style','display:block');
+      var sel= "";
+      switch (selected){
+          case 'eaq_graph': sel= "<select id='sel_eaq_graph' onchange='selDate(this.value)'>" +
+                                   "<option value='7' selected>Ultimos 7 dias</option>"+
+                                   "<option value='14'>Ultimos 14 dias</option>"+
+                                   "<option value='30'>Ultimo mês</option>"+
+                                   "<option value='90'>Ultimos 3 meses</option>"+
+                                 "</select>";
+                          $('#date_start').attr('value','<%= (Date.current - 7).strftime('%d/%m/%Y') %>');
+                          $('#date_end').attr('value','<%= Date.current.strftime('%d/%m/%Y') %>');
+              break;
+          case 'eaq_compliance_graph': sel= "<select id='sel_eaq_compliance_graph' onchange='selDate(this.value)'>" +
+                                          "<option value='183' selected>Ultimos 6 meses</option>"+
+                                          "<option value='365'>Ultimo ano</option>"+
+                                          "<option value='730'>Ultimos 2 anos</option>"+
+                                          "</select>";
+                                      $('#date_start').attr('value','<%= (Date.current - 183).strftime('%d/%m/%Y') %>');
+                                      $('#date_end').attr('value','<%= Date.current.strftime('%d/%m/%Y') %>');
+              break;
+          case 'graph': sel= "<select id='sel_graph' onchange='selDate(this.value)'>" +
+                              "<option value='1' selected>Ultimo dia</option>"+
+                              "<option value='2'>Ultimos 2 dias</option>"+
+                              "<option value='3'>Ultimos 3 dias</option>"+
+                              "<option value='7'>Ultimos 7 dias</option>"+
+                              "</select>";
+                          $('#date_start').attr('value','<%= (Date.current - 1).strftime('%d/%m/%Y') %>');
+                          $('#date_end').attr('value','<%= Date.current.strftime('%d/%m/%Y') %>');
+              break;
+          case 'eaq_table':  sel= "<select id='sel_eaq_table' onchange='selDate(this.value)'>" +
+                                  "<option value='183' selected>Ultimos 6 meses</option>"+
+                                  "<option value='365'>Ultimo ano</option>"+
+                                  "<option value='730'>Ultimos 2 anos</option>"+
+                                  "</select>";
+                              $('#date_start').attr('value','<%= (Date.current - 183).strftime('%d/%m/%Y') %>');
+                              $('#date_end').attr('value','<%= Date.current.strftime('%d/%m/%Y') %>');
+              break;
+      }
+
+      $('#sel_date').html(sel);
+  }
+
+  function selDate(selected){
+      $('#date_start').attr('value',moment(Date.current).subtract('days',selected).format('DD/MM/YYYY'));
+      $('#date_end').attr('value','<%= Date.current.strftime('%d/%m/%Y') %>');
+  }
+</script>
