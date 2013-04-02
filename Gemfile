@@ -65,6 +65,13 @@ end
 # Use unicorn as the app server
 gem 'unicorn'
 
+group :test, :development do
+	gem 'minitest-rails'
+	gem 'minitest-matchers'
+	gem 'shoulda-matchers'
+	gem 'turn'
+end
+
 # Deploy with Capistrano
 # gem 'capistrano'
 

@@ -12,6 +12,7 @@ development: &development
 test: &test
   <<: *default
   database: mom-rails_test
+  min_messages: WARNING
 
 production: &production
   <<: *default
