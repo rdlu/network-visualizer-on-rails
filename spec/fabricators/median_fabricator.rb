@@ -1,0 +1,2 @@
+Fabricator(:median) do
+end
