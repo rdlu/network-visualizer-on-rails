@@ -1,0 +1,2 @@
+Fabricator(:threshold) do
+end

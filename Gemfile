@@ -68,6 +68,7 @@ gem 'unicorn'
 group :test, :development do
 	gem 'rspec-rails'
 	gem 'fabrication'
+	gem 'faker'
 end
 
 # Deploy with Capistrano
