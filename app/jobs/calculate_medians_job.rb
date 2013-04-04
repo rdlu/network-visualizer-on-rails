@@ -4,7 +4,7 @@ class CalculateMediansJobException < Exception
 end
 
 class CalculateMediansJob
-  def initialize(reference_date = Time.now.end_of_day, reeschedule = true, force_disabled = false)
+  def initialize(reference_date = Time.now.end_of_day, reeschedule = false, force_disabled = false)
     @reference_date= reference_date.to_time
     @reeschedule = reeschedule
     @force_disabled = force_disabled
@@ -17,7 +17,7 @@ class CalculateMediansJob
   def perform
     #programa a próxima chamada
     if @reeschedule
-      Delayed::Job.enqueue CalculateMediansJob.new, :queue => 'calculate', :run_at => DateTime.current.end_of_day+1.hour
+      Delayed::Job.enqueue CalculateMediansJob.new(Time.now.end_of_day,true), :queue => 'calculate', :run_at => DateTime.current.end_of_day+1.hour
     end
 
     Schedule.all.each do |schedule|
