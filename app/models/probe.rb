@@ -113,7 +113,7 @@ class Probe < ActiveRecord::Base
       self.status=3
     end
 
-    self.status
+    self[:status]
   end
 
   def self.states
