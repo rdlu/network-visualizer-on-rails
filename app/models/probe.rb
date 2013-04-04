@@ -108,6 +108,14 @@ class Probe < ActiveRecord::Base
      %w(Linux linux)]
   end
 
+  def status
+    if self.updated_at <= Time.now - 30.minutes
+      self.status=3
+    end
+
+    self.status
+  end
+
   def self.states
     [
       ["Acre", "ac"],
