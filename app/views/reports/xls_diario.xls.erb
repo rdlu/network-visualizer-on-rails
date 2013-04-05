@@ -9,21 +9,21 @@
 	  <Row>
 	  	<Cell><Data ss:Type="String">Sonda de Destino:</Data></Cell>
 		<Cell><Data ss:Type="String"><%= @destination.pretty_name %></Data></Cell>
-		<Cell><Data ss:Type="String"><%= #{@destination.city}/#{@destination.state} %></Data></Cell>
+		<Cell><Data ss:Type="String"><%= "#{@destination.city}/#{@destination.state}" %></Data></Cell>
 	  </Row>
 	  <Row>
 	  	<Cell><Data ss:Type="String">Sonda de Origem:</Data></Cell>
 		<Cell><Data ss:Type="String"><%= @source.pretty_name %></Data></Cell>
-		<Cell><Data ss:Type="String"><%= #{@source.city}/#{@source.state} %></Data></Cell>
+		<Cell><Data ss:Type="String"><%= "#{@source.city}/#{@source.state}" %></Data></Cell>
 	  </Row>
 	  <Row>
-	  	<Cell><Data ss:Type="String">Métrica:</Data></Cell>
+	  	<Cell><Data ss:Type="String">Metrica:</Data></Cell>
 		<Cell><Data ss:Type="String"><%= @threshold.metric.name %></Data></Cell>
 		<Cell><Data ss:Type="String">Meta:</Data></Cell>
 		<Cell><Data ss:Type="String"><%= @threshold.name %></Data></Cell>
 	  </Row>
 	  <Row>
-	  	<Cell><Data ss:Type="String">Inínio:</Data></Cell>
+	  	<Cell><Data ss:Type="String">Inicio:</Data></Cell>
 		<Cell><Data ss:Type="DateTime"><%= @schedule.start.strftime("%Y-%m-%d %H:%M:%S %z") %></Data></Cell>
 	  </Row>
 	  <Row>
@@ -33,7 +33,7 @@
 	  <Row>
 	  </Row>
       <Row>
-        <Cell><Data ss:Type="String">Timestamp Início</Data></Cell>
+        <Cell><Data ss:Type="String">Timestamp Inicio</Data></Cell>
         <Cell><Data ss:Type="String">Timestamp Fim</Data></Cell>
         <Cell><Data ss:Type="String">Pontos Esperados</Data></Cell>
         <Cell><Data ss:Type="String">Pontos Totais</Data></Cell>

@@ -128,12 +128,17 @@ class Compliance < ActiveRecord::Base
         raw_sum_ds = 0
         raw_sum_sd = 0
         results.each do |result|
-          raw_sum_ds += result.dsavg
-          raw_sum_sd += result.sdavg
+          if result.dsavg / 100 <= threshold.goal_level
+            raw_sum_ds += 1
+          end
+
+          if result.sdavg / 100 <= threshold.goal_level
+            raw_sum_sd += 1
+          end
         end
 
-        compliance.download = len == 0 ? 0 : raw_sum_sd / len.to_f
-        compliance.upload = len == 0 ? 0 : raw_sum_ds / len.to_f
+        compliance.download = len == 0 ? 0 : (raw_sum_sd / len.to_f)
+        compliance.upload = len == 0 ? 0 : (raw_sum_ds / len.to_f)
         compliance.schedule = schedule
         compliance.threshold = threshold
         compliance.total_days = medians.length

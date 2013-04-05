@@ -13,16 +13,16 @@
 	  <Row>
 	  	<Cell><Data ss:Type="String">Sonda de Origem:</Data></Cell>
 		<Cell><Data ss:Type="String"><%= @source.pretty_name %></Data></Cell>
-		<Cell><Data ss:Type="String"><%= #{@source.city}/#{@source.state} %></Data></Cell>
+		<Cell><Data ss:Type="String"><%= "#{@source.city}/#{@source.state}" %></Data></Cell>
 	  </Row>
 	  <Row>
-	  	<Cell><Data ss:Type="String">Métrica:</Data></Cell>
+	  	<Cell><Data ss:Type="String">Metrica:</Data></Cell>
 		<Cell><Data ss:Type="String"><%= @metric.name %></Data></Cell>
 		<Cell><Data ss:Type="String">Formato:</Data></Cell>
 		<Cell><Data ss:Type="String"><%= @metric.db_unit %></Data></Cell>
 	  </Row>
 	  <Row>
-	  	<Cell><Data ss:Type="String">Inínio:</Data></Cell>
+	  	<Cell><Data ss:Type="String">Inicio:</Data></Cell>
 		<Cell><Data ss:Type="DateTime"><%= @schedule.start.strftime("%Y-%m-%d %H:%M:%S %z") %></Data></Cell>
 	  </Row>
 	  <Row>

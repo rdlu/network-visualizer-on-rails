@@ -148,8 +148,8 @@ class Median < ActiveRecord::Base
             raw_sum_ds += result.dsavg
             raw_sum_sd += result.sdavg
           end
-          median.sdavg = raw_sum_sd / len.to_f
-          median.dsavg = raw_sum_ds / len.to_f
+          median.sdavg = raw_sum_sd / len.to_f / 100
+          median.dsavg = raw_sum_ds / len.to_f / 100
           median.schedule = schedule
           median.threshold = threshold
           median.total_points = len

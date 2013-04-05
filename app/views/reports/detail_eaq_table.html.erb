@@ -12,13 +12,15 @@
                 down = (@destination.plan.throughput_down_with_unit(true) * threshold.goal_level.to_f).round(3).to_s('%0.2f').gsub(/b\/s|B\/s/,'b/s' => 'bps', 'B/s' => 'Bps')
                 up = (@destination.plan.throughput_up_with_unit(true) * threshold.goal_level.to_f).round(3).to_s('%0.2f').gsub(/b\/s|B\/s/,'b/s' => 'bps', 'B/s' => 'Bps')
               end
-              down+'/'+up
+              '> '+down+'/'+up
             when 'jitter'
-              threshold.goal_level.to_s + "ms"
+              '< '+threshold.goal_level.to_s + "ms"
             when 'rtt'
-              threshold.goal_level.to_s + "ms"
+              '< '+threshold.goal_level.to_s + "ms"
             when 'loss'
-             (threshold.goal_level * 100).round(3).to_s + "%"
+              text = '> '+(threshold.goal_level * 100).round(3).to_s + "%"
+              text = '< '+(threshold.goal_level * 100).round(3).to_s + "%" unless threshold.goal_method == 'availability'
+              text
           end
       %></td>
   <% end %>
@@ -60,11 +62,11 @@
                             "/<span style=\"color:#{color_up}\">#{median.pretty_upload(true)}</span>"
                  when 'loss'
                    if threshold.goal_method == 'availability'
-                     per = (median.dsavg.to_f * 100).round(3)
+                     per = (median.dsavg.to_f*100).round(3)
                      color = per >= threshold.goal_level ? 'green' : 'red'
                      result = "<span style=\"color:#{color}\">#{per.to_s} %</span>"
                    else
-                     per = (median.dsavg.to_f * 100).round(3)
+                     per = (median.dsavg.to_f*100).round(3)
                      color = per <= threshold.goal_level ? 'green' : 'red'
                      result = "<span style=\"color:#{color}\">#{per.to_s} %</span>"
                    end
