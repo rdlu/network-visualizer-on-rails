@@ -20,9 +20,9 @@
           <% end %>
         </tr>
         <% @months.each do |month| %>
-        <tr onclick="toggleTable('<%= month.strftime("%Y-%m-%d")%>');">
-          <td style="font-weight: bold">
-            <%= month.strftime("%b/%Y") == Time.new.strftime("%b/%Y") ? (month.strftime("%b/%Y")+' (Parcial)'):month.strftime("%b/%Y") %>
+        <tr  onclick="toggleTable('<%= month.strftime("%Y-%m-%d")%>');">
+          <td  style="font-weight: bold">
+            <%= month.strftime("%b/%Y") == Time.new.strftime("%b/%Y") ? (month.strftime("%b/%Y")+' (Parcial)'):month.strftime("%b/%Y") %>&nbsp;&nbsp;<span class="icon-search" title="Detalhar"></span>
           </td>
           <%  @thresholds.each do |threshold| %>
           <td style="text-align: center"><% dados = Compliance.where(:threshold_id => threshold.id).where(:schedule_id => @schedule.id).where(:start_timestamp => month.to_time.in_time_zone).first_or_initialize %>
@@ -54,6 +54,7 @@
       if (e.style.display == 'table-row'){
         e.style.display = 'none';
         document.getElementById('detail'+id).style.display = 'none';
+
       }else{
           if($('#detail'+id).is(':empty')){
               $.ajax({
@@ -66,7 +67,9 @@
               });
           }
         e.style.display = 'table-row';
-        document.getElementById('detail'+id).style.display = '';
+        jQuery('#detail'+id).fadeIn('slow');
+        //document.getElementById('detail'+id).style.display = '';
+
       }
   }
 </script>

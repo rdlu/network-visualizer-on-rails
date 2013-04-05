@@ -46,7 +46,7 @@
                    else
                      up = (median.dsavg.to_f / 1000000).round(3)
                      down = (median.sdavg.to_f / 1000000).round(3)
-                     color_up = up >=((@destination.plan.throughput_down.to_f / 1000) * threshold.goal_level.to_f).round(3) ? 'green' : 'red'
+                     color_up = up >=((@destination.plan.throughput_up.to_f / 1000) * threshold.goal_level.to_f).round(3) ? 'green' : 'red'
                      color_down = down >= ((@destination.plan.throughput_down.to_f / 1000) * threshold.goal_level.to_f).round(3) ? 'green' : 'red'
                      result = "<span style=\"color:#{color_down}\">#{median.pretty_download(true)}</span>/<span style=\"color:#{color_up}\">#{median.pretty_upload(true)}</span>".html_safe
                    end
@@ -65,7 +65,7 @@
                      result = "<span style=\"color:#{color}\">#{per.to_s} %</span>"
                    else
                      per = (median.dsavg.to_f * 100).round(3)
-                     color = per >= threshold.goal_level ? 'green' : 'red'
+                     color = per <= threshold.goal_level ? 'green' : 'red'
                      result = "<span style=\"color:#{color}\">#{per.to_s} %</span>"
                    end
 
