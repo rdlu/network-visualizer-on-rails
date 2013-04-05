@@ -56,8 +56,8 @@
                    color = (median.dsavg.to_f * 1000).round(2) <= threshold.goal_level ? 'green' : 'red'
                    result = "<span style=\"color:#{color}\">#{median.pretty_upload(true)}</span>"
                  when 'jitter'
-                   color_down = (median.dsavg.to_f * 1000).round(2) <= threshold.goal_level ? 'green' : 'red'
-                   color_up = (median.sdavg.to_f * 1000).round(2) <= threshold.goal_level ? 'green' : 'red'
+                   color_down = (median.sdavg.to_f * 1000).round(2) <= threshold.goal_level ? 'green' : 'red'
+                   color_up = (median.dsavg.to_f * 1000).round(2) <= threshold.goal_level ? 'green' : 'red'
                    result = "<span style=\"color:#{color_down}\">#{median.pretty_download(true)}</span>" +
                             "/<span style=\"color:#{color_up}\">#{median.pretty_upload(true)}</span>"
                  when 'loss'
@@ -67,7 +67,7 @@
                      result = "<span style=\"color:#{color}\">#{per.to_s} %</span>"
                    else
                      per = (median.dsavg.to_f*100).round(3)
-                     color = per <= threshold.goal_level ? 'green' : 'red'
+                     color = per <= (threshold.goal_level*100) ? 'green' : 'red'
                      result = "<span style=\"color:#{color}\">#{per.to_s} %</span>"
                    end
 
