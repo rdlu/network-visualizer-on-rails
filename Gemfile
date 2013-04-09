@@ -62,9 +62,6 @@ group :development do
   gem 'yaml_db'
 end
 
-# Use unicorn as the app server
-gem 'unicorn'
-
 group :test, :development do
 	gem 'rspec-rails'
 	gem 'fabrication'
