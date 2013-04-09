@@ -43,6 +43,9 @@
             <div class="input-prepend">
               <span class="add-on"><i class="icon-time"></i></span>
               <%= text_field :time, :start, :class => 'input-mini bootstrap-timepicker', :value => Time.current.strftime('%H:%M') %>
+            </div> <br/>
+            <div id="error_Ini" style = "display: none" class="alert alert-error">
+              Data de início maior que a de fim.
             </div>
           </div>
         </div>
@@ -56,6 +59,9 @@
             <div class="input-prepend">
               <span class="add-on"><i class="icon-time"></i></span>
               <%= text_field :time, :end, :class => 'input-mini bootstrap-timepicker', :value => Time.current.strftime('%H:%M') %>
+            </div> <br/>
+            <div id="error_Fim" style = "display: none"  class="alert alert-error ">
+              Data de fim menor que a de início.
             </div>
           </div>
         </div>
@@ -70,6 +76,38 @@
 <% end %>
 
 <script>
+
+    $(document).ready(function (){
+
+        $('#date_start')
+                .datepicker()
+                .on('changeDate', function(ev){
+                    var vetdata = $('#date_end').val().split('/');
+                    if (ev.date.valueOf() > moment(vetdata[2]+'/'+vetdata[1]+'/'+vetdata[0]).valueOf()){
+                     // $('#error_Ini').html("Data de início maior que a de fim.");
+                      $('#error_Ini').show();
+                      $('#report-add').attr('disabled','disabled');
+                    }else{
+                      $('#error_Ini').hide();
+                      $('#report-add').removeAttr("disabled");
+                    }
+
+                });
+        $('#date_end')
+                .datepicker()
+                .on('changeDate', function(ev){
+                    var vetdata = $('#date_start').val().split('/');
+                    if (ev.date.valueOf() < moment(vetdata[2]+'/'+vetdata[1]+'/'+vetdata[0]).valueOf()){
+                      //$('#error_Fim').html('Data de fim menor que a de início.');
+                      $('#report-add').attr('disabled','disabled');
+                      $('#error_Fim').show();
+                    }else{
+                      $('#error_Fim').hide();
+                      $('#report-add').removeAttr("disabled");
+                    }
+               });
+    });
+
   function toggleOpDates(selected){
       $('#op_col2').attr('style','display:block');
       var sel= "";
@@ -80,16 +118,16 @@
                                    "<option value='30'>Ultimo mês</option>"+
                                    "<option value='90'>Ultimos 3 meses</option>"+
                                  "</select>";
-                          $('#date_start').attr('value','<%= (Date.current - 7).strftime('%d/%m/%Y') %>');
-                          $('#date_end').attr('value','<%= Date.current.strftime('%d/%m/%Y') %>');
+                          $('#date_start').datepicker('setValue',moment(Date.current).subtract('days',7).format('DD/MM/YYYY'));
+                          $('#date_end').datepicker('setValue',moment(Date.current).format('DD/MM/YYYY'));
               break;
           case 'eaq_compliance_graph': sel= "<select id='sel_eaq_compliance_graph' onchange='selDate(this.value)'>" +
                                           "<option value='183' selected>Ultimos 6 meses</option>"+
                                           "<option value='365'>Ultimo ano</option>"+
                                           "<option value='730'>Ultimos 2 anos</option>"+
                                           "</select>";
-                                      $('#date_start').attr('value','<%= (Date.current - 183).strftime('%d/%m/%Y') %>');
-                                      $('#date_end').attr('value','<%= Date.current.strftime('%d/%m/%Y') %>');
+                          $('#date_start').datepicker('setValue', moment(Date.current).subtract('days',183).format('DD/MM/YYYY'));
+                          $('#date_end').datepicker('setValue',moment(Date.current).format('DD/MM/YYYY'));
               break;
           case 'graph': sel= "<select id='sel_graph' onchange='selDate(this.value)'>" +
                               "<option value='1' selected>Ultimo dia</option>"+
@@ -97,24 +135,27 @@
                               "<option value='3'>Ultimos 3 dias</option>"+
                               "<option value='7'>Ultimos 7 dias</option>"+
                               "</select>";
-                          $('#date_start').attr('value','<%= (Date.current - 1).strftime('%d/%m/%Y') %>');
-                          $('#date_end').attr('value','<%= Date.current.strftime('%d/%m/%Y') %>');
+                          $('#date_start').datepicker('setValue',moment(Date.current).subtract('days',1).format('DD/MM/YYYY'));
+                          $('#date_end').datepicker('setValue',moment(Date.current).format('DD/MM/YYYY'));
               break;
           case 'eaq_table':  sel= "<select id='sel_eaq_table' onchange='selDate(this.value)'>" +
                                   "<option value='183' selected>Ultimos 6 meses</option>"+
                                   "<option value='365'>Ultimo ano</option>"+
                                   "<option value='730'>Ultimos 2 anos</option>"+
                                   "</select>";
-                              $('#date_start').attr('value','<%= (Date.current - 183).strftime('%d/%m/%Y') %>');
-                              $('#date_end').attr('value','<%= Date.current.strftime('%d/%m/%Y') %>');
+                          $('#date_start').datepicker('setValue', moment(Date.current).subtract('days',183).format('DD/MM/YYYY'));
+                          $('#date_end').datepicker('setValue', moment(Date.current).format('DD/MM/YYYY'));
               break;
+
+          default: $('#op_col2').attr('style','display:none');
       }
 
       $('#sel_date').html(sel);
   }
 
   function selDate(selected){
-      $('#date_start').attr('value',moment(Date.current).subtract('days',selected).format('DD/MM/YYYY'));
-      $('#date_end').attr('value','<%= Date.current.strftime('%d/%m/%Y') %>');
+      $('#date_start').datepicker('setValue',moment(Date.current).subtract('days',selected).format('DD/MM/YYYY'));
+      $('#date_end').datepicker('setValue',moment(Date.current).format('DD/MM/YYYY'));
+
   }
 </script>
