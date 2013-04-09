@@ -319,8 +319,8 @@
                 },
                 xAxis:{
                     type:'datetime',
-                    min:self.range.start,
-                    max:self.range.end
+                    min: self.range.start.valueOf(),
+                    max: self.range.end.valueOf()
                 },
                 yAxis:{
                     title:{
@@ -334,7 +334,7 @@
                                 moment(this.x).format('YYYY-MM-DD HH:mm:ss Z') + '</em><br />';
                     }
                 },
-                series:self.series()
+                series: self.series()
             });
         };
     }
@@ -424,8 +424,8 @@
                 },
                 xAxis:{
                     type:'datetime',
-                    min:self.range.start,
-                    max:self.range.end
+                    min: self.range.start.valueOf(),
+                    max: self.range.end.valueOf()
                 },
                 yAxis:{
                     title:{
@@ -469,7 +469,8 @@
             direction = typeof direction !== 'undefined' ? direction : 'dsavg';
             var retorno = [];
             jQuery.each(self.results,function(index,result) {
-                retorno.push({x: moment(result.x), y: result[direction], extra: result.extra})
+                retorno.push({x: new Date(Date.parse(result.x)), y: result[direction], extra: result.extra});
+                //retorno.push([Date.parse(result.x), result[direction]]);
             });
             return retorno;
         };
@@ -494,6 +495,7 @@
             jQuery.each(directions, function(idx,direction) {
                 retorno.push({name:direction.title,data:self.dataset(direction.name),visible:direction.visible});
             });
+            console.log(retorno);
             return retorno;
         };
 
@@ -528,8 +530,8 @@
                 },
                 xAxis:{
                     type:'datetime',
-                    min:self.range.start,
-                    max:self.range.end
+                    min: self.range.start.valueOf(),
+                    max: self.range.end.valueOf()
                 },
                 yAxis:{
                     title:{

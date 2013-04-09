@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.12'
+gem 'rails', '3.2.13'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -24,7 +24,7 @@ gem 'yell-rails'
 gem 'daemons'
 gem 'foreigner' #sincroniza chaves estrangeiras para o banco de dados
 gem 'airbrake'
-gem 'highcharts-rails', '~> 2.3.5'
+gem 'highcharts-rails', '~> 3.0.1'
 gem 'ruby-units'
 
 # To use ActiveModel has_secure_password
