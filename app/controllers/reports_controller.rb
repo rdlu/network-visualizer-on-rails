@@ -387,38 +387,45 @@ class ReportsController < ApplicationController
 	timestamp = report.xpath("report/timestamp").children.to_s
 	agent_type = report.xpath("report/agent_type").children.to_s
 
-	@rep = Report.create(user: user, uuid: uuid, timestamp: DateTime.strptime(timestamp, '%s'), agent_type: agent_type)
+    case agent_type
+    when "windows"
+        # do windoze-y magic here
+    when /linux|android/
+        @rep = Report.create(user: user, uuid: uuid, timestamp: DateTime.strptime(timestamp, '%s'), agent_type: agent_type)
 
-	results = report.xpath("report/results").children
+        results = report.xpath("report/results").children
 
-	results.each do |result|
-		case result.name	
-		when "availability"
-			total = result.xpath("total").children.text.to_i
-			success = result.xpath("success").children.text.to_i
+        results.each do |result|
+            case result.name	
+            when "availability"
+                total = result.xpath("total").children.text.to_i
+                success = result.xpath("success").children.text.to_i
 
-			@probe = Probe.find_by_ipaddress(user)
-			@schedule = @probe.schedules.last
+                @probe = Probe.find_by_ipaddress(user)
+                @schedule = @probe.schedules.last
 
-			@metric = Metric.find_by_plugin("availability")
+                @metric = Metric.find_by_plugin("availability")
 
-			@threshold = Threshold.find_by_goal_method("availability")
+                @threshold = Threshold.find_by_goal_method("availability")
 
-			@median = Median.new(schedule_uuid: @schedule.uuid,
-								 start_timestamp: (DateTime.strptime(timestamp, '%s') - 23.hours - 59.minutes - 59.seconds),
-								 end_timestamp: DateTime.strptime(timestamp, '%s'),
-								 expected_points: total,
-								 total_points: success,
-                 dsavg: success.to_f/total.to_f
-								)
-			@median.schedule = @schedule
-			@median.threshold = @threshold
+                @median = Median.new(schedule_uuid: @schedule.uuid,
+                                     start_timestamp: (DateTime.strptime(timestamp, '%s') - 23.hours - 59.minutes - 59.seconds),
+                                     end_timestamp: DateTime.strptime(timestamp, '%s'),
+                                     expected_points: total,
+                                     total_points: success,
+                                     dsavg: success.to_f/total.to_f
+                                    )
+                @median.schedule = @schedule
+                @median.threshold = @threshold
 
-			@median.save
-		else
-			# do nothing
-		end
-	end
+                @median.save
+            else
+                # do nothing
+            end
+        end
+    else
+        # do nothing
+    end
 
 	respond_to do |format|
 		format.xml { render xml: "<report><status>OK</status></report>" }
