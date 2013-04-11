@@ -42,46 +42,6 @@
           <p> Sintetização com os dados anatel.</p>
         </div>
       </div>
-<<<<<<< Updated upstream
-    </div>
-    <div class="tab-pane" id="tab3">
-      <div class="row-fluid">
-        <div class="span12">
-          <div id="all_probes"></div>
-=======
-      <div class="tab-pane" id="tab3">
-        <div class="row-fluid">
-          <div class="span12">
-              <div class="navbar">
-                <div class="navbar-inner">
-                  <div class="span10">
-                    <%= form_tag nil, :class => "navbar-form form-inline", :method => :get do %>
-                        <label for="probe-type" class="filter-bar">Tipo da sonda:</label>
-                        <select name="by_type" id="probe-type" class="span2">
-                          <option value="">Todas</option>
-                          <% Probe.types.each_with_index do |type,index| %>
-                              <option value="<%= type.at(1) %>" <%= params[:by_type].to_s == type.at(1).to_s ? "selected=\"selected\"".html_safe : "" %>><%= type.at(0) %></option>
-                          <% end %>
-                        </select>
-                        <label for="probe-city" class="filter-bar">Cidade:</label>
-                        <input type="text" name="by_city" id="probe-city" class="span3" value="<%= params[:by_city].to_s%>">
-                        <label for="probe-type" class="filter-bar">UF:</label>
-                        <select name="by_state" id="probe-state" class="span2">
-                          <option value="">Todas</option>
-                          <% Probe.states.each do |state| %>
-                              <option value="<%= state.at(1) %>" <%= params[:by_state].to_s == state.at(1).to_s ? "selected=\"selected\"".html_safe : "" %>><%= state.at(1).upcase %></option>
-                          <% end %>
-                        </select>
-                        <button type="submit" class="btn">Filtrar!</button>
-                    <% end %>
-                  </div>
-                </div>
-            </div>
-            <div id="all_probes" ></div>
-          </div>
->>>>>>> Stashed changes
-        </div>
-      </div>
     </div>
   </div>
 </div>
