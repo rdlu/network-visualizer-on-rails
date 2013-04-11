@@ -35,9 +35,13 @@
             <td><%= metric.db_unit %></td>
             <td><%= metric.reverse %></td>
             <td><%= metric.order %></td>
+            <td><%= link_to 'Visualizar', metric %></td>
             <td>
               <% if can? :create, Metric %><%= link_to 'Editar', edit_metric_path(metric) %>
               <% end %></td>
+
+
+
           </tr>
       <% end %>
     </table>

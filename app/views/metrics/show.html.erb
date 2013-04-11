@@ -1,30 +1,44 @@
-<p id="notice"><%= notice %></p>
+<h2> Visualização da Métrica</h2>
+<div class="row-fluid">
+  <p id="notice"><%= notice %></p>
+    <p>
+      <b>Nome:</b>
+      <%= @metric.name %>
+    </p>
 
-<p>
-  <b>Name:</b>
-  <%= @metric.name %>
-</p>
+    <p>
+      <b>Plugin:</b>
+      <%= @metric.plugin %>
+    </p>
 
-<p>
-  <b>Plugin:</b>
-  <%= @metric.plugin %>
-</p>
+    <p>
+      <b>Descrição:</b>
+      <%= @metric.description %>
+    </p>
 
-<p>
-  <b>Description:</b>
-  <%= @metric.description %>
-</p>
+    <p>
+      <b>Reverse:</b>
+      <%= @metric.reverse %>
+    </p>
 
-<p>
-  <b>Reverse:</b>
-  <%= @metric.reverse %>
-</p>
+    <p>
+      <b>Ordem:</b>
+      <%= @metric.order %>
+    </p>
 
-<p>
-  <b>Order:</b>
-  <%= @metric.order %>
-</p>
-
-
-<%= link_to 'Edit', edit_metric_path(@metric) %> |
-<%= link_to 'Back', metrics_path %>
+    <p>
+      <b>Usada em :</b>
+    <% @thresholds.each do |threshold|
+      if  @metric.name == threshold.metric.name  %>
+          <span class="label label-info" data-title="<%= threshold.description %>"><%= threshold.name %></span>
+    <% end
+       end %>
+    </p>
+  <div class="control-group" >
+    <div class="controls">
+      <% if can? :edit, Metric %><%= link_to 'Editar', edit_metric_path(@metric), :class => "btn btn-primary btn-large "%>
+      <% end %>
+      <%= link_to 'Voltar', metrics_path, :class => "btn btn-inverse btn-large "  %>
+    </div>
+  </div>
+</div>

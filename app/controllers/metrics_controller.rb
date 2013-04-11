@@ -56,4 +56,11 @@ class MetricsController < ApplicationController
       end
     end
   end
+
+  def show
+    authorize! :read, self
+    @metric = Metric.find(params[:id])
+    @thresholds = Threshold.all
+  end
+
 end
