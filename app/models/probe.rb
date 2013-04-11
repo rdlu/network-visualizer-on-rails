@@ -62,7 +62,7 @@ class Probe < ActiveRecord::Base
       begin
          return Resolv::DNS.new(:nameserver => ['143.54.85.34'], :search => ['vivo.com.br'], :ndots => 1).getaddress(self.ipaddress).to_s
       rescue
-        return "DNS não resolvido #chateado"
+        return "DNS não resolvido."
       end
     end
     false
