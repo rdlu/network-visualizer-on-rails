@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130415145653) do
+ActiveRecord::Schema.define(:version => 20130415165811) do
 
   create_table "compliances", :force => true do |t|
     t.integer   "schedule_id"
@@ -72,9 +72,12 @@ ActiveRecord::Schema.define(:version => 20130415145653) do
     t.float    "loss_up"
     t.integer  "pom_down"
     t.integer  "pom_up"
-    t.string   "uuid",                 :limit => nil
-    t.datetime "created_at",                          :null => false
-    t.datetime "updated_at",                          :null => false
+    t.string   "uuid",                      :limit => nil
+    t.datetime "created_at",                               :null => false
+    t.datetime "updated_at",                               :null => false
+    t.float    "dns_efic"
+    t.integer  "dns_timeout_errors"
+    t.integer  "dns_server_failure_errors"
   end
 
   create_table "evaluations", :force => true do |t|

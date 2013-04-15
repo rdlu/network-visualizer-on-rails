@@ -434,19 +434,22 @@ class ReportsController < ApplicationController
                          )
 
         # Results
-        rtt                  = report.xpath("report/results/rtt").children.first.to_s.to_f
-        throughput_udp_down  = report.xpath("report/results/throughput_udp/down").children.first.to_s.to_f
-        throughput_udp_up    = report.xpath("report/results/throughput_udp/up").children.first.to_s.to_f
-        throughput_tcp_down  = report.xpath("report/results/throughput_tcp/down").children.first.to_s.to_f
-        throughput_tcp_up    = report.xpath("report/results/throughput_tcp/up").children.first.to_s.to_f
-        throughput_http_down = report.xpath("report/results/throughput_http/down").children.first.to_s.to_f
-        throughput_http_up   = report.xpath("report/results/throughput_http/up").children.first.to_s.to_f
-        jitter_down          = report.xpath("report/results/jitter/down").children.first.to_s.to_f
-        jitter_up            = report.xpath("report/results/jitter/up").children.first.to_s.to_f
-        loss_down            = report.xpath("report/results/loss/down").children.first.to_s.to_f
-        loss_up              = report.xpath("report/results/loss/up").children.first.to_s.to_f
-        pom_down             = report.xpath("report/results/pom/down").children.first.to_s.to_i
-        pom_up               = report.xpath("report/results/pom/up").children.first.to_s.to_i
+        rtt                        = report.xpath("report/results/rtt").children.first.to_s.to_f
+        throughput_udp_down        = report.xpath("report/results/throughput_udp/down").children.first.to_s.to_f
+        throughput_udp_up          = report.xpath("report/results/throughput_udp/up").children.first.to_s.to_f
+        throughput_tcp_down        = report.xpath("report/results/throughput_tcp/down").children.first.to_s.to_f
+        throughput_tcp_up          = report.xpath("report/results/throughput_tcp/up").children.first.to_s.to_f
+        throughput_http_down       = report.xpath("report/results/throughput_http/down").children.first.to_s.to_f
+        throughput_http_up         = report.xpath("report/results/throughput_http/up").children.first.to_s.to_f
+        jitter_down                = report.xpath("report/results/jitter/down").children.first.to_s.to_f
+        jitter_up                  = report.xpath("report/results/jitter/up").children.first.to_s.to_f
+        loss_down                  = report.xpath("report/results/loss/down").children.first.to_s.to_f
+        loss_up                    = report.xpath("report/results/loss/up").children.first.to_s.to_f
+        pom_down                   = report.xpath("report/results/pom/down").children.first.to_s.to_i
+        pom_up                     = report.xpath("report/results/pom/up").children.first.to_s.to_i
+        dns_efic                   = report.xpath("report/results/dns/efic").children.first.to_s.to_i
+        dns_timeout_errors         = report.xpath("report/results/dns/errors/timeout").children.first.to_s.to_i
+        dns_server_failure_errors  = report.xpath("report/results/dns/errors/server_failure").children.first.to_s.to_i
 
         @dynamic_result = DynamicResult.create(rtt: rtt,
                                                throughput_udp_down: throughput_udp_down,
@@ -461,7 +464,10 @@ class ReportsController < ApplicationController
                                                loss_up: loss_up,
                                                pom_down: pom_down,
                                                pom_up: pom_up,
-                                               uuid: uuid
+                                               uuid: uuid,
+                                               dns_efic: dns_efic,
+                                               dns_timeout_errors: dns_timeout_errors,
+                                               dns_server_failure_errors: dns_server_failure_errors
                                               )
     when /linux|android/
         @rep = Report.create(user: user, uuid: uuid, timestamp: DateTime.strptime(timestamp, '%s'), agent_type: agent_type)
