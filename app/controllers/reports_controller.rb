@@ -469,6 +469,28 @@ class ReportsController < ApplicationController
                                                dns_timeout_errors: dns_timeout_errors,
                                                dns_server_failure_errors: dns_server_failure_errors
                                               )
+
+        dns_server = dns_url = dns_delay = nil
+        report.xpath("report/results/dns").children.each do |c|
+            if c.name == "test"
+                c.children.each do |cc|
+                    case cc.name
+                    when "server"
+                        dns_server = cc.children.first.to_s
+                    when "url"
+                        dns_url = cc.children.first.to_s
+                    when "delay" 
+                        dns_delay = cc.children.first.to_s.to_f
+                    end
+                end
+            end
+        end
+
+        @dns_dynamic_test_result = DnsDynamicTestResult.create(server: dns_server,
+                                                               url: dns_url,
+                                                               delay: dns_delay,
+                                                               uuid: uuid
+                                                              )
     when /linux|android/
         @rep = Report.create(user: user, uuid: uuid, timestamp: DateTime.strptime(timestamp, '%s'), agent_type: agent_type)
 
