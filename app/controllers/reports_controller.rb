@@ -383,26 +383,70 @@ class ReportsController < ApplicationController
 	report = Nokogiri::XML(params[:report])
 
 	user = report.xpath("report/user").children.to_s
-	uuid = report.xpath("report/uuid").children.to_s
+	uuid = SecureRandom.uuid # Nao estamos mandando um UUID de verdade ainda no XML.
 	timestamp = report.xpath("report/timestamp").children.to_s
 	agent_type = report.xpath("report/agent_type").children.to_s
 
     case agent_type
     when "windows"
-        # do windoze-y magic here
-        rtt                  = result.xpath("report/results/rtt").children.first.to_s.to_f
-        throughput_udp_down  = results.xpath("report/results/throughput_udp/down").children.first.to_s.to_f
-        throughput_udp_up    = results.xpath("report/results/throughput_udp/up").children.first.to_s.to_f
-        throughput_tcp_down  = results.xpath("report/results/throughput_tcp/down").children.first.to_s.to_f
-        throughput_tcp_up    = results.xpath("report/results/throughput_tcp/up").children.first.to_s.to_f
-        throughput_http_down = results.xpath("report/results/throughput_http/down").children.first.to_s.to_f
-        throughput_http_up   = results.xpath("report/results/throughput_http/up").children.first.to_s.to_f
-        jitter_down          = results.xpath("report/results/jitter/down").children.first.to_s.to_f
-        jitter_up            = results.xpath("report/results/jitter/up").children.first.to_s.to_f
-        loss_down            = results.xpath("report/results/loss/down").children.first.to_s.to_f
-        loss_up              = results.xpath("report/results/loss/up").children.first.to_s.to_f
-        pom_down             = results.xpath("report/results/pom/down").children.first.to_s.to_i
-        pom_up               = results.xpath("report/results/pom/up").children.first.to_s.to_i
+        # KPI
+        cell_id = report.xpath("report/kpis/cell_id").children.first.to_s
+        cell_id = nil if cell_id == "-"
+        
+        model = report.xpath("report/kpis/model").children.first.to_s
+        model = nil if model == "-"
+
+        conn_tech = report.xpath("report/kpis/conn_tech").children.first.to_s
+        conn_tech = nil if conn_tech == "-"
+
+        conn_type = report.xpath("report/kpis/conn_type").children.first.to_s
+        conn_type = nil if conn_type == "-"
+
+        error_rate = report.xpath("report/kpis/error_rate").children.first.to_s
+        error_rate = nil if error_rate == "-"
+
+        lac = report.xpath("report/kpis/lac").children.first.to_s
+        if lac == "-"
+            lac = nil
+        else
+            lac = lac.to_i
+        end
+            
+        mtu = report.xpath("report/kpis/mtu").children.first.to_s
+        if mtu == "-"
+            mtu = nil
+        else
+            mtu = mtu.to_i
+        end
+
+        route = report.xpath("report/kpis/route").children.first.to_s
+        route = nil if route == "-"
+
+        @kpi = Kpi.create(schedule_uuid: uuid,
+                          uuid: SecureRandom.uuid,
+                          cell_id: cell_id,
+                          model: model,
+                          conn_tech: conn_tech,
+                          conn_type: conn_type,
+                          error_rate: error_rate,
+                          lac: lac,
+                          mtu: mtu
+                         )
+
+        # Results
+        rtt                  = report.xpath("report/results/rtt").children.first.to_s.to_f
+        throughput_udp_down  = report.xpath("report/results/throughput_udp/down").children.first.to_s.to_f
+        throughput_udp_up    = report.xpath("report/results/throughput_udp/up").children.first.to_s.to_f
+        throughput_tcp_down  = report.xpath("report/results/throughput_tcp/down").children.first.to_s.to_f
+        throughput_tcp_up    = report.xpath("report/results/throughput_tcp/up").children.first.to_s.to_f
+        throughput_http_down = report.xpath("report/results/throughput_http/down").children.first.to_s.to_f
+        throughput_http_up   = report.xpath("report/results/throughput_http/up").children.first.to_s.to_f
+        jitter_down          = report.xpath("report/results/jitter/down").children.first.to_s.to_f
+        jitter_up            = report.xpath("report/results/jitter/up").children.first.to_s.to_f
+        loss_down            = report.xpath("report/results/loss/down").children.first.to_s.to_f
+        loss_up              = report.xpath("report/results/loss/up").children.first.to_s.to_f
+        pom_down             = report.xpath("report/results/pom/down").children.first.to_s.to_i
+        pom_up               = report.xpath("report/results/pom/up").children.first.to_s.to_i
 
         @dynamic_result = DynamicResult.create(rtt: rtt,
                                                throughput_udp_down: throughput_udp_down,
@@ -416,7 +460,8 @@ class ReportsController < ApplicationController
                                                loss_down: loss_down,
                                                loss_up: loss_up,
                                                pom_down: pom_down,
-                                               pom_up: pom_up
+                                               pom_up: pom_up,
+                                               uuid: uuid
                                               )
     when /linux|android/
         @rep = Report.create(user: user, uuid: uuid, timestamp: DateTime.strptime(timestamp, '%s'), agent_type: agent_type)
