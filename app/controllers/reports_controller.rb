@@ -470,6 +470,7 @@ class ReportsController < ApplicationController
                                                dns_server_failure_errors: dns_server_failure_errors
                                               )
 
+        # DNS test results
         dns_server = dns_url = dns_delay = nil
         report.xpath("report/results/dns").children.each do |c|
             if c.name == "test"
@@ -491,6 +492,33 @@ class ReportsController < ApplicationController
                                                                delay: dns_delay,
                                                                uuid: uuid
                                                               )
+
+        # Web Load test results
+        web_load_url = web_load_time = web_load_size = web_load_throughput = nil
+        report.xpath("report/results/web_load").children.each do |c|
+            if c.name == "test"
+                c.children.each do |cc|
+                    case cc.name
+                    when "url"
+                        web_load_url = cc.children.first.to_s
+                    when "time"
+                        web_load_time = cc.children.first.to_s.to_f
+                    when "size"
+                        web_load_size = cc.children.first.to_s.to_f
+                    when "throughput"
+                        web_load_throughput = cc.children.first.to_s.to_f
+                    end
+                end
+            end
+        end
+
+        @web_load_dynamic_test = WebLoadDynamicResult.create(url: web_load_url,
+                                                             time: web_load_time,
+                                                             size: web_load_size,
+                                                             throughput: web_load_throughput,
+                                                             uuid: uuid
+                                                            )
+
     when /linux|android/
         @rep = Report.create(user: user, uuid: uuid, timestamp: DateTime.strptime(timestamp, '%s'), agent_type: agent_type)
 
