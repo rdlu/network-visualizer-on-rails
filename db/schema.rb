@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130415165811) do
+ActiveRecord::Schema.define(:version => 20130415170543) do
 
   create_table "compliances", :force => true do |t|
     t.integer   "schedule_id"
@@ -58,6 +58,15 @@ ActiveRecord::Schema.define(:version => 20130415165811) do
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
+
+  create_table "dns_dynamic_test_results", :force => true do |t|
+    t.string   "server"
+    t.string   "url"
+    t.float    "delay"
+    t.string   "uuid",       :limit => nil
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+  end
 
   create_table "dynamic_results", :force => true do |t|
     t.float    "rtt"
