@@ -59,7 +59,7 @@ ActiveRecord::Schema.define(:version => 20130415145653) do
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
-  create_table "dynamic_reports", :force => true do |t|
+  create_table "dynamic_results", :force => true do |t|
     t.float    "rtt"
     t.float    "throughput_udp_down"
     t.float    "throughput_udp_up"

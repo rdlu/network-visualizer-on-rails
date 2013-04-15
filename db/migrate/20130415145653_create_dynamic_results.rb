@@ -1,6 +1,6 @@
-class CreateDynamicReports < ActiveRecord::Migration
+class CreateDynamicResults < ActiveRecord::Migration
   def change
-    create_table :dynamic_reports do |t|
+    create_table :dynamic_results do |t|
       t.float :rtt
       t.float :throughput_udp_down
       t.float :throughput_udp_up

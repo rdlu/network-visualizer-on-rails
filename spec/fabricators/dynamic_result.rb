@@ -1,4 +1,4 @@
-Fabricator(:dynamic_report) do
+Fabricator(:dynamic_result) do
   rtt                  1.5
   throughput_udp_down  1.5
   throughput_udp_up    1.5
