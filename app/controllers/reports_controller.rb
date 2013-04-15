@@ -390,6 +390,34 @@ class ReportsController < ApplicationController
     case agent_type
     when "windows"
         # do windoze-y magic here
+        rtt                  = result.xpath("report/results/rtt").children.first.to_s.to_f
+        throughput_udp_down  = results.xpath("report/results/throughput_udp/down").children.first.to_s.to_f
+        throughput_udp_up    = results.xpath("report/results/throughput_udp/up").children.first.to_s.to_f
+        throughput_tcp_down  = results.xpath("report/results/throughput_tcp/down").children.first.to_s.to_f
+        throughput_tcp_up    = results.xpath("report/results/throughput_tcp/up").children.first.to_s.to_f
+        throughput_http_down = results.xpath("report/results/throughput_http/down").children.first.to_s.to_f
+        throughput_http_up   = results.xpath("report/results/throughput_http/up").children.first.to_s.to_f
+        jitter_down          = results.xpath("report/results/jitter/down").children.first.to_s.to_f
+        jitter_up            = results.xpath("report/results/jitter/up").children.first.to_s.to_f
+        loss_down            = results.xpath("report/results/loss/down").children.first.to_s.to_f
+        loss_up              = results.xpath("report/results/loss/up").children.first.to_s.to_f
+        pom_down             = results.xpath("report/results/pom/down").children.first.to_s.to_i
+        pom_up               = results.xpath("report/results/pom/up").children.first.to_s.to_i
+
+        @dynamic_result = DynamicResult.create(rtt: rtt,
+                                               throughput_udp_down: throughput_udp_down,
+                                               throughput_udp_up: throughput_udp_up,
+                                               throughput_tcp_down: throughput_tcp_down,
+                                               throughput_tcp_up: throughput_tcp_up,
+                                               throughput_http_down: throughput_http_down,
+                                               throughput_http_up: throughput_http_up,
+                                               jitter_down: jitter_down,
+                                               jitter_up: jitter_up,
+                                               loss_down: loss_down,
+                                               loss_up: loss_up,
+                                               pom_down: pom_down,
+                                               pom_up: pom_up
+                                              )
     when /linux|android/
         @rep = Report.create(user: user, uuid: uuid, timestamp: DateTime.strptime(timestamp, '%s'), agent_type: agent_type)
 
