@@ -380,8 +380,15 @@
 
 
         this.series = function() {
-            if(/^throughput/.test(self.metric.plugin))
-                var directions = [{name:'upload',title:'Valor alcançado upload'},{name:'download',title:'Valor alcançado download'}];
+//            if(/^throughput/.test(self.metric.plugin))
+//                var directions = [{name:'upload',title:'Valor alcançado upload'},{name:'download',title:'Valor alcançado download'}];
+	    if(/^throughput/.test(self.metric.plugin))
+		if(self.threshold.name == "SCM4/SMP10")
+			var directions = [{name:'download',title:'Valor alcançado'}];
+		else
+                	var directions = [{name:'upload',title:'Valor alcançado upload'},{name:'download',title:'Valor alcançado download'}];
+ 
+
             else
                 var directions = [{name:'y',title:'Valor alcançado'}];
             var retorno = [];
