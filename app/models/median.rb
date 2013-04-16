@@ -141,28 +141,38 @@ class Median < ActiveRecord::Base
 
         median.save!
       when 'raw'
-        if len > 0
-          raw_sum_ds = 0
-          raw_sum_sd = 0
-          results.each do |result|
-            raw_sum_ds += result.dsavg
-            raw_sum_sd += result.sdavg
-          end
-          median.sdavg = raw_sum_sd / len.to_f / 100
-          median.dsavg = raw_sum_ds / len.to_f / 100
-          median.schedule = schedule
-          median.threshold = threshold
-          median.total_points = len
-          end_time = end_period
-          start_time = start_period
-          diff_time = end_time - start_time
-          median.expected_points = (diff_time/60) / schedule.polling
-          median.start_timestamp = start_period
-          median.end_timestamp = end_period
-          median.type = threshold.goal_period
+        0.upto(1.day/1.hour) { |i|
+          start_period_h = start_period + i*1.hour
+          end_period_h = start_period + i*2.hours
+          results = Results.where(:timestamp => start_period_h..end_period_h).where(:schedule_id => schedule.id).where(:metric_id => threshold.metric.id).all
+          len = results.length
 
-          median.save!
-        end
+          if len > 0
+            raw_sum_ds = 0
+            raw_sum_sd = 0
+            raw_sum_composto = 0
+            results.each do |result|
+              raw_sum_composto += result.dsavg > result.sdavg ? result.dsavg : result.sdavg
+              raw_sum_ds += result.dsavg
+              raw_sum_sd += result.sdavg
+            end
+            median.sdavg = raw_sum_composto / len.to_f / 100
+            #median.dsavg = raw_sum_ds / len.to_f / 100
+            median.schedule = schedule
+            median.threshold = threshold
+            median.total_points = len
+            end_time = end_period
+            start_time = start_period
+            diff_time = end_time - start_time
+            median.expected_points = (diff_time/60) / schedule.polling
+            median.start_timestamp = start_period
+            median.end_timestamp = end_period
+            median.type = threshold.goal_period
+
+            median.save!
+          end
+        }
+
       when 'availability'
         #nothing to do, already saved by report#send
       else
