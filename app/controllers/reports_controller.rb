@@ -383,13 +383,142 @@ class ReportsController < ApplicationController
 	report = Nokogiri::XML(params[:report])
 
 	user = report.xpath("report/user").children.to_s
-	uuid = report.xpath("report/uuid").children.to_s
+	uuid = SecureRandom.uuid # Nao estamos mandando um UUID de verdade ainda no XML.
 	timestamp = report.xpath("report/timestamp").children.to_s
 	agent_type = report.xpath("report/agent_type").children.to_s
 
     case agent_type
     when "windows"
-        # do windoze-y magic here
+        # KPI
+        cell_id = report.xpath("report/kpis/cell_id").children.first.to_s
+        cell_id = nil if cell_id == "-"
+        
+        model = report.xpath("report/kpis/model").children.first.to_s
+        model = nil if model == "-"
+
+        conn_tech = report.xpath("report/kpis/conn_tech").children.first.to_s
+        conn_tech = nil if conn_tech == "-"
+
+        conn_type = report.xpath("report/kpis/conn_type").children.first.to_s
+        conn_type = nil if conn_type == "-"
+
+        error_rate = report.xpath("report/kpis/error_rate").children.first.to_s
+        error_rate = nil if error_rate == "-"
+
+        lac = report.xpath("report/kpis/lac").children.first.to_s
+        if lac == "-"
+            lac = nil
+        else
+            lac = lac.to_i
+        end
+            
+        mtu = report.xpath("report/kpis/mtu").children.first.to_s
+        if mtu == "-"
+            mtu = nil
+        else
+            mtu = mtu.to_i
+        end
+
+        route = report.xpath("report/kpis/route").children.first.to_s
+        route = nil if route == "-"
+
+        @kpi = Kpi.create(schedule_uuid: uuid,
+                          uuid: SecureRandom.uuid,
+                          cell_id: cell_id,
+                          model: model,
+                          conn_tech: conn_tech,
+                          conn_type: conn_type,
+                          error_rate: error_rate,
+                          lac: lac,
+                          mtu: mtu
+                         )
+
+        # Results
+        rtt                        = report.xpath("report/results/rtt").children.first.to_s.to_f
+        throughput_udp_down        = report.xpath("report/results/throughput_udp/down").children.first.to_s.to_f
+        throughput_udp_up          = report.xpath("report/results/throughput_udp/up").children.first.to_s.to_f
+        throughput_tcp_down        = report.xpath("report/results/throughput_tcp/down").children.first.to_s.to_f
+        throughput_tcp_up          = report.xpath("report/results/throughput_tcp/up").children.first.to_s.to_f
+        throughput_http_down       = report.xpath("report/results/throughput_http/down").children.first.to_s.to_f
+        throughput_http_up         = report.xpath("report/results/throughput_http/up").children.first.to_s.to_f
+        jitter_down                = report.xpath("report/results/jitter/down").children.first.to_s.to_f
+        jitter_up                  = report.xpath("report/results/jitter/up").children.first.to_s.to_f
+        loss_down                  = report.xpath("report/results/loss/down").children.first.to_s.to_f
+        loss_up                    = report.xpath("report/results/loss/up").children.first.to_s.to_f
+        pom_down                   = report.xpath("report/results/pom/down").children.first.to_s.to_i
+        pom_up                     = report.xpath("report/results/pom/up").children.first.to_s.to_i
+        dns_efic                   = report.xpath("report/results/dns/efic").children.first.to_s.to_i
+        dns_timeout_errors         = report.xpath("report/results/dns/errors/timeout").children.first.to_s.to_i
+        dns_server_failure_errors  = report.xpath("report/results/dns/errors/server_failure").children.first.to_s.to_i
+
+        @dynamic_result = DynamicResult.create(rtt: rtt,
+                                               throughput_udp_down: throughput_udp_down,
+                                               throughput_udp_up: throughput_udp_up,
+                                               throughput_tcp_down: throughput_tcp_down,
+                                               throughput_tcp_up: throughput_tcp_up,
+                                               throughput_http_down: throughput_http_down,
+                                               throughput_http_up: throughput_http_up,
+                                               jitter_down: jitter_down,
+                                               jitter_up: jitter_up,
+                                               loss_down: loss_down,
+                                               loss_up: loss_up,
+                                               pom_down: pom_down,
+                                               pom_up: pom_up,
+                                               uuid: uuid,
+                                               dns_efic: dns_efic,
+                                               dns_timeout_errors: dns_timeout_errors,
+                                               dns_server_failure_errors: dns_server_failure_errors
+                                              )
+
+        # DNS test results
+        dns_server = dns_url = dns_delay = nil
+        report.xpath("report/results/dns").children.each do |c|
+            if c.name == "test"
+                c.children.each do |cc|
+                    case cc.name
+                    when "server"
+                        dns_server = cc.children.first.to_s
+                    when "url"
+                        dns_url = cc.children.first.to_s
+                    when "delay" 
+                        dns_delay = cc.children.first.to_s.to_f
+                    end
+                end
+            end
+        end
+
+        @dns_dynamic_test_result = DnsDynamicTestResult.create(server: dns_server,
+                                                               url: dns_url,
+                                                               delay: dns_delay,
+                                                               uuid: uuid
+                                                              )
+
+        # Web Load test results
+        web_load_url = web_load_time = web_load_size = web_load_throughput = nil
+        report.xpath("report/results/web_load").children.each do |c|
+            if c.name == "test"
+                c.children.each do |cc|
+                    case cc.name
+                    when "url"
+                        web_load_url = cc.children.first.to_s
+                    when "time"
+                        web_load_time = cc.children.first.to_s.to_f
+                    when "size"
+                        web_load_size = cc.children.first.to_s.to_f
+                    when "throughput"
+                        web_load_throughput = cc.children.first.to_s.to_f
+                    end
+                end
+            end
+        end
+
+        @web_load_dynamic_test = WebLoadDynamicResult.create(url: web_load_url,
+                                                             time: web_load_time,
+                                                             size: web_load_size,
+                                                             throughput: web_load_throughput,
+                                                             uuid: uuid
+                                                            )
+
     when /linux|android/
         @rep = Report.create(user: user, uuid: uuid, timestamp: DateTime.strptime(timestamp, '%s'), agent_type: agent_type)
 
