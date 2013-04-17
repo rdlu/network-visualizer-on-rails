@@ -105,19 +105,21 @@ class Median < ActiveRecord::Base
         Yell.new(:gelf, :facility => 'netmetric').send 'warn', "Tentativa de calculo de medianas em utilizando período não suportado: #{threshold.goal_period}",
                                                           '_schedule_id' => schedule.id, '_probe_id' => schedule.source.id, '_threshold_id' => threshold.id
     end
-    #agora consulta os valores do periodo e calcula a mediana
-    results = Results.where(:timestamp => start_period..end_period).where(:schedule_id => schedule.id).where(:metric_id => threshold.metric.id).all
-    len = results.length
-
-    median = Median.
-        where(:schedule_id => schedule.id).
-        where(:threshold_id => threshold.id).
-        where(:start_timestamp => start_period).
-        where(:end_timestamp => end_period).first
-    median = Median.new if median.nil?
 
     case threshold.goal_method
       when 'median'
+
+        #agora consulta os valores do periodo
+        results = Results.where(:timestamp => start_period..end_period).where(:schedule_id => schedule.id).where(:metric_id => threshold.metric.id).all
+        len = results.length
+
+        median = Median.
+            where(:schedule_id => schedule.id).
+            where(:threshold_id => threshold.id).
+            where(:start_timestamp => start_period).
+            where(:end_timestamp => end_period).first
+        median = Median.new if median.nil?
+
         if len > 0
           #mediana do upload
           results_ordered_by_dsavg = results.sort_by { |hsh| hsh[:dsavg] }
@@ -143,9 +145,16 @@ class Median < ActiveRecord::Base
       when 'raw'
         0.upto(1.day/1.hour) { |i|
           start_period_h = start_period + i*1.hour
-          end_period_h = start_period + i*2.hours
+          end_period_h = start_period+1.hour + i*1.hour - 1.second
           results = Results.where(:timestamp => start_period_h..end_period_h).where(:schedule_id => schedule.id).where(:metric_id => threshold.metric.id).all
           len = results.length
+
+          median = Median.
+              where(:schedule_id => schedule.id).
+              where(:threshold_id => threshold.id).
+              where(:start_timestamp => start_period_h).
+              where(:end_timestamp => end_period_h).first
+          median = Median.new if median.nil?
 
           if len > 0
             raw_sum_ds = 0
@@ -156,23 +165,23 @@ class Median < ActiveRecord::Base
               raw_sum_ds += result.dsavg
               raw_sum_sd += result.sdavg
             end
+
             median.sdavg = raw_sum_composto / len.to_f / 100
-            #median.dsavg = raw_sum_ds / len.to_f / 100
+            median.dsavg = raw_sum_composto / len.to_f / 100
             median.schedule = schedule
             median.threshold = threshold
             median.total_points = len
-            end_time = end_period
-            start_time = start_period
-            diff_time = end_time - start_time
-            median.expected_points = (diff_time/60) / schedule.polling
-            median.start_timestamp = start_period
-            median.end_timestamp = end_period
+            end_time_h = end_period_h
+            start_time_h = start_period_h
+            diff_time = end_time_h - start_time_h
+            median.expected_points = (diff_time.to_f/60).ceil / schedule.polling
+            median.start_timestamp = start_period_h
+            median.end_timestamp = end_period_h
             median.type = threshold.goal_period
 
             median.save!
           end
         }
-
       when 'availability'
         #nothing to do, already saved by report#send
       else

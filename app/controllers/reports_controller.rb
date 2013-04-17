@@ -83,43 +83,69 @@ class ReportsController < ApplicationController
 
 
     reference_metric = metric.plugin.split('_').at(0)
+    results = []
+
     case reference_metric
       when 'throughput'
         graph_threshold = {
             :download => (destination.plan[reference_metric+'_down']*1000) * threshold.goal_level,
             :upload =>  (destination.plan[reference_metric+'_up']*1000) * threshold.goal_level,
         }
+
+        raw_medians.each do |raw_median|
+          results << {
+              :x => raw_median.start_timestamp.midnight,
+              :dsavg => raw_median.dsavg,
+              :sdavg => raw_median.sdavg
+          }
+        end
       when 'rtt'
         graph_threshold = {
             :rtt => threshold.goal_level * 0.001
         }
+
+        raw_medians.each do |raw_median|
+          results << {
+              :x => raw_median.start_timestamp.midnight,
+              :y => raw_median.dsavg
+          }
+        end
+      when 'loss'
+        graph_threshold = {
+            :perda => threshold.goal_level
+        }
+
+        raw_medians.each do |raw_median|
+          results << {
+              :x => raw_median.start_timestamp,
+              :y => raw_median.dsavg
+          }
+        end
       when 'jitter'
         graph_threshold = {
             :jitter => threshold.goal_level * 0.001
         }
+
+        raw_medians.each do |raw_median|
+          results << {
+              :x => raw_median.start_timestamp.midnight,
+              :dsavg => raw_median.dsavg,
+              :sdavg => raw_median.sdavg
+          }
+        end
       else
         graph_threshold = {
             :download => threshold.goal_level,
             :upload =>  threshold.goal_level,
         }
-    end
 
-    results = []
-    if metric.plugin != 'rtt'
-      raw_medians.each do |raw_median|
-        results << {
-            :x => raw_median.start_timestamp.midnight,
-            :dsavg => raw_median.dsavg,
-            :sdavg => raw_median.sdavg
-        }
-      end
-    else
-      raw_medians.each do |raw_median|
-        results << {
-            :x => raw_median.start_timestamp.midnight,
-            :y => raw_median.dsavg
-        }
-      end
+        raw_medians.each do |raw_median|
+          results << {
+              :x => raw_median.start_timestamp.midnight,
+              :dsavg => raw_median.dsavg,
+              :sdavg => raw_median.sdavg
+          }
+        end
     end
 
     data = {

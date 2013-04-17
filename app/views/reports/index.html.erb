@@ -274,10 +274,16 @@
 
 
         this.series = function() {
-            if(self.metric.plugin != 'rtt')
-                var directions = [{name:'dsavg',title:'Upload'},{name:'sdavg',title:'Download'}];
-            else
-                var directions = [{name:'y',title:'Round Trip Time'}];
+            var directions = [{name:'dsavg',title:'Upload'},{name:'sdavg',title:'Download'}];
+            switch (self.metric.plugin) {
+                case 'rtt':
+                    directions = [{name:'y',title:'Round Trip Time'}];
+                    break;
+                case 'loss':
+                    directions = [{name:'y',title:'Perda'}];
+                    break;
+            }
+
             var retorno = [];
             jQuery.each(directions, function(idx,direction) {
                 retorno.push({name:direction.title,data:self.dataset(direction.name)});
