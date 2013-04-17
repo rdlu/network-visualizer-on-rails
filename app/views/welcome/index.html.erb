@@ -1,5 +1,4 @@
 <%= javascript_include_tag "gmap/gmap3" %>
-
 <div class="tabbable">
   <ul class="nav nav-tabs ">
     <li class="active"><a href="#tab1" data-toggle="tab">Status dos Agentes</a></li>
@@ -209,22 +208,20 @@
             success: function (response) {
                 //alert(response.length);
                 var context = '' +
-                        '<div id="table_resumo_med" class="row-fluid">' +
-                        '<div class="span12">' +
-                        '<table class="table table-bordered table-hover table-condensed" >' +
+                        '<table id="table_bruto" class="table table-bordered table-hover table-condensed sortable" >' +
                         '<thead>' +
                         '<tr>' +
-                        '<th> <div class="btn btn-info"  onclick="reload()"><i class="icon-refresh"></i></div></th>' +
+                        '<th class="sorttable_nosort" > <div class="btn btn-info"  onclick="reload()"><i class="icon-refresh"></i></div></th>' +
                         '<th style="text-align: center">Sonda</th>' +
-                        '<th style="text-align: center">Localização</th>' +
-                        '<th style="text-align: center">Última Atualização</th>' +
+                        '<th  style="text-align: center">Localização</th>' +
+                        '<th  style="text-align: center">Última Atualização</th>' +
                         '<th style="text-align: center">Throughput TCP<br/>&dArr;/&uArr;(Kbps)</th>' +
-                        '<th style="text-align: center;">Throughput HTTP<br/>&dArr;/&uArr; (Kbps)</th>' +
-                        '<th style="text-align: center">Throughput UDP<br/>&dArr;/&uArr; (Kbps)</th>' +
-                        '<th style="text-align: center">RTT (ms)</th>' +
-                        '<th style="text-align: center">Jitter<br/>&dArr;/&uArr; (ms)</th>' +
-                        '<th style="text-align: center">Loss<br/>&dArr;/&uArr; (%)</th>' +
-                        '<th style="text-align: center">Pom<br/>&dArr;/&uArr; (%)</th>' +
+                        '<th  style="text-align: center;">Throughput HTTP<br/>&dArr;/&uArr; (Kbps)</th>' +
+                        '<th  style="text-align: center">Throughput UDP<br/>&dArr;/&uArr; (Kbps)</th>' +
+                        '<th  style="text-align: center">RTT (ms)</th>' +
+                        '<th  style="text-align: center">Jitter<br/>&dArr;/&uArr; (ms)</th>' +
+                        '<th  style="text-align: center">Loss<br/>&dArr;/&uArr; (%)</th>' +
+                        '<th  style="text-align: center">Pom<br/>&dArr;/&uArr; (%)</th>' +
                         '</tr>' +
                         '</thead><tbody>';
 
@@ -255,7 +252,7 @@
 
                         if (typeof(response[i]['kpi']) == 'undefined' || response[i]['kpi'] == null)
                             context = context + '<td style="text-align: center">NULL</td>';
-                        else  context = context + '<td style="text-align: center">' + moment(response[i]['kpi']['timestamp']).format("DD/MM/YYYY HH:mm") + '</td>';
+                        else  context = context + '<td style="text-align: center" sorttable_customkey="'+moment(response[i]['kpi']['timestamp']) +'">' + moment(response[i]['kpi']['timestamp']).format("DD/MM/YYYY HH:mm") + '</td>';
 
                         if (response[i]['results']['throughput_tcp'] == null)
                             context = context + '<td style="text-align: center">NULL</td>';
@@ -301,7 +298,10 @@
 
                 }
                 context = context + '</tbody></table>';
+
                 $('#all_probes').html(context);
+                var newTableObject = document.getElementById('table_bruto');
+                sorttable.makeSortable(newTableObject);
             },
             error: function (e) {
                 console.log(e.message);
