@@ -512,11 +512,11 @@ class ReportsController < ApplicationController
                     end
                 end
 
-                @dns_dynamic_test_result = DnsDynamicTestResult.create(server: dns_server,
-                                                                       url: dns_url,
-                                                                       delay: dns_delay,
-                                                                       uuid: uuid
-                                                                      )
+                @dns_dynamic_result = DnsDynamicResult.create(server: dns_server,
+                                                              url: dns_url,
+                                                              delay: dns_delay,
+                                                              uuid: uuid
+                                                             )
             end
         end
 
@@ -537,12 +537,12 @@ class ReportsController < ApplicationController
                     end
                 end
 
-                @web_load_dynamic_test = WebLoadDynamicResult.create(url: web_load_url,
-                                                                     time: web_load_time,
-                                                                     size: web_load_size,
-                                                                     throughput: web_load_throughput,
-                                                                     uuid: uuid
-                                                                    )
+                @web_load_dynamic_result = WebLoadDynamicResult.create(url: web_load_url,
+                                                                       time: web_load_time,
+                                                                       size: web_load_size,
+                                                                       throughput: web_load_throughput,
+                                                                       uuid: uuid
+                                                                      )
             end
         end
 
@@ -602,18 +602,18 @@ class ReportsController < ApplicationController
                                 when "throughput_other_domain"
                                     throughput_other_domain = cc.children.first.to_s.to_f 
                             end
-                            @web_load_test_result = WebLoadTestResult.create(url: url,
-                                                                             time: time,
-                                                                             size: size,
-                                                                             throughput: throughput,
-                                                                             time_main_domain: time_main_domain,
-                                                                             size_main_domain: size_main_domain,
-                                                                             throughput_main_domain: throughput_main_domain,
-                                                                             time_other_domain: time_other_domain,
-                                                                             size_other_domain: size_other_domain,
-                                                                             throughput_other_domain: throughput_other_domain,
-                                                                             uuid: uuid
-                                                                            )
+                            @web_load_result = WebLoadResult.create(url: url,
+                                                                    time: time,
+                                                                    size: size,
+                                                                    throughput: throughput,
+                                                                    time_main_domain: time_main_domain,
+                                                                    size_main_domain: size_main_domain,
+                                                                    throughput_main_domain: throughput_main_domain,
+                                                                    time_other_domain: time_other_domain,
+                                                                    size_other_domain: size_other_domain,
+                                                                    throughput_other_domain: throughput_other_domain,
+                                                                    uuid: uuid
+                                                                   )
                         end
                     end
                 end

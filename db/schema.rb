@@ -59,7 +59,7 @@ ActiveRecord::Schema.define(:version => 20130418182947) do
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
-  create_table "dns_dynamic_test_results", :force => true do |t|
+  create_table "dns_dynamic_results", :force => true do |t|
     t.string   "server"
     t.string   "url"
     t.float    "delay"
@@ -317,7 +317,7 @@ ActiveRecord::Schema.define(:version => 20130418182947) do
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
 
-  create_table "web_load_dynamic_test_results", :force => true do |t|
+  create_table "web_load_dynamic_results", :force => true do |t|
     t.string   "url"
     t.float    "time"
     t.float    "size"
@@ -327,7 +327,7 @@ ActiveRecord::Schema.define(:version => 20130418182947) do
     t.datetime "updated_at",                :null => false
   end
 
-  create_table "web_load_test_results", :force => true do |t|
+  create_table "web_load_results", :force => true do |t|
     t.string   "url"
     t.float    "time"
     t.integer  "size"
