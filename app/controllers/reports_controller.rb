@@ -575,7 +575,47 @@ class ReportsController < ApplicationController
 
                 @median.save
             when "web_load"
-
+                url = time = size = throughput = time_main_domain = size_main_domain = throughput_main_domain = time_other_domain = size_other_domain = throughput_other_domain = nil
+                report.xpath("report/results/web_load").children.each do |c|
+                    if c.name == "test"
+                        c.children.each do |cc|
+                            case cc.name
+                                when "url"
+                                    url = cc.children.first.to_s
+                                when "time"
+                                    time = cc.children.first.to_s.to_f
+                                when "size"
+                                    size = cc.children.first.to_s.to_i
+                                when "throughput"
+                                    throughput = cc.children.first.to_s.to_f
+                                when "time_main_domain"
+                                    time_main_domain = cc.children.first.to_s.to_f
+                                when "size_main_domain"
+                                    size_main_domain = cc.children.first.to_s.to_i
+                                when "throughput_main_domain"
+                                    throughput_main_domain = cc.children.first.to_s.to_f 
+                                when "time_other_domain"
+                                    time_other_domain = cc.children.first.to_s.to_f 
+                                when "size_other_domain"
+                                    size_other_domain = cc.children.first.to_s.to_i 
+                                when "throughput_other_domain"
+                                    throughput_other_domain = cc.children.first.to_s.to_f 
+                            end
+                            @web_load_static_test_result.create(url: url,
+                                                                time: time,
+                                                                size: size,
+                                                                throughput: throughput,
+                                                                time_main_domain: time_main_domain,
+                                                                size_main_domain: size_main_domain,
+                                                                throughput_main_domain: throughput_main_domain,
+                                                                time_other_domain: time_other_domain,
+                                                                size_other_domain: size_other_domain,
+                                                                throughput_other_domain: throughput_other_domain,
+                                                                uuid: uuid
+                                                               )
+                        end
+                    end
+                end
             else
                 # do nothing
             end
