@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130415172412) do
+ActiveRecord::Schema.define(:version => 20130418170949) do
 
   create_table "compliances", :force => true do |t|
     t.integer   "schedule_id"
@@ -324,6 +324,22 @@ ActiveRecord::Schema.define(:version => 20130415172412) do
     t.string   "uuid",       :limit => nil
     t.datetime "created_at",                :null => false
     t.datetime "updated_at",                :null => false
+  end
+
+  create_table "web_load_static_test_results", :force => true do |t|
+    t.string   "url"
+    t.float    "time"
+    t.integer  "size"
+    t.float    "throughput"
+    t.float    "time_main_domain"
+    t.integer  "size_main_domain"
+    t.float    "throughput_main_domain"
+    t.float    "time_other_domain"
+    t.integer  "size_other_domain"
+    t.float    "throughput_other_domain"
+    t.string   "uuid",                    :limit => nil
+    t.datetime "created_at",                             :null => false
+    t.datetime "updated_at",                             :null => false
   end
 
   add_foreign_key "compliances", "schedules", :name => "compliances_schedule_id_fk", :dependent => :delete
