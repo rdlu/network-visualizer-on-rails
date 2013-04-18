@@ -45,19 +45,34 @@
     <div class="tab-pane" id="tab3">
       <div class="row-fluid">
         <div class="span12">
-          <div id="all_probes"></div>
+          <div style="float:right">
+          <div class="btn btn-primary"  onclick="reload()">Atualizar</div>
+          <input type="checkbox" name="auto_reload" onclick="autoReload(this)"><span> a cada 5 minutos</span></input>
+          </div>
+          <br/><br/>
+          <div id="loading"></div>
+          <div id="all_probes">
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
 <script type="text/javascript">
-
+    var interval;
     $(function () {
         $('#tab_resumo_med').bind('click', function (e) {
             reload();
         });
+
     });
+
+    function autoReload(id){
+        if(id.checked == false){
+           interval = clearInterval(interval); }
+        else interval = self.setInterval(function(){reload()},300000); //5min
+
+    }
 
     function htmlContent(name, ip, con, plan, status) {
         var html = "";
@@ -199,7 +214,8 @@
 
 
     function reload() {
-        $('#all_probes').html('carregando dados...');
+        $('#loading').append('carregando dados...');
+        $('#all_probes').empty();
         $.ajax({
             type: 'GET',
             url: "<%= welcome_stats_url %>",
@@ -207,14 +223,14 @@
             //data: {},
             success: function (response) {
                 //alert(response.length);
-                var context = '' +
+                var context =
                         '<table id="table_bruto" class="table table-bordered table-hover table-condensed sortable" >' +
                         '<thead>' +
                         '<tr>' +
-                        '<th class="sorttable_nosort" > <div class="btn btn-info"  onclick="reload()"><i class="icon-refresh"></i></div></th>' +
+                        '<th ></th>' +
                         '<th style="text-align: center">Sonda</th>' +
-                        '<th  style="text-align: center">Localização</th>' +
-                        '<th  style="text-align: center">Última Atualização</th>' +
+                        '<th style="text-align: center">Localização</th>' +
+                        '<th style="text-align: center">Última Atualização</th>' +
                         '<th style="text-align: center">Throughput TCP<br/>&dArr;/&uArr;(Kbps)</th>' +
                         '<th  style="text-align: center;">Throughput HTTP<br/>&dArr;/&uArr; (Kbps)</th>' +
                         '<th  style="text-align: center">Throughput UDP<br/>&dArr;/&uArr; (Kbps)</th>' +
@@ -298,10 +314,10 @@
 
                 }
                 context = context + '</tbody></table>';
-
-                $('#all_probes').html(context);
+                $('#all_probes').append(context);
                 var newTableObject = document.getElementById('table_bruto');
                 sorttable.makeSortable(newTableObject);
+                $('#loading').empty();
             },
             error: function (e) {
                 console.log(e.message);
