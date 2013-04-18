@@ -493,7 +493,8 @@ class ReportsController < ApplicationController
                                                uuid: uuid,
                                                dns_efic: dns_efic,
                                                dns_timeout_errors: dns_timeout_errors,
-                                               dns_server_failure_errors: dns_server_failure_errors
+                                               dns_server_failure_errors: dns_server_failure_errors,
+                                               user: user
                                               )
 
         # DNS test results
