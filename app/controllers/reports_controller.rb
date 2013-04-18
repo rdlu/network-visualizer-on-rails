@@ -602,18 +602,18 @@ class ReportsController < ApplicationController
                                 when "throughput_other_domain"
                                     throughput_other_domain = cc.children.first.to_s.to_f 
                             end
-                            @web_load_static_test_result.create(url: url,
-                                                                time: time,
-                                                                size: size,
-                                                                throughput: throughput,
-                                                                time_main_domain: time_main_domain,
-                                                                size_main_domain: size_main_domain,
-                                                                throughput_main_domain: throughput_main_domain,
-                                                                time_other_domain: time_other_domain,
-                                                                size_other_domain: size_other_domain,
-                                                                throughput_other_domain: throughput_other_domain,
-                                                                uuid: uuid
-                                                               )
+                            @web_load_test_result = WebLoadTestResult.create(url: url,
+                                                                             time: time,
+                                                                             size: size,
+                                                                             throughput: throughput,
+                                                                             time_main_domain: time_main_domain,
+                                                                             size_main_domain: size_main_domain,
+                                                                             throughput_main_domain: throughput_main_domain,
+                                                                             time_other_domain: time_other_domain,
+                                                                             size_other_domain: size_other_domain,
+                                                                             throughput_other_domain: throughput_other_domain,
+                                                                             uuid: uuid
+                                                                            )
                         end
                     end
                 end

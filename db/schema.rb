@@ -327,7 +327,7 @@ ActiveRecord::Schema.define(:version => 20130418182947) do
     t.datetime "updated_at",                :null => false
   end
 
-  create_table "web_load_static_test_results", :force => true do |t|
+  create_table "web_load_test_results", :force => true do |t|
     t.string   "url"
     t.float    "time"
     t.integer  "size"

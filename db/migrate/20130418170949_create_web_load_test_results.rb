@@ -1,6 +1,6 @@
-class CreateWebLoadStaticTestResults < ActiveRecord::Migration
+class CreateWebLoadTestResults < ActiveRecord::Migration
   def change
-    create_table :web_load_static_test_results do |t|
+    create_table :web_load_test_results do |t|
       t.string :url
       t.float :time
       t.integer :size
