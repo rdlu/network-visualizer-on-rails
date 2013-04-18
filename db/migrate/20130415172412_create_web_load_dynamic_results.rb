@@ -1,6 +1,6 @@
-class CreateWebLoadDynamicTestResults < ActiveRecord::Migration
+class CreateWebLoadDynamicResults < ActiveRecord::Migration
   def change
-    create_table :web_load_dynamic_test_results do |t|
+    create_table :web_load_dynamic_results do |t|
       t.string :url
       t.float :time
       t.float :size

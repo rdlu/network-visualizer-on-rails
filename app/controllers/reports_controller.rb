@@ -493,7 +493,8 @@ class ReportsController < ApplicationController
                                                uuid: uuid,
                                                dns_efic: dns_efic,
                                                dns_timeout_errors: dns_timeout_errors,
-                                               dns_server_failure_errors: dns_server_failure_errors
+                                               dns_server_failure_errors: dns_server_failure_errors,
+                                               user: user
                                               )
 
         # DNS test results
@@ -510,14 +511,14 @@ class ReportsController < ApplicationController
                         dns_delay = cc.children.first.to_s.to_f
                     end
                 end
+
+                @dns_dynamic_result = DnsDynamicResult.create(server: dns_server,
+                                                              url: dns_url,
+                                                              delay: dns_delay,
+                                                              uuid: uuid
+                                                             )
             end
         end
-
-        @dns_dynamic_test_result = DnsDynamicTestResult.create(server: dns_server,
-                                                               url: dns_url,
-                                                               delay: dns_delay,
-                                                               uuid: uuid
-                                                              )
 
         # Web Load test results
         web_load_url = web_load_time = web_load_size = web_load_throughput = nil
@@ -535,15 +536,15 @@ class ReportsController < ApplicationController
                         web_load_throughput = cc.children.first.to_s.to_f
                     end
                 end
+
+                @web_load_dynamic_result = WebLoadDynamicResult.create(url: web_load_url,
+                                                                       time: web_load_time,
+                                                                       size: web_load_size,
+                                                                       throughput: web_load_throughput,
+                                                                       uuid: uuid
+                                                                      )
             end
         end
-
-        @web_load_dynamic_test = WebLoadDynamicResult.create(url: web_load_url,
-                                                             time: web_load_time,
-                                                             size: web_load_size,
-                                                             throughput: web_load_throughput,
-                                                             uuid: uuid
-                                                            )
 
     when /linux|android/
         @rep = Report.create(user: user, uuid: uuid, timestamp: DateTime.strptime(timestamp, '%s'), agent_type: agent_type)
@@ -574,6 +575,48 @@ class ReportsController < ApplicationController
                 @median.threshold = @threshold
 
                 @median.save
+            when "web_load"
+                url = time = size = throughput = time_main_domain = size_main_domain = throughput_main_domain = time_other_domain = size_other_domain = throughput_other_domain = nil
+                report.xpath("report/results/web_load").children.each do |c|
+                    if c.name == "test"
+                        c.children.each do |cc|
+                            case cc.name
+                                when "url"
+                                    url = cc.children.first.to_s
+                                when "time"
+                                    time = cc.children.first.to_s.to_f
+                                when "size"
+                                    size = cc.children.first.to_s.to_i
+                                when "throughput"
+                                    throughput = cc.children.first.to_s.to_f
+                                when "time_main_domain"
+                                    time_main_domain = cc.children.first.to_s.to_f
+                                when "size_main_domain"
+                                    size_main_domain = cc.children.first.to_s.to_i
+                                when "throughput_main_domain"
+                                    throughput_main_domain = cc.children.first.to_s.to_f 
+                                when "time_other_domain"
+                                    time_other_domain = cc.children.first.to_s.to_f 
+                                when "size_other_domain"
+                                    size_other_domain = cc.children.first.to_s.to_i 
+                                when "throughput_other_domain"
+                                    throughput_other_domain = cc.children.first.to_s.to_f 
+                            end
+                            @web_load_result = WebLoadResult.create(url: url,
+                                                                    time: time,
+                                                                    size: size,
+                                                                    throughput: throughput,
+                                                                    time_main_domain: time_main_domain,
+                                                                    size_main_domain: size_main_domain,
+                                                                    throughput_main_domain: throughput_main_domain,
+                                                                    time_other_domain: time_other_domain,
+                                                                    size_other_domain: size_other_domain,
+                                                                    throughput_other_domain: throughput_other_domain,
+                                                                    uuid: uuid
+                                                                   )
+                        end
+                    end
+                end
             else
                 # do nothing
             end
