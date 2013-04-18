@@ -58,8 +58,10 @@
     </div>
   </div>
 </div>
+
 <script type="text/javascript">
     var interval;
+
     $(function () {
         $('#tab_resumo_med').bind('click', function (e) {
             reload();
@@ -260,7 +262,7 @@
 
                     context = context +
                             '<tr>' +
-                            '<td style="background-color:' + color + ';width: 25px;"></td>' +
+                            '<td style="background-color:' + color + ';width: 25px;" sorttable_customkey="'+response[i]['status']+'"></td>' +
                             '<td style="text-align: center">' + response[i]['name'] + '</td>' +
                             '<td style="text-align: center">' + response[i]['city'] + ' -' + response[i]['state'] + '</td>';
 
