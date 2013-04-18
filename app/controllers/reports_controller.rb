@@ -510,14 +510,14 @@ class ReportsController < ApplicationController
                         dns_delay = cc.children.first.to_s.to_f
                     end
                 end
+
+                @dns_dynamic_test_result = DnsDynamicTestResult.create(server: dns_server,
+                                                                       url: dns_url,
+                                                                       delay: dns_delay,
+                                                                       uuid: uuid
+                                                                      )
             end
         end
-
-        @dns_dynamic_test_result = DnsDynamicTestResult.create(server: dns_server,
-                                                               url: dns_url,
-                                                               delay: dns_delay,
-                                                               uuid: uuid
-                                                              )
 
         # Web Load test results
         web_load_url = web_load_time = web_load_size = web_load_throughput = nil
@@ -535,15 +535,15 @@ class ReportsController < ApplicationController
                         web_load_throughput = cc.children.first.to_s.to_f
                     end
                 end
+
+                @web_load_dynamic_test = WebLoadDynamicResult.create(url: web_load_url,
+                                                                     time: web_load_time,
+                                                                     size: web_load_size,
+                                                                     throughput: web_load_throughput,
+                                                                     uuid: uuid
+                                                                    )
             end
         end
-
-        @web_load_dynamic_test = WebLoadDynamicResult.create(url: web_load_url,
-                                                             time: web_load_time,
-                                                             size: web_load_size,
-                                                             throughput: web_load_throughput,
-                                                             uuid: uuid
-                                                            )
 
     when /linux|android/
         @rep = Report.create(user: user, uuid: uuid, timestamp: DateTime.strptime(timestamp, '%s'), agent_type: agent_type)
@@ -574,6 +574,8 @@ class ReportsController < ApplicationController
                 @median.threshold = @threshold
 
                 @median.save
+            when "web_load"
+
             else
                 # do nothing
             end
