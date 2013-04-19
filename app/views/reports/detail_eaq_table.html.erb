@@ -69,18 +69,29 @@
                        else
 			reference_date = (DateTime.parse(@month).change(:day => day)).to_date.to_time
 			medians=Median.where(:schedule_id => @schedule).where(:threshold_id => threshold.id).where('start_timestamp >= ?', reference_date.beginning_of_day.in_time_zone('GMT')).where('start_timestamp <= ?', reference_date.end_of_day.in_time_zone('GMT'));
+			if medians.length.to_i == 0
+				median_l = Median.new
+				result = "<span style=\"color:#{color}\">#{median_l.pretty_download(true)}</span>"
+			else
+			medians_len = medians.length
 			hit_points=0
-			last_avg=0
+			sum_avg=0
+			total_samples=0
 			medians.each do |median_l|
 				if median_l.sdavg <= threshold.goal_level.to_f
 					hit_points += 1
 				end
-				last_avg = median_l.sdavg
+				sum_avg += median_l.total_points * median_l.sdavg
+				total_samples += median_l.total_points
 			end
                       #   per = (median.dsavg.to_f*100).round(3)
+			per = (sum_avg / total_samples.to_f).round(3) 
                       #   color = per <= (threshold.goal_level.to_f*100) ? 'green' : 'red'
+			color_per = per <= (threshold.goal_level.to_f) ? 'green' : 'red'
 			color = 'black'
-                         result = "<span style=\"color:#{color}\">#{hit_points.to_s} / #{medians.length.to_s}</span>"
+#                         result = "<span style=\"color:#{color}\">#{hit_points.to_s} / #{medians.length.to_s}</span>"
+result = "<span style=\"color:#{color_per}\">#{per}% <span style=\"color:#{color}\">(#{hit_points.to_s} / #{medians.length.to_s})</span></span>"
+			end
                        end
 
                      else
