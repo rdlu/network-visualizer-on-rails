@@ -19,7 +19,7 @@
               '< '+threshold.goal_level.to_s + "ms"
             when 'loss'
               text = '> '+(threshold.goal_level * 100).round(3).to_s + "%"
-              text = '< '+(threshold.goal_level * 100).round(3).to_s + "%" unless threshold.goal_method == 'availability'
+              text = '< '+(threshold.goal_level ).round(3).to_s + "%" unless threshold.goal_method == 'availability'
               text
           end
       %></td>
@@ -67,9 +67,17 @@
                          color = per >= threshold.goal_level ? 'green' : 'red'
                          result = "<span style=\"color:#{color}\">#{per.to_s} %</span>"
                        else
-                         per = (median.dsavg.to_f*100).round(3)
-                         color = per <= (threshold.goal_level.to_f*100) ? 'green' : 'red'
-                         result = "<span style=\"color:#{color}\">#{per.to_s} %</span>"
+			medians=Median.where(:schedule_id => @schedule).where(:threshold_id => threshold.id).where('start_timestamp >= ?', DateTime.parse(@month).change(:day => day).beginning_of_day).where('start_timestamp <= ?', DateTime.parse(@month).change(:day => day).end_of_day);
+			hit_points=0
+			medians.each do |median_l|
+				if median_l.sdavg <= threshold.goal_level.to_f
+					hit_points += 1
+				end
+			end
+                      #   per = (median.dsavg.to_f*100).round(3)
+                      #   color = per <= (threshold.goal_level.to_f*100) ? 'green' : 'red'
+			color = 'black'
+                         result = "<span style=\"color:#{color}\">#{hit_points.to_s} / #{medians.length.to_s}</span>"
                        end
 
                      else
