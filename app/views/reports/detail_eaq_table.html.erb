@@ -67,12 +67,15 @@
                          color = per >= threshold.goal_level ? 'green' : 'red'
                          result = "<span style=\"color:#{color}\">#{per.to_s} %</span>"
                        else
-			medians=Median.where(:schedule_id => @schedule).where(:threshold_id => threshold.id).where('start_timestamp >= ?', DateTime.parse(@month).change(:day => day).beginning_of_day).where('start_timestamp <= ?', DateTime.parse(@month).change(:day => day).end_of_day);
+			reference_date = (DateTime.parse(@month).change(:day => day)).to_date.to_time
+			medians=Median.where(:schedule_id => @schedule).where(:threshold_id => threshold.id).where('start_timestamp >= ?', reference_date.beginning_of_day.in_time_zone('GMT')).where('start_timestamp <= ?', reference_date.end_of_day.in_time_zone('GMT'));
 			hit_points=0
+			last_avg=0
 			medians.each do |median_l|
 				if median_l.sdavg <= threshold.goal_level.to_f
 					hit_points += 1
 				end
+				last_avg = median_l.sdavg
 			end
                       #   per = (median.dsavg.to_f*100).round(3)
                       #   color = per <= (threshold.goal_level.to_f*100) ? 'green' : 'red'
