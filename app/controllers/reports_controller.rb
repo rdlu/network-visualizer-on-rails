@@ -493,11 +493,13 @@ class ReportsController < ApplicationController
                                                uuid: uuid,
                                                dns_efic: dns_efic,
                                                dns_timeout_errors: dns_timeout_errors,
-                                               dns_server_failure_errors: dns_server_failure_errors
+                                               dns_server_failure_errors: dns_server_failure_errors,
+                                               user: user
                                               )
 
         # DNS test results
         dns_server = dns_url = dns_delay = nil
+        @dns_dynamic_results = []
         report.xpath("report/results/dns").children.each do |c|
             if c.name == "test"
                 c.children.each do |cc|
@@ -510,17 +512,18 @@ class ReportsController < ApplicationController
                         dns_delay = cc.children.first.to_s.to_f
                     end
                 end
+
+                @dns_dynamic_results << DnsDynamicResult.create(server: dns_server,
+                                                              url: dns_url,
+                                                              delay: dns_delay,
+                                                              uuid: uuid
+                                                             )
             end
         end
 
-        @dns_dynamic_test_result = DnsDynamicTestResult.create(server: dns_server,
-                                                               url: dns_url,
-                                                               delay: dns_delay,
-                                                               uuid: uuid
-                                                              )
-
         # Web Load test results
         web_load_url = web_load_time = web_load_size = web_load_throughput = nil
+        @web_load_dynamic_results = []
         report.xpath("report/results/web_load").children.each do |c|
             if c.name == "test"
                 c.children.each do |cc|
@@ -535,15 +538,15 @@ class ReportsController < ApplicationController
                         web_load_throughput = cc.children.first.to_s.to_f
                     end
                 end
+
+                @web_load_dynamic_results << WebLoadDynamicResult.create(url: web_load_url,
+                                                                       time: web_load_time,
+                                                                       size: web_load_size,
+                                                                       throughput: web_load_throughput,
+                                                                       uuid: uuid
+                                                                      )
             end
         end
-
-        @web_load_dynamic_test = WebLoadDynamicResult.create(url: web_load_url,
-                                                             time: web_load_time,
-                                                             size: web_load_size,
-                                                             throughput: web_load_throughput,
-                                                             uuid: uuid
-                                                            )
 
     when /linux|android/
         @rep = Report.create(user: user, uuid: uuid, timestamp: DateTime.strptime(timestamp, '%s'), agent_type: agent_type)
@@ -574,6 +577,113 @@ class ReportsController < ApplicationController
                 @median.threshold = @threshold
 
                 @median.save
+            when "web_load"
+                url = time = size = throughput = time_main_domain = size_main_domain = throughput_main_domain = time_other_domain = size_other_domain = throughput_other_domain = nil
+                @web_load_results = []
+                report.xpath("report/results/web_load").children.each do |c|
+                    if c.name == "test"
+                        c.children.each do |cc|
+                            case cc.name
+                            when "url"
+                                url = cc.children.first.to_s
+                            when "time"
+                                time = cc.children.first.to_s.to_f
+                            when "size"
+                                size = cc.children.first.to_s.to_i
+                            when "throughput"
+                                throughput = cc.children.first.to_s.to_f
+                            when "time_main_domain"
+                                time_main_domain = cc.children.first.to_s.to_f
+                            when "size_main_domain"
+                                size_main_domain = cc.children.first.to_s.to_i
+                            when "throughput_main_domain"
+                                throughput_main_domain = cc.children.first.to_s.to_f 
+                            when "time_other_domain"
+                                time_other_domain = cc.children.first.to_s.to_f 
+                            when "size_other_domain"
+                                size_other_domain = cc.children.first.to_s.to_i 
+                            when "throughput_other_domain"
+                                throughput_other_domain = cc.children.first.to_s.to_f 
+                            end
+                            @web_load_results << WebLoadResult.create(url: url,
+                                                                      time: time,
+                                                                      size: size,
+                                                                      throughput: throughput,
+                                                                      time_main_domain: time_main_domain,
+                                                                      size_main_domain: size_main_domain,
+                                                                      throughput_main_domain: throughput_main_domain,
+                                                                      time_other_domain: time_other_domain,
+                                                                      size_other_domain: size_other_domain,
+                                                                      throughput_other_domain: throughput_other_domain,
+                                                                      uuid: uuid
+                                                                     )
+                        end
+                    end
+                end
+            when "dns"
+                server = url = delay = nil
+                efic = average = timeout_errors = server_failure_errors = nil
+                report.xpath("report/results/dns").children.each do |c|
+                    case c.name
+                    when "test"
+                        @dns_results = []
+                        c.children.each do |cc|
+                            case cc.name
+                            when "server"
+                                server = cc.children.first.to_s
+                            when "url"
+                                url = cc.children.first.to_s
+                            when "delay"
+                                delay = cc.children.first.to_s.to_i
+                            end
+                            @dns_results << DnsResult.create(url: url,
+                                                             server: server,
+                                                             delay: delay,
+                                                             uuid: uuid
+                                                            )
+                        end
+                    when efic
+                        efic = c.children.first.to_s.to_f
+                    when media
+                        efic = c.children.first.to_s.to_f
+                    when errors
+                        c.children.each do |cc|
+                            case cc.name
+                            when "timeout"
+                                timeout_errors = cc.children.first.to_s.to_i
+                            when "server_failures"
+                                server_failure_errors = cc.children.first.to_s.to_i
+                            else
+                                # do nothing
+                            end
+                        end
+                    else
+                        # Do nothing
+                    end
+                end
+                @dns_detail = DnsDetail.create(efic: efic,
+                                               average: average,
+                                               timeout_errors: timeout_errors,
+                                               server_failure_errors: server_failure_errors,
+                                               uuid: uuid
+                                              )
+            when throughput_http
+                throughput_http_down = report.xpath("report/results/throughput_http/down").to_s.to_f
+                throughput_http_up = report.xpath("report/results/throughput_http/up").to_s.to_f
+
+                metric = Metric.where(plugin: "throughput_http")
+                probe = Probe.where(name: name)
+                schedule = probe.schedules_as_destination.last
+
+                @results = Results.create(schedule_id: schedule.id,
+                                          metric_id: metric.id,
+                                          schedule_uuid: schedule.uuid,
+                                          uuid: uuid,
+                                          metric_name: "throughput_http",
+                                          timestamp: timestamp,
+                                          sdavg: throughput_http_down,
+                                          dsavg: throughput_http_up
+                                         )
             else
                 # do nothing
             end

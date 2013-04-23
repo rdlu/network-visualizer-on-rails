@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130415172412) do
+ActiveRecord::Schema.define(:version => 20130423164411) do
 
   create_table "compliances", :force => true do |t|
     t.integer   "schedule_id"
@@ -59,10 +59,29 @@ ActiveRecord::Schema.define(:version => 20130415172412) do
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
-  create_table "dns_dynamic_test_results", :force => true do |t|
+  create_table "dns_details", :force => true do |t|
+    t.float    "efic"
+    t.float    "average"
+    t.integer  "timeout_errors"
+    t.integer  "server_failure_errors"
+    t.string   "uuid",                  :limit => nil
+    t.datetime "created_at",                           :null => false
+    t.datetime "updated_at",                           :null => false
+  end
+
+  create_table "dns_dynamic_results", :force => true do |t|
     t.string   "server"
     t.string   "url"
     t.float    "delay"
+    t.string   "uuid",       :limit => nil
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+  end
+
+  create_table "dns_results", :force => true do |t|
+    t.string   "server"
+    t.string   "url"
+    t.integer  "delay"
     t.string   "uuid",       :limit => nil
     t.datetime "created_at",                :null => false
     t.datetime "updated_at",                :null => false
@@ -87,6 +106,7 @@ ActiveRecord::Schema.define(:version => 20130415172412) do
     t.float    "dns_efic"
     t.integer  "dns_timeout_errors"
     t.integer  "dns_server_failure_errors"
+    t.string   "user"
   end
 
   create_table "evaluations", :force => true do |t|
@@ -316,7 +336,7 @@ ActiveRecord::Schema.define(:version => 20130415172412) do
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
 
-  create_table "web_load_dynamic_test_results", :force => true do |t|
+  create_table "web_load_dynamic_results", :force => true do |t|
     t.string   "url"
     t.float    "time"
     t.float    "size"
@@ -324,6 +344,22 @@ ActiveRecord::Schema.define(:version => 20130415172412) do
     t.string   "uuid",       :limit => nil
     t.datetime "created_at",                :null => false
     t.datetime "updated_at",                :null => false
+  end
+
+  create_table "web_load_results", :force => true do |t|
+    t.string   "url"
+    t.float    "time"
+    t.integer  "size"
+    t.float    "throughput"
+    t.float    "time_main_domain"
+    t.integer  "size_main_domain"
+    t.float    "throughput_main_domain"
+    t.float    "time_other_domain"
+    t.integer  "size_other_domain"
+    t.float    "throughput_other_domain"
+    t.string   "uuid",                    :limit => nil
+    t.datetime "created_at",                             :null => false
+    t.datetime "updated_at",                             :null => false
   end
 
   add_foreign_key "compliances", "schedules", :name => "compliances_schedule_id_fk", :dependent => :delete

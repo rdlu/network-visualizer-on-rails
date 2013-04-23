@@ -1,18 +1,10 @@
 /*
- SortTable
- version 2
- 7th April 2007
- Stuart Langridge, http://www.kryogenix.org/code/browser/sorttable/
-
  Instructions:
  Download this file
  Add <script src="sorttable.js"></script> to your HTML
  Add class="sortable" to any table you'd like to make sortable
  Click on the headers to sort
 
- Thanks to many, many people for contributions and suggestions.
- Licenced as X11: http://www.kryogenix.org/code/browser/licence.html
- This basically means: do what you want with it.
  */
 
 
@@ -408,8 +400,7 @@ function removeEvent(element, type, handler) {
             delete element.events[type][handler.$$guid];
         }
     }
-};
-
+}
 function handleEvent(event) {
     var returnValue = true;
     // grab the event object (IE uses a global event object)
@@ -424,17 +415,17 @@ function handleEvent(event) {
         }
     }
     return returnValue;
-};
+}
 
 function fixEvent(event) {
     // add W3C standard event methods
     event.preventDefault = fixEvent.preventDefault;
     event.stopPropagation = fixEvent.stopPropagation;
     return event;
-};
+}
 fixEvent.preventDefault = function() {
     this.returnValue = false;
-};
+}
 fixEvent.stopPropagation = function() {
     this.cancelBubble = true;
 }

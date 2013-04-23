@@ -1,6 +1,6 @@
-class CreateDnsDynamicTestResults < ActiveRecord::Migration
+class CreateDnsDynamicResults < ActiveRecord::Migration
   def change
-    create_table :dns_dynamic_test_results do |t|
+    create_table :dns_dynamic_results do |t|
       t.string :server
       t.string :url
       t.float :delay
