@@ -584,26 +584,26 @@ class ReportsController < ApplicationController
                     if c.name == "test"
                         c.children.each do |cc|
                             case cc.name
-                                when "url"
-                                    url = cc.children.first.to_s
-                                when "time"
-                                    time = cc.children.first.to_s.to_f
-                                when "size"
-                                    size = cc.children.first.to_s.to_i
-                                when "throughput"
-                                    throughput = cc.children.first.to_s.to_f
-                                when "time_main_domain"
-                                    time_main_domain = cc.children.first.to_s.to_f
-                                when "size_main_domain"
-                                    size_main_domain = cc.children.first.to_s.to_i
-                                when "throughput_main_domain"
-                                    throughput_main_domain = cc.children.first.to_s.to_f 
-                                when "time_other_domain"
-                                    time_other_domain = cc.children.first.to_s.to_f 
-                                when "size_other_domain"
-                                    size_other_domain = cc.children.first.to_s.to_i 
-                                when "throughput_other_domain"
-                                    throughput_other_domain = cc.children.first.to_s.to_f 
+                            when "url"
+                                url = cc.children.first.to_s
+                            when "time"
+                                time = cc.children.first.to_s.to_f
+                            when "size"
+                                size = cc.children.first.to_s.to_i
+                            when "throughput"
+                                throughput = cc.children.first.to_s.to_f
+                            when "time_main_domain"
+                                time_main_domain = cc.children.first.to_s.to_f
+                            when "size_main_domain"
+                                size_main_domain = cc.children.first.to_s.to_i
+                            when "throughput_main_domain"
+                                throughput_main_domain = cc.children.first.to_s.to_f 
+                            when "time_other_domain"
+                                time_other_domain = cc.children.first.to_s.to_f 
+                            when "size_other_domain"
+                                size_other_domain = cc.children.first.to_s.to_i 
+                            when "throughput_other_domain"
+                                throughput_other_domain = cc.children.first.to_s.to_f 
                             end
                             @web_load_results << WebLoadResult.create(url: url,
                                                                       time: time,
@@ -667,6 +667,23 @@ class ReportsController < ApplicationController
                                                server_failure_errors: server_failure_errors,
                                                uuid: uuid
                                               )
+            when throughput_http
+                throughput_http_down = report.xpath("report/results/throughput_http/down").to_s.to_f
+                throughput_http_up = report.xpath("report/results/throughput_http/up").to_s.to_f
+
+                metric = Metric.where(plugin: "throughput_http")
+                probe = Probe.where(name: name)
+                schedule = probe.schedules_as_destination.last
+
+                @results = Results.create(schedule_id: schedule.id,
+                                          metric_id: metric.id,
+                                          schedule_uuid: schedule.uuid,
+                                          uuid: uuid,
+                                          metric_name: "throughput_http",
+                                          timestamp: timestamp,
+                                          sdavg: throughput_http_down,
+                                          dsavg: throughput_http_up
+                                         )
             else
                 # do nothing
             end
