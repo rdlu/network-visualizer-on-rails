@@ -400,8 +400,7 @@ function removeEvent(element, type, handler) {
             delete element.events[type][handler.$$guid];
         }
     }
-};
-
+}
 function handleEvent(event) {
     var returnValue = true;
     // grab the event object (IE uses a global event object)
@@ -416,17 +415,17 @@ function handleEvent(event) {
         }
     }
     return returnValue;
-};
+}
 
 function fixEvent(event) {
     // add W3C standard event methods
     event.preventDefault = fixEvent.preventDefault;
     event.stopPropagation = fixEvent.stopPropagation;
     return event;
-};
+}
 fixEvent.preventDefault = function() {
     this.returnValue = false;
-};
+}
 fixEvent.stopPropagation = function() {
     this.cancelBubble = true;
 }
