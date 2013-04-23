@@ -12,6 +12,19 @@ namespace :db do
     puts "Done."
   end
 
+  desc "Pull production database into the local development environment. (with pg_wrapper support)"
+  task :pull_with_wrapper do
+    puts cmd = "pg_dump --cluster 9.1/main -h fringe.inf.ufrgs.br -U mom-rails mom-rails_production -W > production.sql"
+    system cmd
+    puts cmd = "cat production.sql | psql --cluster 9.1/main -U mom-rails mom-rails_development -W"
+    system cmd
+    puts cmd = "rm production.sql"
+    system cmd
+    puts "Done."
+  end
+
+
+
   desc "Updates the PostgreSQL Sequences after importation from SQL scripts"
   task :pgsql_fix_seq do
 	ActiveRecord::Base.establish_connection(DB_CONFIG[Rails.env])
