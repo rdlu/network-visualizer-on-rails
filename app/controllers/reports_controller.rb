@@ -577,6 +577,7 @@ class ReportsController < ApplicationController
                 @median.save
             when "web_load"
                 url = time = size = throughput = time_main_domain = size_main_domain = throughput_main_domain = time_other_domain = size_other_domain = throughput_other_domain = nil
+                @web_load_results = []
                 report.xpath("report/results/web_load").children.each do |c|
                     if c.name == "test"
                         c.children.each do |cc|
@@ -602,18 +603,18 @@ class ReportsController < ApplicationController
                                 when "throughput_other_domain"
                                     throughput_other_domain = cc.children.first.to_s.to_f 
                             end
-                            @web_load_result = WebLoadResult.create(url: url,
-                                                                    time: time,
-                                                                    size: size,
-                                                                    throughput: throughput,
-                                                                    time_main_domain: time_main_domain,
-                                                                    size_main_domain: size_main_domain,
-                                                                    throughput_main_domain: throughput_main_domain,
-                                                                    time_other_domain: time_other_domain,
-                                                                    size_other_domain: size_other_domain,
-                                                                    throughput_other_domain: throughput_other_domain,
-                                                                    uuid: uuid
-                                                                   )
+                            @web_load_results << WebLoadResult.create(url: url,
+                                                                      time: time,
+                                                                      size: size,
+                                                                      throughput: throughput,
+                                                                      time_main_domain: time_main_domain,
+                                                                      size_main_domain: size_main_domain,
+                                                                      throughput_main_domain: throughput_main_domain,
+                                                                      time_other_domain: time_other_domain,
+                                                                      size_other_domain: size_other_domain,
+                                                                      throughput_other_domain: throughput_other_domain,
+                                                                      uuid: uuid
+                                                                     )
                         end
                     end
                 end
