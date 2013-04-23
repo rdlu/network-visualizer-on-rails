@@ -499,6 +499,7 @@ class ReportsController < ApplicationController
 
         # DNS test results
         dns_server = dns_url = dns_delay = nil
+        @dns_dynamic_results = []
         report.xpath("report/results/dns").children.each do |c|
             if c.name == "test"
                 c.children.each do |cc|
@@ -512,7 +513,7 @@ class ReportsController < ApplicationController
                     end
                 end
 
-                @dns_dynamic_result = DnsDynamicResult.create(server: dns_server,
+                @dns_dynamic_results << DnsDynamicResult.create(server: dns_server,
                                                               url: dns_url,
                                                               delay: dns_delay,
                                                               uuid: uuid
@@ -522,6 +523,7 @@ class ReportsController < ApplicationController
 
         # Web Load test results
         web_load_url = web_load_time = web_load_size = web_load_throughput = nil
+        @web_load_dynamic_results = []
         report.xpath("report/results/web_load").children.each do |c|
             if c.name == "test"
                 c.children.each do |cc|
@@ -537,7 +539,7 @@ class ReportsController < ApplicationController
                     end
                 end
 
-                @web_load_dynamic_result = WebLoadDynamicResult.create(url: web_load_url,
+                @web_load_dynamic_results << WebLoadDynamicResult.create(url: web_load_url,
                                                                        time: web_load_time,
                                                                        size: web_load_size,
                                                                        throughput: web_load_throughput,
@@ -620,9 +622,11 @@ class ReportsController < ApplicationController
                 end
             when "dns"
                 server = url = delay = nil
-                @dns_results = []
+                efic = average = timeout_errors = server_failure_errors = nil
                 report.xpath("report/results/dns").children.each do |c|
-                    if c.name == "test"
+                    case c.name
+                    when "test"
+                        @dns_results = []
                         c.children.each do |cc|
                             case cc.name
                             when "server"
@@ -632,14 +636,37 @@ class ReportsController < ApplicationController
                             when "delay"
                                 delay = cc.children.first.to_s.to_i
                             end
+                            @dns_results << DnsResult.create(url: url,
+                                                             server: server,
+                                                             delay: delay,
+                                                             uuid: uuid
+                                                            )
                         end
+                    when efic
+                        efic = c.children.first.to_s.to_f
+                    when media
+                        efic = c.children.first.to_s.to_f
+                    when errors
+                        c.children.each do |cc|
+                            case cc.name
+                            when "timeout"
+                                timeout_errors = cc.children.first.to_s.to_i
+                            when "server_failures"
+                                server_failure_errors = cc.children.first.to_s.to_i
+                            else
+                                # do nothing
+                            end
+                        end
+                    else
+                        # Do nothing
                     end
-                    @dns_results << DnsResult.create(url: url,
-                                                     server: server,
-                                                     delay: delay,
-                                                     uuid: uuid
-                                                    )
                 end
+                @dns_detail = DnsDetail.create(efic: efic,
+                                               average: average,
+                                               timeout_errors: timeout_errors,
+                                               server_failure_errors: server_failure_errors,
+                                               uuid: uuid
+                                              )
             else
                 # do nothing
             end
