@@ -617,6 +617,28 @@ class ReportsController < ApplicationController
                         end
                     end
                 end
+            when "dns"
+                server = url = delay = nil
+                @dns_results = []
+                report.xpath("report/results/dns").children.each do |c|
+                    if c.name == "test"
+                        c.children.each do |cc|
+                            case cc.name
+                            when "server"
+                                server = cc.children.first.to_s
+                            when "url"
+                                url = cc.children.first.to_s
+                            when "delay"
+                                delay = cc.children.first.to_s.to_i
+                            end
+                        end
+                    end
+                    @dns_results << DnsResult.create(url: url,
+                                                     server: server,
+                                                     delay: delay,
+                                                     uuid: uuid
+                                                    )
+                end
             else
                 # do nothing
             end

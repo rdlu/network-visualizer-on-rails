@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130418182947) do
+ActiveRecord::Schema.define(:version => 20130423162025) do
 
   create_table "compliances", :force => true do |t|
     t.integer   "schedule_id"
@@ -63,6 +63,15 @@ ActiveRecord::Schema.define(:version => 20130418182947) do
     t.string   "server"
     t.string   "url"
     t.float    "delay"
+    t.string   "uuid",       :limit => nil
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+  end
+
+  create_table "dns_results", :force => true do |t|
+    t.string   "server"
+    t.string   "url"
+    t.integer  "delay"
     t.string   "uuid",       :limit => nil
     t.datetime "created_at",                :null => false
     t.datetime "updated_at",                :null => false
