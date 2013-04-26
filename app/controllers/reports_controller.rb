@@ -64,6 +64,10 @@ class ReportsController < ApplicationController
     end
   end
 
+  def graph_type_two
+
+  end
+
   def eaq_graph
     source = Probe.find(params[:source][:id])
     destination = Probe.find(params[:destination][:id])
