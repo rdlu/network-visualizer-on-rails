@@ -86,7 +86,9 @@ class Median < ActiveRecord::Base
   end
 
   def self.calculate (schedule, threshold, reference_date)
-    case threshold.goal_period
+#	generic_start_pmt = (reference_date.beginning_of_day.in_time_zone('GMT') + 10.hours).hour;
+#	generic_end_pmt = (reference_date.beginning_of_day.in_time_zone('GMT') + 22.hours).hour 
+   case threshold.goal_period
       when 'daily-rush'
         start_period = reference_date.beginning_of_day.in_time_zone('GMT') + 10.hours
         end_period = reference_date.beginning_of_day.in_time_zone('GMT') + 22.hours
@@ -148,7 +150,8 @@ class Median < ActiveRecord::Base
         0.upto(1.day/1.hour) { |i|
           start_period_h = start_period + i*1.hour
           end_period_h = start_period+1.hour + i*1.hour - 1.second
-if end_period_h.hour >= generic_end_pmt  and end_period_h.hour < generic_start_pmt
+#if end_period_h.hour >= generic_end_pmt  and end_period_h.hour < generic_start_pmt
+if end_period_h < start_period or end_period_h >= end_period
 	next
 end
 
@@ -174,6 +177,8 @@ end
 
             median.sdavg = raw_sum_composto / len.to_f #/ 100
             median.dsavg = raw_sum_composto / len.to_f #/ 100
+#	median.sdavg = generic_end_pmt
+#	median.dsavg = generic_start_pmt
             median.schedule = schedule
             median.threshold = threshold
             median.total_points = len
