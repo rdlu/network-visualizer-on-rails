@@ -65,7 +65,11 @@ class ReportsController < ApplicationController
   end
 
   def graph_type_two
-
+    start_date = params[:start_date]
+    end_date = params[:end_date]
+    agent_type = params[:agent_type]
+    states = params[:state]
+    goal_filter = params[:goal_filter]
   end
 
   def eaq_graph
