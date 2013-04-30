@@ -150,4 +150,35 @@
               });
   });
 
+  jQuery('#date_start')
+          .datepicker()
+          .on('changeDate', this, function (ev) {
+              jQuery(this).datepicker('hide');
+              jQuery('#time_start').focus();
+          })
+          .iMask({
+              type: 'fixed',
+              mask: '99/99/9999'
+          });
+
+  jQuery('#date_end')
+          .datepicker()
+          .on('changeDate', this, function (ev) {
+              jQuery(this).datepicker('hide');
+              jQuery('#time_end').focus();
+          })
+          .iMask({
+              type: 'fixed',
+              mask: '99/99/9999'
+          });
+
+  jQuery('#time_start')
+      //.timepicker({showMeridian: false,disableFocus:true})
+          .iMask({type: 'fixed', mask: '99:99'});
+
+  jQuery('#time_end')
+      //.timepicker({showMeridian: false,disableFocus:true})
+          .iMask({type: 'fixed', mask: '99:99'});
+
+
 </script>
