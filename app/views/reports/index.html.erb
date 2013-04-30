@@ -190,7 +190,7 @@
         var report_type = jQuery('#report_type').val();
 
         if (source_id != '' && destination_id != '' && metric_id != '')
-            jQuery.ajax("<%=reports_url %>/"+report_type, {
+            jQuery.ajax("<%= reports_url %>/"+report_type, {
                 success: function (result, status) {
                     switch(report_type) {
                         case 'graph':
@@ -226,6 +226,27 @@
             });
         else {
             jQuery('#report-add').prop('disabled', true);
+        }
+    });
+
+    jQuery('#report-form2').submit(function (event) {
+        event.preventDefault();
+        var date_start = jQuery('#date_start').val();
+        var date_end = jQuery('#date_end').val();
+
+        if (date_start != '' && date_end != '' )
+            jQuery.ajax("<%= eaq2_table_reports_url %>/", {
+                success: function (result, status) {
+                    if (jQuery("box-"+source_id).is(':empty')){
+                        jQuery('#graphs-area').prepend(result);
+                    }else{
+                        $("#box-"+source_id).remove();
+                        jQuery('#graphs-area').prepend(result);
+                    }
+                }
+            });
+        else {
+            jQuery('#report2-add').prop('disabled', true);
         }
     });
 

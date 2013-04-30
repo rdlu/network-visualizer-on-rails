@@ -70,6 +70,21 @@ class ReportsController < ApplicationController
     agent_type = params[:agent_type]
     states = params[:state]
     goal_filter = params[:goal_filter]
+
+  end
+
+  def eaq2_table
+
+    respond_to do |format|
+      format.html {render :layout=> false}
+    end
+  end
+
+  def detail_eaq2_table
+
+    respond_to do |format|
+      format.html {render :layout=> false}
+    end
   end
 
   def eaq_graph

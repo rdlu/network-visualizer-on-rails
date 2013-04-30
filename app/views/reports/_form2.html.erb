@@ -4,7 +4,7 @@
         <div class="control-group">
           <label class="control-label"  for="type">Agente: </label>
           <div class="controls">
-            <%=  select :type,'', Probe.types,{}, :onchange => 'displayTypes(this.value)'  %>
+            <%=  select :agent,'', Probe.types,{}, :onchange => 'displayTypes(this.value)'  %>
           </div>
         </div>
         <div class="control-group">
@@ -31,7 +31,7 @@
               <option value="">Todas</option>
               <% Probe.cod_area.each do |cn|
                   if search_field :probe,:state == cn.at(0).to_s  %>
-                   <option value="<%= cn.at(0) %>" ><%= cn.at(1)%></option>
+                   <option value="<%= cn.at(1) %>" ><%= cn.at(1)%></option>
               <% end end %>
             </select>
           </div>
@@ -85,7 +85,7 @@
         </div>
         <div class="control-group">
           <div class="controls">
-            <input class="btn btn-primary span8" type="submit" name="add" id="report-add" value="Adicionar"  data-toggle="collapse" data-target="#accordion_forms"/>
+            <input class="btn btn-primary span8" type="submit" name="add" id="report2-add" value="Adicionar"  data-toggle="collapse" data-target="#accordion_forms"/>
           </div>
         </div>
       </div>
@@ -114,12 +114,40 @@
           success: function(data){
              var html = "<option value=''>Todas</option>";
              for (cdn in data){
-                html = html + "<option value='"+value+"'>"+data[cdn]+"</option>";
+                html = html + "<option value='"+data[cdn]+"'>"+data[cdn]+"</option>";
              }
              $('#probe-cn').html(html);
           }
       });
   }
+  $(document).ready(function (){
+      $('#date_start')
+              .datepicker()
+              .on('changeDate', function(ev){
+                  var vetdata = $('#date_end').val().split('/');
+                  if (ev.date.valueOf() > moment(vetdata[2]+'/'+vetdata[1]+'/'+vetdata[0]).valueOf()){
+                      // $('#error_Ini').html("Data de início maior que a de fim.");
+                      $('#error_Ini').show();
+                      $('#report-add').attr('disabled','disabled');
+                  }else{
+                      $('#error_Ini').hide();
+                      $('#report-add').removeAttr("disabled");
+                  }
 
+              });
+      $('#date_end')
+              .datepicker()
+              .on('changeDate', function(ev){
+                  var vetdata = $('#date_start').val().split('/');
+                  if (ev.date.valueOf() < moment(vetdata[2]+'/'+vetdata[1]+'/'+vetdata[0]).valueOf()){
+                      //$('#error_Fim').html('Data de fim menor que a de início.');
+                      $('#report-add').attr('disabled','disabled');
+                      $('#error_Fim').show();
+                  }else{
+                      $('#error_Fim').hide();
+                      $('#report-add').removeAttr("disabled");
+                  }
+              });
+  });
 
 </script>
