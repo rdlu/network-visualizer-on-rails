@@ -690,7 +690,7 @@ class ReportsController < ApplicationController
                                                server_failure_errors: server_failure_errors,
                                                uuid: uuid
                                               )
-            when throughput_http
+            when "throughput_http"
                 throughput_http_down = report.xpath("report/results/throughput_http/down").to_s.to_f
                 throughput_http_up = report.xpath("report/results/throughput_http/up").to_s.to_f
 
