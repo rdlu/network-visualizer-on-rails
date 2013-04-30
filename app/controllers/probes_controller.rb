@@ -145,4 +145,32 @@ class ProbesController < ApplicationController
       format.json { render :json => probe, :status => 200 }
     end
   end
+
+  def filter_uf
+    uf = params[:uf]
+    cod_uf=''
+    Probe.states.each do |state|
+        if state.at(0) == uf
+          cod_uf = state.at(1)
+        end
+    end
+
+    cods = Array.new
+    if cod_uf != ''
+      Probe.cod_area.each do |cod_n|
+        if cod_uf == cod_n.at(0).downcase
+          cods << cod_n.at(1)
+        end
+      end
+    else #todos os ufs
+      Probe.cod_area.each do |cod_n|
+        cods << cod_n.at(1)
+      end
+    end
+
+    respond_to do |format|
+      format.json { render :json => cods }
+    end
+  end
+
 end

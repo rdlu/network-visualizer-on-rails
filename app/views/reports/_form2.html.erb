@@ -1,0 +1,125 @@
+<%= form_tag(graph_two_reports_path, :class => 'form-horizontal', :id => 'report-form2') do %>
+    <div class="row-fluid">
+      <div class="span4">
+        <div class="control-group">
+          <label class="control-label"  for="type">Agente: </label>
+          <div class="controls">
+            <%=  select :type,'', Probe.types,{}, :onchange => 'displayTypes(this.value)'  %>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label"  for="type">Somente Agentes: </label>
+          <div class="controls">
+            <%=  select :goal_filter,'', [['Categoria Anatel','above'], ['Abaixo da Meta','under'],['Todos','all']],{} %>
+          </div>
+        </div>
+        <div class="control-group">
+            <label for="probe-type" class="control-label">UF:</label>
+          <div class="controls">
+            <select name="state" id="probe-state" onchange="filterUFs(this.value)" >
+              <option value="">Todas</option>
+              <% Probe.states.each do |state| %>
+                  <option value="<%= state.at(0) %>" <%= params[:by_state].to_s == state.at(1).to_s ? "selected=\"selected\"".html_safe : "" %>><%= state.at(1).upcase %></option>
+              <% end %>
+            </select>
+            </div>
+        </div>
+        <div class="control-group"  >
+          <label  for="probe-cn" class="control-label">CN(Cód. Área):</label>
+          <div id="op_cn" class="controls">
+            <select multiple="true"  name="cn" id="probe-cn" >
+              <option value="">Todas</option>
+              <% Probe.cod_area.each do |cn|
+                  if search_field :probe,:state == cn.at(0).to_s  %>
+                   <option value="<%= cn.at(0) %>" ><%= cn.at(1)%></option>
+              <% end end %>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="span3">
+        <div id="ag_types" style="float:right ;display: none">
+          <label class="control-label" style="width: 60px !important" for="agent_type">Tipo: </label>
+          <!--label class="checkbox">
+                  <input type="checkbox" name="agent_type[]" value="mobile" checked="true"> Móvel<br/>
+                  <input type="checkbox" name="agent_type[]"  value="fixed"> Fixo
+            </label-->
+          <div class="controls" style="margin-left: 70px !important" >
+            <%= select :agent_type,'', [['Móvel','mobile'], ['Fixo','fixed'],['Móvel e Fixo','both']]%>
+          </div>
+        </div>
+
+      </div>
+      <div id="op_col2"  class="span5" style="">
+        <div class="control-group">
+          <%= label :date, :start, "Início: ", :class => 'control-label' %>
+          <div class="controls">
+            <div class="input-prepend">
+              <label for="date_start" style="display: inline"><span class="add-on" style="margin-top: 1px;"><i class="icon-calendar"></i></span></label>
+              <%= text_field :date, :start, :class => 'input-small datepicker', :"data-date-format".to_sym => "dd/mm/yyyy"  %>
+            </div>
+            <div class="input-prepend">
+              <span class="add-on"><i class="icon-time"></i></span>
+              <%= text_field :time, :start, :class => 'input-mini bootstrap-timepicker', :value => Time.current.strftime('%H:%M') %>
+            </div> <br/>
+            <div id="error_Ini" style = "display: none" class="alert alert-error">
+              Data de início maior que a de fim.
+            </div>
+          </div>
+        </div>
+        <div class="control-group">
+          <%= label :date, :end, "Fim: ", :class => 'control-label' %>
+          <div class="controls">
+            <div class="input-prepend">
+              <label for="date_end" style="display: inline"><span class="add-on" style="margin-top: 1px;"><i class="icon-calendar"></i></span></label>
+              <%= text_field :date, :end, :class => 'input-small datepicker', :"data-date-format".to_sym => "dd/mm/yyyy" %>
+            </div>
+            <div class="input-prepend">
+              <span class="add-on"><i class="icon-time"></i></span>
+              <%= text_field :time, :end, :class => 'input-mini bootstrap-timepicker', :value => Time.current.strftime('%H:%M') %>
+            </div> <br/>
+            <div id="error_Fim" style = "display: none"  class="alert alert-error ">
+              Data de fim menor que a de início.
+            </div>
+          </div>
+        </div>
+        <div class="control-group">
+          <div class="controls">
+            <input class="btn btn-primary span8" type="submit" name="add" id="report-add" value="Adicionar"  data-toggle="collapse" data-target="#accordion_forms"/>
+          </div>
+        </div>
+      </div>
+
+    </div>
+<% end %>
+
+<script>
+
+  function displayTypes(value)
+  {
+     if(value == "linux")
+        $('#ag_types').attr('style','display:block');
+      else
+         $('#ag_types').attr('style','display:none');
+
+  }
+
+  function filterUFs(value){
+      $.ajax({
+          type: 'POST',
+          url: "<%= probes_filter_uf_path %>",
+          data: {
+              'uf': value
+          },
+          success: function(data){
+             var html = "<option value=''>Todas</option>";
+             for (cdn in data){
+                html = html + "<option value='"+value+"'>"+data[cdn]+"</option>";
+             }
+             $('#probe-cn').html(html);
+          }
+      });
+  }
+
+
+</script>
