@@ -1,1 +1,8 @@
-<p>Hello World!</p>
+<div id="box-<%= @states %>" class="row-fluid">
+  <div   class="span12">
+    <div id="table-<%= @agent %><%= @from %>" >
+      <%= @agent  %>
+    </div>
+  </div>
+</div>
+<div id="remove-<%= @agent_type %>-<%= @agent %>-<%= @from %>-<%= @to %>"  class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="$('#box-<%= @states %>').remove(); $(this).remove();">Remover</div>
