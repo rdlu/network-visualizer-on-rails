@@ -67,9 +67,22 @@ class ReportsController < ApplicationController
   def graph_type_two
     start_date = DateTime.parse(params[:start_date])
     end_date = DateTime.parse(params[:end_date])
-    agent_type = params[:agent_type]
+    agent_type = params[:agent_type] # fixed or mobile, if linux
     states = params[:state]
     goal_filter = params[:goal_filter]
+
+    # agent_type_query = "type = \"#{agent_type[0]}\""
+    # agent_type_query += " or type = \"#{agent_type[1]}\"" if agent_type[1]
+
+    states_query = "state = \"#{states.first}\""
+    states.delete(states.first)
+    states.each do |s|
+        states_query += " or state = \"#{s}\""
+    end
+
+    probes = Probe.
+        where(agent_type_query).
+        where(states_query).all
 
     compliances = Compliance.
         where('start_timestamp >= ?', start_date).
