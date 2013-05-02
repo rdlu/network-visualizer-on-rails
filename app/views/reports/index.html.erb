@@ -278,23 +278,75 @@
                 'to': self.range.end.format("YYYY-MM-DD HH:mm:ss Z")
             })
         };
+
+	if(this.threshold.name == "SCM5/SMP11"){
+
+	var keep_value = {}; 
+
+        this.goal_dataset = function(direction,value) {
+            direction = typeof direction !== 'undefined' ? direction : 'download';
+//TODO: tornar valor da meta coerente
+            return [
+                {x: moment(self.range.start), y: 60},
+                {x: moment(self.range.end), y: 60}
+            ];
+        }
+
         this.dataset = function(direction) {
+            direction = typeof direction !== 'undefined' ? direction : 'dsavg';
+            var retorno = [];
+	    ndirection = direction == 'sdavg' ? 'download' : 'upload';
+            jQuery.each(self.results,function(index,result) {
+		console.log(ndirection, keep_value);
+		var plano = keep_value[ndirection]*100 / 60;
+		console.log(keep_value[ndirection], plano);
+		result[direction] = (result[direction] / plano) * 100;
+                retorno.push({x: moment(result.x).toDate(), y: result[direction], extra: result.extra})
+            });
+	
+            return retorno;
+        };
+
+
+        this.series = function() {
+            var directions = [{name:'dsavg',title:'Upload'},{name:'sdavg',title:'Download'}];
+
+            var retorno = [];
+           jQuery.each(goal_lines, function(direction,value) {
+		keep_value[direction] = value;
+                retorno.push({name:'Meta Anatel '+direction,data:self.goal_dataset(direction,value)});
+             });
+    
+       jQuery.each(directions, function(idx,direction) {
+                retorno.push({name:direction.title,data:self.dataset(direction.name, keep_value)});
+            });
+
+            return retorno;
+        };
+
+
+
+	}
+	else
+	{
+          this.dataset = function(direction) {
             direction = typeof direction !== 'undefined' ? direction : 'dsavg';
             var retorno = [];
             jQuery.each(self.results,function(index,result) {
                 retorno.push({x: moment(result.x).toDate(), y: result[direction], extra: result.extra})
             });
+	
             return retorno;
         };
 
         this.goal_dataset = function(direction,value) {
             direction = typeof direction !== 'undefined' ? direction : 'download';
+		console.log(value);
             return [
                 {x: moment(self.range.start), y: value},
                 {x: moment(self.range.end), y: value}
             ];
         }
-
 
         this.series = function() {
             var directions = [{name:'dsavg',title:'Upload'},{name:'sdavg',title:'Download'}];
@@ -305,19 +357,26 @@
                 case 'loss':
                     directions = [{name:'y',title:'Perda'}];
                     break;
+		case 'availability':
+		    directions = [{name:'y',title:'Disponibilidade'}];
+		    break;
+		
             }
 
             var retorno = [];
-            jQuery.each(directions, function(idx,direction) {
+ 
+           jQuery.each(directions, function(idx,direction) {
                 retorno.push({name:direction.title,data:self.dataset(direction.name)});
             });
-
-            jQuery.each(goal_lines, function(direction,value) {
+           jQuery.each(goal_lines, function(direction, value) {
                 retorno.push({name:'Meta Anatel '+direction,data:self.goal_dataset(direction,value)});
-            });
+
+             });
             return retorno;
         };
 
+
+	}
         this.draw = function() {
             //cria o container
             if (jQuery("#box-"+self.idName).is(':empty')){
@@ -325,6 +384,7 @@
                 jQuery("#box-"+self.idName).append('<div class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="$(\'#chart-'+self.idName+'\').remove(); $(this).remove();$(\'#export-'+self.idName+'\').remove();$(\'#exportxls-'+self.idName+'\').remove()">Remover</div>');
                 jQuery("#box-"+self.idName).append('<a id=\"export-'+self.idName+'\"  class="btn btn-success" style="float:right; margin-right: 5px ;margin-bottom: 20px" href="<%= reports_csv_diario_url '' %>'+self.fileName+'.csv?'+this.params()+'">Exportar CSV</a>');
                 jQuery("#box-"+self.idName).append('<a id=\"exportxls-'+self.idName+'\"  class="btn btn-success" style="float:right; margin-right: 5px ;margin-bottom: 20px" href="<%= reports_xls_diario_url '' %>'+self.fileName+'.xls?'+this.params()+'">Exportar XLS</a>');
+ 
             }else{
                 $("#box-"+self.idName).remove();
                 jQuery('#graphs-area').prepend('<div id=\"box-'+self.idName+'\" class="row-fluid"><div   class=\"span12\"><div id=\"chart-'+self.idName+'\" style="height:300px;"></div></div></div>');
@@ -352,8 +412,82 @@
                     max: self.range.end.valueOf()
                 },
                 yAxis:{
+		labels: {
+                formatter: function() {
+                    var s = "";
+                    var max = this.axis.getExtremes().max;
+                //    console.log(this,max, max % 1000);
+if(self.threshold.name == "SCM6" || self.threshold.name == "SCM7" ){
+
+                    if(max < 1){
+                        s = this.value * 1000 + ' ms';
+                    } else {
+                        s = this.value + ' s';
+		}
+}else if (self.threshold.name == "SCM9"){
+			s = this.value * 100 + ' %';
+}else if (self.threshold.name == "SCM8"){
+			s = this.value + ' %';
+}else if (self.threshold.name == "SCM5/SMP11"){
+			s = this.value +' %';
+}else if (self.threshold.name == "SCM4/SMP10"){
+			if(max > 1000000000){
+				s = this.value / 1000000000 + ' Gbps';
+			}else if (max > 1000000){
+				s = this.value / 1000000 + ' Mbps';
+			}else if (max > 1000){
+				s = this.value / 1000 + ' kbps'
+			}else{
+				s = this.value + ' bps';
+			}
+}else{
+			s = this.value;
+}
+                    return s ;
+                }
+		},
                     title:{
                         text:self.metric.name.toUpperCase()
+                    },
+                    min:0
+                },
+                tooltip:{
+                    formatter:function () {
+			if(self.threshold.name == "SCM9"){
+			return '<strong>' + this.series.name+': '+conversion.stringFromMetric(self.metric.plugin, 100*this.y) + '</strong><br/><em>' +
+                                moment(this.x).format('YYYY-MM-DD HH:mm:ss Z') + '</em><br />';
+			}else if (self.threshold.name == "SCM5/SMP11"){
+			return '<strong>' + this.series.name+': '+ this.y + ' %</strong><br/><em>' +
+                                moment(this.x).format('YYYY-MM-DD HH:mm:ss Z') + '</em><br />';
+
+			}else{
+                        return '<strong>' + this.series.name+': '+conversion.stringFromMetric(self.metric.plugin, this.y) + '</strong><br/><em>' +
+                                moment(this.x).format('YYYY-MM-DD HH:mm:ss Z') + '</em><br />';
+			}
+                    }
+                },
+                series: self.series()
+            });
+/*	  self.chartObject = new Highcharts.Chart({
+                chart:{
+                    renderTo:'chart-'+self.idName,
+                    type:'spline',
+                    zoomType:'x'
+                },
+                title:{
+                    text:'Gráfico de Indicadores do Anatel: '+self.threshold.name+' ('+self.threshold.description+')'
+                },
+                subtitle:{
+                    text:'Origem: ' + self.source.name + ' | Destino: ' + self.destination.name + ' | Data: ' + self.range.start.format('YYYY-MM-DD HH:mm:ss Z') + ' à ' + self.range.end.format('YYYY-MM-DD HH:mm:ss Z')
+                },
+                xAxis:{
+                    type:'datetime',
+                    min: self.range.start.valueOf(),
+                    max: self.range.end.valueOf()
+                },
+                yAxis:{
+                    title:{
+                        text:self.metric.name.toUpperCase() 
                     },
                     min:0
                 },
@@ -365,6 +499,7 @@
                 },
                 series: self.series()
             });
+*/
         };
     }
 
@@ -464,6 +599,13 @@
                     max: self.range.end.valueOf()
                 },
                 yAxis:{
+		labels: {
+                formatter: function() {
+                    var s = "";
+			s = this.value * 100 + ' %';
+			return s;
+		  }
+		  },
                     title:{
                         text:self.metric.name.toUpperCase()
                     },

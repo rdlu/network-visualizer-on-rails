@@ -65,7 +65,7 @@ class Compliance < ActiveRecord::Base
                     upload_sum += 1 if median.upload_with_unit >= reference_upload_value
                     combined_sum += 1 if median.upload_with_unit >= reference_upload_value && median.download_with_unit >= reference_download_value
                   when 'jitter'
-                    combined_sum += 1 if median.upload_with_unit >= reference_upload_value && median.download_with_unit >= reference_download_value
+                    combined_sum += 1 if median.upload_with_unit <= reference_upload_value && median.download_with_unit <= reference_download_value
                   else
                     download_sum += 1 if median.download_with_unit + median.upload_with_unit <= reference_download_value
                     combined_sum = download_sum
@@ -122,17 +122,21 @@ class Compliance < ActiveRecord::Base
         compliance.save!
       when 'raw'
         #scm 8 como exemplo
-        results = Results.where(:timestamp => start_period..end_period).where(:schedule_id => schedule.id).where(:metric_id => threshold.metric.id).all
-        len = results.length.to_i
+#       results = Results.where(:timestamp => start_period..end_period).where(:schedule_id => schedule.id).where(:metric_id => threshold.metric.id).all
+#       len = results.length.to_i
+	len = medians.length.to_i
 
         raw_sum_ds = 0
         raw_sum_sd = 0
-        results.each do |result|
-          if result.dsavg / 100 <= threshold.goal_level
+#       results.each do |result|
+	medians.each do |median|
+#       if result.dsavg / 100 <= threshold.goal_level
+	  if median.dsavg <= threshold.goal_level
             raw_sum_ds += 1
           end
 
-          if result.sdavg / 100 <= threshold.goal_level
+#         if result.sdavg / 100 <= threshold.goal_level
+	  if median.sdavg <= threshold.goal_level
             raw_sum_sd += 1
           end
         end
