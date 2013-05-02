@@ -64,6 +64,44 @@ class ReportsController < ApplicationController
     end
   end
 
+  def graph_type_two
+    start_date = DateTime.parse(params[:start_date])
+    end_date = DateTime.parse(params[:end_date])
+    agent_type = params[:agent_type]
+    states = params[:state]
+    goal_filter = params[:goal_filter]
+
+    compliances = Compliance.
+        where('start_timestamp >= ?', start_date).
+        where('end_timestamp <= ?', end_date).
+        order('start_timestamp ASC').all
+
+    data = {
+        :range => { :start => start_date, :end => end_date },
+        :compliances => compliances
+    }
+
+    respond_to do |format|
+        format.json { render :json => data, :status => 200 }
+    end
+
+
+  end
+
+  def eaq2_table
+
+    respond_to do |format|
+      format.html {render :layout=> false}
+    end
+  end
+
+  def detail_eaq2_table
+
+    respond_to do |format|
+      format.html {render :layout=> false}
+    end
+  end
+
   def eaq_graph
     source = Probe.find(params[:source][:id])
     destination = Probe.find(params[:destination][:id])

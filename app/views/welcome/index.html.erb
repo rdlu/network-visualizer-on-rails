@@ -46,7 +46,7 @@
       <div class="row-fluid">
         <div class="span12">
           <div style="float:right">
-          <div class="btn btn-primary"  onclick="reload()">Atualizar</div>
+          <div class="btn btn-primary"  onclick=" $('#loading').empty();reload()">Atualizar</div>
           <input type="checkbox" name="auto_reload" onclick="autoReload(this)"><span> a cada 5 minutos</span></input>
           </div>
           <br/><br/>
@@ -64,6 +64,7 @@
 
     $(function () {
         $('#tab_resumo_med').bind('click', function (e) {
+            $('#loading').empty();
             reload();
         });
 
@@ -311,7 +312,7 @@
                         else context = context + '<td style="text-align: center">' + response[i]['results']['pom']['download'] + '/' + response[i]['results']['pom']['download'] + '</td>';
                         context = context + '</tr>';
                     } else {
-                        context = context + '<td colspan="8"  style="background-color: rgba(170,170,170,0.57) ;text-align: center">Não há dados para esta sonda.</td>';
+                        context = context + '<td colspan="8" style="background-color: rgba(170,170,170,0.57) ;text-align: center">Não há dados para esta sonda.</td>';
                     }
 
                 }

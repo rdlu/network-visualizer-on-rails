@@ -11,10 +11,13 @@ MomRails::Application.routes.draw do
   get 'reports/index', :as => 'index_reports'
   match 'reports/graph/:source_id/:destination_id/:metric_id' => 'reports#graph', :via => [:get]
   post 'reports/graph', :as =>'graph_reports'
+  post 'reports/graph_type_two', :as =>'graph_two_reports'
   post 'reports/eaq_graph', :as =>'eaq_graph_reports'
   post 'reports/eaq_compliance_graph', :as =>'eaq_compliance_graph_reports'
   post 'reports/eaq_table', :as =>'eaq_table_reports'
   post 'reports/detail_eaq_table', :as =>'detail_eaq_table_reports'
+  post 'reports/eaq2_table', :as => 'eaq2_table_reports'
+  post 'reports/detail_eaq2_table', :as=> 'detail_eaq2_table_reports'
   post 'kpi/show' => 'kpi#show', :as => 'show_kpi'
   match 'reports/csv_bruto/:filename' => 'reports#csv_bruto', :as => 'reports_csv_bruto', :via => [:get]
   match 'reports/csv_diario/:filename' => 'reports#csv_diario', :as => 'reports_csv_diario', :via => [:get]
@@ -38,6 +41,7 @@ MomRails::Application.routes.draw do
   end
 
   post 'probes/load_location',:as=> 'probes_load_location'
+  post 'probes/filter_uf', :as => 'probes_filter_uf'
 
   match 'probes/:id/metrics/:source_id' => 'probes#metrics', :via => [:get]
   match 'probes/:id/thresholds/:source_id' => 'probes#thresholds', :via => [:get]
