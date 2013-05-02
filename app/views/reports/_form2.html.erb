@@ -45,7 +45,8 @@
                   <input type="checkbox" name="agent_type[]"  value="fixed"> Fixo
             </label-->
           <div class="controls" style="margin-left: 70px !important" >
-            <%= select :agent_type,'', [['Móvel','mobile'], ['Fixo','fixed'],['Móvel e Fixo','both']]%>
+             <label><%= check_box_tag  "agent_type[]","mobile" %> Móvel </label>
+            <label><%= check_box_tag  "agent_type[]","fixed" %> Fixo </label>
           </div>
         </div>
 
