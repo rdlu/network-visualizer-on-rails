@@ -67,9 +67,22 @@ class ReportsController < ApplicationController
   def graph_type_two
     start_date = DateTime.parse(params[:start_date])
     end_date = DateTime.parse(params[:end_date])
-    agent_type = params[:agent_type]
+    agent_type = params[:agent_type] # fixed or mobile, if linux
     states = params[:state]
     goal_filter = params[:goal_filter]
+
+    # agent_type_query = "type = \"#{agent_type[0]}\""
+    # agent_type_query += " or type = \"#{agent_type[1]}\"" if agent_type[1]
+
+    states_query = "state = \"#{states.first}\""
+    states.delete(states.first)
+    states.each do |s|
+        states_query += " or state = \"#{s}\""
+    end
+
+    probes = Probe.
+        where(agent_type_query).
+        where(states_query).all
 
     compliances = Compliance.
         where('start_timestamp >= ?', start_date).
@@ -705,7 +718,7 @@ class ReportsController < ApplicationController
                                                server_failure_errors: server_failure_errors,
                                                uuid: uuid
                                               )
-            when throughput_http
+            when "throughput_http"
                 throughput_http_down = report.xpath("report/results/throughput_http/down").to_s.to_f
                 throughput_http_up = report.xpath("report/results/throughput_http/up").to_s.to_f
 
