@@ -72,9 +72,6 @@ class ReportsController < ApplicationController
     states = params[:state]
     goal_filter = params[:goal_filter]
 
-    # agent_type_query = "type = \"#{agent_type[0]}\""
-    # agent_type_query += " or type = \"#{agent_type[1]}\"" if agent_type[1]
-
     if type == "linux"
         if agent_type.include?("fixed") && agent_type.include?("mobile") 
             # We are just getting every probe anyway
@@ -130,10 +127,21 @@ class ReportsController < ApplicationController
         compliances_schedules_query += " or schedule_id = #{s.id}"
     end
 
+    if goal_filter.includes?("above") && goal_filter.includes?("under")
+        goal_query = ""
+    else
+        if goal_filter[0] == "above"
+            goal_query = "compliances.download >= thresholds.compliance_level"
+        else
+            goal_query = "compliances.download <= thresholds.compliance_level"
+        end
+    end
+
     compliances = Compliance.
         where('start_timestamp >= ?', start_date).
         where('end_timestamp <= ?', end_date).
         where(compliances_schedules_query).
+        joins(:threshold).where(goal_query).
         order('start_timestamp ASC').all
 
     data = {
