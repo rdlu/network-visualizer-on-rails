@@ -98,8 +98,15 @@ class ReportsController < ApplicationController
         states_query += " or state = \"#{s}\""
     end
 
+    type_query = "type = \"#{type.first}\""
+    type.delete(type.first)
+    type.each do |t|
+        type_query += " or type = \"#{t}\""
+    end
+
     probes = Probe.
         where(agent_type_query).
+        where(type_query).
         where(states_query).all
 
     compliances = Compliance.
