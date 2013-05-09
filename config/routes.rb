@@ -11,7 +11,6 @@ MomRails::Application.routes.draw do
   get 'reports/index', :as => 'index_reports'
   match 'reports/graph/:source_id/:destination_id/:metric_id' => 'reports#graph', :via => [:get]
   post 'reports/graph', :as =>'graph_reports'
-  post 'reports/graph_type_two', :as =>'graph_two_reports'
   post 'reports/eaq_graph', :as =>'eaq_graph_reports'
   post 'reports/eaq_compliance_graph', :as =>'eaq_compliance_graph_reports'
   post 'reports/eaq_table', :as =>'eaq_table_reports'

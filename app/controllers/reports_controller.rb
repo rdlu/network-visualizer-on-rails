@@ -64,9 +64,13 @@ class ReportsController < ApplicationController
     end
   end
 
-  def graph_type_two
-    start_date = DateTime.parse(params[:start_date])
-    end_date = DateTime.parse(params[:end_date])
+  def eaq2_table
+    start_date = DateTime.parse(params[:date][:start])
+    end_date = DateTime.parse(params[:date][:end])
+    ### acho que pra buscar no banco usa o from/to
+    from = DateTime.parse(params[:date][:start]+' '+params[:time][:start]+' '+DateTime.current.zone).in_time_zone
+    to = DateTime.parse(params[:date][:end]+' '+params[:time][:end]+' '+DateTime.current.zone).in_time_zone
+    ###
     type = params[:type] # android or linux
     agent_type = params[:agent_type] # fixed or mobile, if linux
     states = params[:state]
@@ -153,15 +157,8 @@ class ReportsController < ApplicationController
         format.json { render :json => data, :status => 200 }
     end
 
-
   end
 
-  def eaq2_table
-
-    respond_to do |format|
-      format.html {render :layout=> false}
-    end
-  end
 
   def detail_eaq2_table
 
@@ -494,6 +491,9 @@ class ReportsController < ApplicationController
 
     respond_to do |format|
       format.html {render :layout=> false}
+      format.xls
+
+
     end
 
   end
