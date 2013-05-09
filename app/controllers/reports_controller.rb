@@ -109,6 +109,21 @@ class ReportsController < ApplicationController
         where(type_query).
         where(states_query).all
 
+    # This query should return false, but it's here to make life easier on
+    # building the massive string that follows
+    schedules_query = "(destination_id = #{probes.first.id} and source_id = #{probes.first.id})"
+    probes.each do |po|
+        probes.each do |pd|
+            unless po == pd
+                # don't even try to get schedules for a pair of the same probe
+                schedules_query += " or (destination_id = #{pd.id} and source_id = #{po.id})"
+            end
+        end
+    end
+
+    schedules = Schedule.
+        where(schedules_query).all
+
     compliances = Compliance.
         where('start_timestamp >= ?', start_date).
         where('end_timestamp <= ?', end_date).
