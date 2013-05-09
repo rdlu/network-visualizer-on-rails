@@ -124,9 +124,16 @@ class ReportsController < ApplicationController
     schedules = Schedule.
         where(schedules_query).all
 
+    compliances_schedules_query = "schedule_id = #{schedules.first.id}"
+    schedules.delete(schedules.first)
+    schedules.each do |s|
+        compliances_schedules_query += " or schedule_id = #{s.id}"
+    end
+
     compliances = Compliance.
         where('start_timestamp >= ?', start_date).
         where('end_timestamp <= ?', end_date).
+        where(compliances_schedules_query).
         order('start_timestamp ASC').all
 
     data = {
