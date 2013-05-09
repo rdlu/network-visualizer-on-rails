@@ -288,7 +288,7 @@
                         else context = context + '<td style="text-align: center">' +
                                 $u(response[i]['results']['throughput']['download'], response[i]['results']['throughput']['db_unit']).as(response[i]['results']['throughput']['view_unit']).val()
                                 + '/' +
-                                $u(response[i]['results']['throughput']['upload'], response[i]['results']['throughput']['db_unit']).as(response[i]['results']['throughput_tcp']['view_unit']).val() + '</td>';
+                                $u(response[i]['results']['throughput']['upload'], response[i]['results']['throughput']['db_unit']).as(response[i]['results']['throughput']['view_unit']).val() + '</td>';
 
                         if (response[i]['results']['rtt'] == null)
                             context = context + '<td style="text-align: center">NULL</td>';
