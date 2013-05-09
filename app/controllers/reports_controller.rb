@@ -67,12 +67,30 @@ class ReportsController < ApplicationController
   def graph_type_two
     start_date = DateTime.parse(params[:start_date])
     end_date = DateTime.parse(params[:end_date])
+    type = params[:type] # android or linux
     agent_type = params[:agent_type] # fixed or mobile, if linux
     states = params[:state]
     goal_filter = params[:goal_filter]
 
     # agent_type_query = "type = \"#{agent_type[0]}\""
     # agent_type_query += " or type = \"#{agent_type[1]}\"" if agent_type[1]
+
+    if type == "linux"
+        if agent_type.include?("fixed") && agent_type.include?("mobile") 
+            # We are just getting every probe anyway
+            agent_type_query = ""
+        else
+            # We only want fixed agents
+            connection_profiles = ConnectionProfile.where("conn_type = ?", agent_type[0]).all
+            agent_type_query = "connection_profile_id = #{connection_profiles.first.id}"
+            connection_profiles.delete(connection_profiles.first)
+            connection_profiles.each do |c|
+                agent_type_query += " or connection_profile_id = #{c.id}"
+            end
+        end
+    else
+        agent_type_query = ""
+    end
 
     states_query = "state = \"#{states.first}\""
     states.delete(states.first)
