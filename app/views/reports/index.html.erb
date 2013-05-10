@@ -3,7 +3,7 @@
 <div id="ops" class="accordion" >
 <div class="accordion-group">
   <div class="accordion-heading" >
-    <h4 id="acc_name" onclick="toggleOP()" name="open" style="margin-left: 5px; padding: 0" class="accordion-toggle" data-toggle="collapse" data-parent="#ops" href="#accordion_forms">
+    <h4 id="acc_name" name="open" style="margin-left: 5px; padding: 0" class="accordion-toggle" data-toggle="collapse" data-parent="#ops" href="#accordion_forms">
       Opções &#10548;
     </h4>
   </div>
@@ -35,17 +35,17 @@
 
 
 <script type="text/javascript">
-
-    function toggleOP(){
+$(function () {
+    $('#acc_name').click(function() {
         var text = document.getElementById('acc_name').getAttribute('name');
         if (text == 'open'){
-         $("#acc_name").html('Opções &#10549;');
-         $("#acc_name").attr('name','closed');
+            $("#acc_name").html('Opções &#10549;');
+            $("#acc_name").attr('name','closed');
         }else{
             $("#acc_name").html('Opções &#10548;');
             $("#acc_name").attr('name','open');
         }
-    }
+    });
 
     Highcharts.setOptions({
         // This is for all plots, change Date axis to local timezone
@@ -678,7 +678,7 @@ if(self.threshold.name == "SCM6" || self.threshold.name == "SCM7" ){
             jQuery.each(directions, function(idx,direction) {
                 retorno.push({name:direction.title,data:self.dataset(direction.name),visible:direction.visible});
             });
-            console.log(retorno);
+            //console.log(retorno);
             return retorno;
         };
 
@@ -795,7 +795,7 @@ if(self.threshold.name == "SCM6" || self.threshold.name == "SCM7" ){
 
 
     }   */
-
+});
 </script>
 
 

@@ -64,15 +64,34 @@ class ReportsController < ApplicationController
     end
   end
 
-  def graph_type_two
-    start_date = DateTime.parse(params[:start_date])
-    end_date = DateTime.parse(params[:end_date])
+  def eaq2_table
+    start_date = DateTime.parse(params[:date][:start])
+    end_date = DateTime.parse(params[:date][:end])
+    ### acho que pra buscar no banco usa o from/to
+    from = DateTime.parse(params[:date][:start]+' '+params[:time][:start]+' '+DateTime.current.zone).in_time_zone
+    to = DateTime.parse(params[:date][:end]+' '+params[:time][:end]+' '+DateTime.current.zone).in_time_zone
+    ###
+    type = params[:type] # android or linux
     agent_type = params[:agent_type] # fixed or mobile, if linux
     states = params[:state]
     goal_filter = params[:goal_filter]
 
-    # agent_type_query = "type = \"#{agent_type[0]}\""
-    # agent_type_query += " or type = \"#{agent_type[1]}\"" if agent_type[1]
+    if type == "linux"
+        if agent_type.include?("fixed") && agent_type.include?("mobile") 
+            # We are just getting every probe anyway
+            agent_type_query = ""
+        else
+            # We only want fixed agents
+            connection_profiles = ConnectionProfile.where("conn_type = ?", agent_type[0]).all
+            agent_type_query = "connection_profile_id = #{connection_profiles.first.id}"
+            connection_profiles.delete(connection_profiles.first)
+            connection_profiles.each do |c|
+                agent_type_query += " or connection_profile_id = #{c.id}"
+            end
+        end
+    else
+        agent_type_query = ""
+    end
 
     states_query = "state = \"#{states.first}\""
     states.delete(states.first)
@@ -80,13 +99,53 @@ class ReportsController < ApplicationController
         states_query += " or state = \"#{s}\""
     end
 
+    type_query = "type = \"#{type.first}\""
+    type.delete(type.first)
+    type.each do |t|
+        type_query += " or type = \"#{t}\""
+    end
+
     probes = Probe.
         where(agent_type_query).
+        where(type_query).
         where(states_query).all
+
+    # This query should return false, but it's here to make life easier on
+    # building the massive string that follows
+    schedules_query = "(destination_id = #{probes.first.id} and source_id = #{probes.first.id})"
+    probes.each do |po|
+        probes.each do |pd|
+            unless po == pd
+                # don't even try to get schedules for a pair of the same probe
+                schedules_query += " or (destination_id = #{pd.id} and source_id = #{po.id})"
+            end
+        end
+    end
+
+    schedules = Schedule.
+        where(schedules_query).all
+
+    compliances_schedules_query = "schedule_id = #{schedules.first.id}"
+    schedules.delete(schedules.first)
+    schedules.each do |s|
+        compliances_schedules_query += " or schedule_id = #{s.id}"
+    end
+
+    if goal_filter.includes?("above") && goal_filter.includes?("under")
+        goal_query = ""
+    else
+        if goal_filter[0] == "above"
+            goal_query = "compliances.download >= thresholds.compliance_level"
+        else
+            goal_query = "compliances.download <= thresholds.compliance_level"
+        end
+    end
 
     compliances = Compliance.
         where('start_timestamp >= ?', start_date).
         where('end_timestamp <= ?', end_date).
+        where(compliances_schedules_query).
+        joins(:threshold).where(goal_query).
         order('start_timestamp ASC').all
 
     data = {
@@ -98,15 +157,8 @@ class ReportsController < ApplicationController
         format.json { render :json => data, :status => 200 }
     end
 
-
   end
 
-  def eaq2_table
-
-    respond_to do |format|
-      format.html {render :layout=> false}
-    end
-  end
 
   def detail_eaq2_table
 
@@ -439,6 +491,9 @@ class ReportsController < ApplicationController
 
     respond_to do |format|
       format.html {render :layout=> false}
+      format.xls
+
+
     end
 
   end
