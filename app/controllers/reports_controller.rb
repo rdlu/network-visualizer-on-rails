@@ -76,39 +76,12 @@ class ReportsController < ApplicationController
     states = params[:state]
     goal_filter = params[:goal_filter]
 
-    if type == "linux"
-        if agent_type.include?("fixed") && agent_type.include?("mobile") 
-            # We are just getting every probe anyway
-            agent_type_query = ""
-        else
-            # We only want fixed agents
-            connection_profiles = ConnectionProfile.where("conn_type = ?", agent_type[0]).all
-            agent_type_query = "connection_profile_id = #{connection_profiles.first.id}"
-            connection_profiles.delete(connection_profiles.first)
-            connection_profiles.each do |c|
-                agent_type_query += " or connection_profile_id = #{c.id}"
-            end
-        end
-    else
-        agent_type_query = ""
-    end
-
-    states_query = "state = \"#{states.first}\""
-    states.delete(states.first)
-    states.each do |s|
-        states_query += " or state = \"#{s}\""
-    end
-
-    type_query = "type = \"#{type.first}\""
-    type.delete(type.first)
-    type.each do |t|
-        type_query += " or type = \"#{t}\""
-    end
-
     @probes = Probe.
-        where(agent_type_query).
-        where(type_query).
-        where(states_query).all
+        where(:connection_profile_id => ConnectionProfile.where(:conn_type => agent_type)).
+        where(:type => type).
+        where(:state => states).all
+
+
 
     # This query should return false, but it's here to make life easier on
     # building the massive string that follows
