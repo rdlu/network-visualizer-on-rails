@@ -65,11 +65,11 @@ class ReportsController < ApplicationController
   end
 
   def eaq2_table
-    start_date = DateTime.parse(params[:date][:start])
-    end_date = DateTime.parse(params[:date][:end])
+    @start_date = DateTime.parse(params[:date][:start])
+    @end_date = DateTime.parse(params[:date][:end])
     ### acho que pra buscar no banco usa o from/to
-    from = DateTime.parse(params[:date][:start]+' '+params[:time][:start]+' '+DateTime.current.zone).in_time_zone
-    to = DateTime.parse(params[:date][:end]+' '+params[:time][:end]+' '+DateTime.current.zone).in_time_zone
+    @from = DateTime.parse(params[:date][:start]+' '+params[:time][:start]+' '+DateTime.current.zone).in_time_zone
+    @to = DateTime.parse(params[:date][:end]+' '+params[:time][:end]+' '+DateTime.current.zone).in_time_zone
     ###
     type = params[:type] # android or linux
     agent_type = params[:agent_type] # fixed or mobile, if linux
@@ -105,16 +105,16 @@ class ReportsController < ApplicationController
         type_query += " or type = \"#{t}\""
     end
 
-    probes = Probe.
+    @probes = Probe.
         where(agent_type_query).
         where(type_query).
         where(states_query).all
 
     # This query should return false, but it's here to make life easier on
     # building the massive string that follows
-    schedules_query = "(destination_id = #{probes.first.id} and source_id = #{probes.first.id})"
-    probes.each do |po|
-        probes.each do |pd|
+    schedules_query = "(destination_id = #{@probes.first.id} and source_id = #{@probes.first.id})"
+    @probes.each do |po|
+        @probes.each do |pd|
             unless po == pd
                 # don't even try to get schedules for a pair of the same probe
                 schedules_query += " or (destination_id = #{pd.id} and source_id = #{po.id})"
@@ -141,20 +141,22 @@ class ReportsController < ApplicationController
         end
     end
 
-    compliances = Compliance.
-        where('start_timestamp >= ?', start_date).
-        where('end_timestamp <= ?', end_date).
+    @compliances = Compliance.
+        where('start_timestamp >= ?', @start_date).
+        where('end_timestamp <= ?', @end_date).
         where(compliances_schedules_query).
         joins(:threshold).where(goal_query).
         order('start_timestamp ASC').all
 
     data = {
-        :range => { :start => start_date, :end => end_date },
-        :compliances => compliances
+        :range => { :start => @start_date, :end => @end_date },
+        :probes => @probes,
+        :compliances => @compliances
     }
 
     respond_to do |format|
         format.json { render :json => data, :status => 200 }
+        format.html
     end
 
   end
