@@ -65,12 +65,8 @@ class ReportsController < ApplicationController
   end
 
   def eaq2_table
-    @start_date = DateTime.parse(params[:date][:start])
-    @end_date = DateTime.parse(params[:date][:end])
-    ### acho que pra buscar no banco usa o from/to
     @from = DateTime.parse(params[:date][:start]+' '+params[:time][:start]+' '+DateTime.current.zone).in_time_zone
     @to = DateTime.parse(params[:date][:end]+' '+params[:time][:end]+' '+DateTime.current.zone).in_time_zone
-    ###
     type = params[:type] # android or linux
     agent_type = params[:agent_type] # fixed or mobile, if linux
     states = params[:state]
@@ -96,14 +92,14 @@ class ReportsController < ApplicationController
     end
 
     @compliances = Compliance.
-        where('start_timestamp >= ?', @start_date).
-        where('end_timestamp <= ?', @end_date).
+        where('start_timestamp >= ?', @from).
+        where('end_timestamp <= ?', @to).
         where(:schedule_id => schedules).
         joins(:threshold).where(goal_query).
         order('start_timestamp ASC').all
 
     data = {
-        :range => { :start => @start_date, :end => @end_date },
+        :range => { :start => @from, :end => @to },
         :probes => @probes,
         :compliances => @compliances
     }
