@@ -81,8 +81,6 @@ class ReportsController < ApplicationController
         where(:type => type).
         where(:state => states).all
 
-
-
     # This query should return false, but it's here to make life easier on
     # building the massive string that follows
     schedules_query = "(destination_id = #{@probes.first.id} and source_id = #{@probes.first.id})"
@@ -98,12 +96,6 @@ class ReportsController < ApplicationController
     schedules = Schedule.
         where(schedules_query).all
 
-    compliances_schedules_query = "schedule_id = #{schedules.first.id}"
-    schedules.delete(schedules.first)
-    schedules.each do |s|
-        compliances_schedules_query += " or schedule_id = #{s.id}"
-    end
-
     if goal_filter.includes?("above") && goal_filter.includes?("under")
         goal_query = ""
     else
@@ -117,7 +109,7 @@ class ReportsController < ApplicationController
     @compliances = Compliance.
         where('start_timestamp >= ?', @start_date).
         where('end_timestamp <= ?', @end_date).
-        where(compliances_schedules_query).
+        where(:schedule_id => schedules).
         joins(:threshold).where(goal_query).
         order('start_timestamp ASC').all
 
