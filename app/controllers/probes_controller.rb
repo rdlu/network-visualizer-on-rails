@@ -147,24 +147,23 @@ class ProbesController < ApplicationController
   end
 
   def filter_uf
+    uf = Array.new
     uf = params[:uf]
-    cod_uf=''
+    cod_uf =  Array.new
     Probe.states.each do |state|
+      uf.each do |uf|
         if state.at(0) == uf
-          cod_uf = state.at(1)
+          cod_uf << state.at(1)
         end
+      end
     end
 
     cods = Array.new
-    if cod_uf != ''
+    cod_uf.each do |ufs|
       Probe.cod_area.each do |cod_n|
-        if cod_uf == cod_n.at(0).downcase
-          cods << cod_n.at(1)
-        end
-      end
-    else #todos os ufs
-      Probe.cod_area.each do |cod_n|
-        cods << cod_n.at(1)
+          if ufs == cod_n.at(0).downcase
+            cods << cod_n.at(1)
+          end
       end
     end
 

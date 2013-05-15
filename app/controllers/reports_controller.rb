@@ -70,6 +70,7 @@ class ReportsController < ApplicationController
     type = params[:type] # android or linux
     agent_type = params[:agent_type] # fixed or mobile, if linux
     states = params[:state]
+    cn = params[:cn]
     goal_filter = params[:goal_filter]
 
     @probes = Probe.

@@ -229,33 +229,6 @@
             }
         });
 
-        jQuery('#report-form2').submit(function (event) {
-            event.preventDefault();
-            var from = jQuery('#date_start').val();
-            var to = jQuery('#date_end').val();
-            var agent = jQuery('#agent').val
-            var agent_type = jQuery('#agent_type').val();
-            var states = jQuery('#states').val();
-
-            // if (date_start != '' && date_end != '' )
-            jQuery.ajax("<%= eaq2_table_reports_url %>/", {
-                data: $(this).serialize(),
-                method: 'post',
-                success: function (result, status) {
-                    if (jQuery("box-" + states).is(':empty')) {
-                        alert(states);
-                        jQuery('#graphs-area').prepend(result);
-                    } else {
-                        $("#box-" + states).remove();
-                        jQuery('#graphs-area').prepend(result);
-                    }
-                }
-            });
-            // else {
-            // jQuery('#report2-add').prop('disabled', true);
-            // }
-        });
-
 
         var graphs = {};
 

@@ -16,10 +16,10 @@
         <div class="control-group">
             <label for="probe-type" class="control-label">UF:</label>
           <div class="controls">
-            <select name="state" id="probe-state" onchange="filterUFs(this.value)" >
-              <option value="">Todas</option>
+            <select multiple="true"  name = "state[]"  id="probe-state" onchange="filterUFs()" >
+              <option name="state" value="">Todas</option>
               <% Probe.states.each do |state| %>
-                  <option value="<%= state.at(0) %>" <%= params[:by_state].to_s == state.at(1).to_s ? "selected=\"selected\"".html_safe : "" %>><%= state.at(1).upcase %></option>
+                  <option name="state" value="<%= state.at(0) %>" <%= params[:by_state].to_s == state.at(1).to_s ? "selected=\"selected\"".html_safe : "" %>><%= state.at(1).upcase %></option>
               <% end %>
             </select>
             </div>
@@ -27,7 +27,7 @@
         <div class="control-group"  >
           <label  for="probe-cn" class="control-label">CN(Cód. Área):</label>
           <div id="op_cn" class="controls">
-            <select multiple="true"  name="cn" id="probe-cn" >
+            <select multiple="true"  name="cn[]" id="probe-cn" onchange="setAllOpt(this.value,'probe-cn')" >
               <option value="">Todas</option>
               <% Probe.cod_area.each do |cn|
                   if search_field :probe,:state == cn.at(0).to_s  %>
@@ -45,8 +45,8 @@
                   <input type="checkbox" name="agent_type[]"  value="fixed"> Fixo
             </label-->
           <div class="controls" style="margin-left: 70px !important" >
-             <label><%= check_box_tag  "agent_type[]","mobile" %> Móvel </label>
-            <label><%= check_box_tag  "agent_type[]","fixed" %> Fixo </label>
+            <div style=" float: left;margin-left: 20px;width: 120px;"> <%= check_box_tag  "agent_type[]","mobile" %> Móvel </div>
+            <div style=" float: left;width: 60px;"> <%= check_box_tag  "agent_type[]","fixed" %> Fixo </div>
           </div>
         </div>
 
@@ -56,12 +56,12 @@
           <%= label :date, :start, "Início: ", :class => 'control-label' %>
           <div class="controls">
             <div class="input-prepend">
-              <label for="date_start" style="display: inline"><span class="add-on" style="margin-top: 1px;"><i class="icon-calendar"></i></span></label>
-              <%= text_field :date, :start, :class => 'input-small datepicker', :"data-date-format".to_sym => "dd/mm/yyyy"  %>
+              <label for="date_start2" style="display: inline"><span id="icon2" class="add-on" style="margin-top: 1px;"><i class="icon-calendar"></i></span></label>
+              <%= text_field :date, :start, :class => 'input-small datepicker', :"data-date-format".to_sym => "dd/mm/yyyy", :id => 'date_start2'  %>
             </div>
             <div class="input-prepend">
               <span class="add-on"><i class="icon-time"></i></span>
-              <%= text_field :time, :start, :class => 'input-mini bootstrap-timepicker', :value => Time.current.strftime('%H:%M') %>
+              <%= text_field :time, :start, :class => 'input-mini bootstrap-timepicker', :value => Time.current.strftime('%H:%M'),:id => 'time_start2' %>
             </div> <br/>
             <div id="error_Ini" style = "display: none" class="alert alert-error">
               Data de início maior que a de fim.
@@ -72,12 +72,12 @@
           <%= label :date, :end, "Fim: ", :class => 'control-label' %>
           <div class="controls">
             <div class="input-prepend">
-              <label for="date_end" style="display: inline"><span class="add-on" style="margin-top: 1px;"><i class="icon-calendar"></i></span></label>
-              <%= text_field :date, :end, :class => 'input-small datepicker', :"data-date-format".to_sym => "dd/mm/yyyy" %>
+              <label for="date_end2" style="display: inline"><span id="icon3" class="add-on" style="margin-top: 1px;"><i class="icon-calendar"></i></span></label>
+              <%= text_field :date, :end, :class => 'input-small datepicker', :"data-date-format".to_sym => "dd/mm/yyyy", :id => 'date_end2' %>
             </div>
             <div class="input-prepend">
               <span class="add-on"><i class="icon-time"></i></span>
-              <%= text_field :time, :end, :class => 'input-mini bootstrap-timepicker', :value => Time.current.strftime('%H:%M') %>
+              <%= text_field :time, :end, :class => 'input-mini bootstrap-timepicker', :value => Time.current.strftime('%H:%M'), :id => 'time_end2' %>
             </div> <br/>
             <div id="error_Fim" style = "display: none"  class="alert alert-error ">
               Data de fim menor que a de início.
@@ -105,7 +105,25 @@
 
   }
 
-  function filterUFs(value){
+  function setAllOpt(value,id)
+  {
+
+      if (value == ""){
+          var aux =  document.getElementById(id).options;
+          aux.selected = false;
+          for (var i =0; i < aux.length; i++){
+              aux.item(i).selected = true;
+          }
+      }
+
+      return  $('select#'+id).val();
+  }
+
+  function filterUFs(){
+      var value = [];
+      value = $('select#probe-state').val();
+      value = setAllOpt(value,'probe-state');
+
       $.ajax({
           type: 'POST',
           url: "<%= probes_filter_uf_path %>",
@@ -120,63 +138,64 @@
              $('#probe-cn').html(html);
           }
       });
+
   }
   $(document).ready(function (){
-      $('#date_start')
+      $('#date_start2')
               .datepicker()
               .on('changeDate', function(ev){
-                  var vetdata = $('#date_end').val().split('/');
+                  var vetdata = $('#date_end2').val().split('/');
                   if (ev.date.valueOf() > moment(vetdata[2]+'/'+vetdata[1]+'/'+vetdata[0]).valueOf()){
                       // $('#error_Ini').html("Data de início maior que a de fim.");
                       $('#error_Ini').show();
-                      $('#report-add').attr('disabled','disabled');
+                      $('#report2-add').attr('disabled','disabled');
                   }else{
                       $('#error_Ini').hide();
-                      $('#report-add').removeAttr("disabled");
+                      $('#report2-add').removeAttr("disabled");
                   }
 
               });
-      $('#date_end')
+      $('#date_end2')
               .datepicker()
               .on('changeDate', function(ev){
-                  var vetdata = $('#date_start').val().split('/');
+                  var vetdata = $('#date_start2').val().split('/');
                   if (ev.date.valueOf() < moment(vetdata[2]+'/'+vetdata[1]+'/'+vetdata[0]).valueOf()){
                       //$('#error_Fim').html('Data de fim menor que a de início.');
-                      $('#report-add').attr('disabled','disabled');
+                      $('#report2-add').attr('disabled','disabled');
                       $('#error_Fim').show();
                   }else{
                       $('#error_Fim').hide();
-                      $('#report-add').removeAttr("disabled");
+                      $('#report2-add').removeAttr("disabled");
                   }
               });
 
-      jQuery('#date_start')
+      jQuery('#date_start2')
               .datepicker()
               .on('changeDate', this, function (ev) {
                   jQuery(this).datepicker('hide');
-                  jQuery('#time_start').focus();
+                  jQuery('#time_start2').focus();
               })
               .iMask({
                   type: 'fixed',
                   mask: '99/99/9999'
               });
 
-      jQuery('#date_end')
+      jQuery('#date_end2')
               .datepicker()
               .on('changeDate', this, function (ev) {
                   jQuery(this).datepicker('hide');
-                  jQuery('#time_end').focus();
+                  jQuery('#time_end2').focus();
               })
               .iMask({
                   type: 'fixed',
                   mask: '99/99/9999'
               });
 
-      jQuery('#time_start')
+      jQuery('#time_start2')
           //.timepicker({showMeridian: false,disableFocus:true})
               .iMask({type: 'fixed', mask: '99:99'});
 
-      jQuery('#time_end')
+      jQuery('#time_end2')
           //.timepicker({showMeridian: false,disableFocus:true})
               .iMask({type: 'fixed', mask: '99:99'});
   });
