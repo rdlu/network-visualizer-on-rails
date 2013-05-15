@@ -82,7 +82,7 @@ class ReportsController < ApplicationController
         where(:destination_id => @probes).
         where(:source_id => @probes).all
 
-    if goal_filter.includes?("above") && goal_filter.includes?("under")
+    if goal_filter.include?("above") && goal_filter.include?("under")
         goal_query = ""
     else
         if goal_filter[0] == "above"
