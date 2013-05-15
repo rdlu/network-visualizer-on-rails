@@ -106,8 +106,8 @@ class ReportsController < ApplicationController
     }
 
     respond_to do |format|
-        format.json { render :json => data, :status => 200 }
-        format.html
+        #format.json { render :json => data, :status => 200 }
+        format.html  {render :layout=> false}
     end
 
   end
@@ -445,8 +445,6 @@ class ReportsController < ApplicationController
     respond_to do |format|
       format.html {render :layout=> false}
       format.xls
-
-
     end
 
   end

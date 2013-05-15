@@ -4,7 +4,7 @@
         <div class="control-group">
           <label class="control-label"  for="type">Agente: </label>
           <div class="controls">
-            <%=  select :agent,'', Probe.types,{}, :onchange => 'displayTypes(this.value)'  %>
+            <%=  select :agent,'', Probe.types,{}, :onchange => 'displayTypes(this.value)', :id=>"agent"  %>
           </div>
         </div>
         <div class="control-group">
@@ -45,8 +45,8 @@
                   <input type="checkbox" name="agent_type[]"  value="fixed"> Fixo
             </label-->
           <div class="controls" style="margin-left: 70px !important" >
-            <div style=" float: left;margin-left: 20px;width: 120px;"> <%= check_box_tag  "agent_type[]","mobile" %> Móvel </div>
-            <div style=" float: left;width: 60px;"> <%= check_box_tag  "agent_type[]","fixed" %> Fixo </div>
+            <div style=" float: left;margin-left: 20px;width: 120px;"> <%= check_box_tag  "agent_type[]",true,"mobile",:id=>"type_m" %> Móvel </div>
+            <div style=" float: left;width: 60px;"> <%= check_box_tag  "agent_type[]",true,"fixed",:id=>"type_f" %> Fixo </div>
           </div>
         </div>
 
@@ -63,7 +63,7 @@
               <span class="add-on"><i class="icon-time"></i></span>
               <%= text_field :time, :start, :class => 'input-mini bootstrap-timepicker', :value => Time.current.strftime('%H:%M'),:id => 'time_start2' %>
             </div> <br/>
-            <div id="error_Ini" style = "display: none" class="alert alert-error">
+            <div id="error_Ini2" style = "display: none" class="alert alert-error">
               Data de início maior que a de fim.
             </div>
           </div>
@@ -79,7 +79,7 @@
               <span class="add-on"><i class="icon-time"></i></span>
               <%= text_field :time, :end, :class => 'input-mini bootstrap-timepicker', :value => Time.current.strftime('%H:%M'), :id => 'time_end2' %>
             </div> <br/>
-            <div id="error_Fim" style = "display: none"  class="alert alert-error ">
+            <div id="error_Fim2" style = "display: none"  class="alert alert-error ">
               Data de fim menor que a de início.
             </div>
           </div>
@@ -98,10 +98,11 @@
 
   function displayTypes(value)
   {
-     if(value == "linux")
+     if(value == "linux"){
         $('#ag_types').attr('style','display:block');
-      else
+     }else{
          $('#ag_types').attr('style','display:none');
+     }
 
   }
 
@@ -147,10 +148,10 @@
                   var vetdata = $('#date_end2').val().split('/');
                   if (ev.date.valueOf() > moment(vetdata[2]+'/'+vetdata[1]+'/'+vetdata[0]).valueOf()){
                       // $('#error_Ini').html("Data de início maior que a de fim.");
-                      $('#error_Ini').show();
+                      $('#error_Ini2').show();
                       $('#report2-add').attr('disabled','disabled');
                   }else{
-                      $('#error_Ini').hide();
+                      $('#error_Ini2').hide();
                       $('#report2-add').removeAttr("disabled");
                   }
 
@@ -162,9 +163,9 @@
                   if (ev.date.valueOf() < moment(vetdata[2]+'/'+vetdata[1]+'/'+vetdata[0]).valueOf()){
                       //$('#error_Fim').html('Data de fim menor que a de início.');
                       $('#report2-add').attr('disabled','disabled');
-                      $('#error_Fim').show();
+                      $('#error_Fim2').show();
                   }else{
-                      $('#error_Fim').hide();
+                      $('#error_Fim2').hide();
                       $('#report2-add').removeAttr("disabled");
                   }
               });
