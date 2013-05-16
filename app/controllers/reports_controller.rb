@@ -65,8 +65,6 @@ class ReportsController < ApplicationController
   end
 
   def eaq2_table
-    #@from = DateTime.parse(params[:date][:start]+' '+params[:time][:start]+' '+DateTime.current.zone).in_time_zone
-    #@to = DateTime.parse(params[:date][:end]+' '+params[:time][:end]+' '+DateTime.current.zone).in_time_zone
     @from = DateTime.parse(params[:date][:start])
     @to = DateTime.parse(params[:date][:end])
     @months = @from.all_months_until @to
@@ -76,7 +74,7 @@ class ReportsController < ApplicationController
     cn = params[:cn]
     goal_filter = params[:goal_filter] #all,above or under
 
-    if type == "android"
+    if @type == "android"
         agent_type = ["fixed", "mobile"]
     end
 
@@ -106,7 +104,8 @@ class ReportsController < ApplicationController
         joins(:threshold).where(goal_query).
         order('start_timestamp ASC').all
 
-   #
+
+
    #data = {
    #    :range => { :start => @from, :end => @to },
    #      :probes => @probes,
