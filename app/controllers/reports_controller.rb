@@ -73,6 +73,10 @@ class ReportsController < ApplicationController
     cn = params[:cn]
     goal_filter = params[:goal_filter]
 
+    if type == "android"
+        agent_type = ["fixed", "mobile"]
+    end
+
     @probes = Probe.
         where(:connection_profile_id => ConnectionProfile.where(:conn_type => agent_type)).
         where(:type => type).
