@@ -152,7 +152,7 @@ class ProbesController < ApplicationController
     cod_uf =  Array.new
     Probe.states.each do |state|
       uf.each do |uf|
-        if state.at(0) == uf
+        if state.at(1) == uf
           cod_uf << state.at(1)
         end
       end

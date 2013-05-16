@@ -19,7 +19,7 @@
             <select multiple="true"  name = "state[]"  id="probe-state" onchange="filterUFs()" >
               <option name="state" value="">Todas</option>
               <% Probe.states.each do |state| %>
-                  <option name="state" value="<%= state.at(0) %>" <%= params[:by_state].to_s == state.at(1).to_s ? "selected=\"selected\"".html_safe : "" %>><%= state.at(1).upcase %></option>
+                  <option name="state" value="<%= state.at(1) %>" <%= params[:by_state].to_s == state.at(1).to_s ? "selected=\"selected\"".html_safe : "" %>><%= state.at(1).upcase %></option>
               <% end %>
             </select>
             </div>
@@ -45,8 +45,8 @@
                   <input type="checkbox" name="agent_type[]"  value="fixed"> Fixo
             </label-->
           <div class="controls" style="margin-left: 70px !important" >
-            <div style=" float: left;margin-left: 20px;width: 120px;"> <%= check_box_tag  "agent_type[]",true,"mobile",:id=>"type_m" %> Móvel </div>
-            <div style=" float: left;width: 60px;"> <%= check_box_tag  "agent_type[]",true,"fixed",:id=>"type_f" %> Fixo </div>
+            <div style=" float: left;margin-left: 20px;width: 120px;"> <%= check_box_tag  "agent_type[]","mobile",:id=>"type_m" %> Móvel </div>
+            <div style=" float: left;width: 60px;"> <%= check_box_tag  "agent_type[]","fixed",:id=>"type_f" %> Fixo </div>
           </div>
         </div>
 
@@ -141,6 +141,8 @@
       });
 
   }
+
+
   $(document).ready(function (){
       $('#date_start2')
               .datepicker()

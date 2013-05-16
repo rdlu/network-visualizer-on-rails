@@ -65,17 +65,20 @@ class ReportsController < ApplicationController
   end
 
   def eaq2_table
-    @from = DateTime.parse(params[:date][:start]+' '+params[:time][:start]+' '+DateTime.current.zone).in_time_zone
-    @to = DateTime.parse(params[:date][:end]+' '+params[:time][:end]+' '+DateTime.current.zone).in_time_zone
-    type = params[:type] # android or linux
+    #@from = DateTime.parse(params[:date][:start]+' '+params[:time][:start]+' '+DateTime.current.zone).in_time_zone
+    #@to = DateTime.parse(params[:date][:end]+' '+params[:time][:end]+' '+DateTime.current.zone).in_time_zone
+    @from = DateTime.parse(params[:date][:start])
+    @to = DateTime.parse(params[:date][:end])
+    @months = @from.all_months_until @to
+    @type = params[:agent] # android or linux
     agent_type = params[:agent_type] # fixed or mobile, if linux
     states = params[:state]
     cn = params[:cn]
-    goal_filter = params[:goal_filter]
+    goal_filter = params[:goal_filter] #all,above or under
 
     @probes = Probe.
         where(:connection_profile_id => ConnectionProfile.where(:conn_type => agent_type)).
-        where(:type => type).
+        where(:type => @type).
         where(:state => states).all
 
     schedules = Schedule.
@@ -99,11 +102,13 @@ class ReportsController < ApplicationController
         joins(:threshold).where(goal_query).
         order('start_timestamp ASC').all
 
-    data = {
-        :range => { :start => @from, :end => @to },
-        :probes => @probes,
-        :compliances => @compliances
-    }
+   #
+   #data = {
+   #    :range => { :start => @from, :end => @to },
+   #      :probes => @probes,
+   #      :compliances => @compliances
+   #}
+   #
 
     respond_to do |format|
         #format.json { render :json => data, :status => 200 }
