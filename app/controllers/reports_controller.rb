@@ -113,20 +113,22 @@ class ReportsController < ApplicationController
 
   def detail_eaq2_table
     @month = params[:month]
-    @compliance = params[:compliance].to_a
+    compliance = params[:compliance].to_a
     @thresholds = Threshold.all
 
     schedules = []
     compliance.each do |c|
-        schedules << compliance.schedule_id
+        schedules << c.at(1)["schedule_id"]
     end
     schedules.uniq!
 
+
     @medians = Median.
-        where(:start_timestamp => @month.beginning_of_month).
-        where(:end_timestamp => @month.end_of_month).
+        where('start_timestamp >= ?', DateTime.parse(@month).beginning_of_month).
+        where('end_timestamp <= ?', DateTime.parse(@month).end_of_month).
         where(:schedule_id => schedules).
         order('start_timestamp ASC').all
+
 
     respond_to do |format|
       format.html {render :layout=> false}
