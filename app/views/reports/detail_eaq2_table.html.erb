@@ -1,0 +1,38 @@
+<!--Metas-->
+<tr>
+  <td style="font-weight: bold">Dia\Meta</td>
+  <% @thresholds.each do |threshold| %>
+      <td style="text-align: center; font-weight: bold">
+      </td>
+  <% end %>
+</tr>
+<!--Medidas obtidas para cada dia do mês -->
+<% if Date.current.end_of_month != Date.parse(@month).end_of_month
+     (1..Time.parse(@month).end_of_month.day).each do |day| %>
+        <tr>
+          <td style="font-weight: bold"><%= day %></td>
+          <% @thresholds.each do |threshold| %>
+              <% @compliance.each do |cmp|
+                if cmp.at(1)["threshold_id"] == threshold.id &&  cmp.at(1)["start_timestamp"] >= DateTime.parse(@month).change(:day => day).beginning_of_day && cmp.at(1)["start_timestamp"] <= DateTime.parse(@month).change(:day => day).end_of_day
+              %>
+              <td style="text-align: center"> <%=  cmp.at(1)["download"] %></td>
+              <% end %>
+             <% end %>
+          <% end %>
+        </tr>
+    <% end %>
+<% else
+     (1..Date.current.day).each do |day| %>
+        <tr>
+          <td style="font-weight: bold"><%= day %></td>
+          <% @thresholds.each do |threshold| %>
+
+              <td style="text-align: center"> </td>
+
+          <% end %>
+        </tr>
+    <% end %>
+<% end %>
+<tr>
+  <td colspan="7" style="font-weight: bold; background-color: #777777;text-align: center"></td>
+</tr>

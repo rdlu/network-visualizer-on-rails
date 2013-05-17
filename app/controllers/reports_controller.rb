@@ -122,6 +122,7 @@ class ReportsController < ApplicationController
 
 
   def detail_eaq2_table
+=begin
     @from = DateTime.parse(params[:date][:start]+' '+params[:time][:start]+' '+DateTime.current.zone).in_time_zone.beginning_of_month
     @to = DateTime.parse(params[:date][:end]+' '+params[:time][:end]+' '+DateTime.current.zone).in_time_zone.end_of_month
     type = params[:type] # android or linux
@@ -129,6 +130,7 @@ class ReportsController < ApplicationController
     states = params[:state]
     cn = params[:cn]
     goal_filter = params[:goal_filter]
+
 
     if type == "android"
         agent_type = ["fixed", "mobile"]
@@ -147,6 +149,10 @@ class ReportsController < ApplicationController
         where(:timestamp => @from..@to).
         where(:schedule_id => schedules).
         order('timestamp ASC').all
+=end
+    @month = params[:month]
+    @compliance = params[:compliance].to_a
+    @thresholds = Threshold.all
 
     respond_to do |format|
       format.html {render :layout=> false}

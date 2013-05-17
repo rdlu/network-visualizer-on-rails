@@ -1,6 +1,6 @@
 <div id="box-<%= @to %>-<%= @from%>" class="row-fluid">
   <div   class="span12">
-    <div id="table-<%= @to %><%= @from %>" >
+    <div id="table2-<%= @to %><%= @from %>" >
       <text style="color: #3E576F;font-size:  16px">Tabela de Indicadores Anatel tipo 2:  Início: <%= @from.strftime("%d/%m/%y") %> Fim: <%= @to.strftime("%d/%m/%y") %> </text>
       <table class="table table-bordered table-hover table-condensed" >
         <thead>
@@ -19,7 +19,7 @@
           <% end %>
         </tr>
         <% @months.each do |month| %>
-            <tr  onclick="toggleTable('<%= month.strftime("%Y-%m-%d")%>');">
+            <tr  onclick="toggleTable2('<%= month.strftime("%Y-%m-%d")%>');">
               <td  style="font-weight: bold">
                 <%= month.strftime("%b/%Y") == Time.new.strftime("%b/%Y") ? (month.strftime("%b/%Y")+' (Parcial)'):month.strftime("%b/%Y") %>&nbsp;&nbsp;<span class="icon-search" title="Detalhar"></span>
               </td>
@@ -54,11 +54,41 @@
             <tr id="<%= month.strftime("%Y-%m-%d")%>" style="display: none"  >
               <td  colspan="7" style="font-weight: bold; background-color: #777777;text-align: center">Diário <%= month.strftime("%B/%Y")%></td>
             </tr>
-            <tbody colspan="7" style="display: none;" id="detail<%= month.strftime("%Y-%m-%d")%>"></tbody>
+            <tbody colspan="7" style="display: none;" id="detail2<%= month.strftime("%Y-%m-%d")%>"></tbody>
         <% end %>
         </tbody>
         </table>
     </div>
   </div>
 </div>
-<div id="remove-<%= @type %>-<%= @from %>-<%= @to %>"  class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="$('#table-<%= @to %><%= @from%>').empty(); $(this).remove();">Remover</div>
+<div id="remove-<%= @type %>-<%= @from %>-<%= @to %>"  class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="$('#table2-<%= @to %><%= @from%>').empty(); $(this).remove();">Remover</div>
+
+
+
+<script>
+    function toggleTable2(id){
+        var e = document.getElementById(id);
+
+        if (e.style.display == 'table-row'){
+            e.style.display = 'none';
+            document.getElementById('detail2'+id).style.display = 'none';
+
+        }else{
+            if($('#detail2'+id).is(':empty')){
+                $.ajax({
+                    dataType: '',
+                    type: 'POST',
+                    url: "<%= detail_eaq2_table_reports_url %>",
+                    data: { compliance: <%= @compliances.to_json.html_safe %> ,month: id},
+                    success: function(data){
+                        $('#detail2'+id).html(data);
+                    }
+                });
+            }
+            e.style.display = 'table-row';
+            jQuery('#detail2'+id).fadeIn('slow');
+            //document.getElementById('detail'+id).style.display = '';
+
+        }
+    }
+</script>
