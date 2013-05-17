@@ -72,7 +72,7 @@ class ReportsController < ApplicationController
     agent_type = params[:agent_type] # fixed or mobile, if linux
     states = params[:state]
     cn = params[:cn]
-    goal_filter = params[:goal_filter] #all,above or under
+    @goal_filter = params[:goal_filter] #all,above or under
 
     if @type == "android"
         agent_type = ["fixed", "mobile"]
@@ -87,10 +87,10 @@ class ReportsController < ApplicationController
         where(:destination_id => @probes).
         where(:source_id => @probes).all
 
-    if goal_filter.include?("above") && goal_filter.include?("under")
+    if goal_filter.include?("above") && @goal_filter.include?("under")
         goal_query = ""
     else
-        if goal_filter[0] == "above"
+        if @goal_filter[0] == "above"
             goal_query = "compliances.download >= thresholds.compliance_level"
         else
             goal_query = "compliances.download <= thresholds.compliance_level"
