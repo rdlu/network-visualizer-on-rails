@@ -1,6 +1,6 @@
 <!--Metas-->
 <tr>
-  <td style="font-weight: bold">Dia\Meta</td>
+  <td style="font-weight: bold">Dia</td>
   <% @thresholds.each do |threshold| %>
       <td style="text-align: center; font-weight: bold">
       </td>
@@ -11,13 +11,16 @@
      (1..Time.parse(@month).end_of_month.day).each do |day| %>
         <tr>
           <td style="font-weight: bold"><%= day %></td>
-          <% @thresholds.each do |threshold| %>
+          <% @thresholds.each do |threshold|
+            median = 0
+          %>
               <% @compliance.each do |cmp|
-                if cmp.at(1)["threshold_id"] == threshold.id &&  cmp.at(1)["start_timestamp"] >= DateTime.parse(@month).change(:day => day).beginning_of_day && cmp.at(1)["start_timestamp"] <= DateTime.parse(@month).change(:day => day).end_of_day
-              %>
-              <td style="text-align: center"> <%=  cmp.at(1)["download"] %></td>
-              <% end %>
+                if cmp.at(1)["threshold_id"] == threshold.id &&  cmp.at(1)["start_timestamp"].to_datetime >= DateTime.parse(@month).change(:day => day).beginning_of_day || cmp.at(1)["start_timestamp"].to_datetime <= DateTime.parse(@month).change(:day => day).end_of_day
+                  median = 0
+
+               end %>
              <% end %>
+            <td style="text-align: center"> <%= median %></td>
           <% end %>
         </tr>
     <% end %>
