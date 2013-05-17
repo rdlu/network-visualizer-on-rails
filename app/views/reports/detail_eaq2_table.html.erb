@@ -12,15 +12,14 @@
         <tr>
           <td style="font-weight: bold"><%= day %></td>
           <% @thresholds.each do |threshold|
-            median = 0
-          %>
-              <% @compliance.each do |cmp|
-                if cmp.at(1)["threshold_id"] == threshold.id &&  cmp.at(1)["start_timestamp"].to_datetime >= DateTime.parse(@month).change(:day => day).beginning_of_day || cmp.at(1)["start_timestamp"].to_datetime <= DateTime.parse(@month).change(:day => day).end_of_day
-                  median = 0
+            down = 0 %>
 
+              <% @medians.each do |media|
+                if  media.threshold_id == threshold.id && media.start_timestamp >= DateTime.parse(@month).change(:day => day).beginning_of_day || media.start_timestamp <= DateTime.parse(@month).change(:day => day).end_of_day
+                    down = media.sdavg.to_f / 1000
                end %>
              <% end %>
-            <td style="text-align: center"> <%= median %></td>
+            <td style="text-align: center"> <%= down %></td>
           <% end %>
         </tr>
     <% end %>

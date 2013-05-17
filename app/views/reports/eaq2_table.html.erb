@@ -79,7 +79,7 @@
                     dataType: '',
                     type: 'POST',
                     url: "<%= detail_eaq2_table_reports_url %>",
-                    data: { compliance: <%= @compliances.to_json.html_safe %> ,month: id},
+                    data: { compliance: <%= @compliances.to_json.html_safe %> ,month: id, goal_filter: <%= @goal_filter .to_json.html_safe%>},
                     success: function(data){
                         $('#detail2'+id).html(data);
                     }
