@@ -122,10 +122,11 @@ class ReportsController < ApplicationController
     end
     schedules.uniq!
 
-    @results = Results.
-        where(:timestamp => @month.beginning_of_month..@month.end_of_month).
+    @medians = Median.
+        where(:start_timestamp => @month.beginning_of_month).
+        where(:end_timestamp => @month.end_of_month).
         where(:schedule_id => schedules).
-        order('timestamp ASC').all
+        order('start_timestamp ASC').all
 
     respond_to do |format|
       format.html {render :layout=> false}
