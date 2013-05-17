@@ -104,17 +104,7 @@ class ReportsController < ApplicationController
         joins(:threshold).where(goal_query).
         order('start_timestamp ASC').all
 
-
-
-   #data = {
-   #    :range => { :start => @from, :end => @to },
-   #      :probes => @probes,
-   #      :compliances => @compliances
-   #}
-   #
-
     respond_to do |format|
-        #format.json { render :json => data, :status => 200 }
         format.html  {render :layout=> false}
     end
 
@@ -122,37 +112,21 @@ class ReportsController < ApplicationController
 
 
   def detail_eaq2_table
-=begin
-    @from = DateTime.parse(params[:date][:start]+' '+params[:time][:start]+' '+DateTime.current.zone).in_time_zone.beginning_of_month
-    @to = DateTime.parse(params[:date][:end]+' '+params[:time][:end]+' '+DateTime.current.zone).in_time_zone.end_of_month
-    type = params[:type] # android or linux
-    agent_type = params[:agent_type] # fixed or mobile, if linux
-    states = params[:state]
-    cn = params[:cn]
-    goal_filter = params[:goal_filter]
-
-
-    if type == "android"
-        agent_type = ["fixed", "mobile"]
-    end
-
-    @probes = Probe.
-        where(:connection_profile_id => ConnectionProfile.where(:conn_type => agent_type)).
-        where(:type => type).
-        where(:state => states).all
-
-    schedules = Schedule.
-        where(:destination_id => @probes).
-        where(:source_id => @probes).all
-
-    @results = Results.
-        where(:timestamp => @from..@to).
-        where(:schedule_id => schedules).
-        order('timestamp ASC').all
-=end
     @month = params[:month]
     @compliance = params[:compliance].to_a
     @thresholds = Threshold.all
+
+    schedules = []
+    compliance.each do |c|
+        schedules << compliance.schedule_id
+    end
+    schedules.uniq!
+
+    @medians = Median.
+        where(:start_timestamp => @month.beginning_of_month).
+        where(:end_timestamp => @month.end_of_month).
+        where(:schedule_id => schedules).
+        order('start_timestamp ASC').all
 
     respond_to do |format|
       format.html {render :layout=> false}
