@@ -15,7 +15,7 @@ class Ability
       can :manage, ReportsController
       can :manage, user
     elsif user.role? :visualizador
-      can :read, :all
+      can :read, [WelcomeController, Probe, Schedule, ReportsController, ProbesController, SchedulesController]
       can :manage, user
     end
   end

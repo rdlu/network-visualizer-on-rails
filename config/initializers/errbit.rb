@@ -17,9 +17,13 @@ Airbrake.configure do |config|
   config.secure  = config.port == 443
 end
 
+
+
 module Airbrake
   class Sender
+    v, $VERBOSE = $VERBOSE, nil
     NOTICES_URI = '/errbit/notifier_api/v2/notices/'.freeze
+    $VERBOSE = v
   end
 end
 

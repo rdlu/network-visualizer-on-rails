@@ -46,8 +46,10 @@
                   <li><%= link_to "Agendas e Testes", schedules_path %></li>
                   <li class="divider"></li>
                   <li><%= link_to "Sondas e Agentes", probes_path  %></li>
+                  <% if can? :read, User %>
                   <li class="divider"></li>
                   <li><%= link_to "Controle de Usuário", users_path , :method => :get %></li>
+                  <% end %>
                   <li class="divider"></li>
                   <% #TEM QUE DEIXAR O GET_USER para o roteamento funcionar ok %>
                   <li><%= link_to "Minha Conta", edit_user_path(get_user) %></li>
