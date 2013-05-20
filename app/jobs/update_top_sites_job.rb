@@ -11,10 +11,6 @@ class UpdateTopSitesJob
   end
 
   def perform
-    # Programa a próxima execução
-    
-    Delayed::Job.enqueue UpdateTopSitesJob.new, :queue => 'updatetop100', :run_at => DateTime.current.end_of_day
-
     # For each page
     (0..3).each do |page|
       # open said page
@@ -55,13 +51,17 @@ class UpdateTopSitesJob
 
   def success(job)
     Yell.new(:gelf, :facility => 'netmetric').info 'Update do Top100 Sites encerrado com sucesso'
+    Delayed::Job.destroy_all(:queue => 'updatetop100')
+    Delayed::Job.enqueue UpdateTopSitesJob.new, :queue => 'updatetop100', :run_at => DateTime.current.end_of_day
   end
 
   def error(job, exception)
     Yell.new(:gelf, :facility => 'netmetric').info 'Bad server, no donut for you [Update Top100 falhou]'
+    Airbrake.notify(exception)
   end
 
   def failure
-
+    Delayed::Job.destroy_all(:queue => 'updatetop100')
+    Delayed::Job.enqueue UpdateTopSitesJob.new, :queue => 'updatetop100', :run_at => DateTime.current.end_of_day
   end
 end
