@@ -49,7 +49,7 @@
 
     <div class="control-group" >
       <div class="controls">
-        <%= link_to 'Editar', edit_probe_path(@probe), :class => "btn btn-primary btn-large "  %>
+        <%= link_to 'Editar', edit_probe_path(@probe), :class => "btn btn-primary btn-large " if can? :edit, Schedule  %>
         <%= link_to 'Voltar', probes_path, :class => "btn btn-inverse btn-large " %>
       </div>
     </div>

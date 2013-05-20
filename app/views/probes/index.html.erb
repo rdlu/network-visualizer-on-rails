@@ -70,8 +70,8 @@
           <td><%= probe.updated_at.to_datetime %></td>
           <td><%= probe.status %></td>
           <td><%= link_to 'Visualizar', probe %></td>
-          <td><%= link_to "Editar", edit_probe_path(probe) %></td>
-          <td><%= link_to 'Excluir', probe, method: :delete, data: { confirm: 'Você tem certeza que deseja excluir este Agente?' } %></td>
+          <td><%= link_to "Editar", edit_probe_path(probe) if can? :edit, Probe %></td>
+          <td><%= link_to 'Excluir', probe, method: :delete, data: { confirm: 'Você tem certeza que deseja excluir este Agente?' } if can? :edit, Probe %></td>
         </tr>
         <% end %>
       </tbody>
