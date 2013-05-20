@@ -65,27 +65,32 @@ class ReportsController < ApplicationController
   end
 
   def eaq2_table
-    @from = DateTime.parse(params[:date][:start]+' '+params[:time][:start]+' '+DateTime.current.zone).in_time_zone
-    @to = DateTime.parse(params[:date][:end]+' '+params[:time][:end]+' '+DateTime.current.zone).in_time_zone
-    type = params[:type] # android or linux
+    @from = DateTime.parse(params[:date][:start])
+    @to = DateTime.parse(params[:date][:end])
+    @months = @from.all_months_until @to
+    @type = params[:agent] # android or linux
     agent_type = params[:agent_type] # fixed or mobile, if linux
     states = params[:state]
     cn = params[:cn]
-    goal_filter = params[:goal_filter]
+    @goal_filter = params[:goal_filter] #all,above or under
+
+    if @type == "android"
+        agent_type = ["fixed", "mobile"]
+    end
 
     @probes = Probe.
         where(:connection_profile_id => ConnectionProfile.where(:conn_type => agent_type)).
-        where(:type => type).
+        where(:type => @type).
         where(:state => states).all
 
     schedules = Schedule.
         where(:destination_id => @probes).
         where(:source_id => @probes).all
 
-    if goal_filter.includes?("above") && goal_filter.includes?("under")
+    if @goal_filter.include?("above") && @goal_filter.include?("under")
         goal_query = ""
     else
-        if goal_filter[0] == "above"
+        if @goal_filter[0] == "above"
             goal_query = "compliances.download >= thresholds.compliance_level"
         else
             goal_query = "compliances.download <= thresholds.compliance_level"
@@ -99,21 +104,31 @@ class ReportsController < ApplicationController
         joins(:threshold).where(goal_query).
         order('start_timestamp ASC').all
 
-    data = {
-        :range => { :start => @from, :end => @to },
-        :probes => @probes,
-        :compliances => @compliances
-    }
-
     respond_to do |format|
-        format.json { render :json => data, :status => 200 }
-        format.html
+        format.html  {render :layout=> false}
     end
 
   end
 
 
   def detail_eaq2_table
+    @month = params[:month]
+    compliance = params[:compliance].to_a
+    @thresholds = Threshold.all
+
+    schedules = []
+    compliance.each do |c|
+        schedules << c.at(1)["schedule_id"]
+    end
+    schedules.uniq!
+
+
+    @medians = Median.
+        where('start_timestamp >= ?', DateTime.parse(@month).beginning_of_month).
+        where('end_timestamp <= ?', DateTime.parse(@month).end_of_month).
+        where(:schedule_id => schedules).
+        order('start_timestamp ASC').all
+
 
     respond_to do |format|
       format.html {render :layout=> false}
@@ -445,8 +460,6 @@ class ReportsController < ApplicationController
     respond_to do |format|
       format.html {render :layout=> false}
       format.xls
-
-
     end
 
   end

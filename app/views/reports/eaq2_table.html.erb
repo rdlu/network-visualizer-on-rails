@@ -1,8 +1,94 @@
-<div id="box-<%= @states %>" class="row-fluid">
+<div id="box-<%= @to %>-<%= @from%>" class="row-fluid">
   <div   class="span12">
-    <div id="table-<%= @agent %><%= @from %>" >
-      <%= @agent  %>
+    <div id="table2-<%= @to %><%= @from %>" >
+      <text style="color: #3E576F;font-size:  16px">Tabela de Indicadores Anatel tipo 2:  Início: <%= @from.strftime("%d/%m/%y") %> Fim: <%= @to.strftime("%d/%m/%y") %> </text>
+      <table class="table table-bordered table-hover table-condensed" >
+        <thead>
+        <tr>
+          <th></th>
+          <%  Threshold.all.each do |threshold| %>
+              <th style="text-align: center"><%= threshold.name %></th>
+          <% end %>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td style="min-width: 50px"></td>
+          <%  Threshold.all.each do |threshold| %>
+              <td style="text-align: center"><%= threshold.description %> <br/>Meta: <%= threshold.compliance_level* 100 %>%</td>
+          <% end %>
+        </tr>
+        <% @months.each do |month| %>
+            <tr  onclick="toggleTable2('<%= month.strftime("%Y-%m-%d")%>');">
+              <td  style="font-weight: bold">
+                <%= month.strftime("%b/%Y") == Time.new.strftime("%b/%Y") ? (month.strftime("%b/%Y")+' (Parcial)'):month.strftime("%b/%Y") %>&nbsp;&nbsp;<span class="icon-search" title="Detalhar"></span>
+              </td>
+              <%  Threshold.all.each do |threshold|
+                   media_down = 0
+                   media_up = 0
+                   down = 0
+                  # up = 0
+                   count = 0
+              %>
+                  <% @compliances.each do |compliance|
+                     if compliance.threshold_id == threshold.id  && compliance.start_timestamp == month.to_time.in_time_zone
+                        down = down + compliance.download
+                        #up = up + compliance.upload
+                        count = count + 1
+                     end %>
+                  <% end
+                  count != 0? media_down = down/count : media_down = 0
+                  #media_up = up/count
+                  %>
+                  <td style="text-align: center">
+                    <!-- aqui result compliances-->
+                    <%= data_down = (media_down.to_f*100).round(2)
+                        color_down = media_down >= threshold.compliance_level* 100 ? 'green': 'red'
+                        data_up = (media_up.to_f*100).round(2)
+                        color_up = data_up >=  threshold.compliance_level* 100 ? 'green': 'red'
+                        "<span style=\"color:#{color_down}\">#{data_down}%</span>".html_safe %><%= (threshold.metric.plugin =~ /^throughput/) && (threshold.compliance_method == "mean") ? "/<span style=\"color:#{color_up}\">#{data_up}%</span>".html_safe : ''  %>
+
+                  </td>
+              <% end %>
+            </tr>
+            <tr id="<%= month.strftime("%Y-%m-%d")%>" style="display: none"  >
+              <td  colspan="7" style="font-weight: bold; background-color: #777777;text-align: center">Diário <%= month.strftime("%B/%Y")%></td>
+            </tr>
+            <tbody colspan="7" style="display: none;" id="detail2<%= month.strftime("%Y-%m-%d")%>"></tbody>
+        <% end %>
+        </tbody>
+        </table>
     </div>
   </div>
 </div>
-<div id="remove-<%= @agent_type %>-<%= @agent %>-<%= @from %>-<%= @to %>"  class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="$('#box-<%= @states %>').remove(); $(this).remove();">Remover</div>
+<div id="remove-<%= @type %>-<%= @from %>-<%= @to %>"  class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="$('#table2-<%= @to %><%= @from%>').empty(); $(this).remove();">Remover</div>
+
+
+
+<script>
+    function toggleTable2(id){
+        var e = document.getElementById(id);
+
+        if (e.style.display == 'table-row'){
+            e.style.display = 'none';
+            document.getElementById('detail2'+id).style.display = 'none';
+
+        }else{
+            if($('#detail2'+id).is(':empty')){
+                $.ajax({
+                    dataType: '',
+                    type: 'POST',
+                    url: "<%= detail_eaq2_table_reports_url %>",
+                    data: { compliance: <%= @compliances.to_json.html_safe %> ,month: id, goal_filter: <%= @goal_filter .to_json.html_safe%>},
+                    success: function(data){
+                        $('#detail2'+id).html(data);
+                    }
+                });
+            }
+            e.style.display = 'table-row';
+            jQuery('#detail2'+id).fadeIn('slow');
+            //document.getElementById('detail'+id).style.display = '';
+
+        }
+    }
+</script>
