@@ -315,16 +315,16 @@
                 };
 
 
-                this.series = function () {
+                this.series = function() {
                     var directions = [
                         {name: 'dsavg', title: 'Upload'},
-                        {name: 'sdavg', title: 'Download'}
-                    ];
+                        {name: 'sdavg', title: 'Download'}];
 
                     var retorno = [];
+
                     jQuery.each(goal_lines, function (direction, value) {
                         keep_value[direction] = value;
-                        retorno.push({name: 'Meta Anatel ' + direction, data: self.goal_dataset(direction, value)});
+                        retorno.push({name: 'Meta Anatel ' + direction, data: self.goal_dataset(direction, value), dashStyle: 'shortdot'});
                     });
 
                     jQuery.each(directions, function (idx, direction) {
@@ -386,7 +386,7 @@
                         retorno.push({name: direction.title, data: self.dataset(direction.name)});
                     });
                     jQuery.each(goal_lines, function (direction, value) {
-                        retorno.push({name: 'Meta Anatel ' + direction, data: self.goal_dataset(direction, value)});
+                        retorno.push({name: 'Meta Anatel ' + direction, data: self.goal_dataset(direction, value), dashStyle: 'shortdot'});
 
                     });
                     return retorno;
@@ -587,7 +587,7 @@
                     retorno.push({name: direction.title, data: self.dataset(direction.name)});
                 });
 
-                retorno.push({name: 'Meta Anatel', data: self.goal_dataset(threshold.compliance_level)});
+                retorno.push({name: 'Meta Anatel', data: self.goal_dataset(threshold.compliance_level), dashStyle: 'shortdot'});
                 return retorno;
             };
 
