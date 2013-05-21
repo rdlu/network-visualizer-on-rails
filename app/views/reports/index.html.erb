@@ -231,8 +231,8 @@
 
         jQuery('#report-form2').submit(function (event) {
             event.preventDefault();
-            var from = moment(jQuery('#date_start2').val());
-            var to = moment(jQuery('#date_end2').val());
+            var from = moment(jQuery('#date_start2').val(), "DD\MM\YYYY HH:mm Z").utc().format();
+            var to = moment(jQuery('#date_end2').val(), "DD\MM\YYYY HH:mm Z").utc().format();
             var agent = jQuery('#agent').val();
             var agent_type = jQuery('#agent_type').val();
             var cn = jQuery('#probe-cn').val();
@@ -253,7 +253,7 @@
                 }
             });
            else {
-             jQuery('#report2-add').prop('disabled', true);
+             //jQuery('#report2-add').prop('disabled', true);
              jQuery('#acc_name').click();
             }
         });

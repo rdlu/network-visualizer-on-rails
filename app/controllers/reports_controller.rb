@@ -127,12 +127,21 @@ class ReportsController < ApplicationController
         where('start_timestamp >= ?', DateTime.parse(@month).beginning_of_month).
         where('end_timestamp <= ?', DateTime.parse(@month).end_of_month).
         where(:schedule_id => schedules).
+        where(:threshold_id => @thresholds).
         order('start_timestamp ASC').all
 
-
+    bla = ''
     respond_to do |format|
       format.html {render :layout=> false}
     end
+  end
+
+  def detail_speed_eaq2_table
+   #consolidacao pela velocidade contratada
+  end
+
+  def detail_type_agent_eaq2_table
+   #consolidacao por tipo de agente e tecnologia de conexão
   end
 
   def eaq_graph
