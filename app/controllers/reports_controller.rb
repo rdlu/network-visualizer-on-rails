@@ -130,19 +130,23 @@ class ReportsController < ApplicationController
         where(:threshold_id => @thresholds).
         order('start_timestamp ASC').all
 
-    bla = ''
+
     respond_to do |format|
       format.html {render :layout=> false}
     end
   end
 
-  def detail_speed_eaq2_table
+  def detail_speed_type_eaq2_table
    #consolidacao pela velocidade contratada
+   #consolidacao por tipo de agente e tecnologia de conexão
+    @date = params[:date]
+    @id = params[:id]
+
+    respond_to do |format|
+      format.html {render :layout=> false}
+    end
   end
 
-  def detail_type_agent_eaq2_table
-   #consolidacao por tipo de agente e tecnologia de conexão
-  end
 
   def eaq_graph
     source = Probe.find(params[:source][:id])
