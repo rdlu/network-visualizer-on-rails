@@ -18,6 +18,7 @@ MomRails::Application.routes.draw do
   post 'reports/eaq2_table', :as => 'eaq2_table_reports'
   #get 'reports/eaq2_table', :as => 'eaq2_table_reports'
   post 'reports/detail_eaq2_table', :as=> 'detail_eaq2_table_reports'
+  post 'reports/detail_speed_type_eaq2_table', :as => 'detail_speed_type_eaq2_table_reports'
   post 'kpi/show' => 'kpi#show', :as => 'show_kpi'
   match 'reports/csv_bruto/:filename' => 'reports#csv_bruto', :as => 'reports_csv_bruto', :via => [:get]
   match 'reports/csv_diario/:filename' => 'reports#csv_diario', :as => 'reports_csv_diario', :via => [:get]
@@ -96,6 +97,7 @@ MomRails::Application.routes.draw do
 
   #/collect/id/2/kpis/3567/SonyEricsson/R800i/-/-/-101/-/-/-/0/4/1551/1361215988/db14c4a2-1629-4f2e-9fc5-361d3fec4b74
   #/collect/id/3/kpis/-/-/-/-/-/-/-/0/143.54.85.34/1500/2/-/1362063316/44167d08-b2ea-4341-831e-50f7b8b7a4c8
+  #/collect/id/55/kpis/4728/huawei/E226/Automatica/UMTS/-114/<0,2/2/Desconhecido-10.58.60.180-200.220.252.125-200.220.254.124-200.220.254.8/1500/1850/4169/1369252819/bd3c47fa-ce19-4a5d-8505-36921744229b
   match 'collect/id/:destination_id/kpis/:cell_id/:brand/:model/:conn_type/:conn_tech/:signal/:error_rate/:change_of_ips/:route/:mtu/:dns_latency/:lac/:timestamp/:uuid' => 'kpi#create',
         :via => [:get],
         :as => 'kpi_create',
@@ -105,8 +107,8 @@ MomRails::Application.routes.draw do
                           :model => /.+/,
                           :conn_type => /[A-Za-z+\-]+/,
                           :conn_tech => /[A-Za-z+\-]+/,
-                          :signal => /[>|<]*[0-9.\- ]+|Desconhecido|unknown/,
-                          :error_rate => /[>|<]*[0-9.\- ]+|Desconhecido|unknown'/,
+                          :signal => /[>|<|%3C|%3E]*[0-9.\- ]+|Desconhecido|unknown/,
+                          :error_rate => /[>|<|%3C|%3E]*[0-9.\- ]+|Desconhecido|unknown'/,
                           :change_of_ips => /[0-9\-]+/,
                           :route => /.+/,
                           :mtu => /[0-9\-]+|Desconhecido/,
