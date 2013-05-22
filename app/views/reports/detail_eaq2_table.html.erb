@@ -1,4 +1,5 @@
 <!--Metas-->
+<%= javascript_include_tag "bootstrap-modal" %>
 <tr>
   <td style="font-weight: bold">Dia</td>
   <% @thresholds.each do |threshold| %>
@@ -9,43 +10,20 @@
 <!--Medidas obtidas para cada dia do mês -->
 <% if Date.current.end_of_month != Date.parse(@month).end_of_month
      (1..Time.parse(@month).end_of_month.day).each do |day|
-       result = "" %>
-        <tr id="<%= day %>-<%= Date.parse(@month).month %>" onclick="popupTable(this.id)">
-          <td style="font-weight: bold"><%= day %></td>
+       result = ""
+       uid = SecureRandom.uuid
+%>
+
+        <tr id="<%= Date.parse(@month).change(:day => day) %>_<%= uid %>">
+          <td style="font-weight: bold"><%= day %> &nbsp;&nbsp;<span class="icon-search" title="Detalhar" onclick="popupTable('<%= Date.parse(@month).change(:day => day) %>_<%= uid %>')"></span></td>
+
+          <div id="modal-<%= Date.parse(@month).change(:day => day) %>_<%= uid %>"class="modal hide fade"></div>
           <% @thresholds.each do |threshold| %>
-              <% @medians.each do |media|
-                if  media.threshold_id == threshold.id && media.start_timestamp >= DateTime.parse(@month).change(:day => day).beginning_of_day || media.start_timestamp <= DateTime.parse(@month).change(:day => day).end_of_day
-                  case threshold.metric.plugin
-                    when /^throughput/
-                        up = (media.dsavg.to_f / 1000).round(2)
-                        down = (media.sdavg.to_f / 1000).round(2)
-                        color_up = up >=(threshold.goal_level * 100).round(3) ? 'green' : 'red'
-                        color_down = down >= (threshold.goal_level * 100).round(3) ? 'green' : 'red'
-                        up = up.to_s + "%"
-                        down = down.to_s + "%"
-                        result = "<span style=\"color:#{color_down}\">#{down}</span>/<span style=\"color:#{color_up}\">#{up}</span>".html_safe
-                    when 'rtt'
-                      color = (media.dsavg.to_f * 1000).round(2) <= threshold.goal_level ? 'green' : 'red'
-                      result = "<span style=\"color:#{color}\">#{media.pretty_upload(true)}</span>"
-                    when 'jitter'
-                      color_down = (media.sdavg.to_f * 1000).round(2) <= threshold.goal_level ? 'green' : 'red'
-                      color_up = (media.dsavg.to_f * 1000).round(2) <= threshold.goal_level ? 'green' : 'red'
-                      result = "<span style=\"color:#{color_down}\">#{media.pretty_download(true)}</span>" +
-                              "/<span style=\"color:#{color_up}\">#{media.pretty_upload(true)}</span>"
-                    when 'loss'
-                      if threshold.goal_method == 'availability'
-                        per = (media.dsavg.to_f*100).round(3)
-                        color = per >= threshold.goal_level ? 'green' : 'red'
-                        result = "<span style=\"color:#{color}\">#{per.to_s} %</span>"
-                      end
-                    else
-                      result = ""
-                    end
-               end %>
-             <% end %>
             <td style="text-align: center">  <%= result.html_safe %></td>
           <% end %>
+
         </tr>
+
     <% end %>
 <% else
      (1..Date.current.day).each do |day| %>
@@ -66,7 +44,19 @@
 <script>
     function popupTable(id)
     {
-       alert("aeaeae");
+        var uid = [];
+        uid = id.split('_');
+
+        $.ajax({
+            dataType: '',
+            type: 'POST',
+            url: "<%= detail_speed_type_eaq2_table_reports_url %>",
+            data: { date: moment(uid[0]).format('DD/MM/YYYY') , id: uid[1] },
+            success: function(data){
+                $('#modal-'+id).html(data).modal({show:true});
+            }
+        });
+
     }
 
 </script>

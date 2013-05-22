@@ -1,0 +1,35 @@
+
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
+    <h3>Detalhamento para <%= @date %></h3>
+  </div>
+  <div class="modal-body">
+    <div id="modal-acc-<%= @id %>" class="accordion">
+      <div class="accordion-group">
+        <div class="accordion-heading">
+          <h4  style="margin-left: 5px; padding: 0" class="accordion-toggle" data-toggle="collapse" data-parent="#modal-acc-<%= @id %>" href="#accordion_forms1-<%= @id %>">
+            Por Velocidade Contratada
+          </h4>
+        </div>
+        <div id="accordion_forms1-<%= @id %>" class="accordion-body collapse in">
+          <div class="accordion-inner">
+                aham
+          </div>
+        </div>
+      </div>
+      <div class="accordion-group">
+        <div class="accordion-heading">
+          <h4 style="margin-left: 5px; padding: 0" class="accordion-toggle" data-toggle="collapse" data-parent="#modal-acc-<%= @id %>" href="#accordion_forms2-<%= @id %>">
+            Por Tipo de Agente e Tecnologia de Conexão
+          </h4>
+        </div>
+        <div id="accordion_forms2-<%= @id %>" class="accordion-body collapse">
+          <div class="accordion-inner">
+            aham
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
