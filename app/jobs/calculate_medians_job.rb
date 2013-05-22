@@ -15,11 +15,6 @@ class CalculateMediansJob
   end
 
   def perform
-    #programa a próxima chamada
-    if @reeschedule
-      Delayed::Job.enqueue CalculateMediansJob.new(Time.now.end_of_day,true), :queue => 'calculate', :run_at => DateTime.current.end_of_day+1.hour
-    end
-
     Schedule.all.each do |schedule|
       if schedule.destination.status != 0 || @force_disabled
         schedule.metrics.each do |metric|
@@ -41,6 +36,10 @@ class CalculateMediansJob
 
   def success(job)
     Yell.new(:gelf, :facility => 'netmetric').info 'Calculo de medianas encerrado com sucesso.'
+    #programa a próxima chamada
+    if @reeschedule
+      Delayed::Job.enqueue CalculateMediansJob.new(Time.now.end_of_day,true), :queue => 'calculate', :run_at => DateTime.current.end_of_day+1.hour
+    end
   end
 
   def error(job, exception)
@@ -49,6 +48,9 @@ class CalculateMediansJob
   end
 
   def failure
-
+    #programa a próxima chamada
+    if @reeschedule
+      Delayed::Job.enqueue CalculateMediansJob.new(Time.now.end_of_day,true), :queue => 'calculate', :run_at => DateTime.current.end_of_day+1.hour
+    end
   end
 end

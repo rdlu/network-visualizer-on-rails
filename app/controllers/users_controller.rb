@@ -34,10 +34,9 @@ class UsersController < ApplicationController
   end
 
   def edit
-    authorize! :manage, self
     @user = User.find(params[:id])
     if @user != @current_user
-      authorize! :edit, @user
+      authorize! :manage, @user
     end
     respond_to do |format|
       format.json { render :json => @user }
@@ -47,6 +46,7 @@ class UsersController < ApplicationController
 
   rescue ActiveRecord::RecordNotFound
     respond_to_not_found(:json, :xml, :html)
+
   end
 
   def update_password
