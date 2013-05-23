@@ -1,21 +1,34 @@
 <% uid = SecureRandom.uuid %>
-<div id="box-<%= @to %>-<%= @from %>" class="row-fluid">
+<div id="box-<%= @to %>-<%= @from %>" class="row-fluid" xmlns="http://www.w3.org/1999/html"
+     xmlns="http://www.w3.org/1999/html">
    <div id="table2-<%= uid %>" >
       <text style="color: #3E576F;font-size:  16px">Tabela de Indicadores Anatel tipo 2:  Início: <%= @from.strftime("%d/%m/%y") %> Fim: <%= @to.strftime("%d/%m/%y") %> </text>
       <table class="table table-bordered table-hover table-condensed" >
         <thead>
         <tr>
           <th></th>
-          <%  Threshold.all.each do |threshold| %>
-              <th style="text-align: center"><%= threshold.name %></th>
-          <% end %>
+          <%  Threshold.all.each do |threshold|
+                if threshold.id == 1 || threshold.id == 2
+          %>
+              <th colspan="2" style="text-align: center"><%= threshold.description %></br> Meta: <%= threshold.compliance_level* 100 %>%</th>
+                  <% else %>
+              <th style="text-align: center"><%= threshold.description %></br> Meta: <%= threshold.compliance_level* 100 %>%</th>
+          <% end
+           end %>
         </tr>
         </thead>
         <tbody>
         <tr>
           <td style="min-width: 50px"></td>
-          <%  Threshold.all.each do |threshold| %>
-              <td style="text-align: center"><%= threshold.description %> <br/>Meta: <%= threshold.compliance_level* 100 %>%</td>
+          <%  Threshold.all.each do |threshold|
+                name = Array.new
+                if threshold.id == 1 || threshold.id == 2
+                    name = threshold.name.split('/') %>
+                  <td style="text-align: center"><%= name[0] %> </td>
+                  <td style="text-align: center"><%= name[1] %> </td>
+               <% else %>
+                  <td style="text-align: center"><%= threshold.name %> <br/></td>
+               <% end %>
           <% end %>
         </tr>
         <% @months.each do |month| %>
@@ -39,6 +52,7 @@
                   <% end
                   count != 0? media_down = down/count : media_down = 0
                   count != 0?  media_up = up/count : media_up =0
+                  if threshold.id == 1 || threshold.id == 2
                   %>
                   <td style="text-align: center">
                     <!-- aqui result compliances-->
@@ -49,12 +63,32 @@
                         "<span style=\"color:#{color_down}\">#{data_down}%</span>".html_safe %><%= (threshold.metric.plugin =~ /^throughput/) && (threshold.compliance_method == "mean") ? "/<span style=\"color:#{color_up}\">#{data_up}%</span>".html_safe : ''  %>
 
                   </td>
+                      <td style="text-align: center">
+                        <!-- aqui result compliances-->
+                        <%= data_down = (media_down.to_f*100).round(2)
+                            color_down = data_down >= threshold.compliance_level* 100 ? 'green': 'red'
+                            data_up = (media_up.to_f*100).round(2)
+                            color_up = data_up >=  threshold.compliance_level* 100 ? 'green': 'red'
+                            "<span style=\"color:#{color_down}\">#{data_down}%</span>".html_safe %><%= (threshold.metric.plugin =~ /^throughput/) && (threshold.compliance_method == "mean") ? "/<span style=\"color:#{color_up}\">#{data_up}%</span>".html_safe : ''  %>
+
+                      </td>
+                  <% else %>
+                      <td style="text-align: center">
+                        <!-- aqui result compliances-->
+                        <%= data_down = (media_down.to_f*100).round(2)
+                            color_down = data_down >= threshold.compliance_level* 100 ? 'green': 'red'
+                            data_up = (media_up.to_f*100).round(2)
+                            color_up = data_up >=  threshold.compliance_level* 100 ? 'green': 'red'
+                            "<span style=\"color:#{color_down}\">#{data_down}%</span>".html_safe %><%= (threshold.metric.plugin =~ /^throughput/) && (threshold.compliance_method == "mean") ? "/<span style=\"color:#{color_up}\">#{data_up}%</span>".html_safe : ''  %>
+
+                      </td>
+                  <% end %>
               <% end %>
             </tr>
             <tr id="<%= month.strftime("%Y-%m-%d")%>" style="display: none"  >
-              <td  colspan="7" style="font-weight: bold; background-color: #777777;text-align: center">Diário <%= month.strftime("%B/%Y")%></td>
+              <td  colspan="9" style="font-weight: bold; background-color: #777777;text-align: center">Diário <%= month.strftime("%B/%Y")%></td>
             </tr>
-            <tbody colspan="7" style="display: none;" id="detail2<%= month.strftime("%Y-%m-%d")%>"></tbody>
+            <tbody colspan="9" style="display: none;" id="detail2<%= month.strftime("%Y-%m-%d")%>"></tbody>
         <% end %>
         </tbody>
         </table>
