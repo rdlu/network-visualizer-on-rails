@@ -114,6 +114,7 @@ class ReportsController < ApplicationController
   def detail_eaq2_table
     @month = params[:month]
     compliance = params[:compliance].to_a
+    @thresholds = Threshold.all
 
     schedules = []
     compliance.each do |c|
