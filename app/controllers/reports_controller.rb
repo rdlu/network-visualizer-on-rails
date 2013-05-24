@@ -81,7 +81,8 @@ class ReportsController < ApplicationController
     @probes = Probe.
         where(:connection_profile_id => ConnectionProfile.where(:conn_type => @agent_type)).
         where(:type => @type).
-        where(:state => @states).all
+        where(:state => @states).
+        where(:areacode => cn).all
 
     schedules = Schedule.
         where(:destination_id => @probes).
@@ -164,9 +165,9 @@ class ReportsController < ApplicationController
         goal_query = ""
     else
         if @goal_filter[0] == "above"
-            goal_query = "compliances.download >= thresholds.compliance_level"
+            goal_query = "medians.sdavg >= thresholds.compliance_level"
         else
-            goal_query = "compliances.download <= thresholds.compliance_level"
+            goal_query = "medians.sdavg <= thresholds.compliance_level"
         end
     end
 
@@ -180,61 +181,64 @@ class ReportsController < ApplicationController
             @results[plan.id][:linux] = {}
 
             if agent_type.include? "fixed"
-                @results[plan.id][:linux][:fixed] = {}
+                @results[plan.id][:linux][:fixed] = []
                 probes = Probe.
                     where(:connection_profile_id => ConnectionProfile.where(:conn_type => "fixed")).
                     where(:type => "linux").
                     where(:plan_id => plan.id).
-                    where(:state => states).all
+                    where(:state => states).
+                    where(:areacode => cn).all
 
                 schedules = Schedule.
                     where(:destination_id => probes).
                     where(:source_id => probes).all
 
-                @results[plan.id][:linux][:fixed] = Median.
+                @results[plan.id][:linux][:fixed] << Median.
                     where('start_timestamp >= ?', DateTime.parse(@date).beginning_of_day).
                     where('end_timestamp <= ?', DateTime.parse(@date).end_of_day).
                     where(:schedule_id => schedules).
-                    join(:threshold).where(goal_query).
+                    joins(:threshold).where(goal_query).
                     order('start_timestamp ASC').all
             end
             if agent_type.include? "mobile"
-                @results[plan.id][:linux][:mobile] = {}
+                @results[plan.id][:linux][:mobile] = []
                 probes = Probe.
                     where(:connection_profile_id => ConnectionProfile.where(:conn_type => "mobile")).
                     where(:type => "linux").
                     where(:plan_id => plan.id).
-                    where(:state => states).all
+                    where(:state => states).
+                    where(:areacode => cn).all
 
                 schedules = Schedule.
                     where(:destination_id => probes).
                     where(:source_id => probes).all
 
-                @results[plan.id][:linux][:mobile] = Median.
+                @results[plan.id][:linux][:mobile] << Median.
                     where('start_timestamp >= ?', DateTime.parse(@date).beginning_of_day).
                     where('end_timestamp <= ?', DateTime.parse(@date).end_of_day).
                     where(:schedule_id => schedules).
-                    join(:threshold).where(goal_query).
+                    joins(:threshold).where(goal_query).
                     order('start_timestamp ASC').all
             end
         end
         if @type.include? "android"
-            @results[plan.id][:android] = {}
+            @results[plan.id][:android] = []
 
             probes = Probe.
                 where(:type => "android").
                 where(:plan_id => plan.id).
-                where(:state => states).all
+                where(:state => states).
+                where(:areacode => cn).all
 
             schedules = Schedule.
                 where(:destination_id => probes).
                 where(:source_id => probes).all
 
-            @results[plan.id][:linux][:mobile] = Median.
+            @results[plan.id][:android] << Median.
                 where('start_timestamp >= ?', DateTime.parse(@date).beginning_of_day).
                 where('end_timestamp <= ?', DateTime.parse(@date).end_of_day).
                 where(:schedule_id => schedules).
-                join(:threshold).where(goal_query).
+                joins(:threshold).where(goal_query).
                 order('start_timestamp ASC').all
         end
     end
