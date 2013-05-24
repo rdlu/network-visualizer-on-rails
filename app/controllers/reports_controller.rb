@@ -81,7 +81,8 @@ class ReportsController < ApplicationController
     @probes = Probe.
         where(:connection_profile_id => ConnectionProfile.where(:conn_type => @agent_type)).
         where(:type => @type).
-        where(:state => @states).all
+        where(:state => @states).
+        where(:areacode => cn).all
 
     schedules = Schedule.
         where(:destination_id => @probes).
@@ -185,7 +186,8 @@ class ReportsController < ApplicationController
                     where(:connection_profile_id => ConnectionProfile.where(:conn_type => "fixed")).
                     where(:type => "linux").
                     where(:plan_id => plan.id).
-                    where(:state => states).all
+                    where(:state => states).
+                    where(:areacode => cn).all
 
                 schedules = Schedule.
                     where(:destination_id => probes).
@@ -204,7 +206,8 @@ class ReportsController < ApplicationController
                     where(:connection_profile_id => ConnectionProfile.where(:conn_type => "mobile")).
                     where(:type => "linux").
                     where(:plan_id => plan.id).
-                    where(:state => states).all
+                    where(:state => states).
+                    where(:areacode => cn).all
 
                 schedules = Schedule.
                     where(:destination_id => probes).
@@ -224,7 +227,8 @@ class ReportsController < ApplicationController
             probes = Probe.
                 where(:type => "android").
                 where(:plan_id => plan.id).
-                where(:state => states).all
+                where(:state => states).
+                where(:areacode => cn).all
 
             schedules = Schedule.
                 where(:destination_id => probes).
