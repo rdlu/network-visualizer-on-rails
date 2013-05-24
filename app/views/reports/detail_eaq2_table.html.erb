@@ -23,17 +23,50 @@
           <td style="font-weight: bold"><%= day %> &nbsp;&nbsp;<span class="icon-search" title="Detalhar" onclick="popupTable('<%= Date.parse(@month).change(:day => day) %>_<%= uid %>')"></span>
             <div id="modal-<%= Date.parse(@month).change(:day => day) %>_<%= uid %>"class="modal hide fade"></div>
           </td>
-
-
           <% @thresholds.each do |threshold|
+             @medians.each do |median|
+                if (median.start_timestamp >= DateTime.parse(@month).change(:day => day).beginning_of_day || median.start_timestamp <= DateTime.parse(@month).change(:day => day).end_of_day) && threshold.id == median.threshold_id
+                  case threshold.metric.plugin
+                   when /^throughput/
+                     if threshold.compliance_method == 'mean'
+                       up = (((median.dsavg.to_f / 1000)/median.schedule.destination.plan.throughput_up.to_f)*100).round(2)
+                       down = (((median.sdavg.to_f / 1000)/median.schedule.destination.plan.throughput_down.to_f)*100).round(2)
+                       color_up = up >=(threshold.goal_level * 100).round(3) ? 'green' : 'red'
+                       color_down = down >= (threshold.goal_level * 100).round(3) ? 'green' : 'red'
+                       up = up.to_s + "%"
+                       down = down.to_s + "%"
+                       result = "<span style=\"color:#{color_down}\">#{down}</span>/<span style=\"color:#{color_up}\">#{up}</span>".html_safe
+                     else
+                       up = (median.dsavg.to_f / 1000000).round(3)
+                       down = (median.sdavg.to_f / 1000000).round(3)
+                       color_up = up >=((median.schedule.destination.plan.throughput_up.to_f / 1000) * threshold.goal_level.to_f).round(3) ? 'green' : 'red'
+                       color_down = down >= ((median.schedule.destination.plan.throughput_down.to_f / 1000) * threshold.goal_level.to_f).round(3) ? 'green' : 'red'
+                       result = "<span style=\"color:#{color_down}\">#{median.pretty_download(true)}</span>/<span style=\"color:#{color_up}\">#{median.pretty_upload(true)}</span>".html_safe
+                     end
+                   when 'rtt'
+                     color = (median.dsavg.to_f * 1000).round(2) <= threshold.goal_level ? 'green' : 'red'
+                     result = "<span style=\"color:#{color}\">#{median.pretty_upload(true)}</span>"
+                   when 'jitter'
+                     color_down = (median.sdavg.to_f * 1000).round(2) <= threshold.goal_level ? 'green' : 'red'
+                     color_up = (median.dsavg.to_f * 1000).round(2) <= threshold.goal_level ? 'green' : 'red'
+                     result = "<span style=\"color:#{color_down}\">#{median.pretty_download(true)}</span>" +
+                             "/<span style=\"color:#{color_up}\">#{median.pretty_upload(true)}</span>"
+                  when 'loss'
+                      per = (median.dsavg.to_f*100).round(3)
+                      color = per >= threshold.goal_level ? 'green' : 'red'
+                      result = "<span style=\"color:#{color}\">#{per.to_s} %</span>"
+
+                 end
+              end
+            end
             if threshold.id == 1 || threshold.id == 2
           %>
-                  <td style="text-align: center;" >a<%= result.html_safe %>
+                  <td style="text-align: center;" ><%= result.html_safe %>
                   </td>
-                  <td style="text-align: center;">b<%= result.html_safe %>
+                  <td style="text-align: center;"><%= result.html_safe %>
                   </td>
               <% else %>
-                  <td style="text-align: center;">c<%= result.html_safe %>
+                  <td style="text-align: center;"><%= result.html_safe %>
                   </td>
               <% end %>
           <% end %>

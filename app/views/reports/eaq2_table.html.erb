@@ -45,7 +45,7 @@
               %>
                   <% @compliances.each do |compliance|
                      if compliance.threshold_id == threshold.id  && compliance.start_timestamp == month.to_time.in_time_zone
-                        down = down + compliance.download
+                        down = down +(compliance.download.nil? ? 0:compliance.download)
                         up = up + (compliance.upload.nil? ? 0:compliance.upload)
                         count = count + 1
                      end %>
@@ -110,7 +110,9 @@
                     dataType: '',
                     type: 'POST',
                     url: "<%= detail_eaq2_table_reports_url %>",
-                    data: { compliance: <%= @compliances.to_json.html_safe %> ,month: id, goal_filter: <%= @goal_filter .to_json.html_safe %>,agent: <%= @type.to_json.html_safe %>, agent_type: <%= @agent_type.to_json.html_safe %>, state: <%= @states.to_json.html_safe %>, cn: <%= @cn.to_json.html_safe %>},
+                    data: { compliance: <%= @compliances.to_json.html_safe %> ,month: id, goal_filter: <%= @goal_filter .to_json.html_safe %>,
+                        agent: <%= @type.to_json.html_safe %>, agent_type: <%= @agent_type.to_json.html_safe %>, state: <%= @states.to_json.html_safe %>,
+                        cn: <%= @cn.to_json.html_safe %>, probes: <%= @probes.to_json.html_safe %>},
                     success: function(data){
                         $('#detail2'+id).html(data);
                     }

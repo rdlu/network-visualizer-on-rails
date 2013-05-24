@@ -10,14 +10,16 @@
         <div class="control-group">
           <label class="control-label"  for="type">Somente Agentes: </label>
           <div class="controls">
-            <%=  select :goal_filter,'', [['Categoria Anatel','above'], ['Abaixo da Meta','under'],['Todos','all']],{} %>
+            <div style=" float: left;width: 150px;"> <%= check_box_tag  "goal_filter[]","under" %> Abaixo da Meta </div>
+            <div style=" float: left;width: 150px;"> <%= check_box_tag  "goal_filter[]","above" %> Categoria Anatel </div>
           </div>
         </div>
         <div class="control-group">
             <label for="probe-type" class="control-label">UF:</label>
           <div class="controls">
             <select multiple="true"  name = "state[]"  id="probe-state" onchange="filterUFs()" >
-              <option name="state" value="">Todas</option>
+              <option name="state" value="0">Todas</option>
+              <option name="state" value="0">Sem DDD</option>
               <% Probe.states.each do |state| %>
                   <option name="state" value="<%= state.at(1) %>" <%= params[:by_state].to_s == state.at(1).to_s ? "selected=\"selected\"".html_safe : "" %>><%= state.at(1).upcase %></option>
               <% end %>
@@ -132,7 +134,7 @@
               'uf': value
           },
           success: function(data){
-             var html = "<option value=''>Todas</option>";
+             var html = "<optionname='state' value='0'>Todas</option><option name='state' value='0'>Sem DDD</option>";
              for (cdn in data){
                 html = html + "<option value='"+data[cdn]+"'>"+data[cdn]+"</option>";
              }

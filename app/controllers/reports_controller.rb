@@ -116,7 +116,6 @@ class ReportsController < ApplicationController
     @month = params[:month]
     compliance = params[:compliance].to_a
     @thresholds = Threshold.all
-
     #parametros que servem para o outro detail
     #que recebe atraves da view
     @type = params[:agent] # android or linux
