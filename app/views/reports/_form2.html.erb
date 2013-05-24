@@ -18,8 +18,7 @@
             <label for="probe-type" class="control-label">UF:</label>
           <div class="controls">
             <select multiple="true"  name = "state[]"  id="probe-state" onchange="filterUFs()" >
-              <option name="state" value="0">Todas</option>
-              <option name="state" value="0">Sem DDD</option>
+              <option name="state" value="">Todas</option>
               <% Probe.states.each do |state| %>
                   <option name="state" value="<%= state.at(1) %>" <%= params[:by_state].to_s == state.at(1).to_s ? "selected=\"selected\"".html_safe : "" %>><%= state.at(1).upcase %></option>
               <% end %>
@@ -30,7 +29,8 @@
           <label  for="probe-cn" class="control-label">CN(Cód. Área):</label>
           <div id="op_cn" class="controls">
             <select multiple="true"  name="cn[]" id="probe-cn" onchange="setAllOpt(this.value,'probe-cn')" >
-              <option value="">Todas</option>
+              <option value="0">Todas</option>
+              <option value="0">Sem DDD</option>
               <% Probe.cod_area.each do |cn|
                   if search_field :probe,:state == cn.at(0).to_s  %>
                    <option value="<%= cn.at(1) %>" ><%= cn.at(1)%></option>
@@ -134,7 +134,7 @@
               'uf': value
           },
           success: function(data){
-             var html = "<optionname='state' value='0'>Todas</option><option name='state' value='0'>Sem DDD</option>";
+             var html = "<option value='0'>Todas</option><option  value='0'>Sem DDD</option>";
              for (cdn in data){
                 html = html + "<option value='"+data[cdn]+"'>"+data[cdn]+"</option>";
              }
