@@ -21,7 +21,7 @@
 
         <tr id="<%= Date.parse(@month).change(:day => day) %>_<%= uid %>">
           <td style="font-weight: bold"><%= day %> &nbsp;&nbsp;<span class="icon-search" title="Detalhar" onclick="popupTable('<%= Date.parse(@month).change(:day => day) %>_<%= uid %>')"></span>
-            <div id="modal-<%= Date.parse(@month).change(:day => day) %>_<%= uid %>"class="modal hide fade"></div>
+            <div id="modal-<%= Date.parse(@month).change(:day => day) %>_<%= uid %>"class="modal hide fade" style="left: 40%;width: 70%"></div>
           </td>
           <% @thresholds.each do |threshold|
              @medians.each do |median|
