@@ -85,8 +85,7 @@ class ReportsController < ApplicationController
         where(:areacode => cn).all
 
     schedules = Schedule.
-        where(:destination_id => @probes).
-        where(:source_id => @probes).all
+        where(:destination_id => @probes).all
 
     if @goal_filter.include?("above") && @goal_filter.include?("under")
         goal_query = ""
@@ -94,7 +93,7 @@ class ReportsController < ApplicationController
         if @goal_filter[0] == "above"
             goal_query = "compliances.download >= thresholds.compliance_level"
         else
-            goal_query = "compliances.download <= thresholds.compliance_level"
+            goal_query = "compliances.download < thresholds.compliance_level"
         end
     end
 
