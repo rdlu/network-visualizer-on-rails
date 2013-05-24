@@ -29,7 +29,7 @@
           <label  for="probe-cn" class="control-label">CN(Cód. Área):</label>
           <div id="op_cn" class="controls">
             <select multiple="true"  name="cn[]" id="probe-cn" onchange="setAllOpt(this.value,'probe-cn')" >
-              <option value="0">Todas</option>
+              <option value="1">Todas</option>
               <option value="0">Sem DDD</option>
               <% Probe.cod_area.each do |cn|
                   if search_field :probe,:state == cn.at(0).to_s  %>
@@ -111,7 +111,7 @@
   function setAllOpt(value,id)
   {
 
-      if (value == ""){
+      if (value == "" || value == 1){
           var aux =  document.getElementById(id).options;
           aux.selected = false;
           for (var i =0; i < aux.length; i++){
@@ -134,7 +134,7 @@
               'uf': value
           },
           success: function(data){
-             var html = "<option value='0'>Todas</option><option  value='0'>Sem DDD</option>";
+             var html = "<option value='1'>Todas</option><option  value='0'>Sem DDD</option>";
              for (cdn in data){
                 html = html + "<option value='"+data[cdn]+"'>"+data[cdn]+"</option>";
              }
