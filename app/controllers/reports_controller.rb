@@ -88,7 +88,7 @@ class ReportsController < ApplicationController
         where(:source_id => @probes).all
 
     if @goal_filter.include?("above") && @goal_filter.include?("under")
-        goal_query = "compliances.download >= thresholds.compliance_level OR compliances.download <= thresholds.compliance_level"
+        goal_query = ""
     else
         if @goal_filter[0] == "above"
             goal_query = "compliances.download >= thresholds.compliance_level"
@@ -161,7 +161,7 @@ class ReportsController < ApplicationController
     end
 
     if @goal_filter.include?("above") && @goal_filter.include?("under")
-        goal_query = "median.sdavg >= thresholds.compliance_level OR median.sdavg <= thresholds.compliance_level"
+        goal_query = ""
     else
         if @goal_filter[0] == "above"
             goal_query = "median.sdavg >= thresholds.compliance_level"
@@ -195,7 +195,7 @@ class ReportsController < ApplicationController
                     where('start_timestamp >= ?', DateTime.parse(@date).beginning_of_day).
                     where('end_timestamp <= ?', DateTime.parse(@date).end_of_day).
                     where(:schedule_id => schedules).
-                    join(:threshold).where(goal_query).
+                    joins(:threshold).where(goal_query).
                     order('start_timestamp ASC').all
             end
             if agent_type.include? "mobile"
@@ -214,7 +214,7 @@ class ReportsController < ApplicationController
                     where('start_timestamp >= ?', DateTime.parse(@date).beginning_of_day).
                     where('end_timestamp <= ?', DateTime.parse(@date).end_of_day).
                     where(:schedule_id => schedules).
-                    join(:threshold).where(goal_query).
+                    joins(:threshold).where(goal_query).
                     order('start_timestamp ASC').all
             end
         end
@@ -234,7 +234,7 @@ class ReportsController < ApplicationController
                 where('start_timestamp >= ?', DateTime.parse(@date).beginning_of_day).
                 where('end_timestamp <= ?', DateTime.parse(@date).end_of_day).
                 where(:schedule_id => schedules).
-                join(:threshold).where(goal_query).
+                joins(:threshold).where(goal_query).
                 order('start_timestamp ASC').all
         end
     end
