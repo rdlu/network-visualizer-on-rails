@@ -69,19 +69,19 @@ class ReportsController < ApplicationController
     @to = DateTime.parse(params[:date][:end])
     @months = @from.all_months_until @to
     @type = params[:agent] # android or linux
-    agent_type = params[:agent_type] # fixed or mobile, if linux
-    states = params[:state]
+    @agent_type = params[:agent_type] # fixed or mobile, if linux
+    @states = params[:state]
     cn = params[:cn]
     @goal_filter = params[:goal_filter] #all,above or under
 
     if @type == "android"
-        agent_type = ["fixed", "mobile"]
+        @agent_type = ["fixed", "mobile"]
     end
 
     @probes = Probe.
-        where(:connection_profile_id => ConnectionProfile.where(:conn_type => agent_type)).
+        where(:connection_profile_id => ConnectionProfile.where(:conn_type => @agent_type)).
         where(:type => @type).
-        where(:state => states).all
+        where(:state => @states).all
 
     schedules = Schedule.
         where(:destination_id => @probes).
@@ -116,6 +116,15 @@ class ReportsController < ApplicationController
     compliance = params[:compliance].to_a
     @thresholds = Threshold.all
 
+    #parametros que servem para o outro detail
+    #que recebe atraves da view
+    @type = params[:agent] # android or linux
+    @agent_type = params[:agent_type] # fixed or mobile, if linux
+    @states = params[:state]
+    cn = params[:cn]
+    @goal_filter = params[:goal_filter] #all,above or under
+    ###
+
     @schedules = []
     compliance.each do |c|
         @schedules << c.at(1)["schedule_id"]
@@ -145,6 +154,7 @@ class ReportsController < ApplicationController
     states = params[:state]
     cn = params[:cn]
     @goal_filter = params[:goal_filter] #all,above or under
+
 
     if @type == "android"
         agent_type = ["fixed", "mobile"]
