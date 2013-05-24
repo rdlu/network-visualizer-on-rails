@@ -180,7 +180,7 @@ class ReportsController < ApplicationController
             @results[plan.id][:linux] = {}
 
             if agent_type.include? "fixed"
-                @results[plan.id][:linux][:fixed] = {}
+                @results[plan.id][:linux][:fixed] = []
                 probes = Probe.
                     where(:connection_profile_id => ConnectionProfile.where(:conn_type => "fixed")).
                     where(:type => "linux").
@@ -191,7 +191,7 @@ class ReportsController < ApplicationController
                     where(:destination_id => probes).
                     where(:source_id => probes).all
 
-                @results[plan.id][:linux][:fixed] = Median.
+                @results[plan.id][:linux][:fixed] << Median.
                     where('start_timestamp >= ?', DateTime.parse(@date).beginning_of_day).
                     where('end_timestamp <= ?', DateTime.parse(@date).end_of_day).
                     where(:schedule_id => schedules).
@@ -199,7 +199,7 @@ class ReportsController < ApplicationController
                     order('start_timestamp ASC').all
             end
             if agent_type.include? "mobile"
-                @results[plan.id][:linux][:mobile] = {}
+                @results[plan.id][:linux][:mobile] = []
                 probes = Probe.
                     where(:connection_profile_id => ConnectionProfile.where(:conn_type => "mobile")).
                     where(:type => "linux").
@@ -210,7 +210,7 @@ class ReportsController < ApplicationController
                     where(:destination_id => probes).
                     where(:source_id => probes).all
 
-                @results[plan.id][:linux][:mobile] = Median.
+                @results[plan.id][:linux][:mobile] << Median.
                     where('start_timestamp >= ?', DateTime.parse(@date).beginning_of_day).
                     where('end_timestamp <= ?', DateTime.parse(@date).end_of_day).
                     where(:schedule_id => schedules).
@@ -219,7 +219,7 @@ class ReportsController < ApplicationController
             end
         end
         if @type.include? "android"
-            @results[plan.id][:android] = {}
+            @results[plan.id][:android] = []
 
             probes = Probe.
                 where(:type => "android").
@@ -230,7 +230,7 @@ class ReportsController < ApplicationController
                 where(:destination_id => probes).
                 where(:source_id => probes).all
 
-            @results[plan.id][:linux][:mobile] = Median.
+            @results[plan.id][:android] << Median.
                 where('start_timestamp >= ?', DateTime.parse(@date).beginning_of_day).
                 where('end_timestamp <= ?', DateTime.parse(@date).end_of_day).
                 where(:schedule_id => schedules).
