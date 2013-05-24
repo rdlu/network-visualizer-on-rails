@@ -164,9 +164,9 @@ class ReportsController < ApplicationController
         goal_query = ""
     else
         if @goal_filter[0] == "above"
-            goal_query = "median.sdavg >= thresholds.compliance_level"
+            goal_query = "medians.sdavg >= thresholds.compliance_level"
         else
-            goal_query = "median.sdavg <= thresholds.compliance_level"
+            goal_query = "medians.sdavg <= thresholds.compliance_level"
         end
     end
 
