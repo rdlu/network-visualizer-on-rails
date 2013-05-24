@@ -165,7 +165,7 @@ class ReportsController < ApplicationController
         if @goal_filter[0] == "above"
             goal_query = "medians.sdavg >= thresholds.compliance_level"
         else
-            goal_query = "medians.sdavg <= thresholds.compliance_level"
+            goal_query = "medians.sdavg < thresholds.compliance_level"
         end
     end
 
@@ -188,8 +188,7 @@ class ReportsController < ApplicationController
                     where(:areacode => cn).all
 
                 schedules = Schedule.
-                    where(:destination_id => probes).
-                    where(:source_id => probes).all
+                    where(:destination_id => probes).all
 
                 @results[plan.id][:linux][:fixed] << Median.
                     where('start_timestamp >= ?', DateTime.parse(@date).beginning_of_day).
@@ -208,8 +207,7 @@ class ReportsController < ApplicationController
                     where(:areacode => cn).all
 
                 schedules = Schedule.
-                    where(:destination_id => probes).
-                    where(:source_id => probes).all
+                    where(:destination_id => probes).all
 
                 @results[plan.id][:linux][:mobile] << Median.
                     where('start_timestamp >= ?', DateTime.parse(@date).beginning_of_day).
@@ -229,8 +227,7 @@ class ReportsController < ApplicationController
                 where(:areacode => cn).all
 
             schedules = Schedule.
-                where(:destination_id => probes).
-                where(:source_id => probes).all
+                where(:destination_id => probes).all
 
             @results[plan.id][:android] << Median.
                 where('start_timestamp >= ?', DateTime.parse(@date).beginning_of_day).
