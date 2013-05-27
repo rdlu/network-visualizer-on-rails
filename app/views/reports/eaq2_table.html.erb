@@ -112,7 +112,7 @@
                     url: "<%= detail_eaq2_table_reports_url %>",
                     data: { compliance: <%= @compliances.to_json.html_safe %> ,month: id, goal_filter: <%= @goal_filter .to_json.html_safe %>,
                         agent: <%= @type.to_json.html_safe %>, agent_type: <%= @agent_type.to_json.html_safe %>, state: <%= @states.to_json.html_safe %>,
-                        cn: <%= @cn.to_json.html_safe %>, probes: <%= @probes.to_json.html_safe %>},
+                        cn: <%= @cn.to_json.html_safe %>, probes: <%= @probes.to_json.html_safe %>, schedules: <%= @schedules.to_json.html_safe %>},
                     success: function(data){
                         $('#detail2'+id).html(data);
                     }
