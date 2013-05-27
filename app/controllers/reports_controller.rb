@@ -71,7 +71,7 @@ class ReportsController < ApplicationController
     @type = params[:agent] # android or linux
     @agent_type = params[:agent_type] # fixed or mobile, if linux
     @states = params[:state]
-    cn = params[:cn]
+    @cn = params[:cn]
     @goal_filter = params[:goal_filter] #all,above or under
 
     if @type == "android"
@@ -82,7 +82,7 @@ class ReportsController < ApplicationController
         where(:connection_profile_id => ConnectionProfile.where(:conn_type => @agent_type)).
         where(:type => @type).
         where(:state => @states).
-        where(:areacode => cn).all
+        where(:areacode => @cn).all
 
     schedules = Schedule.
         where(:destination_id => @probes).all
@@ -120,7 +120,7 @@ class ReportsController < ApplicationController
     @type = params[:agent] # android or linux
     @agent_type = params[:agent_type] # fixed or mobile, if linux
     @states = params[:state]
-    cn = params[:cn]
+    @cn = params[:cn]
     @goal_filter = params[:goal_filter] #all,above or under
     ###
 
@@ -151,7 +151,7 @@ class ReportsController < ApplicationController
     @type = params[:agent] # android or linux
     agent_type = params[:agent_type] # fixed or mobile, if linux
     states = params[:state]
-    cn = params[:cn]
+    @cn = params[:cn]
     @goal_filter = params[:goal_filter] #all,above or under
 
 
@@ -185,7 +185,7 @@ class ReportsController < ApplicationController
                     where(:type => "linux").
                     where(:plan_id => plan.id).
                     where(:state => states).
-                    where(:areacode => cn).all
+                    where(:areacode => @cn).all
 
                 schedules = Schedule.
                     where(:destination_id => probes).all
@@ -204,7 +204,7 @@ class ReportsController < ApplicationController
                     where(:type => "linux").
                     where(:plan_id => plan.id).
                     where(:state => states).
-                    where(:areacode => cn).all
+                    where(:areacode => @cn).all
 
                 schedules = Schedule.
                     where(:destination_id => probes).all
@@ -224,7 +224,7 @@ class ReportsController < ApplicationController
                 where(:type => "android").
                 where(:plan_id => plan.id).
                 where(:state => states).
-                where(:areacode => cn).all
+                where(:areacode => @cn).all
 
             schedules = Schedule.
                 where(:destination_id => probes).all
