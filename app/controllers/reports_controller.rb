@@ -84,7 +84,7 @@ class ReportsController < ApplicationController
         where(:state => @states).
         where(:areacode => @cn).all
 
-    schedules = Schedule.
+    @schedules = Schedule.
         where(:destination_id => @probes).all
 
     if @goal_filter.include?("above") && @goal_filter.include?("under")
@@ -100,7 +100,7 @@ class ReportsController < ApplicationController
     @compliances = Compliance.
         where('start_timestamp >= ?', @from).
         where('end_timestamp <= ?', @to).
-        where(:schedule_id => schedules).
+        where(:schedule_id => @schedules).
         joins(:threshold).where(goal_query).
         order('start_timestamp ASC').all
 
