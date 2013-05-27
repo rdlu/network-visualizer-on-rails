@@ -18,14 +18,11 @@
             -->
 
           <% Probe.order('status DESC, city ASC').all.each do |probe| %>
-              <a id="ag<%= probe.id %>" onmouseover="$(this).tooltip({placement: 'right',html: true, title: htmlContent('<%= probe.name %>','<%=probe.ipaddress %>','<%= probe.connection_profile.name%>','<%= probe.plan.name_with_throughput %>', '<%= probe.status %>' ) })"
+              <a id="ag<%= probe.id %>" onmouseover="$(this).tooltip({placement: 'right',html: true, title: htmlContent('<%= probe.name %>','<%=probe.ipaddress %>','<%= probe.connection_profile.name%>','<%= probe.plan.name_with_throughput %>', '<%= probe.status %>', '<%= probe.city %>','<%= probe.state.upcase %>') })"
                  class="btn btn-<%= probe.pretty_status %>"
                  onclick="$('#gMap').gmap3('get').panTo(new google.maps.LatLng(<%= probe.latitude %>,<%= probe.longitude %>)); $('#gMap').gmap3('get').setZoom(14)" title="" href="#" style="margin: 5px">
                 <%= image_tag "icons/"+probe.type+"16.png" %>
-                <%= probe.name %><br/>
-                <%= probe.city %>
-                /
-                <%= probe.state.upcase %>
+                <%= probe.name %>
               </a>
           <% end %>
         </div>
@@ -77,7 +74,7 @@
 
     }
 
-    function htmlContent(name, ip, con, plan, status) {
+    function htmlContent(name, ip, con, plan, status, city, state) {
         var html = "";
         var st = "";
 
@@ -97,6 +94,7 @@
         }
 
         html = "<b>" + name + "</b><br/>" +
+                "<strong><em>"+city+"/"+state+"</em></strong><br/>" +
                 "Status: " + st + "<br/>" +
                 "Hostname: " + ip + "<br/>" +
                 "Conexão: " + con + "<br/>" +
