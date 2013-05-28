@@ -74,6 +74,130 @@ class ReportsController < ApplicationController
     @cn = params[:cn]
     @goal_filter = params[:goal_filter] #all,above or under
 
+
+    if @type == "android"
+      @agent_type = ["fixed", "mobile"]
+    end
+
+=begin
+    @probes = Probe.
+        where(:connection_profile_id => ConnectionProfile.where(:conn_type => @agent_type)).
+        where(:type => @type).
+        where(:state => @states).
+        where(:areacode => @cn).all
+
+    @schedules = Schedule.
+        where(:destination_id => @probes).all
+
+    if @goal_filter.include?("above") && @goal_filter.include?("under")
+      goal_query = ""
+    else
+      if @goal_filter[0] == "above"
+        goal_query = "compliances.download >= thresholds.compliance_level"
+      else
+        goal_query = "compliances.download < thresholds.compliance_level"
+      end
+    end
+
+    @compliances = Compliance.
+        where('start_timestamp >= ?', @from).
+        where('end_timestamp <= ?', @to).
+        where(:schedule_id => @schedules).
+        joins(:threshold).where(goal_query).
+        order('start_timestamp ASC').all
+
+    @schedules =[]
+    @compliances.each do |c|
+      @schedules << c["schedule_id"]
+    end
+    @schedules.uniq!
+=end
+    @report_results = {}
+    #
+    #  SCM4
+    #
+    @report_results[:scm4] = {}
+    @medians_scm4 = Median.
+        where('start_timestamp >= ?', @from).
+        where('end_timestamp <= ?', @to).
+        where(:schedule_id => Schedule.where(:destination_id => Probe.where(:connection_profile_id => ConnectionProfile.where(:conn_type => "fixed"))
+                                                                     .where(:state => @states)
+                                                                     .where(:areacode => @cn)
+                                                                     .where(:type => @type))).
+        where(:threshold_id => 1).
+        order('start_timestamp ASC').all
+    #
+    # SMP10
+    #
+    @report_results[:smp10] = {}
+    @medians_smp10 = Median.
+        where('start_timestamp >= ?', @from).
+        where('end_timestamp <= ?', @to).
+        where(:schedule_id => Schedule.where(:destination_id => Probe.where(:connection_profile_id => ConnectionProfile.where(:conn_type => "mobile"))
+                                                                     .where(:state => @states)
+                                                                     .where(:areacode => @cn)
+                                                                     .where(:type => @type))).
+        where(:threshold_id => 1).
+        order('start_timestamp ASC').all
+
+    #
+    # Calculo de todas as medias de thresholds
+    #
+    @months.each do |month|
+      count1 = 0
+      count_all1 = 0
+      @medians_scm4.each do |median|
+        if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
+          up = (median.dsavg.to_f/(1000 * median.schedule.destination.plan.throughput_up.to_f) ).round(3)
+          down = (median.sdavg.to_f/(1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
+            count_all1 += 1
+            if down >= 0.2.round(3) && up >= 0.2.round(3)
+              count1 += 1
+            end
+        end
+      end
+      @report_results[:scm4][month.to_s]={}
+      count_all1 != 0 ? @report_results[:scm4][month.to_s][:total] = ((count1/count_all1) * 100).to_f.round(2): @report_results[:scm4][month.to_s][:total] = 0.0
+      count = 0
+      count_all = 0
+      @medians_smp10.each do |median|
+        if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
+          up = (median.dsavg.to_f/(1000 * median.schedule.destination.plan.throughput_up.to_f )).round(3)
+          down = (median.sdavg.to_f/(1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
+          count_all += 1
+          if down >= 0.2.round(3) && up >= 0.2.round(3)
+            count += 1
+          end
+        end
+      end
+      @report_results[:smp10][month.to_s]={}
+      count_all != 0 ? @report_results[:smp10][month.to_s][:total] = ((count/count_all) * 100).to_f.round(2) : @report_results[:smp10][month.to_s][:total]= 0.0
+    end
+
+
+
+
+=begin
+    up = (median.dsavg.to_f / 1000000).round(3)
+    down = (median.sdavg.to_f / 1000000).round(3)
+=end
+    respond_to do |format|
+      format.html  {render :layout=> false}
+    end
+
+  end
+
+=begin
+  def eaq2_table
+    @from = DateTime.parse(params[:date][:start])
+    @to = DateTime.parse(params[:date][:end])
+    @months = @from.all_months_until @to
+    @type = params[:agent] # android or linux
+    @agent_type = params[:agent_type] # fixed or mobile, if linux
+    @states = params[:state]
+    @cn = params[:cn]
+    @goal_filter = params[:goal_filter] #all,above or under
+
     if @type == "android"
         @agent_type = ["fixed", "mobile"]
     end
@@ -142,6 +266,7 @@ class ReportsController < ApplicationController
       format.html {render :layout=> false}
     end
   end
+=end
 
   def detail_speed_type_eaq2_table
    #consolidacao pela velocidade contratada
