@@ -83,6 +83,38 @@ class ReportsController < ApplicationController
     @cn.delete("")
     @states.delete("")
 
+    fixed_conn_profile = ConnectionProfile.
+        where(:conn_type => "fixed")
+
+    mobile_conn_profile = ConnectionProfile.
+        where(:conn_type => "mobile")
+
+    fixed_probes = Probe.
+        where(:connection_profile_id => fixed_conn_profile).
+        where(:state => @states).
+        where(:areacode => @cn).
+        where(:type => @type)
+
+    mobile_probes = Probe.
+        where(:connection_profile_id => mobile_conn_profile).
+        where(:state => @states).
+        where(:areacode => @cn).
+        where(:type => @type)
+
+    all_probes = Probe.
+        where(:state => @states).
+        where(:areacode => @cn).
+        where(:type => @type)
+
+    fixed_schedules = Schedule.
+        where(:destination_id => fixed_probes)
+
+    mobile_schedules = Schedule.
+        where(:destination_id => mobile_probes)
+
+    all_schedules = Schedule.
+        where(:destination_id => all_probes)
+
     @report_results = {}
     #
     #  SCM4
@@ -91,13 +123,7 @@ class ReportsController < ApplicationController
     @medians_scm4 = Median.
         where('start_timestamp >= ?', @from).
         where('end_timestamp <= ?', @to).
-        where(:schedule_id => Schedule.
-              where(:destination_id => Probe.
-                    where(:connection_profile_id => ConnectionProfile.
-                          where(:conn_type => "fixed")).
-                    where(:state => @states).
-                    where(:areacode => @cn).
-                    where(:type => @type))).
+        where(:schedule_id => fixed_schedules).
         where(:threshold_id => 1).
         order('start_timestamp ASC').all
     #
@@ -107,13 +133,7 @@ class ReportsController < ApplicationController
     @medians_smp10 = Median.
         where('start_timestamp >= ?', @from).
         where('end_timestamp <= ?', @to).
-        where(:schedule_id => Schedule.
-              where(:destination_id => Probe.
-                    where(:connection_profile_id => ConnectionProfile.
-                          where(:conn_type => "mobile")).
-                    where(:state => @states).
-                    where(:areacode => @cn).
-                    where(:type => @type))).
+        where(:schedule_id => mobile_schedules).
         where(:threshold_id => 1).
         order('start_timestamp ASC').all
     #
@@ -123,13 +143,7 @@ class ReportsController < ApplicationController
     @medians_scm5 = Median.
         where('start_timestamp >= ?', @from).
         where('end_timestamp <= ?', @to).
-        where(:schedule_id => Schedule.
-              where(:destination_id => Probe.
-                    where(:connection_profile_id => ConnectionProfile.
-                          where(:conn_type => "fixed")).
-                    where(:state => @states).
-                    where(:areacode => @cn).
-                    where(:type => @type))).
+        where(:schedule_id => fixed_schedules).
         where(:threshold_id => 2).
         order('start_timestamp ASC').all
 
@@ -140,13 +154,7 @@ class ReportsController < ApplicationController
     @medians_smp11 = Median.
         where('start_timestamp >= ?', @from).
         where('end_timestamp <= ?', @to).
-        where(:schedule_id => Schedule.
-              where(:destination_id => Probe.
-                    where(:connection_profile_id => ConnectionProfile.
-                          where(:conn_type => "mobile")).
-                    where(:state => @states).
-                    where(:areacode => @cn).
-                    where(:type => @type))).
+        where(:schedule_id => mobile_schedules).
         where(:threshold_id => 2).
         order('start_timestamp ASC').all
 
@@ -157,11 +165,7 @@ class ReportsController < ApplicationController
     @medians_scm6 = Median.
         where('start_timestamp >= ?', @from).
         where('end_timestamp <= ?', @to).
-        where(:schedule_id => Schedule.
-              where(:destination_id => Probe.
-                    where(:state => @states).
-                    where(:areacode => @cn).
-                    where(:type => @type))).
+        where(:schedule_id => all_schedules).
         where(:threshold_id => 3).
         order('start_timestamp ASC').all
 
@@ -172,11 +176,7 @@ class ReportsController < ApplicationController
     @medians_scm7 = Median.
         where('start_timestamp >= ?', @from).
         where('end_timestamp <= ?', @to).
-        where(:schedule_id => Schedule.
-              where(:destination_id => Probe.
-                    where(:state => @states).
-                    where(:areacode => @cn).
-                    where(:type => @type))).
+        where(:schedule_id => all_schedules).
         where(:threshold_id => 4).
         order('start_timestamp ASC').all
 
@@ -187,11 +187,7 @@ class ReportsController < ApplicationController
     @medians_scm8 = Median.
         where('start_timestamp >= ?', @from).
         where('end_timestamp <= ?', @to).
-        where(:schedule_id => Schedule.
-              where(:destination_id => Probe.
-                    where(:state => @states).
-                    where(:areacode => @cn).
-                    where(:type => @type))).
+        where(:schedule_id => all_schedules).
         where(:threshold_id => 5).
         order('start_timestamp ASC').all
 
@@ -202,11 +198,7 @@ class ReportsController < ApplicationController
     @medians_scm9 = Median.
         where('start_timestamp >= ?', @from).
         where('end_timestamp <= ?', @to).
-        where(:schedule_id => Schedule.
-              where(:destination_id => Probe.
-                    where(:state => @states).
-                    where(:areacode => @cn).
-                    where(:type => @type))).
+        where(:schedule_id => all_schedules).
         where(:threshold_id => 6).
         order('start_timestamp ASC').all
 
