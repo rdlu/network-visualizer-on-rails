@@ -48,19 +48,20 @@
 
                 case threshold.id
                 when 1
+
               %>
                   <td style="text-align: center">
-                        <%= "<span style=\"color:green\">#{@report_results[:scm4][month.to_s][:total]}%</span>".html_safe %>
+                        <%= "<span style=\"color: #{  @report_results[:scm4][month.to_s][:total] >= threshold.goal_level.to_f * 100 ? 'green':'red'}\">#{@report_results[:scm4][month.to_s][:total]}%</span>".html_safe %>
                   </td>
                   <td style="text-align: center">
-                    <%= "<span style=\"color:green\">#{@report_results[:smp10][month.to_s][:total]}%</span>".html_safe %>
+                    <%= "<span style=\"color:#{  @report_results[:smp10][month.to_s][:total] >= threshold.goal_level.to_f * 100 ? 'green':'red'}\">#{@report_results[:smp10][month.to_s][:total]}%</span>".html_safe %>
                   </td>
-              <% when 2 %>
+              <% when 2  %>
                       <td style="text-align: center">
-                        <%= "<span style=\"color:green\">#{@report_results[:scm5][month.to_s][:total_down]}%/#{@report_results[:scm5][month.to_s][:total_up]}%</span>".html_safe %>
+                        <%= "<span style=\"color:#{@report_results[:scm5][month.to_s][:total_down] >= threshold.goal_level.to_f * 100 ? 'green': 'red'}\">#{@report_results[:scm5][month.to_s][:total_down]}%/#{@report_results[:scm5][month.to_s][:total_up]}%</span>".html_safe %>
                       </td>
                       <td style="text-align: center">
-                        <%= "<span style=\"color:green\">#{@report_results[:smp11][month.to_s][:total_down]}%/#{@report_results[:smp11][month.to_s][:total_up]}%</span>".html_safe %>
+                        <%= "<span style=\"color:#{@report_results[:smp11][month.to_s][:total_down] >= threshold.goal_level.to_f * 100 ? 'green': 'red'}\">#{@report_results[:smp11][month.to_s][:total_down]}%/#{@report_results[:smp11][month.to_s][:total_up]}%</span>".html_safe %>
                       </td>
                <% when 3 %>
                       <td style="text-align: center">
@@ -70,6 +71,14 @@
                       <td style="text-align: center">
                         <%= "<span style=\"color:green\">#{@report_results[:scm7][month.to_s][:total]}%</span>".html_safe %>
                       </td>
+              <% when 5 %>
+                  <td style="text-align: center">
+                    <%= "<span style=\"color:green\">#{@report_results[:scm8][month.to_s][:total]}%</span>".html_safe %>
+                  </td>
+              <% when 6 %>
+                  <td style="text-align: center">
+                    <%= "<span style=\"color:green\">#{@report_results[:scm9][month.to_s][:total]}%</span>".html_safe %>
+                  </td>
                 <%  end
                  end %>
             </tr>
