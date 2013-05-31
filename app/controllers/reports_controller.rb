@@ -79,6 +79,10 @@ class ReportsController < ApplicationController
       @agent_type = ["fixed", "mobile"]
     end
 
+    # Garantir que não tenhamos nulos
+    @cn.delete("")
+    @states.delete("")
+
     @report_results = {}
     #
     #  SCM4
@@ -87,10 +91,13 @@ class ReportsController < ApplicationController
     @medians_scm4 = Median.
         where('start_timestamp >= ?', @from).
         where('end_timestamp <= ?', @to).
-        where(:schedule_id => Schedule.where(:destination_id => Probe.where(:connection_profile_id => ConnectionProfile.where(:conn_type => "fixed")) .where(:type => @type))).
-                                                                     #.where(:state => @states)
-                                                                    # .where(:areacode => @cn)
-
+        where(:schedule_id => Schedule.
+              where(:destination_id => Probe.
+                    where(:connection_profile_id => ConnectionProfile.
+                          where(:conn_type => "fixed")).
+                    where(:state => @states).
+                    where(:areacode => @cn).
+                    where(:type => @type))).
         where(:threshold_id => 1).
         order('start_timestamp ASC').all
     #
