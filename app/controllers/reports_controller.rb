@@ -210,117 +210,124 @@ class ReportsController < ApplicationController
       count4 = 0
       count_all4 = 0
       @medians_scm4.each do |median|
-        if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
-          if !median.dsavg.nil? || !median.sdavg.nil?
-            up = (median.dsavg.to_f/(1000 * median.schedule.destination.plan.throughput_up.to_f) ).round(3)
-            down = (median.sdavg.to_f/(1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
-            count_all4 += 1
-              if down >= median.threshold.goal_level.round(3) && up >= median.threshold.goal_level.round(3)
-                count4 += 1
+          if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
+              if !median.dsavg.nil? || !median.sdavg.nil?
+                  up = (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
+                  down = (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
+                  count_all4 += 1
+                  if down >= median.threshold.goal_level.round(3) && up >= median.threshold.goal_level.round(3)
+                      count4 += 1
+                  end
               end
           end
-        end
       end
-      @report_results[:scm4][month.to_s]={}
-      count_all4 != 0 ? @report_results[:scm4][month.to_s][:total] = ((count4/count_all4) * 100).to_f.round(2): @report_results[:scm4][month.to_s][:total] = 0.0
+      @report_results[:scm4][month.to_s] = {}
+      count_all4 != 0 ? @report_results[:scm4][month.to_s][:total] = ((count4 / count_all4) * 100).to_f.round(2): @report_results[:scm4][month.to_s][:total] = 0.0
+      
       # SPM10
       count10 = 0
       count_all10 = 0
       @medians_smp10.each do |median|
-        if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
-          if !median.dsavg.nil? || !median.sdavg.nil?
-            up = (median.dsavg.to_f/(1000 * median.schedule.destination.plan.throughput_up.to_f )).round(3)
-            down = (median.sdavg.to_f/(1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
-            count_all10 += 1
-            if down >= median.threshold.goal_level.round(3) && up >= median.threshold.goal_level.round(3)
-              count10 += 1
-            end
+          if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
+              if !median.dsavg.nil? || !median.sdavg.nil?
+                  up = (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
+                  down = (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
+                  count_all10 += 1
+                  if down >= median.threshold.goal_level.round(3) && up >= median.threshold.goal_level.round(3)
+                      count10 += 1
+                  end
+              end
           end
-        end
       end
-      @report_results[:smp10][month.to_s]={}
-      count_all10 != 0 ? @report_results[:smp10][month.to_s][:total] = ((count10/count_all10) * 100).to_f.round(2) : @report_results[:smp10][month.to_s][:total]= 0.0
+      @report_results[:smp10][month.to_s] = {}
+      count_all10 != 0 ? @report_results[:smp10][month.to_s][:total] = ((count10 / count_all10) * 100).to_f.round(2) : @report_results[:smp10][month.to_s][:total] = 0.0
+
       # SCM5
       down = 0
-      up =0
-      count_all5 =0
+      up = 0
+      count_all5 = 0
       @medians_scm5.each do |median|
-        if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
-          if !median.dsavg.nil? || !median.sdavg.nil?
-            up = up +(median.dsavg.to_f/(1000 * median.schedule.destination.plan.throughput_up.to_f )).round(3)
-            down =  down + (median.sdavg.to_f/(1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
-            count_all5 += 1
+          if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
+              if !median.dsavg.nil? || !median.sdavg.nil?
+                  up = up + (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
+                  down = down + (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
+                  count_all5 += 1
+              end
           end
-        end
       end
-      @report_results[:scm5][month.to_s]={}
-      count_all5 != 0 ? @report_results[:scm5][month.to_s][:total_down] = ((down/count_all5) * 100).to_f.round(2) : @report_results[:scm5][month.to_s][:total_down]= 0.0
-      count_all5 != 0 ? @report_results[:scm5][month.to_s][:total_up] = ((up/count_all5) * 100).to_f.round(2) : @report_results[:scm5][month.to_s][:total_up]= 0.0
+      @report_results[:scm5][month.to_s] = {}
+      count_all5 != 0 ? @report_results[:scm5][month.to_s][:total_down] = ((down / count_all5) * 100).to_f.round(2) : @report_results[:scm5][month.to_s][:total_down] = 0.0
+      count_all5 != 0 ? @report_results[:scm5][month.to_s][:total_up] = ((up / count_all5) * 100).to_f.round(2) : @report_results[:scm5][month.to_s][:total_up] = 0.0
+
       # SMP11
       down = 0
-      up =0
-      count_all11 =0
+      up = 0
+      count_all11 = 0
       @medians_smp11.each do |median|
-        if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
-          if !median.dsavg.nil? || !median.sdavg.nil?
-            up = up +(median.dsavg.to_f/(1000 * median.schedule.destination.plan.throughput_up.to_f )).round(3)
-            down =  down + (median.sdavg.to_f/(1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
-            count_all11 += 1
+          if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
+              if !median.dsavg.nil? || !median.sdavg.nil?
+                  up = up + (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
+                  down =  down + (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
+                  count_all11 += 1
+              end
           end
-        end
       end
-      @report_results[:smp11][month.to_s]={}
-      count_all11 != 0 ? @report_results[:smp11][month.to_s][:total_down] = ((down/count_all11) * 100).to_f.round(2) : @report_results[:smp11][month.to_s][:total_down]= 0.0
-      count_all11 != 0 ? @report_results[:smp11][month.to_s][:total_up] = ((up/count_all11) * 100).to_f.round(2) : @report_results[:smp11][month.to_s][:total_up]= 0.0
+      @report_results[:smp11][month.to_s] = {}
+      count_all11 != 0 ? @report_results[:smp11][month.to_s][:total_down] = ((down / count_all11) * 100).to_f.round(2) : @report_results[:smp11][month.to_s][:total_down] = 0.0
+      count_all11 != 0 ? @report_results[:smp11][month.to_s][:total_up] = ((up / count_all11) * 100).to_f.round(2) : @report_results[:smp11][month.to_s][:total_up] = 0.0
+
       # SCM6
       count6 = 0
       count_all6 = 0
       @medians_scm6.each do |median|
-        if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
-          if !median.dsavg.nil?
-            up = median.dsavg.to_f * 1000
-            count_all6 += 1
-            if up<= median.threshold.goal_level.round(3)
-              count6 += 1
-            end
+          if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
+              if !median.dsavg.nil?
+                  up = median.dsavg.to_f * 1000
+                  count_all6 += 1
+                  if up <= median.threshold.goal_level.round(3)
+                      count6 += 1
+                  end
+              end
           end
-        end
       end
-      @report_results[:scm6][month.to_s]={}
-      count_all6 != 0 ? @report_results[:scm6][month.to_s][:total] = ((count6/count_all6) * 100).to_f.round(2) : @report_results[:scm6][month.to_s][:total]= 0.0
+      @report_results[:scm6][month.to_s] = {}
+      count_all6 != 0 ? @report_results[:scm6][month.to_s][:total] = ((count6 / count_all6) * 100).to_f.round(2) : @report_results[:scm6][month.to_s][:total] = 0.0
+
       # SCM7
       count7 = 0
       count_all7 = 0
       @medians_scm7.each do |median|
-        if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
-          if !median.dsavg.nil? || !median.sdavg.nil?
-            down = median.sdavg.to_f * 1000
-            up =  median.dsavg.to_f * 1000
-            count_all7 += 1
-            if down <= median.threshold.goal_level.round(3) && up <= median.threshold.goal_level.round(3)
-              count7 += 1
-            end
+          if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
+              if !median.dsavg.nil? || !median.sdavg.nil?
+                  down = median.sdavg.to_f * 1000
+                  up =  median.dsavg.to_f * 1000
+                  count_all7 += 1
+                  if down <= median.threshold.goal_level.round(3) && up <= median.threshold.goal_level.round(3)
+                      count7 += 1
+                  end
+              end
           end
-        end
       end
-      @report_results[:scm7][month.to_s]={}
-      count_all7 != 0 ? @report_results[:scm7][month.to_s][:total] = ((count7/count_all7) * 100).to_f.round(2) : @report_results[:scm7][month.to_s][:total]= 0.0
+      @report_results[:scm7][month.to_s] = {}
+      count_all7 != 0 ? @report_results[:scm7][month.to_s][:total] = ((count7 / count_all7) * 100).to_f.round(2) : @report_results[:scm7][month.to_s][:total] = 0.0
+
       # SCM8
       count8 = 0
       count_all8 = 0
       @medians_scm8.each do |median|
-        if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
-          if  !median.sdavg.nil?
-            down = median.sdavg.to_f
-            count_all8 += 1
-            if down <= median.threshold.goal_level.round(3)
-              count8 += 1
-            end
+          if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
+              if  !median.sdavg.nil?
+                  down = median.sdavg.to_f
+                  count_all8 += 1
+                  if down <= median.threshold.goal_level.round(3)
+                      count8 += 1
+                  end
+              end
           end
-        end
       end
-      @report_results[:scm8][month.to_s]={}
-      count_all8 != 0 ? @report_results[:scm8][month.to_s][:total] = ((count8/count_all8) * 100).to_f.round(2) : @report_results[:scm8][month.to_s][:total]= 0.0
+      @report_results[:scm8][month.to_s] = {}
+      count_all8 != 0 ? @report_results[:scm8][month.to_s][:total] = ((count8 / count_all8) * 100).to_f.round(2) : @report_results[:scm8][month.to_s][:total] = 0.0
+
       # SCM9
       points = 0
       total_points = 0
@@ -328,11 +335,10 @@ class ReportsController < ApplicationController
         if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
             points = points + median.expected_points
             total_points = total_points + median.total_points
-
         end
       end
-      @report_results[:scm9][month.to_s]={}
-      points != 0 ? @report_results[:scm9][month.to_s][:total] = ((total_points/points) * 100).to_f.round(2) : @report_results[:scm9][month.to_s][:total]= 0.0
+      @report_results[:scm9][month.to_s] = {}
+      points != 0 ? @report_results[:scm9][month.to_s][:total] = ((total_points / points) * 100).to_f.round(2) : @report_results[:scm9][month.to_s][:total] = 0.0
 
     end
 
