@@ -140,8 +140,13 @@ class ReportsController < ApplicationController
     @medians_smp11 = Median.
         where('start_timestamp >= ?', @from).
         where('end_timestamp <= ?', @to).
-        where(:schedule_id => Schedule.where(:destination_id => Probe.where(:connection_profile_id => ConnectionProfile.where(:conn_type => "mobile"))
-                                                                     .where(:type => @type))).
+        where(:schedule_id => Schedule.
+              where(:destination_id => Probe.
+                    where(:connection_profile_id => ConnectionProfile.
+                          where(:conn_type => "mobile")).
+                    where(:state => @states).
+                    where(:areacode => @cn).
+                    where(:type => @type))).
         where(:threshold_id => 2).
         order('start_timestamp ASC').all
 
