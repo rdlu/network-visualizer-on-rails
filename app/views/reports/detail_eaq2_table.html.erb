@@ -14,132 +14,55 @@
 </tr>
 <!--Medidas obtidas para cada dia do mês -->
 <% if Date.current.end_of_month != Date.parse(@month).end_of_month
-     (1..Time.parse(@month).end_of_month.day).each do |day|
+       end_date =  Time.parse(@month).end_of_month.day
+       else
+         end_date = Date.current.day
+    end
+     (1..end_date).each do |day|
        result = ""
-       uid = SecureRandom.uuid
-%>
+       uid = SecureRandom.uuid %>
 
-        <tr id="<%= Date.parse(@month).change(:day => day) %>_<%= uid %>">
-          <td style="font-weight: bold"><%= day %> &nbsp;&nbsp;<span class="icon-search" title="Detalhar" onclick="popupTable('<%= Date.parse(@month).change(:day => day) %>_<%= uid %>')"></span>
-            <div id="modal-<%= Date.parse(@month).change(:day => day) %>_<%= uid %>"class="modal hide fade" style="left: 40%;width: 70%"></div>
-          </td>
-          <% @thresholds.each do |threshold|
-             @medians.each do |median|
-                if (median.start_timestamp >= DateTime.parse(@month).change(:day => day).beginning_of_day && median.start_timestamp <= DateTime.parse(@month).change(:day => day).end_of_day) && threshold.id == median.threshold_id
-                  case threshold.metric.plugin
-                   when /^throughput/
-                     if threshold.compliance_method == 'mean'
-                       up = (((median.dsavg.to_f / 1000)/median.schedule.destination.plan.throughput_up.to_f)*100).round(2)
-                       down = (((median.sdavg.to_f / 1000)/median.schedule.destination.plan.throughput_down.to_f)*100).round(2)
-                       color_up = up >=(threshold.goal_level * 100).round(3) ? 'green' : 'red'
-                       color_down = down >= (threshold.goal_level * 100).round(3) ? 'green' : 'red'
-                       up = up.to_s + "%"
-                       down = down.to_s + "%"
-                       result = "<span style=\"color:#{color_down}\">#{down}</span>/<span style=\"color:#{color_up}\">#{up}</span>".html_safe
-                     else
-                       up = (median.dsavg.to_f / 1000000).round(3)
-                       down = (median.sdavg.to_f / 1000000).round(3)
-                       color_up = up >=((median.schedule.destination.plan.throughput_up.to_f / 1000) * threshold.goal_level.to_f).round(3) ? 'green' : 'red'
-                       color_down = down >= ((median.schedule.destination.plan.throughput_down.to_f / 1000) * threshold.goal_level.to_f).round(3) ? 'green' : 'red'
-                       result = "<span style=\"color:#{color_down}\">#{median.pretty_download(true)}</span>/<span style=\"color:#{color_up}\">#{median.pretty_upload(true)}</span>".html_safe
-                     end
-                   when 'rtt'
-                     color = (median.dsavg.to_f * 1000).round(2) <= threshold.goal_level ? 'green' : 'red'
-                     result = "<span style=\"color:#{color}\">#{median.pretty_upload(true)}</span>"
-                   when 'jitter'
-                     color_down = (median.sdavg.to_f * 1000).round(2) <= threshold.goal_level ? 'green' : 'red'
-                     color_up = (median.dsavg.to_f * 1000).round(2) <= threshold.goal_level ? 'green' : 'red'
-                     result = "<span style=\"color:#{color_down}\">#{median.pretty_download(true)}</span>" +
-                             "/<span style=\"color:#{color_up}\">#{median.pretty_upload(true)}</span>"
-                  when 'loss'
-                    if threshold.goal_method == 'availability'
-                      per = (median.dsavg.to_f*100).round(3)
-                      color = per >= threshold.goal_level ? 'green' : 'red'
-                      result = "<span style=\"color:#{color}\">#{per.to_s} %</span>"
-                      else
-                        reference_date = (DateTime.parse(@month).change(:day => day)).to_date.to_time
-                        medians = Median.where(:schedule_id => median.schedule.id).where(:threshold_id => threshold.id).where('start_timestamp >= ?', reference_date.beginning_of_day.in_time_zone('GMT')).where('start_timestamp <= ?', reference_date.end_of_day.in_time_zone('GMT'));
-                        if medians.length.to_i == 0
-                          median_l = Median.new
-                          result = "<span style=\"color:#{color}\">#{median_l.pretty_download(true)}</span>"
-                        else
-                          medians_len = medians.length
-                          hit_points=0
-                          sum_avg=0
-                          total_samples=0
-                          medians.each do |median_l|
-                            if median_l.sdavg <= threshold.goal_level.to_f
-                              hit_points += 1
-                            end
-                            sum_avg += median_l.total_points * median_l.sdavg
-                            total_samples += median_l.total_points
-                          end
-                          #   per = (median.dsavg.to_f*100).round(3)
-                          per = (sum_avg / total_samples.to_f).round(3)
-                          #   color = per <= (threshold.goal_level.to_f*100) ? 'green' : 'red'
-                          color_per = per <= (threshold.goal_level.to_f) ? 'green' : 'red'
-                          color = 'black'
-                          #                         result = "<span style=\"color:#{color}\">#{hit_points.to_s} / #{medians.length.to_s}</span>"
-                          result = "<span style=\"color:#{color_per}\">#{per}% <span style=\"color:#{color}\">(#{hit_points.to_s} / #{medians.length.to_s})</span></span>"
-                        end
-                    end
-
-                 end
-              end
-            end
-            if threshold.id == 1 || threshold.id == 2
-          %>
-                  <td style="text-align: center;" ><%= result.html_safe %>
-                  </td>
-                  <td style="text-align: center;"><%= result.html_safe %>
-                  </td>
-              <% else %>
-                  <td style="text-align: center;"><%= result.html_safe %>
-                  </td>
-              <% end %>
-          <% end %>
-
-        </tr>
-    <% end %>
-<% else
-     (1..Date.current.day).each do |day| %>
         <tr>
           <td style="font-weight: bold"><%= day %></td>
           <% @thresholds.each do |threshold|
-            if threshold.id == 1 || threshold.id == 2
+            case threshold.id
+              when 1
           %>
-                  <td style="text-align: center;">
+                  <td style="text-align: center">
+                    <%= "<span style=\"color: green\">%</span>".html_safe
+                    %>
                   </td>
-                  <td style="text-align: center;">
+                  <td style="text-align: center">
+                    <%= "<span style=\"color: green\">%</span>".html_safe %>
                   </td>
-              <% else %>
-                  <td style="text-align: center; font-weight: bold">
+              <% when 2  %>
+                  <td style="text-align: center">
+                    <%= "<span style=\"color:green\">%/%</span>".html_safe %>
                   </td>
-              <% end %>
-          <% end %>
+                  <td style="text-align: center">
+                    <%= "<span style=\"color: green\">%/%</span>".html_safe %>
+                  </td>
+              <% when 3 %>
+                  <td style="text-align: center">
+                    <%= "<span style=\"color: green \">%</span>".html_safe %>
+                  </td>
+              <% when 4 %>
+                  <td style="text-align: center">
+                    <%= "<span style=\"color: green\">%</span>".html_safe %>
+                  </td>
+              <% when 5 %>
+                  <td style="text-align: center">
+                    <%= "<span style=\"color: green \">%</span>".html_safe %>
+                  </td>
+              <% when 6 %>
+                  <td style="text-align: center">
+                    <%= "<span style=\"color: green\">#{@report_results[:scm9][month.to_s][day.to_s][:total]}%</span>".html_safe %>
+                  </td>
+              <%  end
+             end %>
+
         </tr>
     <% end %>
-<% end %>
 <tr>
   <td colspan="9" style="font-weight: bold; background-color: #777777;text-align: center"></td>
 </tr>
-
-<script>
-    function popupTable(id)
-    {
-        var uid = [];
-        uid = id.split('_');
-
-        $.ajax({
-            dataType: '',
-            type: 'POST',
-            url: "<%= detail_speed_type_eaq2_table_reports_url %>",
-            data: { date: moment(uid[0]).format('DD/MM/YYYY') , id: uid[1], agent: <%= @type.to_json.html_safe %>, agent_type: <%= @agent_type.to_json.html_safe %>, state: <%= @states.to_json.html_safe %>, cn: <%= @cn.to_json.html_safe %>, goal_filter: <%= @goal_filter.to_json.html_safe %> },
-            success: function(data){
-                $('#modal-'+id).html(data).modal({show:true});
-            }
-        });
-
-    }
-
-</script>

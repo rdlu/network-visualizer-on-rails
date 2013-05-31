@@ -349,6 +349,7 @@ class ReportsController < ApplicationController
   end
 
   def detail_eaq2_table
+    @thresholds = Threshold.all
     @month = params[:month]
     @scm4 = params[:scm4]
     @scm5 = params[:scm5]
@@ -360,20 +361,21 @@ class ReportsController < ApplicationController
     @smp11 = params[:smp11]
 
     mnth = Time.parse(@month).month
-
+    @report_results = {}
     %w(scm4, scm5, scm6, scm7, scm8, scm9, smp10, smp11).each do |c|
+        @report_results[c.to_sym] = {}
         @report_results[c.to_sym][mnth] = {}
     end
 
     if Date.current.end_of_month != Date.parse(@month).end_of_month
-        end_date = Date.parse(@month).end_of_month
+        end_date = Date.parse(@month).end_of_month.day
     else
         end_date = Date.current.day
     end
 
     (1..end_date).each do |day|
-        beginning_of_day = day.to_time.in_time_zone.beginning_of_day
-        end_of_day = dat.to_time.in_time_zone.end_of_day
+        beginning_of_day = DateTime.parse(@month).change(:day => day).beginning_of_day
+        end_of_day = DateTime.parse(@month).change(:day => day).end_of_day
         
         # SCM4
         count4 = 0
@@ -515,6 +517,7 @@ class ReportsController < ApplicationController
     respond_to do |format|
       format.html  {render :layout=> false}
     end
+
   end
 
 

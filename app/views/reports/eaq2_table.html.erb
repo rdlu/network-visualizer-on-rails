@@ -37,17 +37,9 @@
                 <%= month.strftime("%b/%Y") == Time.new.strftime("%b/%Y") ? (month.strftime("%b/%Y")+' (Parcial)'):month.strftime("%b/%Y") %>&nbsp;&nbsp;<span class="icon-search" title="Detalhar"></span>
               </td>
               <%  Threshold.all.each do |threshold|
-                   media_down = 0
-                   media_up = 0
-                   down = 0
-                   up = 0
-                   count_all_scm4 = 0
-                   count_scm4=0
-                   color_scm4 = "red"
-
 
                 case threshold.id
-                when 1
+                 when 1
 
               %>
                   <td style="text-align: center">
