@@ -382,7 +382,7 @@ class ReportsController < ApplicationController
         count_all4 = 0
         @scm4.each do |median|
             if median[1]["start_timestamp"] >= beginning_of_day && median[1]["start_timestamp"] <= end_of_day
-                if !median[1]["dsavg"].nil? || !median[1]["sdavg"].nil?
+                if median[1]["dsavg"] != "" || median[1]["sdavg"] != ""
                     up = (median[1]["dsavg"].to_f / (1000 * median[1]["schedule"]["destination"]["plan"]["throughput_up"].to_f)).round(3)
                     down = (median[1]["sdavg"].to_f / (1000 * median[1]["schedule"]["destination"]["plan"]["throughput_down"].to_f)).round(3)
                     count_all4 += 1
@@ -400,7 +400,7 @@ class ReportsController < ApplicationController
         count_all10 = 0
         @smp10.each do |median|
             if median[1]["start_timestamp"] >= beginning_of_day && median[1]["start_timestamp"] <= end_of_day
-                if !median[1]["dsavg"].nil? || !median[1]["sdavg"].nil?
+                if median[1]["dsavg"] != "" || median[1]["sdavg"] != ""
                     up = (median[1]["dsavg"].to_f / (1000 * median[1]["schedule"]["destination"]["plan"]["throughput_up"].to_f)).round(3)
                     down = (median[1]["sdavg"].to_f / (1000 * median[1]["schedule"]["destination"]["plan"]["throughput_down"].to_f)).round(3)
                     count_all10 += 1
@@ -419,7 +419,7 @@ class ReportsController < ApplicationController
         count_all5 = 0
         @scm5.each do |median|
             if median[1]["start_timestamp"] >= beginning_of_day && median[1]["start_timestamp"] <= end_of_day
-                if !median[1]["dsavg"].nil? || !median[1]["sdavg"].nil?
+                if median[1]["dsavg"] != "" || median[1]["sdavg"] != ""
                     up = up + (median[1]["dsavg"].to_f / (1000 * median[1]["schedule"]["destination"]["plan"]["throughput_up"].to_f)).round(3)
                     down = down + (median[1]["sdavg"].to_f / (1000 * median[1]["schedule"]["destination"]["plan"]["throughput_down"].to_f)).round(3)
                     count_all5 += 1
@@ -436,7 +436,7 @@ class ReportsController < ApplicationController
         count_all11 = 0
         @medians_smp11.each do |median|
             if median[1]["start_timestamp"] >= beginning_of_day && median[1]["start_timestamp"] <= end_of_day
-                if !median[1]["dsavg"].nil? || !median[1]["sdavg"].nil?
+                if median[1]["dsavg"] != "" || median[1]["sdavg"] != ""
                     up = up + (median[1]["dsavg"].to_f / (1000 * median[1]["schedule"]["destination"]["plan"]["throughput_up"].to_f)).round(3)
                     down = down + (median[1]["sdavg"].to_f / (1000 * median[1]["schedule"]["destination"]["plan"]["throughput_down"].to_f)).round(3)
                     count_all11 += 1
@@ -452,7 +452,7 @@ class ReportsController < ApplicationController
         count_all6 = 0
         @medians_scm6.each do |median|
             if median[1]["start_timestamp"] >= beginning_of_day && median[1]["start_timestamp"] <= end_of_day
-                if !median[1]["dsavg"].nil?
+                if median[1]["dsavg"] != ""
                     up = median[1]["dsavg"].to_f * 1000
                     count_all6 += 1
                     if up <= median[1]["threshold"]["goal_level"].round(3)
@@ -469,7 +469,7 @@ class ReportsController < ApplicationController
         count_all7 = 0
         @medians_scm7.each do |median|
             if median[1]["start_timestamp"] >= beginning_of_day && median[1]["start_timestamp"] <= end_of_day
-                if !median[1]["dsavg"].nil? || !median["sdavg"].nil?
+                if median[1]["dsavg"] != "" || median["sdavg"] != ""
                     down = median[1]["sdavg"].to_f * 1000
                     up =  median[1]["dsavg"].to_f * 1000
                     count_all7 += 1
@@ -487,7 +487,7 @@ class ReportsController < ApplicationController
         count_all8 = 0
         @medians_scm8.each do |median|
             if median[1]["start_timestamp"] >= beginning_of_day && median[1]["start_timestamp"] <= end_of_day
-                if  !median[1]["sdavg"].nil?
+                if  median[1]["sdavg"] != ""
                     down = median[1]["sdavg"].to_f
                     count_all8 += 1
                     if down <= median[1]["threshold"]["goal_level"].round(3)
