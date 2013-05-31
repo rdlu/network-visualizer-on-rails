@@ -51,33 +51,41 @@
 
               %>
                   <td style="text-align: center">
-                        <%= "<span style=\"color: #{  @report_results[:scm4][month.to_s][:total] >= threshold.goal_level.to_f * 100 ? 'green':'red'}\">#{@report_results[:scm4][month.to_s][:total]}%</span>".html_safe %>
+                        <%= "<span style=\"color: #{  @report_results[:scm4][month.to_s][:total] >= threshold.compliance_level.to_f * 100 ? 'green':'red'}\">#{@report_results[:scm4][month.to_s][:total]}%</span>".html_safe
+                        %>
                   </td>
                   <td style="text-align: center">
-                    <%= "<span style=\"color:#{  @report_results[:smp10][month.to_s][:total] >= threshold.goal_level.to_f * 100 ? 'green':'red'}\">#{@report_results[:smp10][month.to_s][:total]}%</span>".html_safe %>
+                    <%= "<span style=\"color:#{  @report_results[:smp10][month.to_s][:total] >= threshold.compliance_level.to_f * 100 ? 'green':'red'}\">#{@report_results[:smp10][month.to_s][:total]}%</span>".html_safe %>
                   </td>
               <% when 2  %>
                       <td style="text-align: center">
-                        <%= "<span style=\"color:#{@report_results[:scm5][month.to_s][:total_down] >= threshold.goal_level.to_f * 100 ? 'green': 'red'}\">#{@report_results[:scm5][month.to_s][:total_down]}%/#{@report_results[:scm5][month.to_s][:total_up]}%</span>".html_safe %>
+                        <%= "<span style=\"color:#{if @report_results[:scm5][month.to_s][:total_down] >= (threshold.compliance_level.to_f * 100) && @report_results[:scm5][month.to_s][:total_up] >= (threshold.compliance_level.to_f * 100)
+                                                      'green'
+                                                      else 'red'
+                                                     end
+                                                     }\">#{@report_results[:scm5][month.to_s][:total_down]}%/#{@report_results[:scm5][month.to_s][:total_up]}%</span>".html_safe %>
                       </td>
                       <td style="text-align: center">
-                        <%= "<span style=\"color:#{@report_results[:smp11][month.to_s][:total_down] >= threshold.goal_level.to_f * 100 ? 'green': 'red'}\">#{@report_results[:smp11][month.to_s][:total_down]}%/#{@report_results[:smp11][month.to_s][:total_up]}%</span>".html_safe %>
+                        <%= "<span style=\"color:#{if @report_results[:smp11][month.to_s][:total_down] >= (threshold.compliance_level.to_f * 100) && @report_results[:smp11][month.to_s][:total_up] >= (threshold.compliance_level.to_f * 100)
+                                                     'green'
+                                                   else 'red'
+                                                   end}\">#{@report_results[:smp11][month.to_s][:total_down]}%/#{@report_results[:smp11][month.to_s][:total_up]}%</span>".html_safe %>
                       </td>
                <% when 3 %>
                       <td style="text-align: center">
-                        <%= "<span style=\"color:green\">#{@report_results[:scm6][month.to_s][:total]}%</span>".html_safe %>
+                        <%= "<span style=\"color:#{@report_results[:scm6][month.to_s][:total] >= threshold.compliance_level.to_f * 100 ? 'green': 'red'}\">#{@report_results[:scm6][month.to_s][:total]}%</span>".html_safe %>
                       </td>
               <% when 4 %>
                       <td style="text-align: center">
-                        <%= "<span style=\"color:green\">#{@report_results[:scm7][month.to_s][:total]}%</span>".html_safe %>
+                        <%= "<span style=\"color:#{@report_results[:scm7][month.to_s][:total] >= threshold.compliance_level.to_f * 100 ? 'green': 'red'}\">#{@report_results[:scm7][month.to_s][:total]}%</span>".html_safe %>
                       </td>
               <% when 5 %>
                   <td style="text-align: center">
-                    <%= "<span style=\"color:green\">#{@report_results[:scm8][month.to_s][:total]}%</span>".html_safe %>
+                    <%= "<span style=\"color:#{@report_results[:scm8][month.to_s][:total] >= threshold.compliance_level.to_f * 100 ? 'green': 'red'}\">#{@report_results[:scm8][month.to_s][:total]}%</span>".html_safe %>
                   </td>
               <% when 6 %>
                   <td style="text-align: center">
-                    <%= "<span style=\"color:green\">#{@report_results[:scm9][month.to_s][:total]}%</span>".html_safe %>
+                    <%= "<span style=\"color:#{@report_results[:scm9][month.to_s][:total] >= threshold.compliance_level.to_f * 100 ? 'green': 'red'}\">#{@report_results[:scm9][month.to_s][:total]}%</span>".html_safe %>
                   </td>
                 <%  end
                  end %>
@@ -107,9 +115,10 @@
                     dataType: '',
                     type: 'POST',
                     url: "<%= detail_eaq2_table_reports_url %>",
-                    data: { compliance: <%= @compliances.to_json.html_safe %> ,month: id, goal_filter: <%= @goal_filter .to_json.html_safe %>,
-                        agent: <%= @type.to_json.html_safe %>, agent_type: <%= @agent_type.to_json.html_safe %>, state: <%= @states.to_json.html_safe %>,
-                        cn: <%= @cn.to_json.html_safe %>, probes: <%= @probes.to_json.html_safe %>, schedules: <%= @schedules.to_json.html_safe %>},
+                    data: { month: id, scm4: <%= @medians_scm4.to_json.html_safe %>, scm5: <%= @medians_scm5.to_json.html_safe %>, scm6: <%= @medians_scm6.to_json.html_safe %>
+                        , scm7: <%= @medians_scm7.to_json.html_safe %>, scm8: <%= @medians_scm8.to_json.html_safe %>, scm9: <%= @medians_scm9.to_json.html_safe %>
+                        , smp10: <%= @medians_smp10.to_json.html_safe %>, smp11: <%= @medians_smp11.to_json.html_safe %>
+                    },
                     success: function(data){
                         $('#detail2'+id).html(data);
                     }

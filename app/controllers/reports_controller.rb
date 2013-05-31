@@ -342,86 +342,26 @@ class ReportsController < ApplicationController
 
   end
 
-=begin
-  def eaq2_table
-    @from = DateTime.parse(params[:date][:start])
-    @to = DateTime.parse(params[:date][:end])
-    @months = @from.all_months_until @to
-    @type = params[:agent] # android or linux
-    @agent_type = params[:agent_type] # fixed or mobile, if linux
-    @states = params[:state]
-    @cn = params[:cn]
-    @goal_filter = params[:goal_filter] #all,above or under
-
-    if @type == "android"
-        @agent_type = ["fixed", "mobile"]
-    end
-
-    @probes = Probe.
-        where(:connection_profile_id => ConnectionProfile.where(:conn_type => @agent_type)).
-        where(:type => @type).
-        where(:state => @states).
-        where(:areacode => @cn).all
-
-    @schedules = Schedule.
-        where(:destination_id => @probes).all
-
-    if @goal_filter.include?("above") && @goal_filter.include?("under")
-        goal_query = ""
-    else
-        if @goal_filter[0] == "above"
-            goal_query = "compliances.download >= thresholds.compliance_level"
-        else
-            goal_query = "compliances.download < thresholds.compliance_level"
-        end
-    end
-
-    @compliances = Compliance.
-        where('start_timestamp >= ?', @from).
-        where('end_timestamp <= ?', @to).
-        where(:schedule_id => @schedules).
-        joins(:threshold).where(goal_query).
-        order('start_timestamp ASC').all
-
-    respond_to do |format|
-        format.html  {render :layout=> false}
-    end
-
-  end
-
-
   def detail_eaq2_table
     @month = params[:month]
-    compliance = params[:compliance].to_a
-    @thresholds = Threshold.all
-    #parametros que servem para o outro detail
-    #que recebe atraves da view
-    @type = params[:agent] # android or linux
-    @agent_type = params[:agent_type] # fixed or mobile, if linux
-    @states = params[:state]
-    @cn = params[:cn]
-    @goal_filter = params[:goal_filter] #all,above or under
-    ###
+    @scm4 = params[:scm4]
+    @scm5 = params[:scm5]
+    @scm6 = params[:scm6]
+    @scm7 = params[:scm7]
+    @scm8 = params[:scm8]
+    @scm9 = params[:scm9]
+    @smp10 = params[:smp10]
+    @smp11 = params[:smp11]
 
-    @schedules = []
-    compliance.each do |c|
-        @schedules << c.at(1)["schedule_id"]
+    (1..Time.parse(@month).end_of_month.day).each do |day|
+
     end
-    @schedules.uniq!
-
-
-    @medians = Median.
-        where('start_timestamp >= ?', DateTime.parse(@month).beginning_of_month).
-        where('end_timestamp <= ?', DateTime.parse(@month).end_of_month).
-        where(:schedule_id => @schedules).
-        order('start_timestamp ASC').all
-
 
     respond_to do |format|
-      format.html {render :layout=> false}
+      format.html  {render :layout=> false}
     end
   end
-=end
+
 
   def detail_speed_type_eaq2_table
    #consolidacao pela velocidade contratada
