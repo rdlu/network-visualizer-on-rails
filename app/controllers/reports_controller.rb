@@ -381,12 +381,12 @@ class ReportsController < ApplicationController
         count4 = 0
         count_all4 = 0
         @scm4.each do |median|
-            if median.start_timestamp >= beginning_of_day && day.start_timestamp <= end_of_day
-                if !median.dsavg.nil? || !median.sdavg.nil?
-                    up = (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
-                    down = (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
+            if median["start_timestamp"] >= beginning_of_day && median["start_timestamp"] <= end_of_day
+                if !median["dsavg"].nil? || !median["sdavg"].nil?
+                    up = (median["dsavg"].to_f / (1000 * median["schedule"]["destination"]["plan"]["throughput_up"].to_f)).round(3)
+                    down = (median["sdavg"].to_f / (1000 * median["schedule"]["destination"]["plan"]["throughput_down"].to_f)).round(3)
                     count_all4 += 1
-                    if down >= median.threshold.goal_level.round(3) && up >= median.threshold.goal_level.round(3)
+                    if down >= median["threshold"]["goal_level"].round(3) && up >= median["threshold"]["goal_level"].round(3)
                         count4 += 1
                     end
                 end
