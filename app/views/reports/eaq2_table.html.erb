@@ -46,7 +46,8 @@
                    color_scm4 = "red"
 
 
-                if threshold.id == 1
+                case threshold.id
+                when 1
               %>
                   <td style="text-align: center">
                         <%= "<span style=\"color:green\">#{@report_results[:scm4][month.to_s][:total]}%</span>".html_safe %>
@@ -54,7 +55,22 @@
                   <td style="text-align: center">
                     <%= "<span style=\"color:green\">#{@report_results[:smp10][month.to_s][:total]}%</span>".html_safe %>
                   </td>
-              <% end
+              <% when 2 %>
+                      <td style="text-align: center">
+                        <%= "<span style=\"color:green\">#{@report_results[:scm5][month.to_s][:total_down]}%/#{@report_results[:scm5][month.to_s][:total_up]}%</span>".html_safe %>
+                      </td>
+                      <td style="text-align: center">
+                        <%= "<span style=\"color:green\">#{@report_results[:smp11][month.to_s][:total_down]}%/#{@report_results[:smp11][month.to_s][:total_up]}%</span>".html_safe %>
+                      </td>
+               <% when 3 %>
+                      <td style="text-align: center">
+                        <%= "<span style=\"color:green\">#{@report_results[:scm6][month.to_s][:total]}%</span>".html_safe %>
+                      </td>
+              <% when 4 %>
+                      <td style="text-align: center">
+                        <%= "<span style=\"color:green\">#{@report_results[:scm7][month.to_s][:total]}%</span>".html_safe %>
+                      </td>
+                <%  end
                  end %>
             </tr>
             <tr id="<%= month.strftime("%Y-%m-%d")%>" style="display: none"  >

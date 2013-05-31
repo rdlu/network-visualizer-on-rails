@@ -79,39 +79,6 @@ class ReportsController < ApplicationController
       @agent_type = ["fixed", "mobile"]
     end
 
-=begin
-    @probes = Probe.
-        where(:connection_profile_id => ConnectionProfile.where(:conn_type => @agent_type)).
-        where(:type => @type).
-        where(:state => @states).
-        where(:areacode => @cn).all
-
-    @schedules = Schedule.
-        where(:destination_id => @probes).all
-
-    if @goal_filter.include?("above") && @goal_filter.include?("under")
-      goal_query = ""
-    else
-      if @goal_filter[0] == "above"
-        goal_query = "compliances.download >= thresholds.compliance_level"
-      else
-        goal_query = "compliances.download < thresholds.compliance_level"
-      end
-    end
-
-    @compliances = Compliance.
-        where('start_timestamp >= ?', @from).
-        where('end_timestamp <= ?', @to).
-        where(:schedule_id => @schedules).
-        joins(:threshold).where(goal_query).
-        order('start_timestamp ASC').all
-
-    @schedules =[]
-    @compliances.each do |c|
-      @schedules << c["schedule_id"]
-    end
-    @schedules.uniq!
-=end
     @report_results = {}
     #
     #  SCM4
@@ -120,10 +87,10 @@ class ReportsController < ApplicationController
     @medians_scm4 = Median.
         where('start_timestamp >= ?', @from).
         where('end_timestamp <= ?', @to).
-        where(:schedule_id => Schedule.where(:destination_id => Probe.where(:connection_profile_id => ConnectionProfile.where(:conn_type => "fixed"))
-                                                                     .where(:state => @states)
-                                                                     .where(:areacode => @cn)
-                                                                     .where(:type => @type))).
+        where(:schedule_id => Schedule.where(:destination_id => Probe.where(:connection_profile_id => ConnectionProfile.where(:conn_type => "fixed")) .where(:type => @type))).
+                                                                     #.where(:state => @states)
+                                                                    # .where(:areacode => @cn)
+
         where(:threshold_id => 1).
         order('start_timestamp ASC').all
     #
@@ -134,53 +101,215 @@ class ReportsController < ApplicationController
         where('start_timestamp >= ?', @from).
         where('end_timestamp <= ?', @to).
         where(:schedule_id => Schedule.where(:destination_id => Probe.where(:connection_profile_id => ConnectionProfile.where(:conn_type => "mobile"))
-                                                                     .where(:state => @states)
-                                                                     .where(:areacode => @cn)
-                                                                     .where(:type => @type))).
+                                                                                                                                       .where(:type => @type))).
         where(:threshold_id => 1).
+        order('start_timestamp ASC').all
+    #
+    # SCM5
+    #
+    @report_results[:scm5] = {}
+    @medians_scm5 = Median.
+        where('start_timestamp >= ?', @from).
+        where('end_timestamp <= ?', @to).
+        where(:schedule_id => Schedule.where(:destination_id => Probe.where(:connection_profile_id => ConnectionProfile.where(:conn_type => "fixed"))
+                                                                     .where(:type => @type))).
+        where(:threshold_id => 2).
+        order('start_timestamp ASC').all
+
+    #
+    # SMP11
+    #
+    @report_results[:smp11] = {}
+    @medians_smp11 = Median.
+        where('start_timestamp >= ?', @from).
+        where('end_timestamp <= ?', @to).
+        where(:schedule_id => Schedule.where(:destination_id => Probe.where(:connection_profile_id => ConnectionProfile.where(:conn_type => "mobile"))
+                                                                     .where(:type => @type))).
+        where(:threshold_id => 2).
+        order('start_timestamp ASC').all
+
+    #
+    # SCM6
+    #
+    @report_results[:scm6] = {}
+    @medians_scm6 = Median.
+        where('start_timestamp >= ?', @from).
+        where('end_timestamp <= ?', @to).
+        where(:schedule_id => Schedule.where(:destination_id => Probe.where(:type => @type))).
+        where(:threshold_id => 3).
+        order('start_timestamp ASC').all
+
+    #
+    # SCM7
+    #
+    @report_results[:scm7] = {}
+    @medians_scm7 = Median.
+        where('start_timestamp >= ?', @from).
+        where('end_timestamp <= ?', @to).
+        where(:schedule_id => Schedule.where(:destination_id => Probe.where(:type => @type))).
+        where(:threshold_id => 4).
+        order('start_timestamp ASC').all
+
+    #
+    # SCM8
+    #
+    @report_results[:scm8] = {}
+    @medians_scm8 = Median.
+        where('start_timestamp >= ?', @from).
+        where('end_timestamp <= ?', @to).
+        where(:schedule_id => Schedule.where(:destination_id => Probe.where(:type => @type))).
+        where(:threshold_id => 5).
+        order('start_timestamp ASC').all
+
+    #
+    # SCM9
+    #
+    @report_results[:scm9] = {}
+    @medians_scm9 = Median.
+        where('start_timestamp >= ?', @from).
+        where('end_timestamp <= ?', @to).
+        where(:schedule_id => Schedule.where(:destination_id => Probe.where(:type => @type))).
+        where(:threshold_id => 6).
         order('start_timestamp ASC').all
 
     #
     # Calculo de todas as medias de thresholds
     #
     @months.each do |month|
-      count1 = 0
-      count_all1 = 0
+      # SCM4
+      count4 = 0
+      count_all4 = 0
       @medians_scm4.each do |median|
         if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
-          up = (median.dsavg.to_f/(1000 * median.schedule.destination.plan.throughput_up.to_f) ).round(3)
-          down = (median.sdavg.to_f/(1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
-            count_all1 += 1
-            if down >= 0.2.round(3) && up >= 0.2.round(3)
-              count1 += 1
-            end
+          if !median.dsavg.nil? || !median.sdavg.nil?
+            up = (median.dsavg.to_f/(1000 * median.schedule.destination.plan.throughput_up.to_f) ).round(3)
+            down = (median.sdavg.to_f/(1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
+            count_all4 += 1
+              if down >= median.threshold.goal_level.round(3) && up >= median.threshold.goal_level.round(3)
+                count4 += 1
+              end
+          end
         end
       end
       @report_results[:scm4][month.to_s]={}
-      count_all1 != 0 ? @report_results[:scm4][month.to_s][:total] = ((count1/count_all1) * 100).to_f.round(2): @report_results[:scm4][month.to_s][:total] = 0.0
-      count = 0
-      count_all = 0
+      count_all4 != 0 ? @report_results[:scm4][month.to_s][:total] = ((count4/count_all4) * 100).to_f.round(2): @report_results[:scm4][month.to_s][:total] = 0.0
+      # SPM10
+      count10 = 0
+      count_all10 = 0
       @medians_smp10.each do |median|
         if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
-          up = (median.dsavg.to_f/(1000 * median.schedule.destination.plan.throughput_up.to_f )).round(3)
-          down = (median.sdavg.to_f/(1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
-          count_all += 1
-          if down >= 0.2.round(3) && up >= 0.2.round(3)
-            count += 1
+          if !median.dsavg.nil? || !median.sdavg.nil?
+            up = (median.dsavg.to_f/(1000 * median.schedule.destination.plan.throughput_up.to_f )).round(3)
+            down = (median.sdavg.to_f/(1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
+            count_all10 += 1
+            if down >= median.threshold.goal_level.round(3) && up >= median.threshold.goal_level.round(3)
+              count10 += 1
+            end
           end
         end
       end
       @report_results[:smp10][month.to_s]={}
-      count_all != 0 ? @report_results[:smp10][month.to_s][:total] = ((count/count_all) * 100).to_f.round(2) : @report_results[:smp10][month.to_s][:total]= 0.0
+      count_all10 != 0 ? @report_results[:smp10][month.to_s][:total] = ((count10/count_all10) * 100).to_f.round(2) : @report_results[:smp10][month.to_s][:total]= 0.0
+      # SCM5
+      down = 0
+      up =0
+      count_all5 =0
+      @medians_scm5.each do |median|
+        if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
+          if !median.dsavg.nil? || !median.sdavg.nil?
+            up = up +(median.dsavg.to_f/(1000 * median.schedule.destination.plan.throughput_up.to_f )).round(3)
+            down =  down + (median.sdavg.to_f/(1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
+            count_all5 += 1
+          end
+        end
+      end
+      @report_results[:scm5][month.to_s]={}
+      count_all5 != 0 ? @report_results[:scm5][month.to_s][:total_down] = ((down/count_all5) * 100).to_f.round(2) : @report_results[:scm5][month.to_s][:total_down]= 0.0
+      count_all5 != 0 ? @report_results[:scm5][month.to_s][:total_up] = ((up/count_all5) * 100).to_f.round(2) : @report_results[:scm5][month.to_s][:total_up]= 0.0
+      # SMP11
+      down = 0
+      up =0
+      count_all11 =0
+      @medians_smp11.each do |median|
+        if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
+          if !median.dsavg.nil? || !median.sdavg.nil?
+            up = up +(median.dsavg.to_f/(1000 * median.schedule.destination.plan.throughput_up.to_f )).round(3)
+            down =  down + (median.sdavg.to_f/(1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
+            count_all11 += 1
+          end
+        end
+      end
+      @report_results[:smp11][month.to_s]={}
+      count_all11 != 0 ? @report_results[:smp11][month.to_s][:total_down] = ((down/count_all11) * 100).to_f.round(2) : @report_results[:smp11][month.to_s][:total_down]= 0.0
+      count_all11 != 0 ? @report_results[:smp11][month.to_s][:total_up] = ((up/count_all11) * 100).to_f.round(2) : @report_results[:smp11][month.to_s][:total_up]= 0.0
+      # SCM6
+      count6 = 0
+      count_all6 = 0
+      @medians_scm6.each do |median|
+        if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
+          if !median.dsavg.nil?
+            up = median.dsavg.to_f * 1000
+            count_all6 += 1
+            if up<= median.threshold.goal_level.round(3)
+              count6 += 1
+            end
+          end
+        end
+      end
+      @report_results[:scm6][month.to_s]={}
+      count_all6 != 0 ? @report_results[:scm6][month.to_s][:total] = ((count6/count_all6) * 100).to_f.round(2) : @report_results[:scm6][month.to_s][:total]= 0.0
+      # SCM7
+      count7 = 0
+      count_all7 = 0
+      @medians_scm7.each do |median|
+        if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
+          if !median.dsavg.nil? || !median.sdavg.nil?
+            down = median.sdavg.to_f * 1000
+            up =  median.dsavg.to_f * 1000
+            count_all7 += 1
+            if down <= median.threshold.goal_level.round(3) && up <= median.threshold.goal_level.round(3)
+              count7 += 1
+            end
+          end
+        end
+      end
+      @report_results[:scm7][month.to_s]={}
+      count_all7 != 0 ? @report_results[:scm7][month.to_s][:total] = ((count7/count_all7) * 100).to_f.round(2) : @report_results[:scm7][month.to_s][:total]= 0.0
+      # SCM8
+      count8 = 0
+      count_all8 = 0
+      @medians_scm8.each do |median|
+        if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
+          if  !median.sdavg.nil?
+            down = median.sdavg.to_f * 1000
+            count_all8 += 1
+            if down <= median.threshold.goal_level.round(3)
+              count8 += 1
+            end
+          end
+        end
+      end
+      @report_results[:scm8][month.to_s]={}
+      count_all8 != 0 ? @report_results[:scm8][month.to_s][:total] = ((count8/count_all8) * 100).to_f.round(2) : @report_results[:scm8][month.to_s][:total]= 0.0
+      # SCM9
+      count9 = 0
+      count_all9 = 0
+      @medians_scm8.each do |median|
+        if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
+          if  !median.sdavg.nil?
+            down = median.sdavg.to_f * 1000
+            count_all9 += 1
+            if down <= median.threshold.goal_level.round(3)
+              count9 += 1
+            end
+          end
+        end
+      end
+      @report_results[:scm9][month.to_s]={}
+      count_all9 != 0 ? @report_results[:scm9][month.to_s][:total] = ((count9/count_all9) * 100).to_f.round(2) : @report_results[:scm9][month.to_s][:total]= 0.0
+
     end
 
-
-
-
-=begin
-    up = (median.dsavg.to_f / 1000000).round(3)
-    down = (median.sdavg.to_f / 1000000).round(3)
-=end
     respond_to do |format|
       format.html  {render :layout=> false}
     end
