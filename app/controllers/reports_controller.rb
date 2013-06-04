@@ -476,7 +476,7 @@ class ReportsController < ApplicationController
         where(:threshold_id => 6).
         order('start_timestamp ASC').all
 
-    %w(scm4, scm5, scm6, scm7, scm8, scm9, smp10, smp11).each do |c|
+    %w(scm4 scm5 scm6 scm7 scm8 scm9 smp10 smp11).each do |c|
         @report_results[c.to_sym] = {}
         @report_results[c.to_sym][mnth] = {}
     end
