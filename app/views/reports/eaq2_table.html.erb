@@ -107,9 +107,8 @@
                     dataType: '',
                     type: 'POST',
                     url: "<%= detail_eaq2_table_reports_url %>",
-                    data: { month: id, scm4: <%= @medians_scm4.to_json.html_safe %>, scm5: <%= @medians_scm5.to_json.html_safe %>, scm6: <%= @medians_scm6.to_json.html_safe %>
-                        , scm7: <%= @medians_scm7.to_json.html_safe %>, scm8: <%= @medians_scm8.to_json.html_safe %>, scm9: <%= @medians_scm9.to_json.html_safe %>
-                        , smp10: <%= @medians_smp10.to_json.html_safe %>, smp11: <%= @medians_smp11.to_json.html_safe %>
+                    data: { month: id, type: <%= @type.to_json.html_safe %>, agent_type: <%= @agent_type.to_json.html_safe %>, states: <%= @states.to_json.html_safe %>
+                        , cn: <%= @cn.to_json.html_safe %>
                     },
                     success: function(data){
                         $('#detail2'+id).html(data);
