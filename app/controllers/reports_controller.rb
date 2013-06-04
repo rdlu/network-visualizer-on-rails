@@ -402,8 +402,8 @@ class ReportsController < ApplicationController
     #  SCM4
     #
     @medians_scm4 = Median.
-        where('start_timestamp >= ?', mnth.beginning_of_month).
-        where('end_timestamp <= ?', mnth.end_of_month).
+        where('start_timestamp >= ?', Time.parse(@month).beginning_of_month).
+        where('end_timestamp <= ?', Time.parse(@month).end_of_month).
         where(:schedule_id => fixed_schedules).
         where(:threshold_id => 1).
         order('start_timestamp ASC').all
@@ -411,8 +411,8 @@ class ReportsController < ApplicationController
     # SMP10
     #
     @medians_smp10 = Median.
-        where('start_timestamp >= ?', mnth.beginning_of_month).
-        where('end_timestamp <= ?', mnth.end_of_month).
+        where('start_timestamp >= ?', Time.parse(@month).beginning_of_month).
+        where('end_timestamp <= ?', Time.parse(@month).end_of_month).
         where(:schedule_id => mobile_schedules).
         where(:threshold_id => 1).
         order('start_timestamp ASC').all
@@ -420,8 +420,8 @@ class ReportsController < ApplicationController
     # SCM5
     #
     @medians_scm5 = Median.
-        where('start_timestamp >= ?', mnth.beginning_of_month).
-        where('end_timestamp <= ?', mnth.end_of_month).
+        where('start_timestamp >= ?', Time.parse(@month).beginning_of_month).
+        where('end_timestamp <= ?', Time.parse(@month).end_of_month).
         where(:schedule_id => fixed_schedules).
         where(:threshold_id => 2).
         order('start_timestamp ASC').all
@@ -430,8 +430,8 @@ class ReportsController < ApplicationController
     # SMP11
     #
     @medians_smp11 = Median.
-        where('start_timestamp >= ?', mnth.beginning_of_month).
-        where('end_timestamp <= ?', mnth.end_of_month).
+        where('start_timestamp >= ?', Time.parse(@month).beginning_of_month).
+        where('end_timestamp <= ?', Time.parse(@month).end_of_month).
         where(:schedule_id => mobile_schedules).
         where(:threshold_id => 2).
         order('start_timestamp ASC').all
@@ -440,8 +440,8 @@ class ReportsController < ApplicationController
     # SCM6
     #
     @medians_scm6 = Median.
-        where('start_timestamp >= ?', mnth.beginning_of_month).
-        where('end_timestamp <= ?', mnth.end_of_month).
+        where('start_timestamp >= ?', Time.parse(@month).beginning_of_month).
+        where('end_timestamp <= ?', Time.parse(@month).end_of_month).
         where(:schedule_id => all_schedules).
         where(:threshold_id => 3).
         order('start_timestamp ASC').all
@@ -450,8 +450,8 @@ class ReportsController < ApplicationController
     # SCM7
     #
     @medians_scm7 = Median.
-        where('start_timestamp >= ?', mnth.beginning_of_month).
-        where('end_timestamp <= ?', mnth.end_of_month).
+        where('start_timestamp >= ?', Time.parse(@month).beginning_of_month).
+        where('end_timestamp <= ?', Time.parse(@month).end_of_month).
         where(:schedule_id => all_schedules).
         where(:threshold_id => 4).
         order('start_timestamp ASC').all
@@ -460,8 +460,8 @@ class ReportsController < ApplicationController
     # SCM8
     #
     @medians_scm8 = Median.
-        where('start_timestamp >= ?', mnth.beginning_of_month).
-        where('end_timestamp <= ?', mnth.end_of_month).
+        where('start_timestamp >= ?', Time.parse(@month).beginning_of_month).
+        where('end_timestamp <= ?', Time.parse(@month).end_of_month).
         where(:schedule_id => all_schedules).
         where(:threshold_id => 5).
         order('start_timestamp ASC').all
@@ -470,8 +470,8 @@ class ReportsController < ApplicationController
     # SCM9
     #
     @medians_scm9 = Median.
-        where('start_timestamp >= ?', mnth.beginning_of_month).
-        where('end_timestamp <= ?', mnth.end_of_month).
+        where('start_timestamp >= ?', Time.parse(@month).beginning_of_month).
+        where('end_timestamp <= ?', Time.parse(@month).end_of_month).
         where(:schedule_id => all_schedules).
         where(:threshold_id => 6).
         order('start_timestamp ASC').all
