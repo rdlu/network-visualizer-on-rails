@@ -8,26 +8,25 @@
   <div class="tab-content tab-content-border">
     <div class="tab-pane active" id="tab1">
       <div class="row-fluid">
-        <div class="span7">
-          <!--
-          lista(botoes) de probes(agentes):
-            0-Inativo- Cinza
-            1- Ativo - Verde
-            2- Warning-Amarelo
-            3- Erro-Vermelho
-            -->
-
-          <% Probe.order('status DESC, city ASC').all.each do |probe| %>
-              <a id="ag<%= probe.id %>" onmouseover="$(this).tooltip({placement: 'right',html: true, title: htmlContent('<%= probe.name %>','<%=probe.ipaddress %>','<%= probe.connection_profile.name%>','<%= probe.plan.name_with_throughput %>', '<%= probe.status %>', '<%= probe.city %>','<%= probe.state.upcase %>') })"
-                 class="btn btn-<%= probe.pretty_status %>"
-                 onclick="$('#gMap').gmap3('get').panTo(new google.maps.LatLng(<%= probe.latitude %>,<%= probe.longitude %>)); $('#gMap').gmap3('get').setZoom(14)" title="" href="#" style="margin: 5px">
-                <%= image_tag "icons/"+probe.type+"16.png" %>
-                <%= probe.name %>
-              </a>
-          <% end %>
+        <div class="span7" id="listaSondas">
+            Carregando sondas...
         </div>
         <div class="span5">
-          <div id="gMap" class="googleMap"></div>
+          <div class="row-fluid">
+            <div class="span12">
+              <form action="#">
+                Filtros de sondas:
+                <input type="button" class="btn btn-small btn-primary probe-filter" data-value="linux" value="Linux">
+                <input type="button" class="btn btn-small probe-filter" data-value="android" value="Android">
+                <input type="button" class="btn btn-small probe-filter" data-value="" value="Todas">
+              </form>
+            </div>
+          </div>
+          <div class="row-fluid">
+            <div class="span12">
+              <div id="gMap" class="googleMap"></div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -65,7 +64,21 @@
             reload();
         });
 
+        loadProbes('linux');
+
+        $('.probe-filter').click(function(evt) {
+            loadProbes(jQuery(evt.target).attr('data-value').toLowerCase());
+            $('.probe-filter').removeClass('btn-primary');
+            jQuery(evt.currentTarget).addClass('btn-primary');
+        });
+
     });
+
+    function loadProbes(type) {
+        jQuery.get('<%= welcome_probe_list_path('') %>'+type, function(data) {
+            $('#listaSondas').html(data);
+        });
+    }
 
     function autoReload(id){
         if(id.checked == false){
@@ -102,116 +115,6 @@
 
         return html
     }
-
-    function loadProbesLocation() {
-        var do_list = [];
-        $.ajax({
-            type: "POST",
-            url: "<%= probes_load_location_url %>",
-            async: false,
-            error: function (data, errorThrown) {
-                alert("Erro! Impossível localizar Agentes");
-            },
-            success: function (data) {
-                for (i = 0; i < data.length; i++) {
-                    switch (data[i]["status"]) {
-                        case 0:
-                            do_list.push({lat: data[i]["latitude"], lng: data[i]["longitude"], data: {type: data[i]["type"], address: data[i]["address"], name: data[i]["name"] }, options: { icon: '<%= asset_path("icons/pin_gray.png")%>'}});
-                            break;
-                        case 1:
-                            do_list.push({lat: data[i]["latitude"], lng: data[i]["longitude"], data: {type: data[i]["type"], address: data[i]["address"], name: data[i]["name"]}, options: { icon: '<%= asset_path("icons/pin_green.png")%>'}});
-                            break;
-                        case 2:
-                            do_list.push({lat: data[i]["latitude"], lng: data[i]["longitude"], data: {type: data[i]["type"], address: data[i]["address"], name: data[i]["name"]}, options: { icon: '<%= asset_path("icons/pin_yellow.png")%>'}});
-                            break;
-                        case 3:
-                            do_list.push({lat: data[i]["latitude"], lng: data[i]["longitude"], data: {type: data[i]["type"], address: data[i]["address"], name: data[i]["name"]}, options: { icon: '<%= asset_path("icons/pin_red.png")%>'}});
-                            break;
-                    }
-
-                }
-
-            }
-        });
-        return do_list
-    }
-
-    $(function () {
-        $("#gMap").gmap3({
-            map: {
-                options: {
-                    center: [-14.904325, -48.209743],
-                    zoom: 4,
-                    zoomControl: true,
-                    zoomControlOptions: {
-                        style: google.maps.ZoomControlStyle.LARGE
-                    },
-                    panControl: true,
-                    //mapTypeId: google.maps.MapTypeId.TERRAIN,
-                    mapTypeControl: true,
-                    mapTypeControlOptions: {
-                        style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
-                    },
-                    navigationControl: false,
-                    scrollwheel: true,
-                    streetViewControl: false
-                }
-            },
-            marker: {
-                values: loadProbesLocation(),
-                cluster: {
-                    radius: 15,
-                    // This style will be used for clusters with more than 0 markers
-                    0: {
-                        content: "<div class='cluster cluster-1'>CLUSTER_COUNT</div>",
-                        width: 53,
-                        height: 52
-                    },
-                    // This style will be used for clusters with more than 20 markers
-                    20: {
-                        content: "<div class='cluster cluster-2'>CLUSTER_COUNT</div>",
-                        width: 56,
-                        height: 55
-                    },
-                    // This style will be used for clusters with more than 50 markers
-                    50: {
-                        content: "<div class='cluster cluster-3'>CLUSTER_COUNT</div>",
-                        width: 66,
-                        height: 65
-                    }
-                },
-                /*options: {
-                 icon: new google.maps.MarkerImage("https://maps.gstatic.com/mapfiles/icon_green.png")
-                 },*/
-                events: {
-                    mouseover: function (marker, event, context) {
-                        $(this).gmap3(
-                                {clear: "overlay"},
-                                {
-                                    overlay: {
-                                        latLng: marker.getPosition(),
-                                        options: {
-                                            content: "<div class='infobulle'>" +
-                                                    "<div class='bg'></div>" +
-                                                    "<div class='text'>" + (context.data.type == "linux" ? "<img src=" + '<%= asset_path("icons/linux16.png")%>' + ">" : "<img src=" + '<%= asset_path("icons/android.png")%>' + ">") + context.data.name + "<p>" + context.data.address + "</p></div>" +
-                                                    "</div>" +
-                                                    "<div class='arrow'></div>",
-                                            offset: {
-                                                x: -46,
-                                                y: -73
-                                            }
-                                        }
-                                    }
-                                });
-                    },
-                    mouseout: function () {
-                        $(this).gmap3({clear: "overlay"});
-                    }
-                }
-
-            }
-        });
-    });
 
 
     function reload() {

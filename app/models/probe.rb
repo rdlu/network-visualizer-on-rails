@@ -51,6 +51,19 @@ class Probe < ActiveRecord::Base
     end
   end
 
+  def status_color
+    case self.status
+      when 0
+        "grey"
+      when 1
+        "green"
+      when 2
+        "yellow"
+      when 3
+        "red"
+    end
+  end
+
   def pretty_name_with_location
     "#{self.name} (#{self.ipaddress}) - #{self.city}/#{self.state.upcase}"
   end

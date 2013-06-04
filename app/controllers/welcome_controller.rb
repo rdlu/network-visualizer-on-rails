@@ -32,4 +32,12 @@ class WelcomeController < ApplicationController
     end
   end
 
+  def probe_list
+    conditions = {}
+    conditions[:type] = params[:type] unless params[:type].blank?
+    @probes = Probe.order('status DESC, city ASC').find(:all, :conditions => conditions)
+
+    render :layout => false
+  end
+
 end
