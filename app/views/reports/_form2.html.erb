@@ -7,13 +7,7 @@
             <%=  select :agent,'', Probe.types,{}, :onchange => 'displayTypes(this.value)', :id=>"agent"  %>
           </div>
         </div>
-        <div class="control-group">
-          <label class="control-label"  for="type">Somente Agentes: </label>
-          <div class="controls">
-            <div style=" float: left;width: 150px;"> <%= check_box_tag  "goal_filter[]","under" %> Abaixo da Meta </div>
-            <div style=" float: left;width: 150px;"> <%= check_box_tag  "goal_filter[]","above" %> Categoria Anatel </div>
-          </div>
-        </div>
+
         <div class="control-group">
             <label for="probe-type" class="control-label">UF:</label>
           <div class="controls">

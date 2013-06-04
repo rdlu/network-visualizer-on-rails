@@ -233,21 +233,22 @@
             event.preventDefault();
             var from = moment(jQuery('#date_start2').val(), "DD\MM\YYYY HH:mm Z").utc().format();
             var to = moment(jQuery('#date_end2').val(), "DD\MM\YYYY HH:mm Z").utc().format();
+
             var agent = jQuery('#agent').val();
-            var agent_type = jQuery('#agent_type').val();
             var cn = jQuery('#probe-cn').val();
             //var goal_filter = jQuery('#goal_filter').val();
             var states = jQuery('#probe-state').val();
+
 
             if (states != null && from != '' && to != '' )
             jQuery.ajax("<%= eaq2_table_reports_url %>/", {
                 data: $(this).serialize(),
                 method: 'post',
                 success: function (result, status) {
-                    if (jQuery("box-"+to+"-"+from).is(':empty')) {
+                    if (jQuery("box-"+from).is(':empty')) {
                         jQuery('#graphs-area').prepend(result);
                     } else {
-                        $("#box-"+to+"-"+from).remove();
+                        $("#box-"+from).remove();
                         jQuery('#graphs-area').prepend(result);
                     }
                 }

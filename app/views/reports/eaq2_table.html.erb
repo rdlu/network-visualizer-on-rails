@@ -1,7 +1,5 @@
-<% uid = SecureRandom.uuid %>
-<div id="box-<%= @to %>-<%= @from %>" class="row-fluid" xmlns="http://www.w3.org/1999/html"
-     xmlns="http://www.w3.org/1999/html">
-   <div id="table2-<%= uid %>" >
+<div id="box-<%= @from %>" class="row-fluid">
+   <div id="table2-<%= @uid %>" >
       <text style="color: #3E576F;font-size:  16px">Tabela de Indicadores Anatel tipo 2:  Início: <%= @from.strftime("%d/%m/%y") %> Fim: <%= @to.strftime("%d/%m/%y") %> </text>
       <table class="table table-bordered table-hover table-condensed" >
         <thead>
@@ -91,7 +89,7 @@
         </table>
     </div>
 </div>
-<div id="remove-<%= uid %>"  class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="$('#table2-<%= uid %>').remove(); $(this).remove();">Remover</div>
+<div id="remove-<%= @uid %>"  class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="$('#table2-<%= @uid %>').remove(); $(this).remove();">Remover</div>
 
 <script>
     function toggleTable2(id){

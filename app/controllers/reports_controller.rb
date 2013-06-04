@@ -65,6 +65,7 @@ class ReportsController < ApplicationController
   end
 
   def eaq2_table
+    @uid = SecureRandom.uuid #id necessario para div
     @from = DateTime.parse(params[:date][:start])
     @to = DateTime.parse(params[:date][:end])
     @months = @from.all_months_until @to
@@ -640,96 +641,7 @@ class ReportsController < ApplicationController
    #consolidacao por tipo de agente e tecnologia de conexão
     @date = params[:date]
     @id = params[:id]
-    @type = params[:agent] # android or linux
-    agent_type = params[:agent_type] # fixed or mobile, if linux
-    states = params[:state]
-    @cn = params[:cn]
-    @goal_filter = params[:goal_filter] #all,above or under
 
-    states.delete("")
-
-    if @type == "android"
-        agent_type = ["fixed", "mobile"]
-    end
-
-    if @goal_filter.include?("above") && @goal_filter.include?("under")
-        goal_query = ""
-    else
-        if @goal_filter[0] == "above"
-            goal_query = "medians.sdavg >= thresholds.compliance_level"
-        else
-            goal_query = "medians.sdavg < thresholds.compliance_level"
-        end
-    end
-
-    @plans = Plan.all
-
-    @results = {}
-
-    @plans.each do |plan|
-        @results[plan.id] = {}
-        if @type.include? "linux"
-            @results[plan.id][:linux] = {}
-
-            if agent_type.include? "fixed"
-                @results[plan.id][:linux][:fixed] = []
-                probes = Probe.
-                    where(:connection_profile_id => ConnectionProfile.where(:conn_type => "fixed")).
-                    where(:type => "linux").
-                    where(:plan_id => plan.id).
-                    where(:state => states).
-                    where(:areacode => @cn).all
-
-                schedules = Schedule.
-                    where(:destination_id => probes).all
-
-                @results[plan.id][:linux][:fixed] << Median.
-                    where('start_timestamp >= ?', DateTime.parse(@date).beginning_of_day).
-                    where('end_timestamp <= ?', DateTime.parse(@date).end_of_day).
-                    where(:schedule_id => schedules).
-                    joins(:threshold).where(goal_query).
-                    order('start_timestamp ASC').all
-            end
-            if agent_type.include? "mobile"
-                @results[plan.id][:linux][:mobile] = []
-                probes = Probe.
-                    where(:connection_profile_id => ConnectionProfile.where(:conn_type => "mobile")).
-                    where(:type => "linux").
-                    where(:plan_id => plan.id).
-                    where(:state => states).
-                    where(:areacode => @cn).all
-
-                schedules = Schedule.
-                    where(:destination_id => probes).all
-
-                @results[plan.id][:linux][:mobile] << Median.
-                    where('start_timestamp >= ?', DateTime.parse(@date).beginning_of_day).
-                    where('end_timestamp <= ?', DateTime.parse(@date).end_of_day).
-                    where(:schedule_id => schedules).
-                    joins(:threshold).where(goal_query).
-                    order('start_timestamp ASC').all
-            end
-        end
-        if @type.include? "android"
-            @results[plan.id][:android] = []
-
-            probes = Probe.
-                where(:type => "android").
-                where(:plan_id => plan.id).
-                where(:state => states).
-                where(:areacode => @cn).all
-
-            schedules = Schedule.
-                where(:destination_id => probes).all
-
-            @results[plan.id][:android] << Median.
-                where('start_timestamp >= ?', DateTime.parse(@date).beginning_of_day).
-                where('end_timestamp <= ?', DateTime.parse(@date).end_of_day).
-                where(:schedule_id => schedules).
-                joins(:threshold).where(goal_query).
-                order('start_timestamp ASC').all
-        end
-    end
 
     respond_to do |format|
       format.html {render :layout => false}

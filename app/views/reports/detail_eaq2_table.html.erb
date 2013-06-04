@@ -22,41 +22,51 @@
        result = ""
        uid = SecureRandom.uuid %>
 
-        <tr>
-          <td style="font-weight: bold"><%= day %></td>
+        <tr id="<%= Date.parse(@month).change(:day => day) %>_<%= uid %>">
+          <td style="font-weight: bold"><%= day %> &nbsp;&nbsp;<span class="icon-search" title="Detalhar" onclick="popupTable('<%= Date.parse(@month).change(:day => day) %>_<%= uid %>')"></span>
+            <div id="modal-<%= Date.parse(@month).change(:day => day) %>_<%= uid %>"class="modal hide fade" style="left: 40%;width: 70%"></div>
+          </td>
           <% @thresholds.each do |threshold|
             case threshold.id
-              when 1
+                 when 1
           %>
                   <td style="text-align: center">
-                    <%= "<span style=\"color: green\">#{@report_results[:scm4][month.to_s][day.to_s][:total]}%</span>".html_safe
+                    <%= "<span style=\"color:#{@report_results[:scm4][Time.parse(@month).month][day.to_s][:total] >= threshold.compliance_level.to_f * 100 ? 'green':'red'}\">#{@report_results[:scm4][Time.parse(@month).month][day.to_s][:total]}%</span>".html_safe
                     %>
                   </td>
                   <td style="text-align: center">
-                    <%= "<span style=\"color: green\">#{@report_results[:smp10][month.to_s][day.to_s][:total]}%</span>".html_safe %>
+                    <%= "<span style=\"color: #{@report_results[:smp10][Time.parse(@month).month][day.to_s][:total] >= threshold.compliance_level.to_f * 100 ? 'green':'red'}\">#{@report_results[:smp10][Time.parse(@month).month][day.to_s][:total]}%</span>".html_safe %>
                   </td>
               <% when 2  %>
                   <td style="text-align: center">
-                    <%= "<span style=\"color:green\">#{@report_results[:scm5][month.to_s][day.to_s][:total_down]}%/#{@report_results[:scm5][month.to_s][day.to_s][:total_up]}%</span>".html_safe %>
+                    <%= "<span style=\"color:#{if @report_results[:scm5][Time.parse(@month).month][day.to_s][:total_down] >= (threshold.compliance_level.to_f * 100) && @report_results[:scm5][Time.parse(@month).month][day.to_s][:total_up] >= (threshold.compliance_level.to_f * 100)
+                                                 'green'
+                                               else 'red'
+                                               end
+                                                }\">#{@report_results[:scm5][Time.parse(@month).month][day.to_s][:total_down]}%/#{@report_results[:scm5][Time.parse(@month).month][day.to_s][:total_up]}%</span>".html_safe %>
                   </td>
                   <td style="text-align: center">
-                    <%= "<span style=\"color: green\">#{@report_results[:smp11][month.to_s][day.to_s][:total_down]}%/#{@report_results[:smp11][month.to_s][day.to_s][:total_up]}%</span>".html_safe %>
+                    <%= "<span style=\"color: #{if @report_results[:smp11][Time.parse(@month).month][day.to_s][:total_down] >= (threshold.compliance_level.to_f * 100) && @report_results[:smp11][Time.parse(@month).month][day.to_s][:total_up] >= (threshold.compliance_level.to_f * 100)
+                                                  'green'
+                                                else 'red'
+                                                end
+                                        }\">#{@report_results[:smp11][Time.parse(@month).month][day.to_s][:total_down]}%/#{@report_results[:smp11][Time.parse(@month).month][day.to_s][:total_up]}%</span>".html_safe %>
                   </td>
               <% when 3 %>
                   <td style="text-align: center">
-                    <%= "<span style=\"color: green \">#{@report_results[:scm6][month.to_s][day.to_s][:total]}%</span>".html_safe %>
+                    <%= "<span style=\"color: #{@report_results[:scm6][Time.parse(@month).month][day.to_s][:total] >= threshold.compliance_level.to_f * 100 ? 'green': 'red'} \">#{@report_results[:scm6][Time.parse(@month).month][day.to_s][:total]}%</span>".html_safe %>
                   </td>
               <% when 4 %>
                   <td style="text-align: center">
-                    <%= "<span style=\"color: green\">#{@report_results[:scm7][month.to_s][day.to_s][:total]}%</span>".html_safe %>
+                    <%= "<span style=\"color:  #{@report_results[:scm7][Time.parse(@month).month][day.to_s][:total] >= threshold.compliance_level.to_f * 100 ? 'green': 'red'}\">#{@report_results[:scm7][Time.parse(@month).month][day.to_s][:total]}%</span>".html_safe %>
                   </td>
               <% when 5 %>
                   <td style="text-align: center">
-                    <%= "<span style=\"color: green \">#{@report_results[:scm8][month.to_s][day.to_s][:total]}%</span>".html_safe %>
+                    <%= "<span style=\"color:  #{@report_results[:scm8][Time.parse(@month).month][day.to_s][:total] >= threshold.compliance_level.to_f * 100 ? 'green': 'red'} \">#{@report_results[:scm8][Time.parse(@month).month][day.to_s][:total]}%</span>".html_safe %>
                   </td>
               <% when 6 %>
                   <td style="text-align: center">
-                    <%= "<span style=\"color: green\">#{@report_results[:scm9][month.to_s][day.to_s][:total]}%</span>".html_safe %>
+                    <%= "<span style=\"color:  #{@report_results[:scm9][Time.parse(@month).month][day.to_s][:total] >= threshold.compliance_level.to_f * 100 ? 'green': 'red'}\">#{@report_results[:scm9][Time.parse(@month).month][day.to_s][:total]}%</span>".html_safe %>
                   </td>
               <%  end
              end %>
@@ -66,3 +76,23 @@
 <tr>
   <td colspan="9" style="font-weight: bold; background-color: #777777;text-align: center"></td>
 </tr>
+
+<script>
+    function popupTable(id)
+    {
+        var uid = [];
+        uid = id.split('_');
+
+        $.ajax({
+            dataType: '',
+            type: 'POST',
+            url: "<%= detail_speed_type_eaq2_table_reports_url %>",
+            data: { date: moment(uid[0]).format('DD/MM/YYYY') , id: uid[1] },
+            success: function(data){
+                $('#modal-'+id).html(data).modal({show:true});
+            }
+        });
+
+    }
+
+</script>
