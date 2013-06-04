@@ -541,8 +541,8 @@ class ReportsController < ApplicationController
             end
         end
         @report_results[:scm5][mnth][day.to_s] = {}
-        count_all5 != 0 ? @report_results[:scm5][mnth][day.to_s][:total_down] = ((down / count_all5) * 100).to_f.round(2) : @report_results[:scm5][day.to_s][:total_down] = 0.0
-        count_all5 != 0 ? @report_results[:scm5][mnth][day.to_s][:total_up] = ((up / count_all5) * 100).to_f.round(2) : @report_results[:scm5][day.to_s][:total_up] = 0.0
+        count_all5 != 0 ? @report_results[:scm5][mnth][day.to_s][:total_down] = ((down / count_all5) * 100).to_f.round(2) : @report_results[:scm5][mnth][day.to_s][:total_down] = 0.0
+        count_all5 != 0 ? @report_results[:scm5][mnth][day.to_s][:total_up] = ((up / count_all5) * 100).to_f.round(2) : @report_results[:scm5][mnth][day.to_s][:total_up] = 0.0
 
         # SMP11
         down = 0
