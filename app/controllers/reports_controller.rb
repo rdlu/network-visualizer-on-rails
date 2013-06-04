@@ -351,9 +351,9 @@ class ReportsController < ApplicationController
   def detail_eaq2_table
     @thresholds = Threshold.all
     @month = params[:month]
-    @type = params[:agent] # android or linux
+    @type = params[:type] # android or linux
     @agent_type = params[:agent_type] # fixed or mobile, if linux
-    @states = params[:state]
+    @states = params[:states]
     @cn = params[:cn]
 
     if @type == "android"
