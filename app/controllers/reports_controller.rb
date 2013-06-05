@@ -641,6 +641,160 @@ class ReportsController < ApplicationController
    #consolidacao por tipo de agente e tecnologia de conexão
     @date = params[:date]
     @id = params[:id]
+    @from = DateTime.parse(params[:date][:start])
+    @to = DateTime.parse(params[:date][:end])
+    @months = @from.all_months_until @to
+    @type = params[:type] # android or linux
+    @agent_type = params[:agent_type] # fixed or mobile, if linux
+    @states = params[:states]
+    @cn = params[:cn]
+
+    if @type == "android"
+      @agent_type = ["fixed", "mobile"]
+    end
+
+    # Garantir que não tenhamos nulos
+    @cn.delete("")
+    @states.delete("")
+
+    fixed_conn_profile = ConnectionProfile.
+        where(:conn_type => "fixed")
+
+    mobile_conn_profile = ConnectionProfile.
+        where(:conn_type => "mobile")
+
+    @report_results = {}
+
+    %w(scm4 scm5 scm6 scm7 scm8 scm9 smp10 smp11).each do |c|
+        @report_results[c.to_sym] = {}
+        @report_results[c.to_sym][:download] = {}
+        @report_results[c.to_sym][:upload] = {}
+    end
+
+    Plan.all.each do |plan|
+        # Inicializa um hash para cada plano
+        %w(scm4 scm5 scm6 scm7 scm8 scm9 smp10 smp11).each do |c|
+            @report_results[c.to_sym][:download][plan.throughput_down] = {}
+            @report_results[c.to_sym][:upload][plan.throughput_up] = {}
+        end
+        
+        # Para cada plano, pega as probes fixas, móveis ou ambas, e monta o hash
+        # de resultados, download e upload juntos.
+
+        fixed_probes = Probe.
+            where(:connection_profile_id => fixed_conn_profile).
+            where(:state => @states).
+            where(:areacode => @cn).
+            where(:type => @type).
+            where(:plan_id => plan.id)
+
+        mobile_probes = Probe.
+            where(:connection_profile_id => mobile_conn_profile).
+            where(:state => @states).
+            where(:areacode => @cn).
+            where(:type => @type).
+            where(:plan_id => plan.id)
+
+        all_probes = Probe.
+            where(:state => @states).
+            where(:areacode => @cn).
+            where(:type => @type).
+            where(:plan_id => plan.id)
+
+        fixed_schedules = Schedule.
+            where(:destination_id => fixed_probes)
+
+        mobile_schedules = Schedule.
+            where(:destination_id => mobile_probes)
+
+        all_schedules = Schedule.
+            where(:destination_id => all_probes)
+        #
+        #  SCM4
+        #
+        @medians_scm4 = {}
+        @medians_scm4[plan.id] = Median.
+            where('start_timestamp >= ?', @from).
+            where('end_timestamp <= ?', @to).
+            where(:schedule_id => fixed_schedules).
+            where(:threshold_id => 1).
+            order('start_timestamp ASC').all
+        #
+        # SMP10
+        #
+        @medians_smp10 = {}
+        @medians_smp10[plan.id] = Median.
+            where('start_timestamp >= ?', @from).
+            where('end_timestamp <= ?', @to).
+            where(:schedule_id => mobile_schedules).
+            where(:threshold_id => 1).
+            order('start_timestamp ASC').all
+        #
+        # SCM5
+        #
+        @medians_scm5 = {}
+        @medians_scm5[plan.id] = Median.
+            where('start_timestamp >= ?', @from).
+            where('end_timestamp <= ?', @to).
+            where(:schedule_id => fixed_schedules).
+            where(:threshold_id => 2).
+            order('start_timestamp ASC').all
+
+        #
+        # SMP11
+        #
+        @medians_smp11 = {}
+        @medians_smp11[plan.id] = Median.
+            where('start_timestamp >= ?', @from).
+            where('end_timestamp <= ?', @to).
+            where(:schedule_id => mobile_schedules).
+            where(:threshold_id => 2).
+            order('start_timestamp ASC').all
+
+        #
+        # SCM6
+        #
+        @medians_scm6 = {}
+        @medians_scm6[plan.id] = Median.
+            where('start_timestamp >= ?', @from).
+            where('end_timestamp <= ?', @to).
+            where(:schedule_id => all_schedules).
+            where(:threshold_id => 3).
+            order('start_timestamp ASC').all
+
+        #
+        # SCM7
+        #
+        @medians_scm7 = {}
+        @medians_scm7[plan.id] = Median.
+            where('start_timestamp >= ?', @from).
+            where('end_timestamp <= ?', @to).
+            where(:schedule_id => all_schedules).
+            where(:threshold_id => 4).
+            order('start_timestamp ASC').all
+
+        #
+        # SCM8
+        #
+        @medians_scm8 = {}
+        @medians_scm8[plan.id] = Median.
+            where('start_timestamp >= ?', @from).
+            where('end_timestamp <= ?', @to).
+            where(:schedule_id => all_schedules).
+            where(:threshold_id => 5).
+            order('start_timestamp ASC').all
+
+        #
+        # SCM9
+        #
+        @medians_scm9 = {}
+        @medians_scm9[plan.id] = Median.
+            where('start_timestamp >= ?', @from).
+            where('end_timestamp <= ?', @to).
+            where(:schedule_id => all_schedules).
+            where(:threshold_id => 6).
+            order('start_timestamp ASC').all
+    end
 
 
     respond_to do |format|
