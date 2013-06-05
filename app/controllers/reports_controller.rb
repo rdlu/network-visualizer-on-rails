@@ -2,10 +2,10 @@
 class ReportsController < ApplicationController
   def index
     @report_types = [
-        ['Gráfico de Indicadores Anatel/EAQ - Consolidação Diária','eaq_graph'],
-        ['Gráfico de Indicadores Anatel/EAQ - Consolidação Mensal','eaq_compliance_graph'],
-        ['Gráfico de Dados Brutos','graph'],
-        ['Tabela de Indicadores Anatel/EAQ','eaq_table']
+        ['Gráfico de Indicadores Anatel/EAQ - Consolidação Diária', 'eaq_graph'],
+        ['Gráfico de Indicadores Anatel/EAQ - Consolidação Mensal', 'eaq_compliance_graph'],
+        ['Gráfico de Dados Brutos', 'graph'],
+        ['Tabela de Indicadores Anatel/EAQ', 'eaq_table']
     ]
   end
 
@@ -35,7 +35,7 @@ class ReportsController < ApplicationController
             :dsmax => raw_result.dsmax,
             :sdmin => raw_result.sdmin,
             :sdmax => raw_result.sdmax,
-            :extra => { :uuid => raw_result.uuid }
+            :extra => {:uuid => raw_result.uuid}
         }
       end
     else
@@ -45,7 +45,7 @@ class ReportsController < ApplicationController
             :dsavg => raw_result.dsavg,
             :dsmin => raw_result.dsmin,
             :dsmax => raw_result.dsmax,
-            :extra => { :uuid => raw_result.uuid }
+            :extra => {:uuid => raw_result.uuid}
         }
       end
     end
@@ -55,7 +55,7 @@ class ReportsController < ApplicationController
         :destination => destination,
         :metric => metric,
         :schedule => schedule,
-        :range => { :start => from, :end => to },
+        :range => {:start => from, :end => to},
         :results => results
     }
 
@@ -211,34 +211,34 @@ class ReportsController < ApplicationController
       count4 = 0
       count_all4 = 0
       @medians_scm4.each do |median|
-          if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
-              if !median.dsavg.nil? || !median.sdavg.nil?
-                  up = (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
-                  down = (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
-                  count_all4 += 1
-                  if down >= median.threshold.goal_level.round(3) && up >= median.threshold.goal_level.round(3)
-                      count4 += 1
-                  end
-              end
+        if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
+          if !median.dsavg.nil? || !median.sdavg.nil?
+            up = (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
+            down = (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
+            count_all4 += 1
+            if down >= median.threshold.goal_level.round(3) && up >= median.threshold.goal_level.round(3)
+              count4 += 1
+            end
           end
+        end
       end
       @report_results[:scm4][month.to_s] = {}
-      count_all4 != 0 ? @report_results[:scm4][month.to_s][:total] = ((count4 / count_all4) * 100).to_f.round(2): @report_results[:scm4][month.to_s][:total] = 0.0
-      
+      count_all4 != 0 ? @report_results[:scm4][month.to_s][:total] = ((count4 / count_all4) * 100).to_f.round(2) : @report_results[:scm4][month.to_s][:total] = 0.0
+
       # SPM10
       count10 = 0
       count_all10 = 0
       @medians_smp10.each do |median|
-          if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
-              if !median.dsavg.nil? || !median.sdavg.nil?
-                  up = (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
-                  down = (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
-                  count_all10 += 1
-                  if down >= median.threshold.goal_level.round(3) && up >= median.threshold.goal_level.round(3)
-                      count10 += 1
-                  end
-              end
+        if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
+          if !median.dsavg.nil? || !median.sdavg.nil?
+            up = (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
+            down = (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
+            count_all10 += 1
+            if down >= median.threshold.goal_level.round(3) && up >= median.threshold.goal_level.round(3)
+              count10 += 1
+            end
           end
+        end
       end
       @report_results[:smp10][month.to_s] = {}
       count_all10 != 0 ? @report_results[:smp10][month.to_s][:total] = ((count10 / count_all10) * 100).to_f.round(2) : @report_results[:smp10][month.to_s][:total] = 0.0
@@ -248,13 +248,13 @@ class ReportsController < ApplicationController
       up = 0
       count_all5 = 0
       @medians_scm5.each do |median|
-          if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
-              if !median.dsavg.nil? || !median.sdavg.nil?
-                  up = up + (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
-                  down = down + (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
-                  count_all5 += 1
-              end
+        if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
+          if !median.dsavg.nil? || !median.sdavg.nil?
+            up = up + (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
+            down = down + (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
+            count_all5 += 1
           end
+        end
       end
       @report_results[:scm5][month.to_s] = {}
       count_all5 != 0 ? @report_results[:scm5][month.to_s][:total_down] = ((down / count_all5) * 100).to_f.round(2) : @report_results[:scm5][month.to_s][:total_down] = 0.0
@@ -265,13 +265,13 @@ class ReportsController < ApplicationController
       up = 0
       count_all11 = 0
       @medians_smp11.each do |median|
-          if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
-              if !median.dsavg.nil? || !median.sdavg.nil?
-                  up = up + (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
-                  down =  down + (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
-                  count_all11 += 1
-              end
+        if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
+          if !median.dsavg.nil? || !median.sdavg.nil?
+            up = up + (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
+            down = down + (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
+            count_all11 += 1
           end
+        end
       end
       @report_results[:smp11][month.to_s] = {}
       count_all11 != 0 ? @report_results[:smp11][month.to_s][:total_down] = ((down / count_all11) * 100).to_f.round(2) : @report_results[:smp11][month.to_s][:total_down] = 0.0
@@ -281,15 +281,15 @@ class ReportsController < ApplicationController
       count6 = 0
       count_all6 = 0
       @medians_scm6.each do |median|
-          if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
-              if !median.dsavg.nil?
-                  up = median.dsavg.to_f * 1000
-                  count_all6 += 1
-                  if up <= median.threshold.goal_level.round(3)
-                      count6 += 1
-                  end
-              end
+        if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
+          if !median.dsavg.nil?
+            up = median.dsavg.to_f * 1000
+            count_all6 += 1
+            if up <= median.threshold.goal_level.round(3)
+              count6 += 1
+            end
           end
+        end
       end
       @report_results[:scm6][month.to_s] = {}
       count_all6 != 0 ? @report_results[:scm6][month.to_s][:total] = ((count6 / count_all6) * 100).to_f.round(2) : @report_results[:scm6][month.to_s][:total] = 0.0
@@ -298,16 +298,16 @@ class ReportsController < ApplicationController
       count7 = 0
       count_all7 = 0
       @medians_scm7.each do |median|
-          if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
-              if !median.dsavg.nil? || !median.sdavg.nil?
-                  down = median.sdavg.to_f * 1000
-                  up =  median.dsavg.to_f * 1000
-                  count_all7 += 1
-                  if down <= median.threshold.goal_level.round(3) && up <= median.threshold.goal_level.round(3)
-                      count7 += 1
-                  end
-              end
+        if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
+          if !median.dsavg.nil? || !median.sdavg.nil?
+            down = median.sdavg.to_f * 1000
+            up = median.dsavg.to_f * 1000
+            count_all7 += 1
+            if down <= median.threshold.goal_level.round(3) && up <= median.threshold.goal_level.round(3)
+              count7 += 1
+            end
           end
+        end
       end
       @report_results[:scm7][month.to_s] = {}
       count_all7 != 0 ? @report_results[:scm7][month.to_s][:total] = ((count7 / count_all7) * 100).to_f.round(2) : @report_results[:scm7][month.to_s][:total] = 0.0
@@ -316,15 +316,15 @@ class ReportsController < ApplicationController
       count8 = 0
       count_all8 = 0
       @medians_scm8.each do |median|
-          if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
-              if  !median.sdavg.nil?
-                  down = median.sdavg.to_f
-                  count_all8 += 1
-                  if down <= median.threshold.goal_level.round(3)
-                      count8 += 1
-                  end
-              end
+        if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
+          if  !median.sdavg.nil?
+            down = median.sdavg.to_f
+            count_all8 += 1
+            if down <= median.threshold.goal_level.round(3)
+              count8 += 1
+            end
           end
+        end
       end
       @report_results[:scm8][month.to_s] = {}
       count_all8 != 0 ? @report_results[:scm8][month.to_s][:total] = ((count8 / count_all8) * 100).to_f.round(2) : @report_results[:scm8][month.to_s][:total] = 0.0
@@ -334,8 +334,8 @@ class ReportsController < ApplicationController
       total_points = 0
       @medians_scm9.each do |median|
         if median.start_timestamp >= month.to_time.in_time_zone && median.start_timestamp <= month.to_time.in_time_zone.end_of_month
-            points = points + median.expected_points
-            total_points = total_points + median.total_points
+          points = points + median.expected_points
+          total_points = total_points + median.total_points
         end
       end
       @report_results[:scm9][month.to_s] = {}
@@ -344,7 +344,7 @@ class ReportsController < ApplicationController
     end
 
     respond_to do |format|
-      format.html  {render :layout=> false}
+      format.html { render :layout => false }
     end
 
   end
@@ -478,167 +478,167 @@ class ReportsController < ApplicationController
         order('start_timestamp ASC').all
 
     %w(scm4 scm5 scm6 scm7 scm8 scm9 smp10 smp11).each do |c|
-        @report_results[c.to_sym] = {}
-        @report_results[c.to_sym][mnth] = {}
+      @report_results[c.to_sym] = {}
+      @report_results[c.to_sym][mnth] = {}
     end
 
     if Date.current.end_of_month != Date.parse(@month).end_of_month
-        end_date = Date.parse(@month).end_of_month.day
+      end_date = Date.parse(@month).end_of_month.day
     else
-        end_date = Date.current.day
+      end_date = Date.current.day
     end
 
     (1..end_date).each do |day|
-        beginning_of_day = DateTime.parse(@month).change(:day => day).beginning_of_day
-        end_of_day = DateTime.parse(@month).change(:day => day).end_of_day
-        
-        # SCM4
-        count4 = 0
-        count_all4 = 0
-        @medians_scm4.each do |median|
-            if median.start_timestamp >= beginning_of_day && median.start_timestamp <= end_of_day
-                unless median.dsavg.nil? || median.sdavg.nil?
-                    up = (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
-                    down = (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
-                    count_all4 += 1
-                    if down >= median.threshold.goal_level.round(3) && up >= median.threshold.goal_level.round(3)
-                        count4 += 1
-                    end
-                end
-            end
-        end
-        @report_results[:scm4][mnth][day.to_s] = {}
-        count_all4 != 0 ? @report_results[:scm4][mnth][day.to_s][:total] = ((count4 / count_all4) * 100).to_f.round(2): @report_results[:scm4][mnth][day.to_s][:total] = 0.0
+      beginning_of_day = DateTime.parse(@month).change(:day => day).beginning_of_day
+      end_of_day = DateTime.parse(@month).change(:day => day).end_of_day
 
-        # SPM10
-        count10 = 0
-        count_all10 = 0
-        @medians_smp10.each do |median|
-            if median.start_timestamp >= beginning_of_day && median.start_timestamp <= end_of_day
-                unless median.dsavg.nil? || median.sdavg.nil?
-                    up = (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
-                    down = (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
-                    count_all10 += 1
-                    if down >= median.threshold.goal_level.round && up >= median.threshold.goal_level.round(3)
-                        count10 += 1
-                    end
-                end
+      # SCM4
+      count4 = 0
+      count_all4 = 0
+      @medians_scm4.each do |median|
+        if median.start_timestamp >= beginning_of_day && median.start_timestamp <= end_of_day
+          unless median.dsavg.nil? || median.sdavg.nil?
+            up = (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
+            down = (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
+            count_all4 += 1
+            if down >= median.threshold.goal_level.round(3) && up >= median.threshold.goal_level.round(3)
+              count4 += 1
             end
+          end
         end
-        @report_results[:smp10][mnth][day.to_s] = {}
-        count_all10 != 0 ? @report_results[:smp10][mnth][day.to_s][:total] = ((count10 / count_all10) * 100).to_f.round(2) : @report_results[:smp10][mnth][day.to_s][:total] = 0.0
+      end
+      @report_results[:scm4][mnth][day.to_s] = {}
+      count_all4 != 0 ? @report_results[:scm4][mnth][day.to_s][:total] = ((count4 / count_all4) * 100).to_f.round(2) : @report_results[:scm4][mnth][day.to_s][:total] = 0.0
 
-        # SCM5
-        down = 0
-        up = 0
-        count_all5 = 0
-        @medians_scm5.each do |median|
-            if median.start_timestamp >= beginning_of_day && median.start_timestamp <= end_of_day
-                unless median.dsavg.nil? || median.sdavg.nil?
-                    up = up + (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
-                    down = down + (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
-                    count_all5 += 1
-                end
+      # SPM10
+      count10 = 0
+      count_all10 = 0
+      @medians_smp10.each do |median|
+        if median.start_timestamp >= beginning_of_day && median.start_timestamp <= end_of_day
+          unless median.dsavg.nil? || median.sdavg.nil?
+            up = (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
+            down = (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
+            count_all10 += 1
+            if down >= median.threshold.goal_level.round && up >= median.threshold.goal_level.round(3)
+              count10 += 1
             end
+          end
         end
-        @report_results[:scm5][mnth][day.to_s] = {}
-        count_all5 != 0 ? @report_results[:scm5][mnth][day.to_s][:total_down] = ((down / count_all5) * 100).to_f.round(2) : @report_results[:scm5][mnth][day.to_s][:total_down] = 0.0
-        count_all5 != 0 ? @report_results[:scm5][mnth][day.to_s][:total_up] = ((up / count_all5) * 100).to_f.round(2) : @report_results[:scm5][mnth][day.to_s][:total_up] = 0.0
+      end
+      @report_results[:smp10][mnth][day.to_s] = {}
+      count_all10 != 0 ? @report_results[:smp10][mnth][day.to_s][:total] = ((count10 / count_all10) * 100).to_f.round(2) : @report_results[:smp10][mnth][day.to_s][:total] = 0.0
 
-        # SMP11
-        down = 0
-        up = 0
-        count_all11 = 0
-        @medians_smp11.each do |median|
-            if median.start_timestamp >= beginning_of_day && median.start_timestamp <= end_of_day
-                unless median.dsavg.nil? || median.sdavg.nil?
-                    up = up + (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
-                    down = down + (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
-                    count_all11 += 1
-                end
-            end
+      # SCM5
+      down = 0
+      up = 0
+      count_all5 = 0
+      @medians_scm5.each do |median|
+        if median.start_timestamp >= beginning_of_day && median.start_timestamp <= end_of_day
+          unless median.dsavg.nil? || median.sdavg.nil?
+            up = up + (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
+            down = down + (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
+            count_all5 += 1
+          end
         end
-        @report_results[:smp11][mnth][day.to_s] = {}
-        count_all11 != 0 ? @report_results[:smp11][mnth][day.to_s][:total_down] = ((down / count_all11) * 100).to_f.round(2) : @report_results[:smp11][mnth][day.to_s][:total_down] = 0.0
-        count_all11 != 0 ? @report_results[:smp11][mnth][day.to_s][:total_up] = ((up / count_all11) * 100).to_f.round(2) : @report_results[:smp11][mnth][day.to_s][:total_up] = 0.0
+      end
+      @report_results[:scm5][mnth][day.to_s] = {}
+      count_all5 != 0 ? @report_results[:scm5][mnth][day.to_s][:total_down] = ((down / count_all5) * 100).to_f.round(2) : @report_results[:scm5][mnth][day.to_s][:total_down] = 0.0
+      count_all5 != 0 ? @report_results[:scm5][mnth][day.to_s][:total_up] = ((up / count_all5) * 100).to_f.round(2) : @report_results[:scm5][mnth][day.to_s][:total_up] = 0.0
 
-        # SCM6
-        count6 = 0
-        count_all6 = 0
-        @medians_scm6.each do |median|
-            if median.start_timestamp >= beginning_of_day && median.start_timestamp <= end_of_day
-                unless median.dsavg.nil?
-                    up = median.dsavg.to_f * 1000
-                    count_all6 += 1
-                    if up <= median.threshold.goal_level.round(3)
-                        count6 += 1
-                    end
-                end
-            end
+      # SMP11
+      down = 0
+      up = 0
+      count_all11 = 0
+      @medians_smp11.each do |median|
+        if median.start_timestamp >= beginning_of_day && median.start_timestamp <= end_of_day
+          unless median.dsavg.nil? || median.sdavg.nil?
+            up = up + (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
+            down = down + (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
+            count_all11 += 1
+          end
         end
-        @report_results[:scm6][mnth][day.to_s] = {}
-        count_all6 != 0 ? @report_results[:scm6][mnth][day.to_s][:total] = ((count6 / count_all6) * 100).to_f.round(2) : @report_results[:scm6][mnth][day.to_s][:total] = 0.0
+      end
+      @report_results[:smp11][mnth][day.to_s] = {}
+      count_all11 != 0 ? @report_results[:smp11][mnth][day.to_s][:total_down] = ((down / count_all11) * 100).to_f.round(2) : @report_results[:smp11][mnth][day.to_s][:total_down] = 0.0
+      count_all11 != 0 ? @report_results[:smp11][mnth][day.to_s][:total_up] = ((up / count_all11) * 100).to_f.round(2) : @report_results[:smp11][mnth][day.to_s][:total_up] = 0.0
 
-        # SCM7
-        count7 = 0
-        count_all7 = 0
-        @medians_scm7.each do |median|
-            if median.start_timestamp >= beginning_of_day && median.start_timestamp <= end_of_day
-                unless median.dsavg.nil? || median.sdavg.nil?
-                    down = median.sdavg.to_f * 1000
-                    up =  median.dsavg.to_f * 1000
-                    count_all7 += 1
-                    if down <= median.threshold.goal_level.round(3) && up <= median.threshold.goal_level.round(3)
-                        count7 += 1
-                    end
-                end
+      # SCM6
+      count6 = 0
+      count_all6 = 0
+      @medians_scm6.each do |median|
+        if median.start_timestamp >= beginning_of_day && median.start_timestamp <= end_of_day
+          unless median.dsavg.nil?
+            up = median.dsavg.to_f * 1000
+            count_all6 += 1
+            if up <= median.threshold.goal_level.round(3)
+              count6 += 1
             end
+          end
         end
-        @report_results[:scm7][mnth][day.to_s] = {}
-        count_all7 != 0 ? @report_results[:scm7][mnth][day.to_s][:total] = ((count7 / count_all7) * 100).to_f.round(2) : @report_results[:scm7][mnth][day.to_s][:total] = 0.0
+      end
+      @report_results[:scm6][mnth][day.to_s] = {}
+      count_all6 != 0 ? @report_results[:scm6][mnth][day.to_s][:total] = ((count6 / count_all6) * 100).to_f.round(2) : @report_results[:scm6][mnth][day.to_s][:total] = 0.0
 
-        # SCM8
-        count8 = 0
-        count_all8 = 0
-        @medians_scm8.each do |median|
-            if median.start_timestamp >= beginning_of_day && median.start_timestamp <= end_of_day
-                unless  median.sdavg.nil?
-                    down = median.sdavg.to_f
-                    count_all8 += 1
-                    if down <= median.threshold.goal_level.round(3)
-                        count8 += 1
-                    end
-                end
+      # SCM7
+      count7 = 0
+      count_all7 = 0
+      @medians_scm7.each do |median|
+        if median.start_timestamp >= beginning_of_day && median.start_timestamp <= end_of_day
+          unless median.dsavg.nil? || median.sdavg.nil?
+            down = median.sdavg.to_f * 1000
+            up = median.dsavg.to_f * 1000
+            count_all7 += 1
+            if down <= median.threshold.goal_level.round(3) && up <= median.threshold.goal_level.round(3)
+              count7 += 1
             end
+          end
         end
-        @report_results[:scm8][mnth][day.to_s] = {}
-        count_all8 != 0 ? @report_results[:scm8][mnth][day.to_s][:total] = ((count8 / count_all8) * 100).to_f.round(2) : @report_results[:scm8][mnth][day.to_s][:total] = 0.0
+      end
+      @report_results[:scm7][mnth][day.to_s] = {}
+      count_all7 != 0 ? @report_results[:scm7][mnth][day.to_s][:total] = ((count7 / count_all7) * 100).to_f.round(2) : @report_results[:scm7][mnth][day.to_s][:total] = 0.0
 
-        # SCM9
-        points = 0
-        total_points = 0
-        @medians_scm9.each do |median|
-            if median.start_timestamp >= beginning_of_day && median.start_timestamp <= end_of_day
-                points = points + median.expected_points
-                total_points = total_points + median.total_points
+      # SCM8
+      count8 = 0
+      count_all8 = 0
+      @medians_scm8.each do |median|
+        if median.start_timestamp >= beginning_of_day && median.start_timestamp <= end_of_day
+          unless  median.sdavg.nil?
+            down = median.sdavg.to_f
+            count_all8 += 1
+            if down <= median.threshold.goal_level.round(3)
+              count8 += 1
             end
+          end
         end
-        @report_results[:scm9][mnth][day.to_s] = {}
-        points != 0 ? @report_results[:scm9][mnth][day.to_s][:total] = ((total_points / points) * 100).to_f.round(2) : @report_results[:scm9][mnth][day.to_s][:total] = 0.0
+      end
+      @report_results[:scm8][mnth][day.to_s] = {}
+      count_all8 != 0 ? @report_results[:scm8][mnth][day.to_s][:total] = ((count8 / count_all8) * 100).to_f.round(2) : @report_results[:scm8][mnth][day.to_s][:total] = 0.0
+
+      # SCM9
+      points = 0
+      total_points = 0
+      @medians_scm9.each do |median|
+        if median.start_timestamp >= beginning_of_day && median.start_timestamp <= end_of_day
+          points = points + median.expected_points
+          total_points = total_points + median.total_points
+        end
+      end
+      @report_results[:scm9][mnth][day.to_s] = {}
+      points != 0 ? @report_results[:scm9][mnth][day.to_s][:total] = ((total_points / points) * 100).to_f.round(2) : @report_results[:scm9][mnth][day.to_s][:total] = 0.0
 
 
     end
 
     respond_to do |format|
-      format.html  {render :layout=> false}
+      format.html { render :layout => false }
     end
 
   end
 
 
   def detail_speed_type_eaq2_table
-   #consolidacao pela velocidade contratada
-   #consolidacao por tipo de agente e tecnologia de conexão
+    #consolidacao pela velocidade contratada
+    #consolidacao por tipo de agente e tecnologia de conexão
     @date = params[:date]
     @id = params[:id]
     @from = DateTime.parse(params[:date][:start])
@@ -666,139 +666,139 @@ class ReportsController < ApplicationController
     @report_results = {}
 
     %w(scm4 scm5 scm6 scm7 scm8 scm9 smp10 smp11).each do |c|
-        @report_results[c.to_sym] = {}
-        @report_results[c.to_sym][:download] = {}
-        @report_results[c.to_sym][:upload] = {}
+      @report_results[c.to_sym] = {}
+      @report_results[c.to_sym][:download] = {}
+      @report_results[c.to_sym][:upload] = {}
     end
 
     Plan.all.each do |plan|
-        # Inicializa um hash para cada plano
-        %w(scm4 scm5 scm6 scm7 scm8 scm9 smp10 smp11).each do |c|
-            @report_results[c.to_sym][:download][plan.throughput_down] = {}
-            @report_results[c.to_sym][:upload][plan.throughput_up] = {}
-        end
-        
-        # Para cada plano, pega as probes fixas, móveis ou ambas, e monta o hash
-        # de resultados, download e upload juntos.
+      # Inicializa um hash para cada plano
+      %w(scm4 scm5 scm6 scm7 scm8 scm9 smp10 smp11).each do |c|
+        @report_results[c.to_sym][:download][plan.throughput_down] = {}
+        @report_results[c.to_sym][:upload][plan.throughput_up] = {}
+      end
 
-        fixed_probes = Probe.
-            where(:connection_profile_id => fixed_conn_profile).
-            where(:state => @states).
-            where(:areacode => @cn).
-            where(:type => @type).
-            where(:plan_id => plan.id)
+      # Para cada plano, pega as probes fixas, móveis ou ambas, e monta o hash
+      # de resultados, download e upload juntos.
 
-        mobile_probes = Probe.
-            where(:connection_profile_id => mobile_conn_profile).
-            where(:state => @states).
-            where(:areacode => @cn).
-            where(:type => @type).
-            where(:plan_id => plan.id)
+      fixed_probes = Probe.
+          where(:connection_profile_id => fixed_conn_profile).
+          where(:state => @states).
+          where(:areacode => @cn).
+          where(:type => @type).
+          where(:plan_id => plan.id)
 
-        all_probes = Probe.
-            where(:state => @states).
-            where(:areacode => @cn).
-            where(:type => @type).
-            where(:plan_id => plan.id)
+      mobile_probes = Probe.
+          where(:connection_profile_id => mobile_conn_profile).
+          where(:state => @states).
+          where(:areacode => @cn).
+          where(:type => @type).
+          where(:plan_id => plan.id)
 
-        fixed_schedules = Schedule.
-            where(:destination_id => fixed_probes)
+      all_probes = Probe.
+          where(:state => @states).
+          where(:areacode => @cn).
+          where(:type => @type).
+          where(:plan_id => plan.id)
 
-        mobile_schedules = Schedule.
-            where(:destination_id => mobile_probes)
+      fixed_schedules = Schedule.
+          where(:destination_id => fixed_probes)
 
-        all_schedules = Schedule.
-            where(:destination_id => all_probes)
-        #
-        #  SCM4
-        #
-        @medians_scm4 = {}
-        @medians_scm4[plan.id] = Median.
-            where('start_timestamp >= ?', @from).
-            where('end_timestamp <= ?', @to).
-            where(:schedule_id => fixed_schedules).
-            where(:threshold_id => 1).
-            order('start_timestamp ASC').all
-        #
-        # SMP10
-        #
-        @medians_smp10 = {}
-        @medians_smp10[plan.id] = Median.
-            where('start_timestamp >= ?', @from).
-            where('end_timestamp <= ?', @to).
-            where(:schedule_id => mobile_schedules).
-            where(:threshold_id => 1).
-            order('start_timestamp ASC').all
-        #
-        # SCM5
-        #
-        @medians_scm5 = {}
-        @medians_scm5[plan.id] = Median.
-            where('start_timestamp >= ?', @from).
-            where('end_timestamp <= ?', @to).
-            where(:schedule_id => fixed_schedules).
-            where(:threshold_id => 2).
-            order('start_timestamp ASC').all
+      mobile_schedules = Schedule.
+          where(:destination_id => mobile_probes)
 
-        #
-        # SMP11
-        #
-        @medians_smp11 = {}
-        @medians_smp11[plan.id] = Median.
-            where('start_timestamp >= ?', @from).
-            where('end_timestamp <= ?', @to).
-            where(:schedule_id => mobile_schedules).
-            where(:threshold_id => 2).
-            order('start_timestamp ASC').all
+      all_schedules = Schedule.
+          where(:destination_id => all_probes)
+      #
+      #  SCM4
+      #
+      @medians_scm4 = {}
+      @medians_scm4[plan.id] = Median.
+          where('start_timestamp >= ?', @from).
+          where('end_timestamp <= ?', @to).
+          where(:schedule_id => fixed_schedules).
+          where(:threshold_id => 1).
+          order('start_timestamp ASC').all
+      #
+      # SMP10
+      #
+      @medians_smp10 = {}
+      @medians_smp10[plan.id] = Median.
+          where('start_timestamp >= ?', @from).
+          where('end_timestamp <= ?', @to).
+          where(:schedule_id => mobile_schedules).
+          where(:threshold_id => 1).
+          order('start_timestamp ASC').all
+      #
+      # SCM5
+      #
+      @medians_scm5 = {}
+      @medians_scm5[plan.id] = Median.
+          where('start_timestamp >= ?', @from).
+          where('end_timestamp <= ?', @to).
+          where(:schedule_id => fixed_schedules).
+          where(:threshold_id => 2).
+          order('start_timestamp ASC').all
 
-        #
-        # SCM6
-        #
-        @medians_scm6 = {}
-        @medians_scm6[plan.id] = Median.
-            where('start_timestamp >= ?', @from).
-            where('end_timestamp <= ?', @to).
-            where(:schedule_id => all_schedules).
-            where(:threshold_id => 3).
-            order('start_timestamp ASC').all
+      #
+      # SMP11
+      #
+      @medians_smp11 = {}
+      @medians_smp11[plan.id] = Median.
+          where('start_timestamp >= ?', @from).
+          where('end_timestamp <= ?', @to).
+          where(:schedule_id => mobile_schedules).
+          where(:threshold_id => 2).
+          order('start_timestamp ASC').all
 
-        #
-        # SCM7
-        #
-        @medians_scm7 = {}
-        @medians_scm7[plan.id] = Median.
-            where('start_timestamp >= ?', @from).
-            where('end_timestamp <= ?', @to).
-            where(:schedule_id => all_schedules).
-            where(:threshold_id => 4).
-            order('start_timestamp ASC').all
+      #
+      # SCM6
+      #
+      @medians_scm6 = {}
+      @medians_scm6[plan.id] = Median.
+          where('start_timestamp >= ?', @from).
+          where('end_timestamp <= ?', @to).
+          where(:schedule_id => all_schedules).
+          where(:threshold_id => 3).
+          order('start_timestamp ASC').all
 
-        #
-        # SCM8
-        #
-        @medians_scm8 = {}
-        @medians_scm8[plan.id] = Median.
-            where('start_timestamp >= ?', @from).
-            where('end_timestamp <= ?', @to).
-            where(:schedule_id => all_schedules).
-            where(:threshold_id => 5).
-            order('start_timestamp ASC').all
+      #
+      # SCM7
+      #
+      @medians_scm7 = {}
+      @medians_scm7[plan.id] = Median.
+          where('start_timestamp >= ?', @from).
+          where('end_timestamp <= ?', @to).
+          where(:schedule_id => all_schedules).
+          where(:threshold_id => 4).
+          order('start_timestamp ASC').all
 
-        #
-        # SCM9
-        #
-        @medians_scm9 = {}
-        @medians_scm9[plan.id] = Median.
-            where('start_timestamp >= ?', @from).
-            where('end_timestamp <= ?', @to).
-            where(:schedule_id => all_schedules).
-            where(:threshold_id => 6).
-            order('start_timestamp ASC').all
+      #
+      # SCM8
+      #
+      @medians_scm8 = {}
+      @medians_scm8[plan.id] = Median.
+          where('start_timestamp >= ?', @from).
+          where('end_timestamp <= ?', @to).
+          where(:schedule_id => all_schedules).
+          where(:threshold_id => 5).
+          order('start_timestamp ASC').all
+
+      #
+      # SCM9
+      #
+      @medians_scm9 = {}
+      @medians_scm9[plan.id] = Median.
+          where('start_timestamp >= ?', @from).
+          where('end_timestamp <= ?', @to).
+          where(:schedule_id => all_schedules).
+          where(:threshold_id => 6).
+          order('start_timestamp ASC').all
     end
 
 
     respond_to do |format|
-      format.html {render :layout => false}
+      format.html { render :layout => false }
     end
   end
 
@@ -828,7 +828,7 @@ class ReportsController < ApplicationController
       when 'throughput'
         graph_threshold = {
             :download => (destination.plan[reference_metric+'_down']*1000) * threshold.goal_level,
-            :upload =>  (destination.plan[reference_metric+'_up']*1000) * threshold.goal_level,
+            :upload => (destination.plan[reference_metric+'_up']*1000) * threshold.goal_level,
         }
 
         raw_medians.each do |raw_median|
@@ -875,7 +875,7 @@ class ReportsController < ApplicationController
       else
         graph_threshold = {
             :download => threshold.goal_level,
-            :upload =>  threshold.goal_level,
+            :upload => threshold.goal_level,
         }
 
         raw_medians.each do |raw_median|
@@ -893,7 +893,7 @@ class ReportsController < ApplicationController
         :metric => metric,
         :threshold => threshold,
         :schedule => schedule,
-        :range => { :start => from, :end => to },
+        :range => {:start => from, :end => to},
         :results => results,
         :goal_line => graph_threshold
     }
@@ -945,7 +945,7 @@ class ReportsController < ApplicationController
         :metric => metric,
         :threshold => threshold,
         :schedule => schedule,
-        :range => { :start => from, :end => to },
+        :range => {:start => from, :end => to},
         :results => results
     }
 
@@ -969,20 +969,20 @@ class ReportsController < ApplicationController
         where(:timestamp => from..to).order('timestamp ASC').all
 
     @end_csv = CSV.generate(col_sep: ';') do |csv|
-	  csv << ["Sonda de Destino:", destination.pretty_name, "#{destination.city}/#{destination.state}"]
-	  csv << ["Sonda de Origem:", source.pretty_name, "#{source.city}/#{source.state}"]
-	  csv << ["Métrica:", metric.name, "Formato:", metric.db_unit]
-	  csv << ["Início:", schedule.start.strftime("%Y-%m-%d %H:%M:%S %z")]
-	  csv << ["Fim:", schedule.end.strftime("%Y-%m-%d %H:%M:%S %z")]
-	  csv << [] # Linha em branco pra ficar bonito
+      csv << ["Sonda de Destino:", destination.pretty_name, "#{destination.city}/#{destination.state}"]
+      csv << ["Sonda de Origem:", source.pretty_name, "#{source.city}/#{source.state}"]
+      csv << ["Métrica:", metric.name, "Formato:", metric.db_unit]
+      csv << ["Início:", schedule.start.strftime("%Y-%m-%d %H:%M:%S %z")]
+      csv << ["Fim:", schedule.end.strftime("%Y-%m-%d %H:%M:%S %z")]
+      csv << [] # Linha em branco pra ficar bonito
 
       raw_results.each do |result|
-		csv << [result.sdavg, result.dsavg, result.sdmax, result.dsmax, result.sdmin, result.dsmin, result.timestamp.strftime("%Y-%m-%d %H:%M:%S %z")]
-	  end
+        csv << [result.sdavg, result.dsavg, result.sdmax, result.dsmax, result.sdmin, result.dsmin, result.timestamp.strftime("%Y-%m-%d %H:%M:%S %z")]
+      end
     end
 
-	respond_to do |format|
-      format.csv { send_data @end_csv}
+    respond_to do |format|
+      format.csv { send_data @end_csv }
     end
   end
 
@@ -1000,117 +1000,117 @@ class ReportsController < ApplicationController
         where(:metric_id => @metric.id).
         where(:timestamp => @from..@to).order('timestamp ASC').all
 
-	respond_to do |format|
-		format.xls
-	end
+    respond_to do |format|
+      format.xls
+    end
   end
 
   def csv_mensal
-	  source = Probe.find(params[:source])
-	  destination = Probe.find(params[:destination])
-	  threshold = Threshold.find(params[:threshold])
-	  schedule = Schedule.where(:destination_id => destination).where(:source_id => source).all.last
+    source = Probe.find(params[:source])
+    destination = Probe.find(params[:destination])
+    threshold = Threshold.find(params[:threshold])
+    schedule = Schedule.where(:destination_id => destination).where(:source_id => source).all.last
 
-	  from = DateTime.parse(params[:from]).beginning_of_month.in_time_zone('GMT')
-	  to = DateTime.parse(params[:to]).end_of_day.in_time_zone('GMT')
+    from = DateTime.parse(params[:from]).beginning_of_month.in_time_zone('GMT')
+    to = DateTime.parse(params[:to]).end_of_day.in_time_zone('GMT')
 
-	  compliances = Compliance.
-		  where(:schedule_id => schedule.id).
-		  where(:threshold_id => threshold.id).
-		  where('start_timestamp >= ?', from).
-		  where('end_timestamp <= ?', to).order('start_timestamp ASC').all
+    compliances = Compliance.
+        where(:schedule_id => schedule.id).
+        where(:threshold_id => threshold.id).
+        where('start_timestamp >= ?', from).
+        where('end_timestamp <= ?', to).order('start_timestamp ASC').all
 
-	  @end_csv = CSV.generate(col_sep: ';') do |csv|
-		  csv << ["Sonda de Destino:", destination.pretty_name, "#{destination.city}/#{destination.state}"]
-		  csv << ["Sonda de Origem:", source.pretty_name, "#{source.city}/#{source.state}"]
-		  csv << ["Métrica:", threshold.metric.name, "Meta:", threshold.name]
-		  csv << ["Início:", schedule.start.strftime("%Y-%m-%d %H:%M:%S %z")]
-		  csv << ["Fim:", schedule.end.strftime("%Y-%m-%d %H:%M:%S %z")]
-		  csv << [] # Linha em branco pra ficar bonito
+    @end_csv = CSV.generate(col_sep: ';') do |csv|
+      csv << ["Sonda de Destino:", destination.pretty_name, "#{destination.city}/#{destination.state}"]
+      csv << ["Sonda de Origem:", source.pretty_name, "#{source.city}/#{source.state}"]
+      csv << ["Métrica:", threshold.metric.name, "Meta:", threshold.name]
+      csv << ["Início:", schedule.start.strftime("%Y-%m-%d %H:%M:%S %z")]
+      csv << ["Fim:", schedule.end.strftime("%Y-%m-%d %H:%M:%S %z")]
+      csv << [] # Linha em branco pra ficar bonito
 
-		  csv << ["Timestamp Início", "Timestamp Fim", "Download", "Upload", "Dias Esperados", "Dias Totais"]
-		  compliances.each do |compliance|
-			  csv << [compliance.start_timestamp, compliance.end_timestamp, compliance.download, compliance.upload, compliance.expected_days, compliance.total_days]
-		  end
-	  end
+      csv << ["Timestamp Início", "Timestamp Fim", "Download", "Upload", "Dias Esperados", "Dias Totais"]
+      compliances.each do |compliance|
+        csv << [compliance.start_timestamp, compliance.end_timestamp, compliance.download, compliance.upload, compliance.expected_days, compliance.total_days]
+      end
+    end
 
-	  respond_to do |format|
-		  format.csv { send_data @end_csv}
-	  end
+    respond_to do |format|
+      format.csv { send_data @end_csv }
+    end
   end
 
   def xls_mensal
-	  @source = Probe.find(params[:source])
-	  @destination = Probe.find(params[:destination])
-	  @threshold = Threshold.find(params[:threshold])
-	  @schedule = Schedule.where(:destination_id => @destination).where(:source_id => @source).all.last
+    @source = Probe.find(params[:source])
+    @destination = Probe.find(params[:destination])
+    @threshold = Threshold.find(params[:threshold])
+    @schedule = Schedule.where(:destination_id => @destination).where(:source_id => @source).all.last
 
-	  @from = DateTime.parse(params[:from]).beginning_of_month.in_time_zone('GMT')
-	  @to = DateTime.parse(params[:to]).end_of_day.in_time_zone('GMT')
+    @from = DateTime.parse(params[:from]).beginning_of_month.in_time_zone('GMT')
+    @to = DateTime.parse(params[:to]).end_of_day.in_time_zone('GMT')
 
-	  @compliances = Compliance.
-		  where(:schedule_id => @schedule.id).
-		  where(:threshold_id => @threshold.id).
-		  where('start_timestamp >= ?', @from).
-		  where('end_timestamp <= ?', @to).order('start_timestamp ASC').all
+    @compliances = Compliance.
+        where(:schedule_id => @schedule.id).
+        where(:threshold_id => @threshold.id).
+        where('start_timestamp >= ?', @from).
+        where('end_timestamp <= ?', @to).order('start_timestamp ASC').all
 
-	  respond_to do |format|
-		  format.xls
-	  end
+    respond_to do |format|
+      format.xls
+    end
   end
 
   def csv_diario
-	  source = Probe.find(params[:source])
-	  destination = Probe.find(params[:destination])
-	  threshold = Threshold.find(params[:threshold])
-	  schedule = Schedule.where(:destination_id => destination).where(:source_id => source).all.last
+    source = Probe.find(params[:source])
+    destination = Probe.find(params[:destination])
+    threshold = Threshold.find(params[:threshold])
+    schedule = Schedule.where(:destination_id => destination).where(:source_id => source).all.last
 
-	  from = DateTime.parse(params[:from]).beginning_of_month.in_time_zone('GMT')
-	  to = DateTime.parse(params[:to]).end_of_day.in_time_zone('GMT')
+    from = DateTime.parse(params[:from]).beginning_of_month.in_time_zone('GMT')
+    to = DateTime.parse(params[:to]).end_of_day.in_time_zone('GMT')
 
-	  medians = Median.
-		  where(:schedule_id => schedule.id).
-		  where(:threshold_id => threshold.id).
-		  where('start_timestamp >= ?', from).
-		  where('end_timestamp <= ?', to).order('start_timestamp ASC').all
+    medians = Median.
+        where(:schedule_id => schedule.id).
+        where(:threshold_id => threshold.id).
+        where('start_timestamp >= ?', from).
+        where('end_timestamp <= ?', to).order('start_timestamp ASC').all
 
-	  @end_csv = CSV.generate(col_sep: ';') do |csv|
-		  csv << ["Sonda de Destino:", destination.pretty_name, "#{destination.city}/#{destination.state}"]
-		  csv << ["Sonda de Origem:", source.pretty_name, "#{source.city}/#{source.state}"]
-		  csv << ["Métrica:", threshold.metric.name, "Meta:", threshold.name]
-		  csv << ["Início:", schedule.start.strftime("%Y-%m-%d %H:%M:%S %z")]
-		  csv << ["Fim:", schedule.end.strftime("%Y-%m-%d %H:%M:%S %z")]
-		  csv << [] # Linha em branco pra ficar bonito
+    @end_csv = CSV.generate(col_sep: ';') do |csv|
+      csv << ["Sonda de Destino:", destination.pretty_name, "#{destination.city}/#{destination.state}"]
+      csv << ["Sonda de Origem:", source.pretty_name, "#{source.city}/#{source.state}"]
+      csv << ["Métrica:", threshold.metric.name, "Meta:", threshold.name]
+      csv << ["Início:", schedule.start.strftime("%Y-%m-%d %H:%M:%S %z")]
+      csv << ["Fim:", schedule.end.strftime("%Y-%m-%d %H:%M:%S %z")]
+      csv << [] # Linha em branco pra ficar bonito
 
-		  csv << ["Timestamp Início", "Timestamp Fim", "Pontos Esperados", "Pontos Totais", "DSAVG", "SDAVG"]
-		  medians.each do |median|
-			csv << [median.start_timestamp, median.end_timestamp, median.expected_points, median.total_points, median.dsavg, median.sdavg]
-		  end
-	  end
+      csv << ["Timestamp Início", "Timestamp Fim", "Pontos Esperados", "Pontos Totais", "DSAVG", "SDAVG"]
+      medians.each do |median|
+        csv << [median.start_timestamp, median.end_timestamp, median.expected_points, median.total_points, median.dsavg, median.sdavg]
+      end
+    end
 
-	  respond_to do |format|
-		  format.csv { send_data @end_csv}
-	  end
+    respond_to do |format|
+      format.csv { send_data @end_csv }
+    end
   end
 
   def xls_diario
-	  @source = Probe.find(params[:source])
-	  @destination = Probe.find(params[:destination])
-	  @threshold = Threshold.find(params[:threshold])
-	  @schedule = Schedule.where(:destination_id => @destination).where(:source_id => @source).all.last
+    @source = Probe.find(params[:source])
+    @destination = Probe.find(params[:destination])
+    @threshold = Threshold.find(params[:threshold])
+    @schedule = Schedule.where(:destination_id => @destination).where(:source_id => @source).all.last
 
-	  @from = DateTime.parse(params[:from]).beginning_of_month.in_time_zone('GMT')
-	  @to = DateTime.parse(params[:to]).end_of_day.in_time_zone('GMT')
+    @from = DateTime.parse(params[:from]).beginning_of_month.in_time_zone('GMT')
+    @to = DateTime.parse(params[:to]).end_of_day.in_time_zone('GMT')
 
-	  @medians = Median.
-		  where(:schedule_id => @schedule.id).
-		  where(:threshold_id => @threshold.id).
-		  where('start_timestamp >= ?', @from).
-		  where('end_timestamp <= ?', @to).order('start_timestamp ASC').all
-	  
-	  respond_to do |format|
-		  format.xls
-	  end
+    @medians = Median.
+        where(:schedule_id => @schedule.id).
+        where(:threshold_id => @threshold.id).
+        where('start_timestamp >= ?', @from).
+        where('end_timestamp <= ?', @to).order('start_timestamp ASC').all
+
+    respond_to do |format|
+      format.xls
+    end
   end
 
   def eaq_table
@@ -1126,7 +1126,7 @@ class ReportsController < ApplicationController
     @thresholds = @destination.thresholds @source
 
     respond_to do |format|
-      format.html {render :layout=> false}
+      format.html { render :layout => false }
       format.xls
     end
 
@@ -1140,25 +1140,25 @@ class ReportsController < ApplicationController
     @schedule = Schedule.find(params[:schedule])
 
     respond_to do |format|
-      format.html {render :layout=> false}
+      format.html { render :layout => false }
     end
   end
 
   # Send é chamado pela sonda para enviar reports novos
   def send_report
-	report = Nokogiri::XML(params[:report])
+    report = Nokogiri::XML(params[:report])
 
-	user = report.xpath("report/user").children.to_s
-	uuid = SecureRandom.uuid # Nao estamos mandando um UUID de verdade ainda no XML.
-	timestamp = report.xpath("report/timestamp").children.to_s
-	agent_type = report.xpath("report/agent_type").children.to_s
+    user = report.xpath("report/user").children.to_s
+    uuid = SecureRandom.uuid # Nao estamos mandando um UUID de verdade ainda no XML.
+    timestamp = report.xpath("report/timestamp").children.to_s
+    agent_type = report.xpath("report/agent_type").children.to_s
 
     case agent_type
-    when "windows"
+      when "windows"
         # KPI
         cell_id = report.xpath("report/kpis/cell_id").children.first.to_s
         cell_id = nil if cell_id == "-"
-        
+
         model = report.xpath("report/kpis/model").children.first.to_s
         model = nil if model == "-"
 
@@ -1173,16 +1173,16 @@ class ReportsController < ApplicationController
 
         lac = report.xpath("report/kpis/lac").children.first.to_s
         if lac == "-"
-            lac = nil
+          lac = nil
         else
-            lac = lac.to_i
+          lac = lac.to_i
         end
-            
+
         mtu = report.xpath("report/kpis/mtu").children.first.to_s
         if mtu == "-"
-            mtu = nil
+          mtu = nil
         else
-            mtu = mtu.to_i
+          mtu = mtu.to_i
         end
 
         route = report.xpath("report/kpis/route").children.first.to_s
@@ -1197,25 +1197,25 @@ class ReportsController < ApplicationController
                           error_rate: error_rate,
                           lac: lac,
                           mtu: mtu
-                         )
+        )
 
         # Results
-        rtt                        = report.xpath("report/results/rtt").children.first.to_s.to_f
-        throughput_udp_down        = report.xpath("report/results/throughput_udp/down").children.first.to_s.to_f
-        throughput_udp_up          = report.xpath("report/results/throughput_udp/up").children.first.to_s.to_f
-        throughput_tcp_down        = report.xpath("report/results/throughput_tcp/down").children.first.to_s.to_f
-        throughput_tcp_up          = report.xpath("report/results/throughput_tcp/up").children.first.to_s.to_f
-        throughput_http_down       = report.xpath("report/results/throughput_http/down").children.first.to_s.to_f
-        throughput_http_up         = report.xpath("report/results/throughput_http/up").children.first.to_s.to_f
-        jitter_down                = report.xpath("report/results/jitter/down").children.first.to_s.to_f
-        jitter_up                  = report.xpath("report/results/jitter/up").children.first.to_s.to_f
-        loss_down                  = report.xpath("report/results/loss/down").children.first.to_s.to_f
-        loss_up                    = report.xpath("report/results/loss/up").children.first.to_s.to_f
-        pom_down                   = report.xpath("report/results/pom/down").children.first.to_s.to_i
-        pom_up                     = report.xpath("report/results/pom/up").children.first.to_s.to_i
-        dns_efic                   = report.xpath("report/results/dns/efic").children.first.to_s.to_i
-        dns_timeout_errors         = report.xpath("report/results/dns/errors/timeout").children.first.to_s.to_i
-        dns_server_failure_errors  = report.xpath("report/results/dns/errors/server_failure").children.first.to_s.to_i
+        rtt = report.xpath("report/results/rtt").children.first.to_s.to_f
+        throughput_udp_down = report.xpath("report/results/throughput_udp/down").children.first.to_s.to_f
+        throughput_udp_up = report.xpath("report/results/throughput_udp/up").children.first.to_s.to_f
+        throughput_tcp_down = report.xpath("report/results/throughput_tcp/down").children.first.to_s.to_f
+        throughput_tcp_up = report.xpath("report/results/throughput_tcp/up").children.first.to_s.to_f
+        throughput_http_down = report.xpath("report/results/throughput_http/down").children.first.to_s.to_f
+        throughput_http_up = report.xpath("report/results/throughput_http/up").children.first.to_s.to_f
+        jitter_down = report.xpath("report/results/jitter/down").children.first.to_s.to_f
+        jitter_up = report.xpath("report/results/jitter/up").children.first.to_s.to_f
+        loss_down = report.xpath("report/results/loss/down").children.first.to_s.to_f
+        loss_up = report.xpath("report/results/loss/up").children.first.to_s.to_f
+        pom_down = report.xpath("report/results/pom/down").children.first.to_s.to_i
+        pom_up = report.xpath("report/results/pom/up").children.first.to_s.to_i
+        dns_efic = report.xpath("report/results/dns/efic").children.first.to_s.to_i
+        dns_timeout_errors = report.xpath("report/results/dns/errors/timeout").children.first.to_s.to_i
+        dns_server_failure_errors = report.xpath("report/results/dns/errors/server_failure").children.first.to_s.to_i
 
         @dynamic_result = DynamicResult.create(rtt: rtt,
                                                throughput_udp_down: throughput_udp_down,
@@ -1235,206 +1235,206 @@ class ReportsController < ApplicationController
                                                dns_timeout_errors: dns_timeout_errors,
                                                dns_server_failure_errors: dns_server_failure_errors,
                                                user: user
-                                              )
+        )
 
         # DNS test results
         dns_server = dns_url = dns_delay = nil
         @dns_dynamic_results = []
         report.xpath("report/results/dns").children.each do |c|
-            if c.name == "test"
-                c.children.each do |cc|
-                    case cc.name
-                    when "server"
-                        dns_server = cc.children.first.to_s
-                    when "url"
-                        dns_url = cc.children.first.to_s
-                    when "delay" 
-                        dns_delay = cc.children.first.to_s.to_f
-                    end
-                end
-
-                @dns_dynamic_results << DnsDynamicResult.create(server: dns_server,
-                                                              url: dns_url,
-                                                              delay: dns_delay,
-                                                              uuid: uuid
-                                                             )
+          if c.name == "test"
+            c.children.each do |cc|
+              case cc.name
+                when "server"
+                  dns_server = cc.children.first.to_s
+                when "url"
+                  dns_url = cc.children.first.to_s
+                when "delay"
+                  dns_delay = cc.children.first.to_s.to_f
+              end
             end
+
+            @dns_dynamic_results << DnsDynamicResult.create(server: dns_server,
+                                                            url: dns_url,
+                                                            delay: dns_delay,
+                                                            uuid: uuid
+            )
+          end
         end
 
         # Web Load test results
         web_load_url = web_load_time = web_load_size = web_load_throughput = nil
         @web_load_dynamic_results = []
         report.xpath("report/results/web_load").children.each do |c|
-            if c.name == "test"
-                c.children.each do |cc|
-                    case cc.name
-                    when "url"
-                        web_load_url = cc.children.first.to_s
-                    when "time"
-                        web_load_time = cc.children.first.to_s.to_f
-                    when "size"
-                        web_load_size = cc.children.first.to_s.to_f
-                    when "throughput"
-                        web_load_throughput = cc.children.first.to_s.to_f
-                    end
-                end
-
-                @web_load_dynamic_results << WebLoadDynamicResult.create(url: web_load_url,
-                                                                       time: web_load_time,
-                                                                       size: web_load_size,
-                                                                       throughput: web_load_throughput,
-                                                                       uuid: uuid
-                                                                      )
+          if c.name == "test"
+            c.children.each do |cc|
+              case cc.name
+                when "url"
+                  web_load_url = cc.children.first.to_s
+                when "time"
+                  web_load_time = cc.children.first.to_s.to_f
+                when "size"
+                  web_load_size = cc.children.first.to_s.to_f
+                when "throughput"
+                  web_load_throughput = cc.children.first.to_s.to_f
+              end
             end
+
+            @web_load_dynamic_results << WebLoadDynamicResult.create(url: web_load_url,
+                                                                     time: web_load_time,
+                                                                     size: web_load_size,
+                                                                     throughput: web_load_throughput,
+                                                                     uuid: uuid
+            )
+          end
         end
 
-    when /linux|android/
+      when /linux|android/
         @rep = Report.create(user: user, uuid: uuid, timestamp: DateTime.strptime(timestamp, '%s'), agent_type: agent_type)
 
         results = report.xpath("report/results").children
 
         results.each do |result|
-            case result.name	
+          case result.name
             when "availability"
-                total = result.xpath("total").children.text.to_i
-                success = result.xpath("success").children.text.to_i
+              total = result.xpath("total").children.text.to_i
+              success = result.xpath("success").children.text.to_i
 
-                @probe = Probe.find_by_ipaddress(user)
-                @schedule = @probe.schedules.last
+              @probe = Probe.find_by_ipaddress(user)
+              @schedule = @probe.schedules.last
 
-                @metric = Metric.find_by_plugin("availability")
+              @metric = Metric.find_by_plugin("availability")
 
-                @threshold = Threshold.find_by_goal_method("availability")
+              @threshold = Threshold.find_by_goal_method("availability")
 
-                @median = Median.new(schedule_uuid: @schedule.uuid,
-                                     start_timestamp: (DateTime.strptime(timestamp, '%s') - 23.hours - 59.minutes - 59.seconds),
-                                     end_timestamp: DateTime.strptime(timestamp, '%s'),
-                                     expected_points: total,
-                                     total_points: success,
-                                     dsavg: success.to_f/total.to_f
-                                    )
-                @median.schedule = @schedule
-                @median.threshold = @threshold
+              @median = Median.new(schedule_uuid: @schedule.uuid,
+                                   start_timestamp: (DateTime.strptime(timestamp, '%s') - 23.hours - 59.minutes - 59.seconds),
+                                   end_timestamp: DateTime.strptime(timestamp, '%s'),
+                                   expected_points: total,
+                                   total_points: success,
+                                   dsavg: success.to_f/total.to_f
+              )
+              @median.schedule = @schedule
+              @median.threshold = @threshold
 
-                @median.save
+              @median.save
             when "web_load"
-                url = time = size = throughput = time_main_domain = size_main_domain = throughput_main_domain = time_other_domain = size_other_domain = throughput_other_domain = nil
-                @web_load_results = []
-                report.xpath("report/results/web_load").children.each do |c|
-                    if c.name == "test"
-                        c.children.each do |cc|
-                            case cc.name
-                            when "url"
-                                url = cc.children.first.to_s
-                            when "time"
-                                time = cc.children.first.to_s.to_f
-                            when "size"
-                                size = cc.children.first.to_s.to_i
-                            when "throughput"
-                                throughput = cc.children.first.to_s.to_f
-                            when "time_main_domain"
-                                time_main_domain = cc.children.first.to_s.to_f
-                            when "size_main_domain"
-                                size_main_domain = cc.children.first.to_s.to_i
-                            when "throughput_main_domain"
-                                throughput_main_domain = cc.children.first.to_s.to_f 
-                            when "time_other_domain"
-                                time_other_domain = cc.children.first.to_s.to_f 
-                            when "size_other_domain"
-                                size_other_domain = cc.children.first.to_s.to_i 
-                            when "throughput_other_domain"
-                                throughput_other_domain = cc.children.first.to_s.to_f 
-                            end
-                            @web_load_results << WebLoadResult.create(url: url,
-                                                                      time: time,
-                                                                      size: size,
-                                                                      throughput: throughput,
-                                                                      time_main_domain: time_main_domain,
-                                                                      size_main_domain: size_main_domain,
-                                                                      throughput_main_domain: throughput_main_domain,
-                                                                      time_other_domain: time_other_domain,
-                                                                      size_other_domain: size_other_domain,
-                                                                      throughput_other_domain: throughput_other_domain,
-                                                                      uuid: uuid
-                                                                     )
-                        end
+              url = time = size = throughput = time_main_domain = size_main_domain = throughput_main_domain = time_other_domain = size_other_domain = throughput_other_domain = nil
+              @web_load_results = []
+              report.xpath("report/results/web_load").children.each do |c|
+                if c.name == "test"
+                  c.children.each do |cc|
+                    case cc.name
+                      when "url"
+                        url = cc.children.first.to_s
+                      when "time"
+                        time = cc.children.first.to_s.to_f
+                      when "size"
+                        size = cc.children.first.to_s.to_i
+                      when "throughput"
+                        throughput = cc.children.first.to_s.to_f
+                      when "time_main_domain"
+                        time_main_domain = cc.children.first.to_s.to_f
+                      when "size_main_domain"
+                        size_main_domain = cc.children.first.to_s.to_i
+                      when "throughput_main_domain"
+                        throughput_main_domain = cc.children.first.to_s.to_f
+                      when "time_other_domain"
+                        time_other_domain = cc.children.first.to_s.to_f
+                      when "size_other_domain"
+                        size_other_domain = cc.children.first.to_s.to_i
+                      when "throughput_other_domain"
+                        throughput_other_domain = cc.children.first.to_s.to_f
                     end
+                    @web_load_results << WebLoadResult.create(url: url,
+                                                              time: time,
+                                                              size: size,
+                                                              throughput: throughput,
+                                                              time_main_domain: time_main_domain,
+                                                              size_main_domain: size_main_domain,
+                                                              throughput_main_domain: throughput_main_domain,
+                                                              time_other_domain: time_other_domain,
+                                                              size_other_domain: size_other_domain,
+                                                              throughput_other_domain: throughput_other_domain,
+                                                              uuid: uuid
+                    )
+                  end
                 end
+              end
             when "dns"
-                server = url = delay = nil
-                efic = average = timeout_errors = server_failure_errors = nil
-                report.xpath("report/results/dns").children.each do |c|
-                    case c.name
-                    when "test"
-                        @dns_results = []
-                        c.children.each do |cc|
-                            case cc.name
-                            when "server"
-                                server = cc.children.first.to_s
-                            when "url"
-                                url = cc.children.first.to_s
-                            when "delay"
-                                delay = cc.children.first.to_s.to_i
-                            end
-                            @dns_results << DnsResult.create(url: url,
-                                                             server: server,
-                                                             delay: delay,
-                                                             uuid: uuid
-                                                            )
-                        end
-                    when efic
-                        efic = c.children.first.to_s.to_f
-                    when media
-                        efic = c.children.first.to_s.to_f
-                    when errors
-                        c.children.each do |cc|
-                            case cc.name
-                            when "timeout"
-                                timeout_errors = cc.children.first.to_s.to_i
-                            when "server_failures"
-                                server_failure_errors = cc.children.first.to_s.to_i
-                            else
-                                # do nothing
-                            end
-                        end
-                    else
-                        # Do nothing
+              server = url = delay = nil
+              efic = average = timeout_errors = server_failure_errors = nil
+              report.xpath("report/results/dns").children.each do |c|
+                case c.name
+                  when "test"
+                    @dns_results = []
+                    c.children.each do |cc|
+                      case cc.name
+                        when "server"
+                          server = cc.children.first.to_s
+                        when "url"
+                          url = cc.children.first.to_s
+                        when "delay"
+                          delay = cc.children.first.to_s.to_i
+                      end
+                      @dns_results << DnsResult.create(url: url,
+                                                       server: server,
+                                                       delay: delay,
+                                                       uuid: uuid
+                      )
                     end
+                  when efic
+                    efic = c.children.first.to_s.to_f
+                  when media
+                    efic = c.children.first.to_s.to_f
+                  when errors
+                    c.children.each do |cc|
+                      case cc.name
+                        when "timeout"
+                          timeout_errors = cc.children.first.to_s.to_i
+                        when "server_failures"
+                          server_failure_errors = cc.children.first.to_s.to_i
+                        else
+                          # do nothing
+                      end
+                    end
+                  else
+                    # Do nothing
                 end
-                @dns_detail = DnsDetail.create(efic: efic,
-                                               average: average,
-                                               timeout_errors: timeout_errors,
-                                               server_failure_errors: server_failure_errors,
-                                               uuid: uuid
-                                              )
+              end
+              @dns_detail = DnsDetail.create(efic: efic,
+                                             average: average,
+                                             timeout_errors: timeout_errors,
+                                             server_failure_errors: server_failure_errors,
+                                             uuid: uuid
+              )
             when "throughput_http"
-                throughput_http_down = report.xpath("report/results/throughput_http/down").to_s.to_f
-                throughput_http_up = report.xpath("report/results/throughput_http/up").to_s.to_f
+              throughput_http_down = report.xpath("report/results/throughput_http/down").to_s.to_f
+              throughput_http_up = report.xpath("report/results/throughput_http/up").to_s.to_f
 
-                metric = Metric.where(plugin: "throughput_http")
-                probe = Probe.where(name: name)
-                schedule = probe.schedules_as_destination.last
+              metric = Metric.where(plugin: "throughput_http")
+              probe = Probe.where(name: name)
+              schedule = probe.schedules_as_destination.last
 
-                @results = Results.create(schedule_id: schedule.id,
-                                          metric_id: metric.id,
-                                          schedule_uuid: schedule.uuid,
-                                          uuid: uuid,
-                                          metric_name: "throughput_http",
-                                          timestamp: timestamp,
-                                          sdavg: throughput_http_down,
-                                          dsavg: throughput_http_up
-                                         )
+              @results = Results.create(schedule_id: schedule.id,
+                                        metric_id: metric.id,
+                                        schedule_uuid: schedule.uuid,
+                                        uuid: uuid,
+                                        metric_name: "throughput_http",
+                                        timestamp: timestamp,
+                                        sdavg: throughput_http_down,
+                                        dsavg: throughput_http_up
+              )
             else
-                # do nothing
-            end
+              # do nothing
+          end
         end
-    else
+      else
         # do nothing
     end
 
-	respond_to do |format|
-		format.xml { render xml: "<report><status>OK</status></report>" }
-	end
+    respond_to do |format|
+      format.xml { render xml: "<report><status>OK</status></report>" }
+    end
   end
 
 end
