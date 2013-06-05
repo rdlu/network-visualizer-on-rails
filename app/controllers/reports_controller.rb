@@ -1382,9 +1382,9 @@ class ReportsController < ApplicationController
                                                        uuid: uuid
                       )
                     end
-                  when efic
+                  when "efic"
                     efic = c.children.first.to_s.to_f
-                  when media
+                  when "media"
                     efic = c.children.first.to_s.to_f
                   when errors
                     c.children.each do |cc|
