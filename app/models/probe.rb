@@ -2,7 +2,7 @@
 class Probe < ActiveRecord::Base
   before_save :default_values
   attr_accessible :address, :description, :ipaddress, :latitude, :longitude, :name, :pre_address, :status, :type, :city, :state,
-                  :connection_profile_id, :plan_id
+                  :connection_profile_id, :plan_id, :areacode
 
   #validacao
   validates :name, :presence => true, :length => {:maximum => 255, :minimum => 3}, :format => {:with => %r{^[0-9a-zA-Z][0-9a-zA-Z\-\_]+[0-9a-zA-Z]$}},
@@ -48,6 +48,19 @@ class Probe < ActiveRecord::Base
         "attention"
       when 3
         "error"
+    end
+  end
+
+  def status_color
+    case self.status
+      when 0
+        "grey"
+      when 1
+        "green"
+      when 2
+        "yellow"
+      when 3
+        "red"
     end
   end
 

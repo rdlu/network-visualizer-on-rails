@@ -1,0 +1,31 @@
+<table class="table table-bordered table-hover table-condensed" >
+  <thead>
+  <tr >
+    <th ></th>
+    <%  Threshold.all.each do |threshold|
+      if threshold.id == 1 || threshold.id == 2
+    %>
+            <th colspan="2" style="text-align: center"><%= threshold.description %></br> Meta: <%= threshold.compliance_level* 100 %>%</th>
+        <% else %>
+            <th style="text-align: center"><%= threshold.description %></br> Meta: <%= threshold.compliance_level* 100 %>%</th>
+        <% end
+           end %>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td  style="min-width: 50px"></td>
+    <%  Threshold.all.each do |threshold|
+      name = Array.new
+      if threshold.id == 1 || threshold.id == 2
+        name = threshold.name.split('/') %>
+            <td style="text-align: center"><%= name[0] %> </td>
+            <td style="text-align: center"><%= name[1] %> </td>
+        <% else %>
+            <td style="text-align: center"><%= threshold.name %> <br/></td>
+        <% end %>
+    <% end %>
+  </tr>
+
+  </tbody>
+</table>

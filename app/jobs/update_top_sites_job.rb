@@ -7,10 +7,11 @@ end
 
 class UpdateTopSitesJob
   def enqueue(job)
-
+    Yell.new(:gelf, :facility => 'netmetric').info 'Update do Top100 Sites entrou na fila'
   end
 
   def perform
+    Delayed::Job.destroy_all(:queue => 'updatetop100')
     # For each page
     (0..3).each do |page|
       # open said page
@@ -61,6 +62,7 @@ class UpdateTopSitesJob
   end
 
   def failure
+    Yell.new(:gelf, :facility => 'netmetric').info 'Falha grave no updatetop100'
     Delayed::Job.destroy_all(:queue => 'updatetop100')
     Delayed::Job.enqueue UpdateTopSitesJob.new, :queue => 'updatetop100', :run_at => DateTime.current.end_of_day
   end

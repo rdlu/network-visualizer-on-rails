@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130423164411) do
+ActiveRecord::Schema.define(:version => 20130524165059) do
 
   create_table "compliances", :force => true do |t|
     t.integer   "schedule_id"
@@ -220,6 +220,7 @@ ActiveRecord::Schema.define(:version => 20130423164411) do
     t.timestamp "updated_at",            :limit => 6,                        :null => false
     t.string    "city",                                                      :null => false
     t.string    "state",                                                     :null => false
+    t.integer   "areacode"
   end
 
   add_index "probes", ["ipaddress"], :name => "index_probes_on_ipaddress", :unique => true

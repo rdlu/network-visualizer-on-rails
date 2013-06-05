@@ -71,6 +71,9 @@ MomRails::Application.routes.draw do
 
   get 'welcome/index'
 
+  match 'welcome/probe_list/:type' => 'welcome#probe_list', :via => [:get], :as => 'welcome_probe_list'
+  get 'welcome/probe_list'
+
   # /welcome/status/1/2.json
   match 'welcome/status/:source/:destination' => 'welcome#status', :via => [:get]
 

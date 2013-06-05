@@ -7,12 +7,7 @@
             <%=  select :agent,'', Probe.types,{}, :onchange => 'displayTypes(this.value)', :id=>"agent"  %>
           </div>
         </div>
-        <div class="control-group">
-          <label class="control-label"  for="type">Somente Agentes: </label>
-          <div class="controls">
-            <%=  select :goal_filter,'', [['Categoria Anatel','above'], ['Abaixo da Meta','under'],['Todos','all']],{} %>
-          </div>
-        </div>
+
         <div class="control-group">
             <label for="probe-type" class="control-label">UF:</label>
           <div class="controls">
@@ -28,7 +23,8 @@
           <label  for="probe-cn" class="control-label">CN(Cód. Área):</label>
           <div id="op_cn" class="controls">
             <select multiple="true"  name="cn[]" id="probe-cn" onchange="setAllOpt(this.value,'probe-cn')" >
-              <option value="">Todas</option>
+              <option value="1">Todas</option>
+              <option value="0">Sem DDD</option>
               <% Probe.cod_area.each do |cn|
                   if search_field :probe,:state == cn.at(0).to_s  %>
                    <option value="<%= cn.at(1) %>" ><%= cn.at(1)%></option>
@@ -109,7 +105,7 @@
   function setAllOpt(value,id)
   {
 
-      if (value == ""){
+      if (value == "" || value == 1){
           var aux =  document.getElementById(id).options;
           aux.selected = false;
           for (var i =0; i < aux.length; i++){
@@ -132,7 +128,7 @@
               'uf': value
           },
           success: function(data){
-             var html = "<option value=''>Todas</option>";
+             var html = "<option value='1'>Todas</option><option  value='0'>Sem DDD</option>";
              for (cdn in data){
                 html = html + "<option value='"+data[cdn]+"'>"+data[cdn]+"</option>";
              }
