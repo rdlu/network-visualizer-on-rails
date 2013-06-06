@@ -5,7 +5,7 @@ class UsersController < ApplicationController
   before_filter :accessible_roles, :only => [:new, :edit, :show, :update, :create]
   load_and_authorize_resource :only => [:show,:new,:destroy,:update]
   helper_method :accessible_roles
-  skip_load_and_authorize_resource :only => [:edit]
+  skip_load_and_authorize_resource :only => [:edit, :update_password]
 
   #escopos
   has_scope :by_status
@@ -50,8 +50,8 @@ class UsersController < ApplicationController
   end
 
   def update_password
-    authorize! :manage, self
     @user = User.find(current_user.id)
+    authorize! :manage, @user
     if @user.update_with_password(params[:user])
       # Sign in the user by passing validation in case his password changed
       sign_in @user, :bypass => true
