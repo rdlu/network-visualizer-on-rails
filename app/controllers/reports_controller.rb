@@ -741,7 +741,6 @@ class ReportsController < ApplicationController
           where(:threshold_id => 2).
           order('start_timestamp ASC').all
 
-=begin
       #
       # SCM6
       #
@@ -785,7 +784,6 @@ class ReportsController < ApplicationController
           where(:schedule_id => all_schedules).
           where(:threshold_id => 6).
           order('start_timestamp ASC').all
-=end
 
 
     count4 = 0
@@ -808,7 +806,6 @@ class ReportsController < ApplicationController
     count11up = 0
     count_all11up = 0
 
-=begin
     count6 = 0
     count_all6 = 0
 
@@ -820,8 +817,9 @@ class ReportsController < ApplicationController
 
     count9 = 0
     count_all9 = 0
-=end
 
+    points = 0
+    total_points = 0
     Plan.all.each do |plan|
       # Inicializa um hash para cada plano
       %w(scm4 scm5 scm6 scm7 scm8 scm9 smp10 smp11).each do |c|
@@ -864,8 +862,8 @@ class ReportsController < ApplicationController
 
           end
       end
-      count_all4 != 0? @report_results[:scm4][:download][plan.throughput_down] = ((count4/count_all4)*100).round(2) : false
-          count_all4up != 0? @report_results[:scm4][:download][plan.throughput_up] = ((count4up/count_all4up)*100).round(2): false
+      count_all4 != 0? @report_results[:scm4][:download][plan.throughput_down] = ((count4/count_all4)*100).to_f.round(2) : false
+          count_all4up != 0? @report_results[:scm4][:upload][plan.throughput_up] = ((count4up/count_all4up)*100).to_f.round(2): false
       #
       # SMP10
       #
@@ -889,8 +887,8 @@ class ReportsController < ApplicationController
           end
         end
       end
-      count_all10 != 0? @report_results[:smp10][:download][plan.throughput_down] = ((count10/count_all10)*100).round(2) : false
-      count_all10up != 0? @report_results[:smp10][:download][plan.throughput_up] = ((count10up/count_all10up)*100).round(2): false
+      count_all10 != 0? @report_results[:smp10][:download][plan.throughput_down] = ((count10/count_all10)*100).to_f.round(2) : false
+      count_all10up != 0? @report_results[:smp10][:upload][plan.throughput_up] = ((count10up/count_all10up)*100).to_f.round(2): false
       #
       # SCM5
       #
@@ -908,8 +906,12 @@ class ReportsController < ApplicationController
           end
         end
       end
-      count_all5 != 0? @report_results[:scm5][:download][plan.throughput_down] = ((count5/count_all5)*100).round(2) : false
-      count_all5up != 0? @report_results[:scm5][:download][plan.throughput_up] = ((count5up/count_all5up)*100).round(2): false
+      @report_results[:scm5][:download][plan.throughput_down] = {}
+      @report_results[:scm5][:upload][plan.throughput_up]= {}
+      count_all5 != 0? @report_results[:scm5][:download][plan.throughput_down][:total_down] = ((down/count_all5)*100).to_f.round(2) : false
+      count_all5 != 0? @report_results[:scm5][:download][plan.throughput_down][:total_up] = ((up/count_all5)*100).to_f.round(2) : false
+      count_all5up != 0? @report_results[:scm5][:upload][plan.throughput_up][:total_up] = ((up/count_all5up)*100).to_f.round(2): false
+      count_all5up != 0? @report_results[:scm5][:upload][plan.throughput_up][:total_down] = ((down/count_all5up)*100).to_f.round(2): false
 
       #
       # SMP11
@@ -928,76 +930,69 @@ class ReportsController < ApplicationController
           end
         end
       end
+      @report_results[:smp11][:download][plan.throughput_down] = {}
+      @report_results[:smp11][:upload][plan.throughput_up] = {}
+      count_all11 != 0? @report_results[:smp11][:download][plan.throughput_down][:total_down] = ((down/count_all11)*100).to_f.round(2) : false
+      count_all11 != 0? @report_results[:smp11][:download][plan.throughput_down][:total_up] = ((up/count_all11)*100).to_f.round(2) : false
+      count_all11up != 0? @report_results[:smp11][:upload][plan.throughput_up][:total_up] = ((up/count_all11up)*100).to_f.round(2): false
+      count_all11up != 0? @report_results[:smp11][:upload][plan.throughput_up][:total_down] = ((down/count_all11up)*100).to_f.round(2): false
 
-      count_all11 != 0? @report_results[:smp11][:download][plan.throughput_down] = ((count11/count_all11)*100).round(2) : false
-      count_all11up != 0? @report_results[:smp11][:download][plan.throughput_up] = ((count11up/count_all11up)*100).round(2): false
-
-=begin
       #
       # SCM6
       #
       @medians_scm6.each do |median|
         if (!median.dsavg.nil? || !median.sdavg.nil?)
-          if median.schedule.destination.plan.throughput_down.eql? plan.throughput_down
             up = median.dsavg.to_f * 1000
             count_all6 += 1
             if up <= median.threshold.goal_level.round(3)
               count6 += 1
             end
-          end
+
         end
       end
+      count_all6 != 0? @report_results[:scm6][:download][plan.throughput_down] = ((count6/count_all6)*100).to_f.round(2) : false
 
       #
       # SCM7
       #
       @medians_scm7.each do |median|
         if (!median.dsavg.nil? || !median.sdavg.nil?)
-          if median.schedule.destination.plan.throughput_down.eql? plan.throughput_down
             down = median.sdavg.to_f * 1000
             up = median.dsavg.to_f * 1000
             count_all7 += 1
             if down <= median.threshold.goal_level.round(3) && up <= median.threshold.goal_level.round(3)
               count7 += 1
             end
-          end
+
         end
       end
-
+      count_all7 != 0? @report_results[:scm7][:download][plan.throughput_down] = ((count7/count_all7)*100).to_f.round(2) : false
       #
       # SCM8
       #
       @medians_scm8.each do |median|
         if (!median.dsavg.nil? || !median.sdavg.nil?)
-          if median.schedule.destination.plan.throughput_down.eql? plan.throughput_down
-            down = median.sdavg.to_f * 1000
-            up = median.dsavg.to_f * 1000
+            down = median.sdavg.to_f
             count_all8 += 1
-            if down <= median.threshold.goal_level.round(3) && up <= median.threshold.goal_level.round(3)
+            if down <= median.threshold.goal_level.round(3)
               count8 += 1
             end
-          end
+
         end
       end
-
+      count_all8 != 0? @report_results[:scm8][:download][plan.throughput_down] = ((count8/count_all8)*100).to_f.round(2) : false
       #
       # SCM9
       #
       @medians_scm9.each do |median|
         if (!median.dsavg.nil? || !median.sdavg.nil?)
-          if median.schedule.destination.plan.throughput_down.eql? plan.throughput_down
-            down = median.sdavg.to_f * 1000
-            up = median.dsavg.to_f * 1000
-            count_all9 += 1
-            if down <= median.threshold.goal_level.round(3) && up <= median.threshold.goal_level.round(3)
-              count9 += 1
-            end
+            points = points + median.expected_points
+            total_points = total_points + median.total_points
           end
-        end
+
       end
+      points != 0? @report_results[:scm9][:download][plan.throughput_down] = ((total_points/points)*100).to_f.round(2) : false
 
-
-=end
     end #fim for plan
 
     respond_to do |format|
