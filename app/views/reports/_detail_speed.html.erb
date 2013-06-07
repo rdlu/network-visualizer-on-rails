@@ -37,13 +37,13 @@
         %>
             <td style="text-align: center">
               <% unless @report_results[:scm4][:download][plan.throughput_down].empty?  %>
-                <%= "<span style=\"color:#{@report_results[:scm4][:download][plan.throughput_down].instance_eval { reduce(:+) / size.to_f }.to_f * 100 >= threshold.compliance_level.to_f * 100 ? 'green':'red'}\">#{@report_results[:scm4][:download][plan.throughput_down].instance_eval { reduce(:+) / size.to_f }.to_f.round(2) * 100}%</span>".html_safe %>
+                <%= "<span style=\"color:#{@report_results[:scm4][:download][plan.throughput_down].instance_eval { reduce(:+) / size.to_f }.to_f * 100 >= threshold.compliance_level.to_f * 100 ? 'green':'red'}\">#{"%.2f" % [@report_results[:scm4][:download][plan.throughput_down].instance_eval { reduce(:+) / size.to_f }.to_f * 100]}%</span>".html_safe %>
               <% end %>
             </td>
 
             <td style="text-align: center">
               <% unless @report_results[:smp10][:download][plan.throughput_down].empty? %>
-                <%= "<span style=\"color:#{@report_results[:smp10][:download][plan.throughput_down].instance_eval { reduce(:+) / size.to_f }.to_f * 100 >= threshold.compliance_level.to_f * 100 ? 'green':'red'}\">#{@report_results[:smp10][:download][plan.throughput_down].instance_eval { reduce(:+) / size.to_f }.to_f.round(2) * 100}%</span>".html_safe %>
+                <%= "<span style=\"color:#{@report_results[:smp10][:download][plan.throughput_down].instance_eval { reduce(:+) / size.to_f }.to_f * 100 >= threshold.compliance_level.to_f * 100 ? 'green':'red'}\">#{"%.2f" % [@report_results[:smp10][:download][plan.throughput_down].instance_eval { reduce(:+) / size.to_f }.to_f * 100]}%</span>".html_safe %>
               <% end %>
             </td>
         <% when 2 %>
@@ -53,7 +53,7 @@
                                                'green'
                                              else 'red'
                                              end
-                  }\">#{@report_results[:scm5][:download][plan.throughput_down][:total_down].instance_eval { reduce(:+) / size.to_f }.round(2) * 100 }%/#{@report_results[:scm5][:download][plan.throughput_down][:total_up].instance_eval { reduce(:+) / size.to_f }.round(2) * 100}%</span>".html_safe %>
+                  }\">#{"%.2f" % [@report_results[:scm5][:download][plan.throughput_down][:total_down].instance_eval { reduce(:+) / size.to_f }.to_f * 100] }%/#{"%.2f" % [@report_results[:scm5][:download][plan.throughput_down][:total_up].instance_eval { reduce(:+) / size.to_f }.round(2) * 100]}%</span>".html_safe %>
             <% end %>
             </td>
             <td style="text-align: center">
@@ -62,7 +62,7 @@
                                                'green'
                                              else 'red'
                                              end
-                  }\">#{@report_results[:smp11][:download][plan.throughput_down][:total_down].instance_eval { reduce(:+) / size.to_f }.to_f.round(2) * 100}%/#{ @report_results[:smp11][:download][plan.throughput_down][:total_up].instance_eval { reduce(:+) / size.to_f }.to_f.round(2) * 100}%</span>".html_safe %>
+                  }\">  #{"%.2f" % [@report_results[:smp11][:download][plan.throughput_down][:total_down].instance_eval { reduce(:+) / size.to_f }.to_f * 100]}%/#{ "%.2f" % [ @report_results[:smp11][:download][plan.throughput_down][:total_up].instance_eval { reduce(:+) / size.to_f }.to_f * 100]}%</span>".html_safe %>
               <% end %>
             </td>
         <% when 3 %>
@@ -102,14 +102,14 @@
           %>
                   <td style="text-align: center">
                     <% unless @report_results[:scm4][:upload][plan.throughput_up].empty?  %>
-                    <%= "<span style=\"color:#{@report_results[:scm4][:upload][plan.throughput_up].instance_eval { reduce(:+) / size.to_f }.to_f * 100 >= threshold.compliance_level.to_f * 100 ? 'green':'red'}\">#{@report_results[:scm4][:upload][plan.throughput_up].instance_eval { reduce(:+) / size.to_f }.to_f.round(2) * 100}%</span>".html_safe %>
+                    <%= "<span style=\"color:#{@report_results[:scm4][:upload][plan.throughput_up].instance_eval { reduce(:+) / size.to_f }.to_f * 100 >= threshold.compliance_level.to_f * 100 ? 'green':'red'}\">#{"%.2f" % [@report_results[:scm4][:upload][plan.throughput_up].instance_eval { reduce(:+) / size.to_f }.to_f * 100]}%</span>".html_safe %>
                     <% end %>
                   </td>
 
                   <td style="text-align: center">
                     <% unless @report_results[:smp10][:upload][plan.throughput_up].empty?
                     %>
-                    <%= "<span style=\"color:#{@report_results[:smp10][:upload][plan.throughput_up].instance_eval { reduce(:+) / size.to_f }.to_f * 100 >= threshold.compliance_level.to_f * 100 ? 'green':'red'}\">#{@report_results[:smp10][:upload][plan.throughput_up].instance_eval { reduce(:+) / size.to_f }.to_f.round(2) * 100}%</span>".html_safe %>
+                    <%= "<span style=\"color:#{@report_results[:smp10][:upload][plan.throughput_up].instance_eval { reduce(:+) / size.to_f }.to_f * 100 >= threshold.compliance_level.to_f * 100 ? 'green':'red'}\">#{"%.2f" % [@report_results[:smp10][:upload][plan.throughput_up].instance_eval { reduce(:+) / size.to_f }.to_f * 100]}%</span>".html_safe %>
                     <% end %>
                   </td>
 
@@ -121,7 +121,7 @@
                                                      'green'
                                                    else 'red'
                                                    end
-                        }\">#{@report_results[:scm5][:upload][plan.throughput_up][:total_down].instance_eval { reduce(:+) / size.to_f }.to_f.round(2) * 100 }%/#{@report_results[:scm5][:upload][plan.throughput_up][:total_up].instance_eval { reduce(:+) / size.to_f }.to_f.round(2) * 100}%</span>".html_safe %>
+                        }\">#{"%.2f" % [@report_results[:scm5][:upload][plan.throughput_up][:total_down].instance_eval { reduce(:+) / size.to_f }.to_f * 100] }%/#{"%.2f" % [@report_results[:scm5][:upload][plan.throughput_up][:total_up].instance_eval { reduce(:+) / size.to_f }.to_f * 100]}%</span>".html_safe %>
                    </td>
                    <% end %>
                   <td style="text-align: center">
@@ -130,7 +130,7 @@
                                                      'green'
                                                    else 'red'
                                                    end
-                        }\">#{@report_results[:smp11][:upload][plan.throughput_up][:total_down].instance_eval { reduce(:+) / size.to_f }.to_f.round(2) *100 }%/#{ @report_results[:smp11][:upload][plan.throughput_up][:total_up].instance_eval { reduce(:+) / size.to_f }.to_f.round(2) * 100}%</span>".html_safe %>
+                        }\">#{ "%.2f" % [@report_results[:smp11][:upload][plan.throughput_up][:total_down].instance_eval { reduce(:+) / size.to_f }.to_f * 100] }%/#{"%.2f" % [@report_results[:smp11][:upload][plan.throughput_up][:total_up].instance_eval { reduce(:+) / size.to_f }.to_f * 100]}%</span>".html_safe %>
                     <% end %>
                   </td>
               <% when 3 %>
