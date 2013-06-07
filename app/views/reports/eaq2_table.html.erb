@@ -30,7 +30,7 @@
           <% end %>
         </tr>
         <% @months.each do |month| %>
-            <tr  onclick="toggleTable2('<%= month.strftime("%Y-%m-%d")%>');">
+            <tr   onclick="toggleTable2('<%= @uid %>_<%= month.strftime("%Y-%m-%d")%>');">
               <td  style="font-weight: bold">
                 <%= month.strftime("%b/%Y") == Time.new.strftime("%b/%Y") ? (month.strftime("%b/%Y")+' (Parcial)'):month.strftime("%b/%Y") %>&nbsp;&nbsp;<span class="icon-search" title="Detalhar"></span>
               </td>
@@ -80,10 +80,10 @@
                 <%  end
                  end %>
             </tr>
-            <tr id="<%= month.strftime("%Y-%m-%d")%>" style="display: none"  >
+            <tr id="<%= @uid %>_<%= month.strftime("%Y-%m-%d")%>" style="display: none"  >
               <td  colspan="9" style="font-weight: bold; background-color: #777777;text-align: center">Diário <%= month.strftime("%B/%Y")%></td>
             </tr>
-            <tbody colspan="9" style="display: none;" id="detail2<%= month.strftime("%Y-%m-%d")%>"></tbody>
+            <tbody colspan="9" style="display: none;" id="detail2-<%= @uid %>_<%= month.strftime("%Y-%m-%d")%>"></tbody>
         <% end %>
         </tbody>
         </table>
@@ -94,27 +94,29 @@
 <script>
     function toggleTable2(id){
         var e = document.getElementById(id);
+        var aux = id
+        aux = id.split('_');
 
         if (e.style.display == 'table-row'){
             e.style.display = 'none';
-            document.getElementById('detail2'+id).style.display = 'none';
+            document.getElementById('detail2-'+id).style.display = 'none';
 
         }else{
-            if($('#detail2'+id).is(':empty')){
+            if($('#detail2-'+id).is(':empty')){
                 $.ajax({
                     dataType: '',
                     type: 'POST',
                     url: "<%= detail_eaq2_table_reports_url %>",
-                    data: { month: id, type: <%= @type.to_json.html_safe %>, agent_type: <%= @agent_type.to_json.html_safe %>, states: <%= @states.to_json.html_safe %>
+                    data: { month: aux[1], type: <%= @type.to_json.html_safe %>, agent_type: <%= @agent_type.to_json.html_safe %>, states: <%= @states.to_json.html_safe %>
                         , cn: <%= @cn.to_json.html_safe %>
                     },
                     success: function(data){
-                        $('#detail2'+id).html(data);
+                        $('#detail2-'+id).html(data);
                     }
                 });
             }
             e.style.display = 'table-row';
-            jQuery('#detail2'+id).fadeIn('slow');
+            jQuery('#detail2-'+id).fadeIn('slow');
             //document.getElementById('detail'+id).style.display = '';
 
         }

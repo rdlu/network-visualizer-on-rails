@@ -24,7 +24,7 @@
 
         <tr id="<%= Date.parse(@month).change(:day => day) %>_<%= uid %>">
           <td style="font-weight: bold"><%= day %> &nbsp;&nbsp;<span class="icon-search" title="Detalhar" onclick="popupTable('<%= Date.parse(@month).change(:day => day) %>_<%= uid %>')"></span>
-            <div id="modal-<%= Date.parse(@month).change(:day => day) %>_<%= uid %>"class="modal hide fade" style="left: 40%;width: 70%"></div>
+            <div id="modal-<%= Date.parse(@month).change(:day => day) %>_<%= uid %>"class="modal hide fade" style="left: 30%;width: 85%"></div>
           </td>
           <% @thresholds.each do |threshold|
             case threshold.id
@@ -83,16 +83,28 @@
         var uid = [];
         uid = id.split('_');
 
-        $.ajax({
-            dataType: '',
-            type: 'POST',
-            url: "<%= detail_speed_type_eaq2_table_reports_url %>",
-            data: { date: moment(uid[0]).format('DD/MM/YYYY') , id: uid[1], type: <%= @type.to_json.html_safe %>,
-                    agent_type: <%= @agent_type.to_json.html_safe %>, states: <%= @states.to_json.html_safe %>, cn: <%= @cn.to_json.html_safe %> },
-            success: function(data){
-                $('#modal-'+id).html(data).modal({show:true});
+        var e = document.getElementById('modal-'+id);
+
+        if (e.style.display == 'block'){
+            e.style.display = 'none';
+            document.getElementById('modal-'+id).style.display = 'none';
+
+        }else{
+            if($('#modal-'+id).is(':empty')){
+                $.ajax({
+                    dataType: '',
+                    type: 'POST',
+                    url: "<%= detail_speed_type_eaq2_table_reports_url %>",
+                    data: { date: moment(uid[0]).format('DD/MM/YYYY') , id: uid[1], type: <%= @type.to_json.html_safe %>,
+                            agent_type: <%= @agent_type.to_json.html_safe %>, states: <%= @states.to_json.html_safe %>, cn: <%= @cn.to_json.html_safe %> },
+                    success: function(data){
+                        $('#modal-'+id).html(data).modal({show:true});
+                    }
+                });
             }
-        });
+        }
+        e.style.display = 'block';
+        jQuery('#modal-'+id).modal({show:true});
 
     }
 

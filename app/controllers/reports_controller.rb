@@ -655,10 +655,10 @@ class ReportsController < ApplicationController
     @states.delete("")
 
     fixed_conn_profile = ConnectionProfile.
-        where(:conn_type => "fixed")
+        where(:conn_type => "fixed").all
 
     mobile_conn_profile = ConnectionProfile.
-        where(:conn_type => "mobile")
+        where(:conn_type => "mobile").all
 
     @report_results = {}
 
@@ -674,58 +674,54 @@ class ReportsController < ApplicationController
         where(:connection_profile_id => fixed_conn_profile).
         where(:state => @states).
         where(:areacode => @cn).
-        where(:type => @type)
+        where(:type => @type).all
     #.where(:plan_id => plan.id)
 
     mobile_probes = Probe.
         where(:connection_profile_id => mobile_conn_profile).
         where(:state => @states).
         where(:areacode => @cn).
-        where(:type => @type)
+        where(:type => @type).all
     #.where(:plan_id => plan.id)
 
     all_probes = Probe.
         where(:state => @states).
         where(:areacode => @cn).
-        where(:type => @type)
+        where(:type => @type).all
     #.where(:plan_id => plan.id)
 
     fixed_schedules = Schedule.
-        where(:destination_id => fixed_probes)
+        where(:destination_id => fixed_probes).all
 
     mobile_schedules = Schedule.
-        where(:destination_id => mobile_probes)
+        where(:destination_id => mobile_probes).all
 
     all_schedules = Schedule.
-        where(:destination_id => all_probes)
+        where(:destination_id => all_probes).all
     #
     #  SCM4
     #
-    @medians_scm4 = {}
     @medians_scm4 = Median.
-        where('start_timestamp >= ?', DateTime.parse(@date).beginning_of_day).
-        where('start_timestamp <= ?', DateTime.parse(@date).end_of_day).
+        where('start_timestamp >= ?', DateTime.parse(@date).beginning_of_day.utc).
+        where('start_timestamp <= ?', DateTime.parse(@date).end_of_day.utc).
         where(:schedule_id => fixed_schedules).
         where(:threshold_id => 1).
         order('start_timestamp ASC').all
     #
     # SMP10
     #
-
-      @medians_smp10 = {}
       @medians_smp10 = Median.
-          where('start_timestamp >= ?',  DateTime.parse(@date).beginning_of_day).
-          where('start_timestamp <= ?',  DateTime.parse(@date).end_of_day).
+          where('start_timestamp >= ?',  DateTime.parse(@date).beginning_of_day.utc).
+          where('start_timestamp <= ?',  DateTime.parse(@date).end_of_day.utc).
           where(:schedule_id => mobile_schedules).
           where(:threshold_id => 1).
           order('start_timestamp ASC').all
       #
       # SCM5
       #
-      @medians_scm5 = {}
       @medians_scm5 = Median.
-          where('start_timestamp >= ?',  DateTime.parse(@date).beginning_of_day).
-          where('start_timestamp <= ?',  DateTime.parse(@date).end_of_day).
+          where('start_timestamp >= ?',  DateTime.parse(@date).beginning_of_day.utc).
+          where('start_timestamp <= ?',  DateTime.parse(@date).end_of_day.utc).
           where(:schedule_id => fixed_schedules).
           where(:threshold_id => 2).
           order('start_timestamp ASC').all
@@ -733,10 +729,9 @@ class ReportsController < ApplicationController
       #
       # SMP11
       #
-      @medians_smp11 = {}
       @medians_smp11 = Median.
-          where('start_timestamp >= ?',  DateTime.parse(@date).beginning_of_day).
-          where('start_timestamp <= ?',  DateTime.parse(@date).end_of_day).
+          where('start_timestamp >= ?',  DateTime.parse(@date).beginning_of_day.utc).
+          where('start_timestamp <= ?',  DateTime.parse(@date).end_of_day.utc).
           where(:schedule_id => mobile_schedules).
           where(:threshold_id => 2).
           order('start_timestamp ASC').all
@@ -744,10 +739,9 @@ class ReportsController < ApplicationController
       #
       # SCM6
       #
-      @medians_scm6 = {}
       @medians_scm6 = Median.
-          where('start_timestamp >= ?',  DateTime.parse(@date).beginning_of_day).
-          where('start_timestamp <= ?',  DateTime.parse(@date).end_of_day).
+          where('start_timestamp >= ?',  DateTime.parse(@date).beginning_of_day.utc).
+          where('start_timestamp <= ?',  DateTime.parse(@date).end_of_day.utc).
           where(:schedule_id => all_schedules).
           where(:threshold_id => 3).
           order('start_timestamp ASC').all
@@ -755,10 +749,9 @@ class ReportsController < ApplicationController
       #
       # SCM7
       #
-      @medians_scm7 = {}
       @medians_scm7 = Median.
-          where('start_timestamp >= ?',  DateTime.parse(@date).beginning_of_day).
-          where('start_timestamp <= ?',  DateTime.parse(@date).end_of_day).
+          where('start_timestamp >= ?',  DateTime.parse(@date).beginning_of_day.utc).
+          where('start_timestamp <= ?',  DateTime.parse(@date).end_of_day.utc).
           where(:schedule_id => all_schedules).
           where(:threshold_id => 4).
           order('start_timestamp ASC').all
@@ -766,10 +759,9 @@ class ReportsController < ApplicationController
       #
       # SCM8
       #
-      @medians_scm8 = {}
       @medians_scm8 = Median.
-          where('start_timestamp >= ?',  DateTime.parse(@date).beginning_of_day).
-          where('start_timestamp <= ?',  DateTime.parse(@date).end_of_day).
+          where('start_timestamp >= ?',  DateTime.parse(@date).beginning_of_day.utc).
+          where('start_timestamp <= ?',  DateTime.parse(@date).end_of_day.utc).
           where(:schedule_id => all_schedules).
           where(:threshold_id => 5).
           order('start_timestamp ASC').all
@@ -777,34 +769,15 @@ class ReportsController < ApplicationController
       #
       # SCM9
       #
-      @medians_scm9 = {}
       @medians_scm9 = Median.
-          where('start_timestamp >= ?', DateTime.parse(@date).beginning_of_day).
-          where('start_timestamp <= ?', DateTime.parse(@date).end_of_day).
+          where('start_timestamp >= ?', DateTime.parse(@date).beginning_of_day.utc).
+          where('start_timestamp <= ?', DateTime.parse(@date).end_of_day.utc).
           where(:schedule_id => all_schedules).
           where(:threshold_id => 6).
           order('start_timestamp ASC').all
 
 
-    count4 = 0
-    count_all4 = 0
-    count4up = 0
-    count_all4up = 0
 
-    count10 = 0
-    count_all10 = 0
-    count10up = 0
-    count_all10up = 0
-
-    count5 = 0
-    count_all5 = 0
-    count5up = 0
-    count_all5up = 0
-
-    count11 = 0
-    count_all11 = 0
-    count11up = 0
-    count_all11up = 0
 
     count6 = 0
     count_all6 = 0
@@ -815,127 +788,118 @@ class ReportsController < ApplicationController
     count8 = 0
     count_all8 = 0
 
-    count9 = 0
-    count_all9 = 0
-
     points = 0
     total_points = 0
+
     Plan.all.each do |plan|
       # Inicializa um hash para cada plano
       %w(scm4 scm5 scm6 scm7 scm8 scm9 smp10 smp11).each do |c|
         @report_results[c.to_sym][:download][plan.throughput_down] = {}
         @report_results[c.to_sym][:upload][plan.throughput_up] = {}
       end
+    end
 
-      # Para cada plano, pega as probes fixas, móveis ou ambas, e monta o hash
-      # de resultados, download e upload juntos.
 
-      up = 0.0
-      down = 0.0
+    Plan.all.each do |plan|
 
-    #
-    # Calculo das medias do dia de cada probe
-    #
+      # Armazena valores de cada plano
+
+      media4 = Array.new
+      mediaup4 = Array.new
+
+      media5 = Array.new
+      mediaup5 = Array.new
+      media5up = Array.new
+      mediaup5up = Array.new
+
+      media10 = Array.new
+      mediaup10 = Array.new
+
+      media11 = Array.new
+      mediaup11 = Array.new
+      media11up = Array.new
+      mediaup11up = Array.new
 
       #
       # SCM4
       #
       @medians_scm4.each do |median|
           if (!median.dsavg.nil? || !median.sdavg.nil?)
-            if median.schedule.destination.plan.throughput_down.eql? plan.throughput_down
               up = (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
               down = (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
-              count_all4 += 1
               if down >= median.threshold.goal_level.round(3) && up >= median.threshold.goal_level.round(3)
-                count4 += 1
+                 media4 << 1
+                 mediaup4 << 1
+
+              else
+                media4 << 0
+                mediaup4 << 0
+
               end
-            end
-
-            if median.schedule.destination.plan.throughput_up.eql? plan.throughput_up
-                up = (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
-                down = (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
-                count_all4up += 1
-                if down >= median.threshold.goal_level.round(3) && up >= median.threshold.goal_level.round(3)
-                  count4up += 1
-                end
-            end
-
           end
       end
-      count_all4 != 0? @report_results[:scm4][:download][plan.throughput_down] = ((count4/count_all4)*100).to_f.round(2) : false
-          count_all4up != 0? @report_results[:scm4][:upload][plan.throughput_up] = ((count4up/count_all4up)*100).to_f.round(2): false
+      @report_results[:scm4][:download][plan.throughput_down] = media4
+      @report_results[:scm4][:upload][plan.throughput_up] = mediaup4
+      @report_results[:scm4][:download][plan.throughput_down] = media4
+      @report_results[:scm4][:upload][plan.throughput_up] = mediaup4
       #
       # SMP10
       #
+
       @medians_smp10.each do |median|
         if !median.dsavg.nil? || !median.sdavg.nil?
-          if median.schedule.destination.plan.throughput_down.eql? plan.throughput_down
-            up = (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
-            down = (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
-            count_all10 += 1
-            if down >= median.threshold.goal_level.round(3) && up >= median.threshold.goal_level.round(3)
-              count10 += 1
-            end
-          end
-          if median.schedule.destination.plan.throughput_up.eql? plan.throughput_up
-            up = (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
-            down = (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
-            count_all10up += 1
-            if down >= median.threshold.goal_level.round(3) && up >= median.threshold.goal_level.round(3)
-              count10up += 1
-            end
+          up = (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
+          down = (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
+          if down >= median.threshold.goal_level.round(3) && up >= median.threshold.goal_level.round(3)
+            media10 << 1
+            mediaup10 << 1
+
+          else
+            media10 << 0
+            mediaup10 << 0
+
           end
         end
       end
-      count_all10 != 0? @report_results[:smp10][:download][plan.throughput_down] = ((count10/count_all10)*100).to_f.round(2) : false
-      count_all10up != 0? @report_results[:smp10][:upload][plan.throughput_up] = ((count10up/count_all10up)*100).to_f.round(2): false
+      @report_results[:smp10][:download][plan.throughput_down] = media10
+      @report_results[:smp10][:upload][plan.throughput_up] = mediaup10
+      @report_results[:smp10][:download][plan.throughput_down] = media10
+      @report_results[:smp10][:upload][plan.throughput_up] = mediaup10
       #
       # SCM5
       #
       @medians_scm5.each do |median|
         if (!median.dsavg.nil? || !median.sdavg.nil?)
           if median.schedule.destination.plan.throughput_down.eql? plan.throughput_down
-            up = up + (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
-            down = down + (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
-            count_all5 += 1
+            media5 << (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
+            mediaup5 << (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
           end
           if median.schedule.destination.plan.throughput_up.eql? plan.throughput_up
-            up = up + (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
-            down = down + (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
-            count_all5up += 1
+            media5up << (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
+            mediaup5up << (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
           end
+
         end
       end
-      @report_results[:scm5][:download][plan.throughput_down] = {}
-      @report_results[:scm5][:upload][plan.throughput_up]= {}
-      count_all5 != 0? @report_results[:scm5][:download][plan.throughput_down][:total_down] = ((down/count_all5)*100).to_f.round(2) : false
-      count_all5 != 0? @report_results[:scm5][:download][plan.throughput_down][:total_up] = ((up/count_all5)*100).to_f.round(2) : false
-      count_all5up != 0? @report_results[:scm5][:upload][plan.throughput_up][:total_up] = ((up/count_all5up)*100).to_f.round(2): false
-      count_all5up != 0? @report_results[:scm5][:upload][plan.throughput_up][:total_down] = ((down/count_all5up)*100).to_f.round(2): false
-
+      @report_results[:scm5][:download][plan.throughput_down] = {:total_up => mediaup5, :total_down => media5}
+      @report_results[:scm5][:upload][plan.throughput_up]= {:total_up => mediaup5up, :total_down => media5up}
       #
       # SMP11
       #
       @medians_smp11.each do |median|
         if (!median.dsavg.nil? || !median.sdavg.nil?)
           if median.schedule.destination.plan.throughput_down.eql? plan.throughput_down
-            up = up + (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
-            down = down + (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
-            count_all11 += 1
+            media11 << (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
+            mediaup11 << (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
           end
           if median.schedule.destination.plan.throughput_up.eql? plan.throughput_up
-            up = up + (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
-            down = down + (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
-            count_all11up += 1
+            media11up << (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
+            mediaup11up << (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
           end
         end
       end
-      @report_results[:smp11][:download][plan.throughput_down] = {}
-      @report_results[:smp11][:upload][plan.throughput_up] = {}
-      count_all11 != 0? @report_results[:smp11][:download][plan.throughput_down][:total_down] = ((down/count_all11)*100).to_f.round(2) : false
-      count_all11 != 0? @report_results[:smp11][:download][plan.throughput_down][:total_up] = ((up/count_all11)*100).to_f.round(2) : false
-      count_all11up != 0? @report_results[:smp11][:upload][plan.throughput_up][:total_up] = ((up/count_all11up)*100).to_f.round(2): false
-      count_all11up != 0? @report_results[:smp11][:upload][plan.throughput_up][:total_down] = ((down/count_all11up)*100).to_f.round(2): false
+      @report_results[:smp11][:download][plan.throughput_down] = {:total_down => media11, :total_up => mediaup11}
+      @report_results[:smp11][:upload][plan.throughput_up] = {:total_up => mediaup11up, :total_down => media11up}
 
       #
       # SCM6
@@ -950,7 +914,7 @@ class ReportsController < ApplicationController
 
         end
       end
-      count_all6 != 0? @report_results[:scm6][:download][plan.throughput_down] = ((count6/count_all6)*100).to_f.round(2) : false
+      count_all6 != 0? @report_results[:scm6][:download][plan.throughput_down] = ((count6/count_all6)*100).to_f.round(2) : @report_results[:scm6][:download][plan.throughput_down] = 0.0
 
       #
       # SCM7
@@ -966,7 +930,7 @@ class ReportsController < ApplicationController
 
         end
       end
-      count_all7 != 0? @report_results[:scm7][:download][plan.throughput_down] = ((count7/count_all7)*100).to_f.round(2) : false
+      count_all7 != 0? @report_results[:scm7][:download][plan.throughput_down] = ((count7/count_all7)*100).to_f.round(2) : @report_results[:scm7][:download][plan.throughput_down] = 0.0
       #
       # SCM8
       #
@@ -980,7 +944,7 @@ class ReportsController < ApplicationController
 
         end
       end
-      count_all8 != 0? @report_results[:scm8][:download][plan.throughput_down] = ((count8/count_all8)*100).to_f.round(2) : false
+      count_all8 != 0? @report_results[:scm8][:download][plan.throughput_down] = ((count8/count_all8)*100).to_f.round(2) : @report_results[:scm8][:download][plan.throughput_down] = 0.0
       #
       # SCM9
       #
@@ -991,7 +955,7 @@ class ReportsController < ApplicationController
           end
 
       end
-      points != 0? @report_results[:scm9][:download][plan.throughput_down] = ((total_points/points)*100).to_f.round(2) : false
+      points != 0? @report_results[:scm9][:download][plan.throughput_down] = ((total_points/points)*100).to_f.round(2) : @report_results[:scm9][:download][plan.throughput_down] = 0.0
 
     end #fim for plan
 
