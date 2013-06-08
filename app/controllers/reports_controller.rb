@@ -1548,7 +1548,7 @@ class ReportsController < ApplicationController
                     efic = c.children.first.to_s.to_f
                   when "media"
                     efic = c.children.first.to_s.to_f
-                  when errors
+                  when "errors"
                     c.children.each do |cc|
                       case cc.name
                         when "timeout"
