@@ -1574,7 +1574,7 @@ class ReportsController < ApplicationController
               throughput_http_up = report.xpath("report/results/throughput_http/up").to_s.to_f
 
               metric = Metric.where(plugin: "throughput_http")
-              probe = Probe.where(name: name)
+              probe = Probe.where(name: user)
               schedule = probe.schedules_as_destination.last
 
               @results = Results.create(schedule_id: schedule.id,
