@@ -635,7 +635,6 @@ class ReportsController < ApplicationController
 
   end
 
-
   def detail_speed_type_eaq2_table
     #consolidacao pela velocidade contratada
     #consolidacao por tipo de agente e tecnologia de conexão
@@ -949,9 +948,9 @@ class ReportsController < ApplicationController
       # SCM9
       #
       @medians_scm9.each do |median|
-        if (!median.dsavg.nil? || !median.sdavg.nil?)
-            points = points + median.expected_points
-            total_points = total_points + median.total_points
+          if (!median.dsavg.nil? || !median.sdavg.nil?)
+              points = points + median.expected_points
+              total_points = total_points + median.total_points
           end
 
       end
@@ -962,6 +961,159 @@ class ReportsController < ApplicationController
     respond_to do |format|
       format.html { render :layout => false }
     end
+  end
+
+  def detail_probe_eaq2_table
+    @date = DateTime.parse(params[:date])
+    @type = params[:type] # android or linux
+    @agent_type = params[:agent_type] # fixed or mobile, if linux
+    @states = params[:states]
+    @cn = params[:cn]
+
+    if @type == "android"
+      @agent_type = ["fixed", "mobile"]
+    end
+
+    # Garantir que não tenhamos nulos
+    @cn.delete("")
+    @states.delete("")
+
+    fixed_conn_profile = ConnectionProfile.
+        where(:conn_type => "fixed")
+
+    mobile_conn_profile = ConnectionProfile.
+        where(:conn_type => "mobile")
+
+    probes = Probe.
+        where(:state => @states).
+        where(:cn => @cn).
+        where(:type => @type)
+
+
+    unless @agent_type.includes?("fixed") && @agent_type.includes?("mobile")
+        if @agent_type[0] == "fixed"
+            probes = probes.where(:connection_profile_id => fixed_conn_profile)
+        elsif @agent_type[0] == "mobile"
+            probes = probes.where(:connection_profile_id => mobile_conn_profile)
+        end
+    end
+
+    @report_results = {}
+
+    probes.all.each do |probe|
+        @report_results[probe.id] = {}
+        @report_results[probe.id][:type] = probe.type
+        @report_results[probe.id][:agent_type] = probe.connection_profile.conn_type
+        @report_results[probe.id][:name] = probe.name
+        @report_results[probe.id][:throughput_down] = probe.plan.throughput_down
+        @report_results[probe.id][:throughput_up] = probe.plan.throughput_up
+        %w(scm4 scm5 scm6 scm7 scm8 scm9).each do |c|
+          @report_results[probe.id][c.to_sym] = {}
+        end
+
+        #
+        #SCM4
+        #
+
+        @medians_scm4 = Median.
+            where('start_timestamp >= ?', @date.beginning_of_day.utc).
+            where('start_timestamp <= ?', @date.end_of_day.utc).
+            where(:schedule_id => Schedule.
+                  where(:destination_id => probe.id)).
+            where(:threshold_id => 1).
+            order('start_timestamp ASC').all
+
+        @report_results[probe.id][:scm4][:dsavg] = @medians_scm4.first.dsavg unless @medians_scm4.empty?
+        @report_results[probe.id][:scm4][:sdavg] = @medians_scm4.first.sdavg unless @medians_scm4.empty?
+
+        #
+        #SCM5
+        #
+
+        @medians_scm5 = Median.
+            where('start_timestamp >= ?', @date.beginning_of_day.utc).
+            where('start_timestamp <= ?', @date.end_of_day.utc).
+            where(:schedule_id => Schedule.
+                  where(:destination_id => probe.id)).
+            where(:threshold_id => 2).
+            order('start_timestamp ASC').all
+
+        @report_results[probe.id][:scm5][:dsavg] = @medians_scm5.first.dsavg unless @medians_scm5.empty?
+        @report_results[probe.id][:scm5][:sdavg] = @medians_scm5.first.sdavg unless @medians_scm5.empty?
+        
+        #
+        #SCM6
+        #
+
+        @medians_scm6 = Median.
+            where('start_timestamp >= ?', @date.beginning_of_day.utc).
+            where('start_timestamp <= ?', @date.end_of_day.utc).
+            where(:schedule_id => Schedule.
+                  where(:destination_id => probe.id)).
+            where(:threshold_id => 3).
+            order('start_timestamp ASC').all
+
+        @report_results[probe.id][:scm6][:dsavg] = @medians_scm6.first.dsavg unless @medians_scm6.empty?
+        
+        #
+        #SCM7
+        #
+
+        @medians_scm7 = Median.
+            where('start_timestamp >= ?', @date.beginning_of_day.utc).
+            where('start_timestamp <= ?', @date.end_of_day.utc).
+            where(:schedule_id => Schedule.
+                  where(:destination_id => probe.id)).
+            where(:threshold_id => 4).
+            order('start_timestamp ASC').all
+
+        @report_results[probe.id][:smc7][:dsavg] = @medians_scm7.first.dsavg unless @medians_scm7.empty?
+        @report_results[probe.id][:scm7][:sdavg] = @medians_scm7.first.sdavg unless @medians_scm7.empty?
+
+
+        #
+        #SCM8
+        #
+
+        @medians_scm8 = Median.
+            where('start_timestamp >= ?', @date.beginning_of_day.utc).
+            where('start_timestamp <= ?', @date.end_of_day.utc).
+            where(:schedule_id => Schedule.
+                  where(:destination_id => probe.id)).
+            where(:threshold_id => 5).
+            order('start_timestamp ASC').all
+
+        scm8_okay = 0
+        scm8_num_total = 0
+        scm8_total = 0.0
+        @medians_scm8.each do |median|
+            scm8_okay += 1 if median.dsavg <= 2.0
+            scm8_num_total += 1
+            scm8_total += median.dsavg
+        end
+
+        @report_results[probe.id][:scm8][:avg] = scm8_total / scm8_num_total
+        @report_results[probe.id][:scm8][:okay] = scm8_okay
+        @report_results[probe.id][:scm8][:total] = scm8_num_total
+
+
+        #
+        #SCM9
+        #
+
+        @medians_scm9 = Median.
+            where('start_timestamp >= ?', @date.beginning_of_day.utc).
+            where('start_timestamp <= ?', @date.end_of_day.utc).
+            where(:schedule_id => Schedule.
+                  where(:destination_id => probe.id)).
+            where(:threshold_id => 6).
+            order('start_timestamp ASC').all
+
+        @report_results[probe.id][:scm9][:dsavg] = @medians_scm9.first.dsavg unless @medians_scm9.empty?
+
+
+    end
+
   end
 
 
