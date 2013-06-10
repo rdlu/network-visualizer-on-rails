@@ -519,7 +519,7 @@ class ReportsController < ApplicationController
             up = (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
             down = (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
             count_all10 += 1
-            if down >= median.threshold.goal_level.round && up >= median.threshold.goal_level.round(3)
+            if down >= median.threshold.goal_level.round(3) && up >= median.threshold.goal_level.round(3)
               count10 += 1
             end
           end
