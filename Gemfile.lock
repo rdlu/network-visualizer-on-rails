@@ -33,6 +33,7 @@ GEM
       builder
       json
     arel (3.0.2)
+    awesome_print (1.0.2)
     bcrypt-ruby (3.0.1)
     better_errors (0.8.0)
       coderay (>= 1.0.0)
@@ -55,10 +56,18 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.6.2)
+    columnize (0.3.6)
     commonjs (0.2.6)
+    coolline (0.4.2)
     daemons (1.1.9)
     dalli (2.6.3)
     debug_inspector (0.0.2)
+    debugger (1.6.0)
+      columnize (>= 0.3.1)
+      debugger-linecache (~> 1.2.0)
+      debugger-ruby_core_source (~> 1.2.1)
+    debugger-linecache (1.2.0)
+    debugger-ruby_core_source (1.2.2)
     delayed_job (3.0.5)
       activesupport (~> 3.0)
     delayed_job_active_record (0.4.4)
@@ -70,6 +79,7 @@ GEM
       railties (~> 3.1)
       warden (~> 1.2.1)
     diff-lcs (1.2.4)
+    diffy (2.1.4)
     erubis (2.7.0)
     execjs (1.4.0)
       multi_json (~> 1.0)
@@ -79,16 +89,33 @@ GEM
     foreigner (1.4.1)
       activerecord (>= 3.0.0)
     geocoder (1.1.8)
+    grit (2.5.0)
+      diff-lcs (~> 1.1)
+      mime-types (~> 1.15)
+      posix-spawn (~> 0.3.6)
     has_scope (0.5.1)
     highcharts-rails (3.0.1.5)
       cocaine (~> 0.4.0)
       railties (>= 3.1)
     hike (1.2.2)
+    hirb (0.6.2)
     i18n (0.6.1)
     immigrant (0.1.4)
       activerecord (>= 3.0)
       foreigner (>= 1.2.1)
     ipaddress (0.8.0)
+    jazz_hands (0.3.1)
+      awesome_print (~> 1.0.2)
+      coderay (~> 1.0.6)
+      coolline (>= 0.1.0)
+      hirb (~> 0.6.2)
+      pry (~> 0.9.9)
+      pry-debugger (~> 0.2.0)
+      pry-doc (~> 0.4.2)
+      pry-git (~> 0.2.3)
+      pry-remote (>= 0.1.4)
+      pry-stack_explorer (~> 0.4.2)
+      railties (~> 3.0)
     jbuilder (1.4.0)
       activesupport (>= 3.0.0)
       multi_json (>= 1.2.0)
@@ -115,12 +142,29 @@ GEM
     orm_adapter (0.4.0)
     pg (0.15.1)
     polyglot (0.3.3)
+    posix-spawn (0.3.6)
     pry (0.9.12.1)
       coderay (~> 1.0.5)
       method_source (~> 0.8)
       slop (~> 3.4)
+    pry-debugger (0.2.2)
+      debugger (~> 1.3)
+      pry (~> 0.9.10)
+    pry-doc (0.4.6)
+      pry (>= 0.9)
+      yard (>= 0.8)
+    pry-git (0.2.3)
+      diffy
+      grit
+      pry (>= 0.9.8)
     pry-rails (0.3.0)
       pry (>= 0.9.10)
+    pry-remote (0.1.7)
+      pry (~> 0.9)
+      slop (~> 3.0)
+    pry-stack_explorer (0.4.9)
+      binding_of_caller (>= 0.7)
+      pry (~> 0.9.11)
     rack (1.4.5)
     rack-cache (1.2)
       rack (>= 0.4)
@@ -192,6 +236,7 @@ GEM
       rack (>= 1.0)
     will_paginate (3.0.4)
     yaml_db (0.2.3)
+    yard (0.8.6.1)
     yell (1.2.3)
     yell-adapters-gelf (1.2.0)
       json
@@ -224,13 +269,18 @@ DEPENDENCIES
   highcharts-rails (~> 3.0.1)
   immigrant
   ipaddress
+  jazz_hands
   jbuilder
   jquery-rails
   less
   meta_request
   nokogiri
   pg
+  pry
+  pry-debugger
   pry-rails
+  pry-remote
+  pry-stack_explorer
   rails (= 3.2.13)
   rails-i18n
   rolify
