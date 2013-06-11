@@ -1061,7 +1061,7 @@ class ReportsController < ApplicationController
             where(:threshold_id => 4).
             order('start_timestamp ASC').all
 
-        @report_results[probe.id][:smc7][:dsavg] = @medians_scm7.first.dsavg unless @medians_scm7.empty?
+        @report_results[probe.id][:scm7][:dsavg] = @medians_scm7.first.dsavg unless @medians_scm7.empty?
         @report_results[probe.id][:scm7][:sdavg] = @medians_scm7.first.sdavg unless @medians_scm7.empty?
 
 
