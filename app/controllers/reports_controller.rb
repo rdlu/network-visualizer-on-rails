@@ -987,11 +987,11 @@ class ReportsController < ApplicationController
 
     probes = Probe.
         where(:state => @states).
-        where(:cn => @cn).
+        where(:areacode => @cn).
         where(:type => @type)
 
 
-    unless @agent_type.includes?("fixed") && @agent_type.includes?("mobile")
+    unless @agent_type.include?("fixed") && @agent_type.include?("mobile")
         if @agent_type[0] == "fixed"
             probes = probes.where(:connection_profile_id => fixed_conn_profile)
         elsif @agent_type[0] == "mobile"
