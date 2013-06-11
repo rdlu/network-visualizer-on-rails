@@ -674,20 +674,17 @@ class ReportsController < ApplicationController
         where(:state => @states).
         where(:areacode => @cn).
         where(:type => @type).all
-    #.where(:plan_id => plan.id)
 
     mobile_probes = Probe.
         where(:connection_profile_id => mobile_conn_profile).
         where(:state => @states).
         where(:areacode => @cn).
         where(:type => @type).all
-    #.where(:plan_id => plan.id)
 
     all_probes = Probe.
         where(:state => @states).
         where(:areacode => @cn).
         where(:type => @type).all
-    #.where(:plan_id => plan.id)
 
     fixed_schedules = Schedule.
         where(:destination_id => fixed_probes).all
@@ -824,47 +821,43 @@ class ReportsController < ApplicationController
       #
       @medians_scm4.each do |median|
           if (!median.dsavg.nil? || !median.sdavg.nil?)
+            if median.schedule.destination.plan.throughput_down.eql? plan.throughput_down
               up = (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
               down = (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
               if down >= median.threshold.goal_level.round(3) && up >= median.threshold.goal_level.round(3)
                  media4 << 1
                  mediaup4 << 1
-                 @report_results[:scm4][:download][plan.throughput_down] = media4
-                 @report_results[:scm4][:upload][plan.throughput_up] = mediaup4
-
               else
                 media4 << 0
                 mediaup4 << 0
-                @report_results[:scm4][:download][plan.throughput_down] = media4
-                @report_results[:scm4][:upload][plan.throughput_up] = mediaup4
 
               end
+            end
           end
       end
-
+      @report_results[:scm4][:download][plan.throughput_down] = media4
+      @report_results[:scm4][:upload][plan.throughput_up] = mediaup4
       #
       # SMP10
       #
-
       @medians_smp10.each do |median|
         if !median.dsavg.nil? || !median.sdavg.nil?
+          if median.schedule.destination.plan.throughput_down.eql? plan.throughput_down
           up = (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
           down = (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
           if down >= median.threshold.goal_level.round(3) && up >= median.threshold.goal_level.round(3)
             media10 << 1
             mediaup10 << 1
-            @report_results[:smp10][:download][plan.throughput_down] = media10
-            @report_results[:smp10][:upload][plan.throughput_up] = mediaup10
+
           else
             media10 << 0
             mediaup10 << 0
-            @report_results[:smp10][:download][plan.throughput_down] = media10
-            @report_results[:smp10][:upload][plan.throughput_up] = mediaup10
-
+          end
           end
         end
       end
-
+      @report_results[:smp10][:download][plan.throughput_down] = media10
+      @report_results[:smp10][:upload][plan.throughput_up] = mediaup10
       #
       # SCM5
       #
