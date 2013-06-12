@@ -62,11 +62,14 @@ group :development do
   gem 'yaml_db'
 
   # Debugging
-  gem 'pry'
-  gem 'pry-remote'
-  gem 'pry-stack_explorer'
-  gem 'pry-debugger'
-  gem 'jazz_hands'
+  unless ENV["RM_INFO"]
+    gem 'pry'
+    gem 'pry-remote'
+    gem 'pry-stack_explorer'
+    gem 'pry-debugger'
+    gem 'jazz_hands'
+  end
+
 end
 
 group :test, :development do
