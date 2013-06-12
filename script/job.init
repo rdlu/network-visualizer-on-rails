@@ -1,0 +1,51 @@
+#! /bin/sh
+
+### BEGIN INIT INFO
+# Provides:          delayed_job
+# Required-Start:    $all
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:
+### END INIT INFO
+
+N=/etc/init.d/delayed_job
+app_root=/usr/share/mom-rails
+user=www-data
+service="delayed_job"
+
+set -e
+
+usage() {
+  echo "Usage: $N {start|stop|status|restart|force-reload} <environment>" >&2
+  exit 1
+}
+
+set -e
+
+#[ -n "$2" ] || usage
+
+#rails_env="$2"
+rails_env=PRODUCTION
+
+interact() {
+    op="$1"
+    echo "$1ing $service"
+    su - -c "cd $app_root && /usr/bin/env RAILS_ENV=$rails_env ruby exec bundle exec script/delayed_job --queue=calculate -i=1 $op" $user
+    su - -c "cd $app_root && /usr/bin/env RAILS_ENV=$rails_env ruby exec bundle exec script/delayed_job --queue=calculate -i=2 $op" $user
+    su - -c "cd $app_root && /usr/bin/env RAILS_ENV=$rails_env ruby exec bundle exec script/delayed_job --queue=checkstatus -i=3 $op" $user
+    su - -c "cd $app_root && /usr/bin/env RAILS_ENV=$rails_env ruby exec bundle exec script/delayed_job --queue=updatetop100 -i=4 $op" $user
+}
+
+case "$1" in
+    start|stop|status)
+        interact "$1"
+        ;;
+    reload|restart|force-reload)
+        interact restart
+        ;;
+    *)
+        usage
+        ;;
+esac
+
+exit 0
