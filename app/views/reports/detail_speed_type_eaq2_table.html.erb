@@ -18,18 +18,36 @@
         </div>
       </div>
       <div class="accordion-group">
-        <div class="accordion-heading">
+        <div  class="accordion-heading">
           <h4 style="margin-left: 5px; padding: 0" class="accordion-toggle" data-toggle="collapse" data-parent="#modal-acc-<%= @id %>" href="#accordion_forms2-<%= @id %>">
-            Por Tipo de Agente e Tecnologia de Conexão
+            <span id="type_agent" value="<%= @date %>">Por Tipo de Agente e Tecnologia de Conexão</span>
           </h4>
         </div>
         <div id="accordion_forms2-<%= @id %>" class="accordion-body collapse">
-          <div class="accordion-inner">
-            <%=  render "detail_type" %>
-          </div>
+          <div id="detail_agent2-<%= @id %>" class="accordion-inner"></div>
         </div>
       </div>
     </div>
 
 
   </div>
+
+  <script>
+    $('span#type_agent').bind('click', function(){
+
+            if($('#detail_agent2-<%= @id %>').is(':empty')){
+                $.ajax({
+                    dataType: '',
+                    type: 'POST',
+                    url: "<%= detail_probe_eaq2_table_reports_url %>",
+                    data: { date: '<%= @date %>', type: <%= @type.to_json.html_safe %>,
+                        agent_type: <%= @agent_type.to_json.html_safe %>, states: <%= @states.to_json.html_safe %>, cn: <%= @cn.to_json.html_safe %> },
+                    success: function(data){
+                        $('#detail_agent2-<%= @id %>').html(data);
+                    }
+                });
+            }
+
+    });
+
+  </script>

@@ -1108,6 +1108,10 @@ class ReportsController < ApplicationController
 
     end
 
+    respond_to do |format|
+      format.html { render :layout => false }
+    end
+
   end
 
 

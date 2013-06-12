@@ -1,0 +1,118 @@
+<table class="table table-bordered table-hover table-condensed" >
+  <thead>
+  <tr >
+    <th ></th>
+    <th ></th>
+    <%  Threshold.all.each do |threshold|  %>
+            <th style="text-align: center"><%= threshold.description %></br> Meta: <%= threshold.compliance_level* 100 %>%</th>
+    <% end %>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td colspan="2" style="text-align: center;min-width: 175px">Agente</td>
+    <%  Threshold.all.each do |threshold| %>
+         <td style="text-align: center"><%= threshold.name %> <br/></td>
+    <% end %>
+  </tr>
+  <!-- LINUX FIXO -->
+  <tr>
+    <td rowspan="1" style="padding-top: 50px; text-align: center"> Linux Fixo</td>
+
+        <td style="text-align: center"> nome</td>
+        <% Threshold.all.each do |threshold|
+          case threshold.id
+            when 1
+        %>
+              <td style="text-align: center">
+
+                </td>
+            <% when 2 %>
+               <td style="text-align: center">
+
+                </td>
+            <% when 3 %>
+                <td style="text-align: center">
+                 </td>
+            <% when 4 %>
+                <td style="text-align: center">
+                  </td>
+            <% when 5 %>
+                <td style="text-align: center">
+                 </td>
+            <% when 6 %>
+                <td style="text-align: center">
+                 </td>
+            <% end
+               end %>
+        </tr>
+
+
+    </tr>
+    <!-- LINUX MOVEL -->
+    <tr>
+      <td rowspan="1" style="padding-top: 50px; text-align: center"> Linux Móvel</td>
+
+          <td style="text-align: center"> name</td>
+          <% Threshold.all.each do |threshold|
+            case threshold.id
+              when 1
+          %>
+                  <td style="text-align: center">
+
+                  </td>
+
+              <% when 2 %>
+                  <td style="text-align: center">
+                  </td>
+
+              <% when 3 %>
+                  <td style="text-align: center">
+                   </td>
+              <% when 4 %>
+                  <td style="text-align: center">
+                   </td>
+              <% when 5 %>
+                  <td style="text-align: center">
+                  </td>
+              <% when 6 %>
+                  <td style="text-align: center">
+                  </td>
+              <% end
+                 end %>
+          </tr>
+  <!-- ANDROID -->
+  <tr>
+    <td rowspan="1" style="padding-top: 50px; text-align: center"> Android</td>
+
+    <td style="text-align: center"> name </td>
+    <% Threshold.all.each do |threshold|
+      case threshold.id
+        when 1
+    %>
+            <td style="text-align: center">
+
+            </td>
+
+        <% when 2 %>
+            <td style="text-align: center">
+            </td>
+
+        <% when 3 %>
+            <td style="text-align: center">
+            </td>
+        <% when 4 %>
+            <td style="text-align: center">
+            </td>
+        <% when 5 %>
+            <td style="text-align: center">
+            </td>
+        <% when 6 %>
+            <td style="text-align: center">
+            </td>
+        <% end
+           end %>
+  </tr>
+
+      </tbody>
+</table>
