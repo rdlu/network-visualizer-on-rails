@@ -191,6 +191,12 @@
 
             if (source_id != '' && destination_id != '' && metric_id != '')
                 jQuery.ajax("<%= reports_url %>/" + report_type, {
+                    beforeSend: function() {
+                        jQuery('#graphs-area').prepend('<div id=\"row-loading\" class="row-fluid"><div   class=\"span12\"><div id=\"box-loading\" style="height:100px;"><%=image_tag 'ajax-loader.gif' %> <strong>Requisitando o relatório selecionado, aguarde...</strong></div></div></div>');
+                    },
+                    complete: function() {
+                        jQuery('#row-loading').remove();
+                    },
                     success: function (result, status) {
                         switch (report_type) {
                             case 'graph':
@@ -244,6 +250,12 @@
             jQuery.ajax("<%= eaq2_table_reports_url %>/", {
                 data: $(this).serialize(),
                 method: 'post',
+                beforeSend: function() {
+                    jQuery('#graphs-area').prepend('<div id=\"row-loading\" class="row-fluid"><div class=\"span12\"><div id=\"box-loading\" style="height:100px;"><%=image_tag 'ajax-loader.gif' %> <strong>Requisitando o relatório selecionado, aguarde...</strong></div></div></div>');
+                },
+                complete: function() {
+                    jQuery('#row-loading').remove();
+                },
                 success: function (result, status) {
                     if (jQuery("box-"+from).is(':empty')) {
                         jQuery('#graphs-area').prepend(result);
