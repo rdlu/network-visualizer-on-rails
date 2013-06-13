@@ -995,14 +995,16 @@ class ReportsController < ApplicationController
     @report_results = {}
 
     probes.all.each do |probe|
-        @report_results[probe.id] = {}
-        @report_results[probe.id][:type] = probe.type
-        @report_results[probe.id][:agent_type] = probe.connection_profile.conn_type
-        @report_results[probe.id][:name] = probe.name
-        @report_results[probe.id][:throughput_down] = probe.plan.throughput_down
-        @report_results[probe.id][:throughput_up] = probe.plan.throughput_up
+        conn_type = probe.connection_profile.conn_type.to_sym
+        probe_type = probe.type.to_sym
+        @report_results[conn_type] ||= {}
+        @report_results[conn_type][probe_type] ||= {}
+        @report_results[conn_type][probe_type][probe.id] = {}
+        @report_results[conn_type][probe_type][probe.id][:name] = probe.name
+        @report_results[conn_type][probe_type][probe.id][:throughput_down] = probe.plan.throughput_down
+        @report_results[conn_type][probe_type][probe.id][:throughput_up] = probe.plan.throughput_up
         %w(scm4 scm5 scm6 scm7 scm8 scm9).each do |c|
-          @report_results[probe.id][c.to_sym] = {}
+          @report_results[conn_type][probe_type][probe.id][c.to_sym] = {}
         end
 
         #
@@ -1017,8 +1019,8 @@ class ReportsController < ApplicationController
             where(:threshold_id => 1).
             order('start_timestamp ASC').all
 
-        @report_results[probe.id][:scm4][:dsavg] = @medians_scm4.first.dsavg unless @medians_scm4.empty?
-        @report_results[probe.id][:scm4][:sdavg] = @medians_scm4.first.sdavg unless @medians_scm4.empty?
+        @report_results[conn_type][probe_type][probe.id][:scm4][:dsavg] = @medians_scm4.first.dsavg unless @medians_scm4.empty?
+        @report_results[conn_type][probe_type][probe.id][:scm4][:sdavg] = @medians_scm4.first.sdavg unless @medians_scm4.empty?
 
         #
         #SCM5
@@ -1032,8 +1034,8 @@ class ReportsController < ApplicationController
             where(:threshold_id => 2).
             order('start_timestamp ASC').all
 
-        @report_results[probe.id][:scm5][:dsavg] = @medians_scm5.first.dsavg unless @medians_scm5.empty?
-        @report_results[probe.id][:scm5][:sdavg] = @medians_scm5.first.sdavg unless @medians_scm5.empty?
+        @report_results[conn_type][probe_type][probe.id][:scm5][:dsavg] = @medians_scm5.first.dsavg unless @medians_scm5.empty?
+        @report_results[conn_type][probe_type][probe.id][:scm5][:sdavg] = @medians_scm5.first.sdavg unless @medians_scm5.empty?
         
         #
         #SCM6
@@ -1047,7 +1049,7 @@ class ReportsController < ApplicationController
             where(:threshold_id => 3).
             order('start_timestamp ASC').all
 
-        @report_results[probe.id][:scm6][:dsavg] = @medians_scm6.first.dsavg unless @medians_scm6.empty?
+        @report_results[conn_type][probe_type][probe.id][:scm6][:dsavg] = @medians_scm6.first.dsavg unless @medians_scm6.empty?
         
         #
         #SCM7
@@ -1061,8 +1063,8 @@ class ReportsController < ApplicationController
             where(:threshold_id => 4).
             order('start_timestamp ASC').all
 
-        @report_results[probe.id][:scm7][:dsavg] = @medians_scm7.first.dsavg unless @medians_scm7.empty?
-        @report_results[probe.id][:scm7][:sdavg] = @medians_scm7.first.sdavg unless @medians_scm7.empty?
+        @report_results[conn_type][probe_type][probe.id][:scm7][:dsavg] = @medians_scm7.first.dsavg unless @medians_scm7.empty?
+        @report_results[conn_type][probe_type][probe.id][:scm7][:sdavg] = @medians_scm7.first.sdavg unless @medians_scm7.empty?
 
 
         #
@@ -1086,9 +1088,9 @@ class ReportsController < ApplicationController
             scm8_total += median.dsavg
         end
 
-        @report_results[probe.id][:scm8][:avg] = scm8_total / scm8_num_total
-        @report_results[probe.id][:scm8][:okay] = scm8_okay
-        @report_results[probe.id][:scm8][:total] = scm8_num_total
+        @report_results[conn_type][probe_type][probe.id][:scm8][:avg] = scm8_total / scm8_num_total
+        @report_results[conn_type][probe_type][probe.id][:scm8][:okay] = scm8_okay
+        @report_results[conn_type][probe_type][probe.id][:scm8][:total] = scm8_num_total
 
 
         #
@@ -1103,9 +1105,7 @@ class ReportsController < ApplicationController
             where(:threshold_id => 6).
             order('start_timestamp ASC').all
 
-        @report_results[probe.id][:scm9][:dsavg] = @medians_scm9.first.dsavg unless @medians_scm9.empty?
-
-
+        @report_results[conn_type][probe_type][probe.id][:scm9][:dsavg] = @medians_scm9.first.dsavg unless @medians_scm9.empty?
     end
 
     respond_to do |format|
