@@ -958,7 +958,7 @@ class ReportsController < ApplicationController
   end
 
   def detail_probe_eaq2_table
-    @date = DateTime.parse(params[:date])
+    @date = DateTime.parse(params[:date]).to_date.to_time
     @type = params[:type] # android or linux
     @agent_type = params[:agent_type] # fixed or mobile, if linux
     @states = params[:states]
@@ -978,7 +978,7 @@ class ReportsController < ApplicationController
     mobile_conn_profile = ConnectionProfile.
         where(:conn_type => "mobile")
 
-    probes = Probe.
+    @probes = Probe.
         where(:state => @states).
         where(:areacode => @cn).
         where(:type => @type)
@@ -986,15 +986,15 @@ class ReportsController < ApplicationController
 
     unless @agent_type.include?("fixed") && @agent_type.include?("mobile")
         if @agent_type[0] == "fixed"
-            probes = probes.where(:connection_profile_id => fixed_conn_profile)
+            @probes = @probes.where(:connection_profile_id => fixed_conn_profile)
         elsif @agent_type[0] == "mobile"
-            probes = probes.where(:connection_profile_id => mobile_conn_profile)
+            @probes = @probes.where(:connection_profile_id => mobile_conn_profile)
         end
     end
 
     @report_results = {}
 
-    probes.all.each do |probe|
+    @probes.all.each do |probe|
         conn_type = probe.connection_profile.conn_type.to_sym
         probe_type = probe.type.to_sym
         @report_results[conn_type] ||= {}
@@ -1019,8 +1019,8 @@ class ReportsController < ApplicationController
             where(:threshold_id => 1).
             order('start_timestamp ASC').all
 
-        @report_results[conn_type][probe_type][probe.id][:scm4][:dsavg] = @medians_scm4.first.dsavg unless @medians_scm4.empty?
-        @report_results[conn_type][probe_type][probe.id][:scm4][:sdavg] = @medians_scm4.first.sdavg unless @medians_scm4.empty?
+        @report_results[conn_type][probe_type][probe.id][:scm4][:dsavg] = @medians_scm4.first.dsavg.nil? ? 0.0 : @medians_scm4.first.pretty_upload(true) unless @medians_scm4.empty?
+        @report_results[conn_type][probe_type][probe.id][:scm4][:sdavg] = @medians_scm4.first.sdavg.nil? ? 0.0 : @medians_scm4.first.pretty_download(true) unless @medians_scm4.empty?
 
         #
         #SCM5
@@ -1034,8 +1034,8 @@ class ReportsController < ApplicationController
             where(:threshold_id => 2).
             order('start_timestamp ASC').all
 
-        @report_results[conn_type][probe_type][probe.id][:scm5][:dsavg] = @medians_scm5.first.dsavg unless @medians_scm5.empty?
-        @report_results[conn_type][probe_type][probe.id][:scm5][:sdavg] = @medians_scm5.first.sdavg unless @medians_scm5.empty?
+        @report_results[conn_type][probe_type][probe.id][:scm5][:dsavg] = @medians_scm5.first.dsavg.nil? ? 0.0 : @medians_scm5.first.pretty_upload(true) unless @medians_scm5.empty?
+        @report_results[conn_type][probe_type][probe.id][:scm5][:sdavg] = @medians_scm5.first.sdavg.nil? ? 0.0 : @medians_scm5.first.pretty_download(true) unless @medians_scm5.empty?
         
         #
         #SCM6
@@ -1049,7 +1049,7 @@ class ReportsController < ApplicationController
             where(:threshold_id => 3).
             order('start_timestamp ASC').all
 
-        @report_results[conn_type][probe_type][probe.id][:scm6][:dsavg] = @medians_scm6.first.dsavg unless @medians_scm6.empty?
+        @report_results[conn_type][probe_type][probe.id][:scm6][:dsavg] = @medians_scm6.first.dsavg.nil? ? 0.0 : @medians_scm6.first.pretty_upload(true) unless @medians_scm6.empty?
         
         #
         #SCM7
@@ -1063,8 +1063,8 @@ class ReportsController < ApplicationController
             where(:threshold_id => 4).
             order('start_timestamp ASC').all
 
-        @report_results[conn_type][probe_type][probe.id][:scm7][:dsavg] = @medians_scm7.first.dsavg unless @medians_scm7.empty?
-        @report_results[conn_type][probe_type][probe.id][:scm7][:sdavg] = @medians_scm7.first.sdavg unless @medians_scm7.empty?
+        @report_results[conn_type][probe_type][probe.id][:scm7][:dsavg] = @medians_scm7.first.dsavg.nil? ? 0.0 : @medians_scm7.first.pretty_upload(true)   unless @medians_scm7.empty?
+        @report_results[conn_type][probe_type][probe.id][:scm7][:sdavg] = @medians_scm7.first.sdavg.nil? ? 0.0 : @medians_scm7.first.pretty_download(true) unless @medians_scm7.empty?
 
 
         #
@@ -1072,8 +1072,8 @@ class ReportsController < ApplicationController
         #
 
         @medians_scm8 = Median.
-            where('start_timestamp >= ?', @date.beginning_of_day.utc).
-            where('start_timestamp <= ?', @date.end_of_day.utc).
+            where('start_timestamp >= ?', @date.beginning_of_day.in_time_zone('GMT')).
+            where('start_timestamp <= ?', @date.end_of_day.in_time_zone('GMT')).
             where(:schedule_id => Schedule.
                   where(:destination_id => probe.id)).
             where(:threshold_id => 5).
@@ -1083,12 +1083,14 @@ class ReportsController < ApplicationController
         scm8_num_total = 0
         scm8_total = 0.0
         @medians_scm8.each do |median|
-            scm8_okay += 1 if median.dsavg <= 2.0
-            scm8_num_total += 1
-            scm8_total += median.dsavg
+          unless median.sdavg.nil?
+            scm8_okay += 1 if median.sdavg.to_f <= 2.0
+            scm8_num_total += median.total_points
+            scm8_total += median.sdavg * median.total_points
+           end
         end
 
-        @report_results[conn_type][probe_type][probe.id][:scm8][:avg] = scm8_total / scm8_num_total
+        @report_results[conn_type][probe_type][probe.id][:scm8][:avg] = (scm8_total / scm8_num_total.to_f).round(3) unless scm8_num_total.zero?
         @report_results[conn_type][probe_type][probe.id][:scm8][:okay] = scm8_okay
         @report_results[conn_type][probe_type][probe.id][:scm8][:total] = scm8_num_total
 
@@ -1105,7 +1107,7 @@ class ReportsController < ApplicationController
             where(:threshold_id => 6).
             order('start_timestamp ASC').all
 
-        @report_results[conn_type][probe_type][probe.id][:scm9][:dsavg] = @medians_scm9.first.dsavg unless @medians_scm9.empty?
+        @report_results[conn_type][probe_type][probe.id][:scm9][:dsavg] = ((@medians_scm9.first.expected_points / @medians_scm9.first.total_points) * 100).round(2)  unless @medians_scm9.empty?
     end
 
     respond_to do |format|
