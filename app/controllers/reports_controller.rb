@@ -1000,9 +1000,11 @@ class ReportsController < ApplicationController
         @report_results[conn_type] ||= {}
         @report_results[conn_type][probe_type] ||= {}
         @report_results[conn_type][probe_type][probe.id] = {}
+
         @report_results[conn_type][probe_type][probe.id][:name] = probe.name
         @report_results[conn_type][probe_type][probe.id][:throughput_down] = probe.plan.throughput_down
         @report_results[conn_type][probe_type][probe.id][:throughput_up] = probe.plan.throughput_up
+
         %w(scm4 scm5 scm6 scm7 scm8 scm9).each do |c|
           @report_results[conn_type][probe_type][probe.id][c.to_sym] = {}
         end
@@ -1184,6 +1186,17 @@ class ReportsController < ApplicationController
             @report_results[conn_type][probe_type][probe.id][:scm9][:dsavg] = media.to_s + "%"
           end
         end
+
+        if (@report_results[conn_type][probe_type][probe.id][:scm4].empty? &&
+            @report_results[conn_type][probe_type][probe.id][:scm5].empty? &&
+            @report_results[conn_type][probe_type][probe.id][:scm6].empty? &&
+            @report_results[conn_type][probe_type][probe.id][:scm7].empty? &&
+            @report_results[conn_type][probe_type][probe.id][:scm8].empty? &&
+            @report_results[conn_type][probe_type][probe.id][:scm9].empty? )
+
+            @report_results[conn_type][probe_type].delete(probe.id)
+        end
+
     end
 
     respond_to do |format|

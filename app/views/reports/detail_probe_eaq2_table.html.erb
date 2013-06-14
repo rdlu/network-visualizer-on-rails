@@ -20,7 +20,7 @@
   <tr>
     <td rowspan="<%= @report_results[:fixed][:linux].size + 1 %>" style="padding-top: 50px; text-align: center"> Linux Fixo</td>
   <% @probes.all.each do |pb| %>
-        <% if pb.connection_profile.conn_type == "fixed" && pb.type == "linux" %>
+        <% if pb.connection_profile.conn_type == "fixed" && pb.type == "linux" && !@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id].nil? %>
           <tr>
             <td style="text-align: center"> <%= @report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:name]%></td>
             <% Threshold.all.each do |threshold|
@@ -62,7 +62,7 @@
     <tr>
       <td rowspan="<%= @report_results[:mobile][:linux].size + 1 %>" style="padding-top: 50px; text-align: center"> Linux Móvel</td>
       <% @probes.all.each do |pb| %>
-          <% if pb.connection_profile.conn_type == "mobile" && pb.type == "linux" %>
+          <% if pb.connection_profile.conn_type == "mobile" && pb.type == "linux" && !@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id].nil? %>
           <tr>
             <td style="text-align: center"> <%= @report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:name]%></td>
             <% Threshold.all.each do |threshold|
@@ -104,7 +104,7 @@
   <tr>
     <td rowspan="<%= @report_results[:mobile][:android].size + @report_results[:fixed][:android].size + 1 %>" style="padding-top: 50px; text-align: center">Android</td>
     <% @probes.all.each do |pb| %>
-        <% if pb.type == "android" %>
+        <% if pb.type == "android" && !@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id].nil? %>
           <tr>
             <td style="text-align: center"> <%= @report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:name]%></td>
     <% Threshold.all.each do |threshold|
