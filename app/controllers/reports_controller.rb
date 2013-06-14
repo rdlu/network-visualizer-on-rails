@@ -698,8 +698,8 @@ class ReportsController < ApplicationController
     #  SCM4
     #
     @medians_scm4 = Median.
-        where('start_timestamp >= ?', DateTime.parse(@date).beginning_of_day.utc).
-        where('start_timestamp <= ?', DateTime.parse(@date).end_of_day.utc).
+        where('start_timestamp >= ?', DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
+        where('start_timestamp <= ?', DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
         where(:schedule_id => fixed_schedules).
         where(:threshold_id => 1).
         order('start_timestamp ASC').all
@@ -707,8 +707,8 @@ class ReportsController < ApplicationController
     # SMP10
     #
       @medians_smp10 = Median.
-          where('start_timestamp >= ?',  DateTime.parse(@date).beginning_of_day.utc).
-          where('start_timestamp <= ?',  DateTime.parse(@date).end_of_day.utc).
+          where('start_timestamp >= ?',  DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
+          where('start_timestamp <= ?',  DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
           where(:schedule_id => mobile_schedules).
           where(:threshold_id => 1).
           order('start_timestamp ASC').all
@@ -716,8 +716,8 @@ class ReportsController < ApplicationController
       # SCM5
       #
       @medians_scm5 = Median.
-          where('start_timestamp >= ?',  DateTime.parse(@date).beginning_of_day.utc).
-          where('start_timestamp <= ?',  DateTime.parse(@date).end_of_day.utc).
+          where('start_timestamp >= ?',  DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
+          where('start_timestamp <= ?',  DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
           where(:schedule_id => fixed_schedules).
           where(:threshold_id => 2).
           order('start_timestamp ASC').all
@@ -726,8 +726,8 @@ class ReportsController < ApplicationController
       # SMP11
       #
       @medians_smp11 = Median.
-          where('start_timestamp >= ?',  DateTime.parse(@date).beginning_of_day.utc).
-          where('start_timestamp <= ?',  DateTime.parse(@date).end_of_day.utc).
+          where('start_timestamp >= ?',  DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
+          where('start_timestamp <= ?',  DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
           where(:schedule_id => mobile_schedules).
           where(:threshold_id => 2).
           order('start_timestamp ASC').all
@@ -736,8 +736,8 @@ class ReportsController < ApplicationController
       # SCM6
       #
       @medians_scm6 = Median.
-          where('start_timestamp >= ?',  DateTime.parse(@date).beginning_of_day.utc).
-          where('start_timestamp <= ?',  DateTime.parse(@date).end_of_day.utc).
+          where('start_timestamp >= ?',  DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
+          where('start_timestamp <= ?',  DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
           where(:schedule_id => all_schedules).
           where(:threshold_id => 3).
           order('start_timestamp ASC').all
@@ -746,8 +746,8 @@ class ReportsController < ApplicationController
       # SCM7
       #
       @medians_scm7 = Median.
-          where('start_timestamp >= ?',  DateTime.parse(@date).beginning_of_day.utc).
-          where('start_timestamp <= ?',  DateTime.parse(@date).end_of_day.utc).
+          where('start_timestamp >= ?',  DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
+          where('start_timestamp <= ?',  DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
           where(:schedule_id => all_schedules).
           where(:threshold_id => 4).
           order('start_timestamp ASC').all
@@ -756,8 +756,8 @@ class ReportsController < ApplicationController
       # SCM8
       #
       @medians_scm8 = Median.
-          where('start_timestamp >= ?',  DateTime.parse(@date).beginning_of_day.utc).
-          where('start_timestamp <= ?',  DateTime.parse(@date).end_of_day.utc).
+          where('start_timestamp >= ?',  DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
+          where('start_timestamp <= ?',  DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
           where(:schedule_id => all_schedules).
           where(:threshold_id => 5).
           order('start_timestamp ASC').all
@@ -766,8 +766,8 @@ class ReportsController < ApplicationController
       # SCM9
       #
       @medians_scm9 = Median.
-          where('start_timestamp >= ?', DateTime.parse(@date).beginning_of_day.utc).
-          where('start_timestamp <= ?', DateTime.parse(@date).end_of_day.utc).
+          where('start_timestamp >= ?', DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
+          where('start_timestamp <= ?', DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
           where(:schedule_id => all_schedules).
           where(:threshold_id => 6).
           order('start_timestamp ASC').all
@@ -1012,60 +1012,112 @@ class ReportsController < ApplicationController
         #
 
         @medians_scm4 = Median.
-            where('start_timestamp >= ?', @date.beginning_of_day.utc).
-            where('start_timestamp <= ?', @date.end_of_day.utc).
+            where('start_timestamp >= ?', @date.beginning_of_day.in_time_zone('GMT')).
+            where('start_timestamp <= ?', @date.end_of_day.in_time_zone('GMT')).
             where(:schedule_id => Schedule.
                   where(:destination_id => probe.id)).
             where(:threshold_id => 1).
             order('start_timestamp ASC').all
 
-        @report_results[conn_type][probe_type][probe.id][:scm4][:dsavg] = @medians_scm4.first.dsavg.nil? ? 0.0 : @medians_scm4.first.pretty_upload(true) unless @medians_scm4.empty?
-        @report_results[conn_type][probe_type][probe.id][:scm4][:sdavg] = @medians_scm4.first.sdavg.nil? ? 0.0 : @medians_scm4.first.pretty_download(true) unless @medians_scm4.empty?
+
+        unless @medians_scm4.empty?
+          @report_results[conn_type][probe_type][probe.id][:scm4][:dsavg] =  "Sem Dados"
+          @report_results[conn_type][probe_type][probe.id][:scm4][:sdavg] =  "Sem Dados"
+          @report_results[conn_type][probe_type][probe.id][:scm4][:color] = ""
+          unless  @medians_scm4.first.dsavg.nil? &&  @medians_scm4.first.sdavg.nil?
+            if  (((@medians_scm4.first.dsavg.to_f / 1000)/ @medians_scm4.first.schedule.destination.plan.throughput_up.to_f) * 100).round(2) >= 20.0 && (((@medians_scm4.first.sdavg.to_f / 1000)/ @medians_scm4.first.schedule.destination.plan.throughput_down.to_f) * 100).round(2) >= 20.0
+                @report_results[conn_type][probe_type][probe.id][:scm4][:color]= "green"
+            else
+              @report_results[conn_type][probe_type][probe.id][:scm4][:color]= "red"
+            end
+            @report_results[conn_type][probe_type][probe.id][:scm4][:dsavg] = @medians_scm4.first.pretty_upload(true)
+            @report_results[conn_type][probe_type][probe.id][:scm4][:sdavg] =  @medians_scm4.first.pretty_download(true)
+
+          end
+        end
+
 
         #
         #SCM5
         #
 
         @medians_scm5 = Median.
-            where('start_timestamp >= ?', @date.beginning_of_day.utc).
-            where('start_timestamp <= ?', @date.end_of_day.utc).
+            where('start_timestamp >= ?', @date.beginning_of_day.in_time_zone('GMT')).
+            where('start_timestamp <= ?', @date.end_of_day.in_time_zone('GMT')).
             where(:schedule_id => Schedule.
                   where(:destination_id => probe.id)).
             where(:threshold_id => 2).
             order('start_timestamp ASC').all
 
-        @report_results[conn_type][probe_type][probe.id][:scm5][:dsavg] = @medians_scm5.first.dsavg.nil? ? 0.0 : @medians_scm5.first.pretty_upload(true) unless @medians_scm5.empty?
-        @report_results[conn_type][probe_type][probe.id][:scm5][:sdavg] = @medians_scm5.first.sdavg.nil? ? 0.0 : @medians_scm5.first.pretty_download(true) unless @medians_scm5.empty?
-        
+        unless @medians_scm5.empty?
+          @report_results[conn_type][probe_type][probe.id][:scm5][:dsavg] =  "Sem Dados"
+          @report_results[conn_type][probe_type][probe.id][:scm5][:sdavg] =  "Sem Dados"
+          @report_results[conn_type][probe_type][probe.id][:scm5][:color] = ""
+          unless  @medians_scm5.first.dsavg.nil? ||  @medians_scm5.first.sdavg.nil?
+            up = (@medians_scm5.first.dsavg.to_f / (1000 * @medians_scm5.first.schedule.destination.plan.throughput_up.to_f) * 100).round(2)
+            down = (@medians_scm5.first.sdavg.to_f / (1000 * @medians_scm5.first.schedule.destination.plan.throughput_down.to_f) * 100).round(2)
+            if up >= 60.0 && down >= 60
+              @report_results[conn_type][probe_type][probe.id][:scm5][:color]= "green"
+            else
+              @report_results[conn_type][probe_type][probe.id][:scm5][:color]= "red"
+            end
+            @report_results[conn_type][probe_type][probe.id][:scm5][:dsavg] = up.to_s + "%"
+            @report_results[conn_type][probe_type][probe.id][:scm5][:sdavg] = down.to_s + "%"
+
+          end
+        end
         #
         #SCM6
         #
 
         @medians_scm6 = Median.
-            where('start_timestamp >= ?', @date.beginning_of_day.utc).
-            where('start_timestamp <= ?', @date.end_of_day.utc).
+            where('start_timestamp >= ?', @date.beginning_of_day.in_time_zone('GMT')).
+            where('start_timestamp <= ?', @date.end_of_day.in_time_zone('GMT')).
             where(:schedule_id => Schedule.
                   where(:destination_id => probe.id)).
             where(:threshold_id => 3).
             order('start_timestamp ASC').all
 
-        @report_results[conn_type][probe_type][probe.id][:scm6][:dsavg] = @medians_scm6.first.dsavg.nil? ? 0.0 : @medians_scm6.first.pretty_upload(true) unless @medians_scm6.empty?
-        
+        unless @medians_scm6.empty?
+          @report_results[conn_type][probe_type][probe.id][:scm6][:dsavg] =  "Sem Dados"
+          @report_results[conn_type][probe_type][probe.id][:scm6][:color] = ""
+          unless  @medians_scm6.first.dsavg.nil?
+            if (@medians_scm6.first.dsavg.to_f * 1000).round(2) <= 80.0
+              @report_results[conn_type][probe_type][probe.id][:scm6][:color]= "green"
+            else
+              @report_results[conn_type][probe_type][probe.id][:scm6][:color]= "red"
+            end
+            @report_results[conn_type][probe_type][probe.id][:scm6][:dsavg] =  @medians_scm6.first.pretty_upload(true)
+
+          end
+        end
+
         #
         #SCM7
         #
 
         @medians_scm7 = Median.
-            where('start_timestamp >= ?', @date.beginning_of_day.utc).
-            where('start_timestamp <= ?', @date.end_of_day.utc).
+            where('start_timestamp >= ?', @date.beginning_of_day.in_time_zone('GMT')).
+            where('start_timestamp <= ?', @date.end_of_day.in_time_zone('GMT')).
             where(:schedule_id => Schedule.
                   where(:destination_id => probe.id)).
             where(:threshold_id => 4).
             order('start_timestamp ASC').all
 
-        @report_results[conn_type][probe_type][probe.id][:scm7][:dsavg] = @medians_scm7.first.dsavg.nil? ? 0.0 : @medians_scm7.first.pretty_upload(true)   unless @medians_scm7.empty?
-        @report_results[conn_type][probe_type][probe.id][:scm7][:sdavg] = @medians_scm7.first.sdavg.nil? ? 0.0 : @medians_scm7.first.pretty_download(true) unless @medians_scm7.empty?
-
+        unless @medians_scm7.empty?
+          @report_results[conn_type][probe_type][probe.id][:scm7][:dsavg] =  "Sem Dados"
+          @report_results[conn_type][probe_type][probe.id][:scm7][:sdavg] =  "Sem Dados"
+          @report_results[conn_type][probe_type][probe.id][:scm7][:color] = ""
+          unless  @medians_scm7.first.dsavg.nil?  || @medians_scm7.first.sdavg.nil?
+            if (@medians_scm7.first.dsavg.to_f * 1000).round(2) <= 80.0 && (@medians_scm7.first.sdavg.to_f * 1000).round(2) <= 80.0
+              @report_results[conn_type][probe_type][probe.id][:scm7][:color]= "green"
+            else
+              @report_results[conn_type][probe_type][probe.id][:scm7][:color]= "red"
+            end
+            @report_results[conn_type][probe_type][probe.id][:scm7][:dsavg] =  @medians_scm7.first.pretty_upload(true)
+            @report_results[conn_type][probe_type][probe.id][:scm7][:sdavg] =  @medians_scm7.first.pretty_download(true)
+          end
+        end
 
         #
         #SCM8
@@ -1090,24 +1142,48 @@ class ReportsController < ApplicationController
            end
         end
 
-        @report_results[conn_type][probe_type][probe.id][:scm8][:avg] = (scm8_total / scm8_num_total.to_f).round(3) unless scm8_num_total.zero?
-        @report_results[conn_type][probe_type][probe.id][:scm8][:okay] = scm8_okay
-        @report_results[conn_type][probe_type][probe.id][:scm8][:total] = scm8_num_total
 
+        unless @medians_scm8.empty?
+          @report_results[conn_type][probe_type][probe.id][:scm8][:avg] =  "Sem Dados"
+          @report_results[conn_type][probe_type][probe.id][:scm8][:color] = ""
+          unless scm8_num_total.zero?
+            media = (scm8_total / scm8_num_total.to_f).round(3)
+            if media <=  2
+              @report_results[conn_type][probe_type][probe.id][:scm8][:color]= "green"
+            else
+              @report_results[conn_type][probe_type][probe.id][:scm8][:color]= "red"
+            end
+            @report_results[conn_type][probe_type][probe.id][:scm8][:avg] = media.to_s + "%"
+            @report_results[conn_type][probe_type][probe.id][:scm8][:okay] = scm8_okay
+            @report_results[conn_type][probe_type][probe.id][:scm8][:total] = scm8_num_total
+          end
+        end
 
         #
         #SCM9
         #
 
         @medians_scm9 = Median.
-            where('start_timestamp >= ?', @date.beginning_of_day.utc).
-            where('start_timestamp <= ?', @date.end_of_day.utc).
+            where('start_timestamp >= ?', @date.beginning_of_day.in_time_zone('GMT')).
+            where('start_timestamp <= ?', @date.end_of_day.in_time_zone('GMT')).
             where(:schedule_id => Schedule.
                   where(:destination_id => probe.id)).
             where(:threshold_id => 6).
             order('start_timestamp ASC').all
 
-        @report_results[conn_type][probe_type][probe.id][:scm9][:dsavg] = ((@medians_scm9.first.expected_points / @medians_scm9.first.total_points) * 100).round(2)  unless @medians_scm9.empty?
+        unless @medians_scm9.empty?
+          @report_results[conn_type][probe_type][probe.id][:scm9][:dsavg] =  "Sem Dados"
+          @report_results[conn_type][probe_type][probe.id][:scm9][:color] = ""
+          unless @medians_scm9.first.dsavg.nil?
+            media = (@medians_scm9.first.dsavg * 100).round(2)
+            if  media >= 99.0
+              @report_results[conn_type][probe_type][probe.id][:scm9][:color]= "green"
+            else
+              @report_results[conn_type][probe_type][probe.id][:scm9][:color]= "red"
+            end
+            @report_results[conn_type][probe_type][probe.id][:scm9][:dsavg] = media.to_s + "%"
+          end
+        end
     end
 
     respond_to do |format|

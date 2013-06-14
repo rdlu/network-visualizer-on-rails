@@ -27,28 +27,28 @@
               case threshold.id
                 when 1
             %>
-              <td style="text-align: center">
-               <%= "<span style=\"color:green\">#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm4][:sdavg]}/#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm4][:dsavg]}</span>".html_safe %>
-              </td>
+                <td style="text-align: center">
+                  <%= "<span style=\"color:#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm4][:color]}\">#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm4][:sdavg]}/#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm4][:dsavg]}</span>".html_safe %>
+                </td>
             <% when 2 %>
-               <td style="text-align: center">
-                 <%= "<span style=\"color:green\">#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm5][:sdavg]}/#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm5][:dsavg]}</span>".html_safe %>
-               </td>
+                <td style="text-align: center">
+                  <%= "<span style=\"color:#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm5][:color]}\">#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm5][:sdavg]}/#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm5][:dsavg]}</span>".html_safe %>
+                </td>
             <% when 3 %>
                 <td style="text-align: center">
-                  <%= "<span style=\"color:green\">#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm6][:dsavg]}</span>".html_safe %>
+                  <%= "<span style=\"color:#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm6][:color]}\">#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm6][:dsavg]}</span>".html_safe %>
                 </td>
             <% when 4 %>
                 <td style="text-align: center">
-                  <%= "<span style=\"color:green\">#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm7][:sdavg]}/#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm7][:dsavg]}</span>".html_safe %>
+                  <%= "<span style=\"color:#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm7][:color]}\">#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm7][:sdavg]}/#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm7][:dsavg]}</span>".html_safe %>
                 </td>
             <% when 5 %>
                 <td style="text-align: center">
-                  <%= "<span style=\"color:green\">#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm8][:avg] }%</span>".html_safe %>
+                  <%= "<span style=\"color:#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm8][:color]}\">#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm8][:avg] }</span>".html_safe %>
                 </td>
             <% when 6 %>
                 <td style="text-align: center">
-                  <%= "<span style=\"color:green\">#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm9][:dsavg]}%</span>".html_safe %>
+                  <%= "<span style=\"color:#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm9][:color]}\">#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm9][:dsavg]}</span>".html_safe %>
                 </td>
             <% end
                end %>
@@ -70,27 +70,27 @@
                 when 1
             %>
                 <td style="text-align: center">
-                  <%= "<span style=\"color:green\">#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm4][:sdavg]}/#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm4][:dsavg]}</span>".html_safe %>
+                  <%= "<span style=\"color:#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm4][:color]}\">#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm4][:sdavg]}/#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm4][:dsavg]}</span>".html_safe %>
                 </td>
             <% when 2 %>
                 <td style="text-align: center">
-                  <%= "<span style=\"color:green\">#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm5][:sdavg]}/#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm5][:dsavg]}</span>".html_safe %>
+                  <%= "<span style=\"color:#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm5][:color]}\">#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm5][:sdavg]}/#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm5][:dsavg]}</span>".html_safe %>
                 </td>
             <% when 3 %>
                 <td style="text-align: center">
-                  <%= "<span style=\"color:green\">#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm6][:dsavg]}</span>".html_safe %>
+                  <%= "<span style=\"color:#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm6][:color]}\">#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm6][:dsavg]}</span>".html_safe %>
                 </td>
             <% when 4 %>
                 <td style="text-align: center">
-                  <%= "<span style=\"color:green\">#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm7][:sdavg]}/#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm7][:dsavg]}</span>".html_safe %>
+                  <%= "<span style=\"color:#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm7][:color]}\">#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm7][:sdavg]}/#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm7][:dsavg]}</span>".html_safe %>
                 </td>
             <% when 5 %>
                 <td style="text-align: center">
-                  <%= "<span style=\"color:green\">#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm8][:avg] }%</span>".html_safe %>
+                  <%= "<span style=\"color:#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm8][:color]}\">#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm8][:avg] }</span>".html_safe %>
                 </td>
             <% when 6 %>
                 <td style="text-align: center">
-                  <%= "<span style=\"color:green\">#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm9][:dsavg]}%</span>".html_safe %>
+                  <%= "<span style=\"color:#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm9][:color]}\">#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm9][:dsavg]}</span>".html_safe %>
                 </td>
             <% end
                end %>
@@ -112,27 +112,27 @@
         when 1
     %>
         <td style="text-align: center">
-          <%= "<span style=\"color:green\">#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm4][:sdavg]}/#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm4][:dsavg]}</span>".html_safe %>
+          <%= "<span style=\"color:#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm4][:color]}\">#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm4][:sdavg]}/#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm4][:dsavg]}</span>".html_safe %>
         </td>
     <% when 2 %>
         <td style="text-align: center">
-          <%= "<span style=\"color:green\">#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm5][:sdavg]}/#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm5][:dsavg]}</span>".html_safe %>
+          <%= "<span style=\"color:#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm5][:color]}\">#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm5][:sdavg]}/#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm5][:dsavg]}</span>".html_safe %>
         </td>
     <% when 3 %>
         <td style="text-align: center">
-          <%= "<span style=\"color:green\">#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm6][:dsavg]}</span>".html_safe %>
+          <%= "<span style=\"color:#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm6][:color]}\">#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm6][:dsavg]}</span>".html_safe %>
         </td>
     <% when 4 %>
         <td style="text-align: center">
-          <%= "<span style=\"color:green\">#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm7][:sdavg]}/#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm7][:dsavg]}</span>".html_safe %>
+          <%= "<span style=\"color:#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm7][:color]}\">#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm7][:sdavg]}/#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm7][:dsavg]}</span>".html_safe %>
         </td>
     <% when 5 %>
         <td style="text-align: center">
-          <%= "<span style=\"color:green\">#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm8][:avg] }%</span>".html_safe %>
+          <%= "<span style=\"color:#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm8][:color]}\">#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm8][:avg] }</span>".html_safe %>
         </td>
     <% when 6 %>
         <td style="text-align: center">
-          <%= "<span style=\"color:green\">#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm9][:dsavg]}%</span>".html_safe %>
+          <%= "<span style=\"color:#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm9][:color]}\">#{@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id][:scm9][:dsavg]}</span>".html_safe %>
         </td>
     <% end
        end %>
