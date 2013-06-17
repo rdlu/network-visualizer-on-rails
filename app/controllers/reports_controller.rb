@@ -1019,6 +1019,7 @@ class ReportsController < ApplicationController
             where(:schedule_id => Schedule.
                   where(:destination_id => probe.id)).
             where(:threshold_id => 1).
+            where("dsavg is not null").
             order('start_timestamp ASC').all
 
 
@@ -1049,6 +1050,7 @@ class ReportsController < ApplicationController
             where(:schedule_id => Schedule.
                   where(:destination_id => probe.id)).
             where(:threshold_id => 2).
+            where("dsavg is not null").
             order('start_timestamp ASC').all
 
         unless @medians_scm5.empty?
@@ -1078,6 +1080,7 @@ class ReportsController < ApplicationController
             where(:schedule_id => Schedule.
                   where(:destination_id => probe.id)).
             where(:threshold_id => 3).
+            where("dsavg is not null").
             order('start_timestamp ASC').all
 
         unless @medians_scm6.empty?
@@ -1104,6 +1107,7 @@ class ReportsController < ApplicationController
             where(:schedule_id => Schedule.
                   where(:destination_id => probe.id)).
             where(:threshold_id => 4).
+            where("dsavg is not null").
             order('start_timestamp ASC').all
 
         unless @medians_scm7.empty?
@@ -1131,6 +1135,7 @@ class ReportsController < ApplicationController
             where(:schedule_id => Schedule.
                   where(:destination_id => probe.id)).
             where(:threshold_id => 5).
+            where("dsavg is not null").
             order('start_timestamp ASC').all
 
         scm8_okay = 0
@@ -1171,6 +1176,7 @@ class ReportsController < ApplicationController
             where(:schedule_id => Schedule.
                   where(:destination_id => probe.id)).
             where(:threshold_id => 6).
+            where("dsavg is not null").
             order('start_timestamp ASC').all
 
         unless @medians_scm9.empty?
