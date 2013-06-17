@@ -1749,11 +1749,11 @@ class ReportsController < ApplicationController
                   throughput_http_up = report.xpath("report/results/throughput_http/up").to_s.to_f
 
                   metric = Metric.where(plugin: "throughput_http")
-                  probe = Probe.where(name: name)
+                  probe = Probe.where(ipaddress: user).first
                   schedule = probe.schedules_as_destination.last
 
                   @results = Results.create(schedule_id: schedule.id,
-                                            metric_id: metric.id,
+                                            metric_id: metric,
                                             schedule_uuid: schedule.uuid,
                                             uuid: uuid,
                                             metric_name: "throughput_http",
