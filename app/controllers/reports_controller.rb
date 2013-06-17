@@ -1563,7 +1563,7 @@ class ReportsController < ApplicationController
       agent_type = report.xpath("report/agent_type").children.to_s
 
       case agent_type
-      when "windows"
+      when /windows/i
           # KPI
           cell_id = report.xpath("report/kpis/cell_id").children.first.to_s
           cell_id = nil if cell_id == "-"
@@ -1674,7 +1674,7 @@ class ReportsController < ApplicationController
                                                                        uuid: uuid)
           end
 
-      when /linux|android/
+      when /linux|android/i
           @rep = Report.create(user: user, uuid: uuid, timestamp: DateTime.strptime(timestamp, '%s'), agent_type: agent_type)
 
           results = report.xpath("report/results").children
