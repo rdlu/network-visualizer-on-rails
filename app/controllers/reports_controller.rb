@@ -1643,25 +1643,16 @@ class ReportsController < ApplicationController
         # DNS test results
         dns_server = dns_url = dns_delay = nil
         @dns_dynamic_results = []
-        report.xpath("report/results/dns").children.each do |c|
-          if c.name == "test"
-            c.children.each do |cc|
-              case cc.name
-                when "server"
-                  dns_server = cc.children.first.to_s
-                when "url"
-                  dns_url = cc.children.first.to_s
-                when "delay"
-                  dns_delay = cc.children.first.to_s.to_f
-              end
-            end
+        report.xpath("report/results/dns/test").each do |c|
+            dns_server = c.children.search("server").inner_text
+            dns_url = c.children.search("url").inner_text
+            dns_delay = c.children.search("delay").inner_text.to_f
 
             @dns_dynamic_results << DnsDynamicResult.create(server: dns_server,
                                                             url: dns_url,
                                                             delay: dns_delay,
                                                             uuid: uuid
             )
-          end
         end
 
         # Web Load test results
