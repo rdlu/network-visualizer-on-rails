@@ -75,8 +75,8 @@ MomRails::Application.configure do
 
   config.action_mailer.smtp_settings = {
       :address              => "smtp.gmail.com",
-      :port                 => 587,
-      :domain               => 'fringe.inf.ufrgs.br',
+      :port                 => 63587,
+      :domain               => '200.220.254.22',
       :user_name            => 'nmupdates',
       :password             => 'VivOGparC,.',
       :authentication       => 'plain',
