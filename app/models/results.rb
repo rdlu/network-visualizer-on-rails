@@ -1,7 +1,7 @@
 class Results < ActiveRecord::Base
   belongs_to :schedule
   belongs_to :metric
-  attr_accessible :dsavg, :dsmax, :dsmin, :schedule_uuid, :sdavg, :sdmax, :sdmin, :timestamp, :uuid, :metric_name
+  attr_accessible :dsavg, :dsmax, :dsmin, :schedule_uuid, :sdavg, :sdmax, :sdmin, :timestamp, :uuid, :metric_name, :schedule_id, :metric_id
 
   def timestamp= value
     if value.is_a? Date

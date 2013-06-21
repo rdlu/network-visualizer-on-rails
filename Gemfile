@@ -60,6 +60,16 @@ group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'yaml_db'
+
+  # Debugging
+  unless ENV["RM_INFO"]
+    gem 'pry'
+    gem 'pry-remote'
+    gem 'pry-stack_explorer'
+    gem 'pry-debugger'
+    gem 'jazz_hands'
+  end
+
 end
 
 group :test, :development do
