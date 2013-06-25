@@ -1679,13 +1679,17 @@ class ReportsController < ApplicationController
 
           results = report.xpath("report/results").children
 
+          @probe = Probe.where(ipaddress: user).first
+
+          # Update agent version
+          @probe.update_attributes(agent_version: report.xpath("report/version").inner_text)
+
           results.each do |result|
               case result.name
               when "availability"
                   total = result.xpath("total").children.text.to_i
                   success = result.xpath("success").children.text.to_i
 
-                  @probe = Probe.find_by_ipaddress(user)
                   @schedule = @probe.schedules.last
 
                   @metric = Metric.find_by_plugin("availability")
