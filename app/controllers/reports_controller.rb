@@ -75,7 +75,6 @@ class ReportsController < ApplicationController
     @cn = params[:cn]
     @goal_filter = params[:goal_filter] #all,above or under
 
-
     if @type == "android"
       @agent_type = ["fixed", "mobile"]
     end

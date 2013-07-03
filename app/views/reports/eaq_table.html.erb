@@ -61,6 +61,12 @@
                   type: 'POST',
                   url: "<%= detail_eaq_table_reports_url %>",
                   data: { source: <%= @source.id %>, destination: <%= @destination.id %>, month: id, schedule:<%= @schedule.id %>},
+                  beforeSend: function() {
+                      jQuery('#detail'+id).prepend('<div id=\"row-loading\" class="row-fluid"><div   class=\"span12\"><div id=\"box-loading\" style="height:25px;width: 400px"><%=image_tag 'ajax-loader.gif' %> <strong>Requisitando o relatório selecionado, aguarde...</strong></div></div></div>');
+                  },
+                  complete: function() {
+                      jQuery('#row-loading').remove();
+                  },
                   success: function(data){
                       $('#detail'+id).html(data);
                   }
