@@ -33,6 +33,7 @@ MomRails::Application.routes.draw do
   resources :tests
   resources :schedules
   get 'schedules/win/schedule' => 'schedules#win', :as => 'windows_schedules'
+  post 'schedules/private_schedule' => 'schedules#private_schedule', :as => 'private_schedules'
  
   resources :probes do
     member do
