@@ -120,7 +120,7 @@ class SchedulesController < ApplicationController
   # Android / Linux Schedules
   def private_schedule
       ipaddress = params[:ipaddress]
-      @probe = Probe.where(ipaddress: ipaddress)
+      @probe = Probe.where(ipaddress: ipaddress).first
 
       @schedules = Schedule.where(destination_id: @probe.id).all
 
