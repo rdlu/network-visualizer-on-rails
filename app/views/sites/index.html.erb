@@ -1,7 +1,23 @@
 <%- model_class = Site -%>
-<div class="page-header">
-  <h1><%=t '.title', :default => model_class.model_name.human.pluralize %></h1>
+
+<h2><%=t '.title', :default => model_class.model_name.human.pluralize %></h2>
+
+<div class="row-fluid">
+  <div class="span12">
+    <% if can? :create, Site %>
+        <div class="navbar">
+          <div class="navbar-inner">
+            <div class="span2 offset10">
+              <%= link_to t('.new', :default => "Novo Site"),
+                          new_site_path,
+                          :class => 'btn btn-primary btn-block' %>
+            </div>
+          </div>
+        </div>
+    <%end%>
+  </div>
 </div>
+
 <table class="table table-striped">
   <thead>
     <tr>
@@ -33,6 +49,4 @@
   </tbody>
 </table>
 
-<%= link_to t('.new', :default => t("helpers.links.new")),
-            new_site_path,
-            :class => 'btn btn-primary' %>
+
