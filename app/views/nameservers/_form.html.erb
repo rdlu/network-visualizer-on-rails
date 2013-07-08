@@ -2,7 +2,7 @@
   <div class="control-group">
     <%= f.label "Endereço:", :class => 'control-label' %>
     <div class="controls">
-      <%= f.dns_field :address, :class => 'text_field' %>
+      <%= f.text_field :address, :class => 'text_field' %>
     </div>
   </div>
   <div class="control-group">
@@ -33,9 +33,9 @@
 
   <div class="control-group">
     <div class="controls">
-    <%= f.submit nil, :class => 'btn btn-primary btn-large' %>
+    <%= f.submit nil, :class => 'btn btn-primary ' %>
     <%= link_to t('.cancel', :default => "Cancelar"),
-                nameservers_path, :class => 'btn btn-inverse btn-large ' %>
+                nameservers_path, :class => 'btn btn-inverse ' %>
     </div>
   </div>
 <% end %>

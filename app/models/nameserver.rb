@@ -2,7 +2,7 @@
 class Nameserver < ActiveRecord::Base
   attr_accessible :address, :internal, :name, :primary, :vip
 
-  validates :address, :presence => true, :length => {:maximum => 255, :minimum => 3}, :uniqueness => true
+  validates :address, :presence => true, :length => {:maximum => 255, :minimum => 3}
   validate  :validate_address
 
   def pretty_name
@@ -11,10 +11,10 @@ class Nameserver < ActiveRecord::Base
 
 
   def validate_address
-    errors.add(:ipaddress, ' tem um formato inválido') unless ip?
+    errors.add('Endereço tem um formato inválido') unless ip?
   end
 
   def ip?
-    IPAddress.valid? self.address
+    !!(IPAddress.valid? self.address)
   end
 end
