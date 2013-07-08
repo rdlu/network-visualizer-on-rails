@@ -50,7 +50,7 @@ class NameserversController < ApplicationController
 
     respond_to do |format|
       if @nameserver.save
-        format.html { redirect_to @nameserver, notice: 'Nameserver was successfully created.' }
+        format.html { redirect_to @nameserver, notice: 'Nameserver foi criado com sucesso.' }
         format.json { render json: @nameserver, status: :created, location: @nameserver }
       else
         format.html { render action: "new" }
@@ -67,7 +67,7 @@ class NameserversController < ApplicationController
 
     respond_to do |format|
       if @nameserver.update_attributes(params[:nameserver])
-        format.html { redirect_to @nameserver, notice: 'Nameserver was successfully updated.' }
+        format.html { redirect_to @nameserver, notice: 'Nameserver foi atualizado com sucesso.' }
         format.json { head :no_content }
       else
         format.html { render action: "edit" }

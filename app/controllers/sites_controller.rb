@@ -44,7 +44,7 @@ class SitesController < ApplicationController
 
     respond_to do |format|
       if @site.save
-        format.html { redirect_to @site, notice: 'Site was successfully created.' }
+        format.html { redirect_to @site, notice: 'Site foi criado com sucesso.' }
         format.json { render json: @site, status: :created, location: @site }
       else
         format.html { render action: "new" }
@@ -60,7 +60,7 @@ class SitesController < ApplicationController
 
     respond_to do |format|
       if @site.update_attributes(params[:site])
-        format.html { redirect_to @site, notice: 'Site was successfully updated.' }
+        format.html { redirect_to @site, notice: 'Site foi atualizado com sucesso.' }
         format.json { head :no_content }
       else
         format.html { render action: "edit" }

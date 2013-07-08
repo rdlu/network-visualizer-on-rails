@@ -1,20 +1,22 @@
 <%= form_for @site, :html => { :class => 'form-horizontal' } do |f| %>
   <div class="control-group">
-    <%= f.label :url, :class => 'control-label' %>
+    <%= f.label "URL:", :class => 'control-label' %>
     <div class="controls">
       <%= f.text_field :url, :class => 'text_field' %>
     </div>
   </div>
   <div class="control-group">
-    <%= f.label :vip, :class => 'control-label' %>
+    <%= f.label "VIP:", :class => 'control-label' %>
     <div class="controls">
-      <%= f.check_box :vip, :class => 'check_box' %>
+      <%= f.check_box :vip, :class => 'check_box', :checked=>true , :readonly=>true %>
     </div>
   </div>
 
-  <div class="form-actions">
+  <div class="control-group">
+    <div class="controls">
     <%= f.submit nil, :class => 'btn btn-primary' %>
     <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
-                sites_path, :class => 'btn' %>
+                sites_path, :class => 'btn btn-inverse' %>
+    </div>
   </div>
 <% end %>
