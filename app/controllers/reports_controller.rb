@@ -635,6 +635,7 @@ class ReportsController < ApplicationController
 
   end
 
+
   def detail_speed_type_eaq2_table
     #consolidacao pela velocidade contratada
     #consolidacao por tipo de agente e tecnologia de conexão
@@ -674,17 +675,20 @@ class ReportsController < ApplicationController
         where(:state => @states).
         where(:areacode => @cn).
         where(:type => @type).all
+    #.where(:plan_id => plan.id)
 
     mobile_probes = Probe.
         where(:connection_profile_id => mobile_conn_profile).
         where(:state => @states).
         where(:areacode => @cn).
         where(:type => @type).all
+    #.where(:plan_id => plan.id)
 
     all_probes = Probe.
         where(:state => @states).
         where(:areacode => @cn).
         where(:type => @type).all
+    #.where(:plan_id => plan.id)
 
     fixed_schedules = Schedule.
         where(:destination_id => fixed_probes).all
@@ -845,14 +849,14 @@ class ReportsController < ApplicationController
           if median.schedule.destination.plan.throughput_down.eql? plan.throughput_down
           up = (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
           down = (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
-          if down >= median.threshold.goal_level.round(3) && up >= median.threshold.goal_level.round(3)
-            media10 << 1
-            mediaup10 << 1
-
-          else
-            media10 << 0
-            mediaup10 << 0
-          end
+            if down >= median.threshold.goal_level.round(3) && up >= median.threshold.goal_level.round(3)
+              media10 << 1
+              mediaup10 << 1
+  
+            else
+              media10 << 0
+              mediaup10 << 0
+            end
           end
         end
       end
