@@ -75,6 +75,10 @@ class ReportsController < ApplicationController
     @cn = params[:cn]
     @goal_filter = params[:goal_filter] #array: true or false
 
+    if @goal_filter.nil?
+      @goal_filter = [false]
+    end
+
     if @type[0]== "all"
       @agent_type = ["fixed", "mobile"]
       @type = ["android","linux"]
