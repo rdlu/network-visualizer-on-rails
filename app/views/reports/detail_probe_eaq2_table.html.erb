@@ -57,7 +57,7 @@
     <% end %>
     </tr>
   <% end %>
-  <% unless @report_results[:mobile][:linux].nil? || @report_results[:mobile][:linux].empty?  %>
+  <% unless @report_results[:mobile].nil? || @report_results[:mobile][:linux].nil? || @report_results[:mobile][:linux].empty?  %>
     <!-- LINUX MOVEL -->
     <tr>
       <td rowspan="<%= @report_results[:mobile][:linux].size + 1 %>" style="padding-top: 10px; text-align: center"> Linux Móvel</td>
@@ -101,7 +101,7 @@
   </tr>
   <% end %>
   <!-- ANDROID -->
-  <% unless @report_results[:mobile][:android].nil? || @report_results[:mobile][:android].empty? %>
+  <% unless @report_results[:mobile].nil? || @report_results[:mobile][:android].nil? || @report_results[:mobile][:android].empty? %>
   <tr>
     <td rowspan="<%= @report_results[:mobile][:android].size  + 1 %>" style="padding-top: 10px; text-align: center">Android</td>
     <% @probes.all.each do |pb| %>
