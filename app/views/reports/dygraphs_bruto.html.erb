@@ -1,0 +1,18 @@
+<div id="dygraph-<%=@source.id+'-'+@destination.id%>">
+
+</div>
+<script type="text/javascript">
+  new Dygraph(
+          $("dygraph-<%=@source.id+'-'+@destination.id%>"),
+          [
+                  <% if @metric.plugin != 'rtt'
+                        @raw_results.each do |res| %>
+                    [new Date(<%=res.timestamp%>),<%=res.sdavg%>,<%=res.dsavg%>],
+                  <%    end
+                    end %>
+          ],
+          {
+              labels: ["Data","Download","Upload"]
+          }
+  );
+</script>

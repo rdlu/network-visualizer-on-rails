@@ -188,6 +188,11 @@
             var source_id = jQuery('#source_id').val();
             var metric_id = jQuery('#metric_id').val();
             var report_type = jQuery('#report_type').val();
+            var date_start = new Date(jQuery('#date_start').val().split('/').reverse());
+            var date_end = new Date(jQuery('#date_end').val().split('/').reverse());
+            var day_in_milisecs = 1000*60*60*24;
+            var date_diff = (date_end - date_start) / day_in_milisecs;
+
 
             if (source_id != '' && destination_id != '' && metric_id != '')
                 jQuery.ajax("<%= reports_url %>/" + report_type, {
@@ -200,10 +205,27 @@
                     success: function (result, status) {
                         switch (report_type) {
                             case 'graph':
-                                var graph = new Graph(result.source, result.destination, result.metric, result.range, result.results);
-                                graphs[graph.idName] = graph;
-                                graph.draw();
-                                break;
+                                    if(date_diff < 8) {
+                                        var graph = new Graph(result.source, result.destination, result.metric, result.range, result.results);
+                                        graphs[graph.idName] = graph;
+                                        graph.draw();
+                                        break;
+                                    } else {
+                                        if (jQuery("box-dygraph-" + source_id + destination_id).is(':empty')) {
+                                            jQuery('#graphs-area').prepend('<div id=\"box-dygraph' + source_id + destination_id + '\" class="row-fluid"><div   class=\"span12\"><div id=\"chart-' + source_id + destination_id + '\" style="height:300px;"></div></div></div>');
+                                            jQuery("box-dygraph-" + source_id + destination_id).append('<div class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="$(\'#chart-' + self.idName + '\').remove(); $(this).remove();$(\'#export-' + self.idName + '\').remove();$(\'#exportxls-' + self.idName + '\').remove()">Remover</div>');
+                                            jQuery("box-dygraph-" + source_id + destination_id).append('<a id=\"export-' + self.idName + '\"  class="btn btn-success" style="float:right; margin-right: 5px ;margin-bottom: 20px" href="<%= reports_csv_bruto_url '' %>' + self.fileName + '.csv?' + this.params() + '">Exportar CSV</a>');
+                                            jQuery("box-dygraph-" + source_id + destination_id).append('<a id=\"exportxls-' + self.idName + '\"  class="btn btn-success" style="float:right; margin-right: 5px ;margin-bottom: 20px" href="<%= reports_xls_bruto_url '' %>' + self.fileName + '.xls?' + this.params() + '">Exportar XLS</a>');
+
+                                        } else {
+                                            $("box-dygraph-" + source_id + destination_id).remove();
+                                            jQuery('#graphs-area').prepend('<div id=\"box-' + self.idName + '\" class="row-fluid"><div   class=\"span12\"><div id=\"chart-' + self.idName + '\" style="height:300px;"></div></div></div>');
+                                            jQuery("#box-" + self.idName).append('<a class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="$(\'#chart-' + self.idName + '\').remove(); $(this).remove();$(\'#export-' + self.idName + '\').remove();$(\'#exportxls-' + self.idName + '\').remove()">Remover</a>');
+                                            jQuery("#box-" + self.idName).append('<a id=\"export-' + self.idName + '\"  class="btn btn-success" style="float:right; margin-right: 5px ;margin-bottom: 20px" href="<%= reports_csv_bruto_url '' %>' + self.fileName + '.csv?' + this.params() + '">Exportar CSV</a>');
+                                            jQuery("#box-" + self.idName).append('<a id=\"exportxls-' + self.idName + '\"  class="btn btn-success" style="float:right; margin-right: 5px ;margin-bottom: 20px" href="<%= reports_xls_bruto_url '' %>' + self.fileName + '.xls?' + this.params() + '">Exportar XLS</a>');
+
+                                        }
+                                    }
                             case 'eaq_graph':
                                 var eaqgraph = new EAQGraph(result.source, result.destination, result.threshold, result.metric, result.range, result.results, result.goal_line);
                                 graphs[eaqgraph.idName] = eaqgraph;

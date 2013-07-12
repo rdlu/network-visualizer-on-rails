@@ -1394,6 +1394,26 @@ class ReportsController < ApplicationController
     end
   end
 
+  def dygraphs_bruto
+    @source = Probe.find(params[:source])
+    @destination = Probe.find(params[:destination])
+    @metric = Metric.find(params[:metric])
+    @schedule = Schedule.where(:destination_id => destination).where(:source_id => source).all.last
+
+    @from = params[:from]
+    @to = params[:to]
+
+    @raw_results = Results.
+        where(:schedule_id => schedule.id).
+        where(:metric_id => metric.id).
+        where(:timestamp => from..to).order('timestamp ASC').all
+
+
+    respond_to do |format|
+      format.html
+    end
+  end
+
   def xls_bruto
     @source = Probe.find(params[:source])
     @destination = Probe.find(params[:destination])
