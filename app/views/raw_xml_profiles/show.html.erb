@@ -1,0 +1,64 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @profile.name %>
+</p>
+<p>
+  <b>Config method:</b>
+  <%= @profile.config_method %>
+</p>
+
+<p>
+  <b>Metrics:</b>
+  <% @profile.metrics.each do |metric| %>
+      <span class="label label-info etooltip" data-title="<%= metric.description %>"><%= metric.name %></span>
+  <% end %>
+</p>
+ 
+<h3>Nameservers configurados</h3>
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Endereço</th>
+      <th>Nome</th>
+      <th>Interno/Externo</th>
+      <th>Primário/Secundário</th>
+      <th>VIP/Principal</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @nameservers.each do |ns| %>
+      <tr>
+        <td><%= ns.id %></td>
+        <td><%= ns.address %></td>
+        <td><%= ns.name %></td>
+        <td><%= ns.internal ? "Interno" : "Externo" %></td>
+        <td><%= ns.primary ? "Primário" : "Secundário" %></td>
+        <td><%= ns.vip ? "VIP" : "Principal" %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<h3>Sites a serem testados</h3>
+<table class="table table-bordered table-striped">
+  <thead>
+    <th>ID</th>
+    <th>URL</th>
+    <th>VIP/Top100?</th>
+  </thead>
+  <tbody>
+    <% @sites.each do |s| %>
+      <tr>
+        <td><%= s.id %></td>
+        <td><%= s.url %></td>
+        <td><%= s.vip ? "VIP" : "Top100" %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to 'Edit', edit_profile_path(@profile) %> |
+<%= link_to 'Back', profiles_path %>
