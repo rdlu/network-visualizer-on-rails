@@ -237,16 +237,39 @@
 
         jQuery('#report-form2').submit(function (event) {
             event.preventDefault();
-            var from = moment(jQuery('#date_start2').val(), "DD\MM\YYYY HH:mm Z").utc().format();
-            var to = moment(jQuery('#date_end2').val(), "DD\MM\YYYY HH:mm Z").utc().format();
+            var from = jQuery('#date_start2').val();
+            var to =jQuery('#date_end2').val();
+            if ( from !='')
+                 from = moment(jQuery('#date_start2').val(), "DD\MM\YYYY HH:mm Z").utc().format();
+            else from ='';
+            if(to != '')
+                 to = moment(jQuery('#date_end2').val(), "DD\MM\YYYY HH:mm Z").utc().format();
+            else to = '';
 
             var agent = jQuery('#agent').val();
             var cn = jQuery('#probe-cn').val();
             //var goal_filter = jQuery('#goal_filter').val();
             var states = jQuery('#probe-state').val();
 
+            if (cn == null){
+                var aux =  document.getElementById('probe-cn').options;
+                aux.selected = false;
+                for (var i =0; i < aux.length; i++){
+                    aux.item(i).selected = true;
+                }
+                cn = jQuery('probe-cn').val();
+            }
+            if (states == null){
+                var aux =  document.getElementById('probe-state').options;
+                aux.selected = false;
+                for (var i =0; i < aux.length; i++){
+                    aux.item(i).selected = true;
+                }
+                states = jQuery('#probe-state').val();
 
-            if (states != null && from != '' && to != '' )
+            }
+
+            if (from != '' && to != '' ){
             jQuery.ajax("<%= eaq2_table_reports_url %>/", {
                 data: $(this).serialize(),
                 method: 'post',
@@ -265,9 +288,8 @@
                     }
                 }
             });
-           else {
-             //jQuery('#report2-add').prop('disabled', true);
-             jQuery('#acc_name').click();
+        }else {
+             jQuery('#report2-add').prop('disabled', true);
             }
         });
 
