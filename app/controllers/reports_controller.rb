@@ -102,20 +102,20 @@ class ReportsController < ApplicationController
 
     fixed_probes = Probe.
         where(:connection_profile_id => fixed_conn_profile).
-        where(:state => @states.map!(&:upcase)).
+        where(:state => @states).
         where(:areacode => @cn).
         where(:type => @type).
         where(:anatel => @goal_filter)
 
     mobile_probes = Probe.
         where(:connection_profile_id => mobile_conn_profile).
-        where(:state => @states.map!(&:upcase)).
+        where(:state => @states).
         where(:areacode => @cn).
         where(:type => @type).
         where(:anatel => @goal_filter)
 
     all_probes = Probe.
-        where(:state => @states.map!(&:upcase)).
+        where(:state => @states).
         where(:areacode => @cn).
         where(:type => @type).
         where(:anatel => @goal_filter)
@@ -387,20 +387,20 @@ class ReportsController < ApplicationController
 
       fixed_probes = Probe.
           where(:connection_profile_id => fixed_conn_profile).
-          where(:state =>  @states.map!(&:upcase)).
+          where(:state =>  @states).
           where(:areacode => @cn).
           where(:type => @type).
           where(:anatel => @goal_filter)
 
       mobile_probes = Probe.
           where(:connection_profile_id => mobile_conn_profile).
-          where(:state =>  @states.map!(&:upcase)).
+          where(:state =>  @states).
           where(:areacode => @cn).
           where(:type => @type).
           where(:anatel => @goal_filter)
 
       all_probes = Probe.
-          where(:state =>  @states.map!(&:upcase)).
+          where(:state =>  @states).
           where(:areacode => @cn).
           where(:type => @type).
           where(:anatel => @goal_filter)
@@ -690,20 +690,20 @@ class ReportsController < ApplicationController
 
     fixed_probes = Probe.
         where(:connection_profile_id => fixed_conn_profile).
-        where(:state =>  @states.map!(&:upcase)).
+        where(:state =>  @states).
         where(:areacode => @cn).
         where(:type => @type).
         where(:anatel => @goal_filter)
 
     mobile_probes = Probe.
         where(:connection_profile_id => mobile_conn_profile).
-        where(:state =>  @states.map!(&:upcase)).
+        where(:state =>  @states).
         where(:areacode => @cn).
         where(:type => @type).
         where(:anatel => @goal_filter)
 
     all_probes = Probe.
-        where(:state =>  @states.map!(&:upcase)).
+        where(:state =>  @states).
         where(:areacode => @cn).
         where(:type => @type).
         where(:anatel => @goal_filter)
@@ -1011,7 +1011,7 @@ class ReportsController < ApplicationController
         where(:conn_type => "mobile")
 
     @probes = Probe.
-        where(:state => @states.map!(&:upcase)).
+        where(:state => @states).
         where(:areacode => @cn).
         where(:type => @type).
         where(:anatel => @goal_filter)
