@@ -1,7 +1,7 @@
 <p id="notice"><%= notice %></p>
 
 <p>
-  <b>Name:</b>
+  <b>Nome:</b>
   <%= @profile.name %>
 </p>
 <p>
@@ -10,13 +10,13 @@
 </p>
 
 <p>
-  <b>Metrics:</b>
+  <b>Métricas:</b>
   <% @profile.metrics.each do |metric| %>
       <span class="label label-info etooltip" data-title="<%= metric.description %>"><%= metric.name %></span>
   <% end %>
 </p>
  
-<h3>Nameservers configurados</h3>
+<h3>Servidores de Nome Configurados</h3>
 <table class="table table-bordered table-striped">
   <thead>
     <tr>
@@ -60,5 +60,5 @@
   </tbody>
 </table>
 
-<%= link_to 'Edit', edit_profile_path(@profile) %> |
-<%= link_to 'Back', profiles_path %>
+<%= link_to 'Editar', edit_profile_path(@profile) %> |
+<%= link_to 'Voltar', profiles_path %>

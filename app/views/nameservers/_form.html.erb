@@ -1,38 +1,41 @@
 <%= form_for @nameserver, :html => { :class => 'form-horizontal' } do |f| %>
   <div class="control-group">
-    <%= f.label :address, :class => 'control-label' %>
+    <%= f.label "Endereço:", :class => 'control-label' %>
     <div class="controls">
       <%= f.text_field :address, :class => 'text_field' %>
     </div>
   </div>
   <div class="control-group">
-    <%= f.label :name, :class => 'control-label' %>
+    <%= f.label "Nome:", :class => 'control-label' %>
     <div class="controls">
       <%= f.text_field :name, :class => 'text_field' %>
     </div>
   </div>
+    <div class="control-group" >
+      <%= f.label "Vip:", :class => 'control-label' %>
+      <div class="controls" >
+        <%= f.check_box :vip, {:class => 'check_box'}%>
+      </div>
+    </div>
   <div class="control-group">
-    <%= f.label :primary, :class => 'control-label' %>
+    <%= f.label "Primary:", :class => 'control-label' %>
     <div class="controls">
       <%= f.check_box :primary, :class => 'check_box' %>
     </div>
   </div>
+
   <div class="control-group">
-    <%= f.label :vip, :class => 'control-label' %>
-    <div class="controls">
-      <%= f.check_box :vip, :class => 'check_box' %>
-    </div>
-  </div>
-  <div class="control-group">
-    <%= f.label :internal, :class => 'control-label' %>
+    <%= f.label "Internal:", :class => 'control-label' %>
     <div class="controls">
       <%= f.check_box :internal, :class => 'check_box' %>
     </div>
   </div>
 
-  <div class="form-actions">
-    <%= f.submit nil, :class => 'btn btn-primary' %>
-    <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
-                nameservers_path, :class => 'btn' %>
+  <div class="control-group">
+    <div class="controls">
+    <%= f.submit nil, :class => 'btn btn-primary ' %>
+    <%= link_to t('.cancel', :default => "Cancelar"),
+                nameservers_path, :class => 'btn btn-inverse ' %>
+    </div>
   </div>
 <% end %>

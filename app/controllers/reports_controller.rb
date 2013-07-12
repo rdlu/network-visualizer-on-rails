@@ -73,12 +73,22 @@ class ReportsController < ApplicationController
     @agent_type = params[:agent_type] # fixed or mobile, if linux
     @states = params[:state]
     @cn = params[:cn]
-    @goal_filter = params[:goal_filter] #all,above or under
+    @goal_filter = params[:goal_filter] #array: true or false
 
+    if @goal_filter.nil?
+      @goal_filter = [false]
+    end
 
-    if @type == "android"
+    if @type[0]== "all"
+      @agent_type = ["fixed", "mobile"]
+      @type = ["android","linux"]
+    end
+
+    if @type[0] == "android"
       @agent_type = ["fixed", "mobile"]
     end
+
+
 
     # Garantir que não tenhamos nulos
     @cn.delete("")
@@ -90,22 +100,29 @@ class ReportsController < ApplicationController
     mobile_conn_profile = ConnectionProfile.
         where(:conn_type => "mobile")
 
+
+
+
+
     fixed_probes = Probe.
         where(:connection_profile_id => fixed_conn_profile).
         where(:state => @states).
         where(:areacode => @cn).
-        where(:type => @type)
+        where(:type => @type).
+        where(:anatel => @goal_filter)
 
     mobile_probes = Probe.
         where(:connection_profile_id => mobile_conn_profile).
         where(:state => @states).
         where(:areacode => @cn).
-        where(:type => @type)
+        where(:type => @type).
+        where(:anatel => @goal_filter)
 
     all_probes = Probe.
         where(:state => @states).
         where(:areacode => @cn).
-        where(:type => @type)
+        where(:type => @type).
+        where(:anatel => @goal_filter)
 
     fixed_schedules = Schedule.
         where(:destination_id => fixed_probes)
@@ -356,6 +373,7 @@ class ReportsController < ApplicationController
     @agent_type = params[:agent_type] # fixed or mobile, if linux
     @states = params[:states]
     @cn = params[:cn]
+    @goal_filter= params[:goal_filter]
 
     if @type == "android"
       @agent_type = ["fixed", "mobile"]
@@ -371,22 +389,26 @@ class ReportsController < ApplicationController
     mobile_conn_profile = ConnectionProfile.
         where(:conn_type => "mobile")
 
-    fixed_probes = Probe.
-        where(:connection_profile_id => fixed_conn_profile).
-        where(:state => @states).
-        where(:areacode => @cn).
-        where(:type => @type)
+      fixed_probes = Probe.
+          where(:connection_profile_id => fixed_conn_profile).
+          where(:state =>  @states).
+          where(:areacode => @cn).
+          where(:type => @type).
+          where(:anatel => @goal_filter)
 
-    mobile_probes = Probe.
-        where(:connection_profile_id => mobile_conn_profile).
-        where(:state => @states).
-        where(:areacode => @cn).
-        where(:type => @type)
+      mobile_probes = Probe.
+          where(:connection_profile_id => mobile_conn_profile).
+          where(:state =>  @states).
+          where(:areacode => @cn).
+          where(:type => @type).
+          where(:anatel => @goal_filter)
 
-    all_probes = Probe.
-        where(:state => @states).
-        where(:areacode => @cn).
-        where(:type => @type)
+      all_probes = Probe.
+          where(:state =>  @states).
+          where(:areacode => @cn).
+          where(:type => @type).
+          where(:anatel => @goal_filter)
+
 
     fixed_schedules = Schedule.
         where(:destination_id => fixed_probes)
@@ -635,7 +657,6 @@ class ReportsController < ApplicationController
 
   end
 
-
   def detail_speed_type_eaq2_table
     #consolidacao pela velocidade contratada
     #consolidacao por tipo de agente e tecnologia de conexão
@@ -645,6 +666,7 @@ class ReportsController < ApplicationController
     @agent_type = params[:agent_type] # fixed or mobile, if linux
     @states = params[:states]
     @cn = params[:cn]
+    @goal_filter= params[:goal_filter]
 
     if @type == "android"
       @agent_type = ["fixed", "mobile"]
@@ -672,23 +694,23 @@ class ReportsController < ApplicationController
 
     fixed_probes = Probe.
         where(:connection_profile_id => fixed_conn_profile).
-        where(:state => @states).
+        where(:state =>  @states).
         where(:areacode => @cn).
-        where(:type => @type).all
-    #.where(:plan_id => plan.id)
+        where(:type => @type).
+        where(:anatel => @goal_filter)
 
     mobile_probes = Probe.
         where(:connection_profile_id => mobile_conn_profile).
-        where(:state => @states).
+        where(:state =>  @states).
         where(:areacode => @cn).
-        where(:type => @type).all
-    #.where(:plan_id => plan.id)
+        where(:type => @type).
+        where(:anatel => @goal_filter)
 
     all_probes = Probe.
-        where(:state => @states).
+        where(:state =>  @states).
         where(:areacode => @cn).
-        where(:type => @type).all
-    #.where(:plan_id => plan.id)
+        where(:type => @type).
+        where(:anatel => @goal_filter)
 
     fixed_schedules = Schedule.
         where(:destination_id => fixed_probes).all
@@ -706,6 +728,7 @@ class ReportsController < ApplicationController
         where('start_timestamp <= ?', DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
         where(:schedule_id => fixed_schedules).
         where(:threshold_id => 1).
+        where("dsavg is not null").
         order('start_timestamp ASC').all
     #
     # SMP10
@@ -715,6 +738,7 @@ class ReportsController < ApplicationController
           where('start_timestamp <= ?',  DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
           where(:schedule_id => mobile_schedules).
           where(:threshold_id => 1).
+          where("dsavg is not null").
           order('start_timestamp ASC').all
       #
       # SCM5
@@ -724,6 +748,7 @@ class ReportsController < ApplicationController
           where('start_timestamp <= ?',  DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
           where(:schedule_id => fixed_schedules).
           where(:threshold_id => 2).
+          where("dsavg is not null").
           order('start_timestamp ASC').all
 
       #
@@ -734,6 +759,7 @@ class ReportsController < ApplicationController
           where('start_timestamp <= ?',  DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
           where(:schedule_id => mobile_schedules).
           where(:threshold_id => 2).
+          where("dsavg is not null").
           order('start_timestamp ASC').all
 
       #
@@ -744,6 +770,7 @@ class ReportsController < ApplicationController
           where('start_timestamp <= ?',  DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
           where(:schedule_id => all_schedules).
           where(:threshold_id => 3).
+          where("dsavg is not null").
           order('start_timestamp ASC').all
 
       #
@@ -754,6 +781,7 @@ class ReportsController < ApplicationController
           where('start_timestamp <= ?',  DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
           where(:schedule_id => all_schedules).
           where(:threshold_id => 4).
+          where("dsavg is not null").
           order('start_timestamp ASC').all
 
       #
@@ -764,6 +792,7 @@ class ReportsController < ApplicationController
           where('start_timestamp <= ?',  DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
           where(:schedule_id => all_schedules).
           where(:threshold_id => 5).
+          where("dsavg is not null").
           order('start_timestamp ASC').all
 
       #
@@ -774,6 +803,7 @@ class ReportsController < ApplicationController
           where('start_timestamp <= ?', DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
           where(:schedule_id => all_schedules).
           where(:threshold_id => 6).
+          where("dsavg is not null").
           order('start_timestamp ASC').all
 
 
@@ -849,14 +879,14 @@ class ReportsController < ApplicationController
           if median.schedule.destination.plan.throughput_down.eql? plan.throughput_down
           up = (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
           down = (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
-            if down >= median.threshold.goal_level.round(3) && up >= median.threshold.goal_level.round(3)
-              media10 << 1
-              mediaup10 << 1
-  
-            else
-              media10 << 0
-              mediaup10 << 0
-            end
+          if down >= median.threshold.goal_level.round(3) && up >= median.threshold.goal_level.round(3)
+            media10 << 1
+            mediaup10 << 1
+
+          else
+            media10 << 0
+            mediaup10 << 0
+          end
           end
         end
       end
@@ -967,6 +997,8 @@ class ReportsController < ApplicationController
     @agent_type = params[:agent_type] # fixed or mobile, if linux
     @states = params[:states]
     @cn = params[:cn]
+    @goal_filter= params[:goal_filter]
+
 
     if @type == "android"
       @agent_type = ["fixed", "mobile"]
@@ -985,7 +1017,8 @@ class ReportsController < ApplicationController
     @probes = Probe.
         where(:state => @states).
         where(:areacode => @cn).
-        where(:type => @type)
+        where(:type => @type).
+        where(:anatel => @goal_filter)
 
 
     unless @agent_type.include?("fixed") && @agent_type.include?("mobile")
@@ -1041,6 +1074,7 @@ class ReportsController < ApplicationController
             @report_results[conn_type][probe_type][probe.id][:scm4][:sdavg] =  @medians_scm4.first.pretty_download(true)
 
           end
+
         end
 
 
@@ -1073,6 +1107,7 @@ class ReportsController < ApplicationController
             @report_results[conn_type][probe_type][probe.id][:scm5][:sdavg] = down.to_s + "%"
 
           end
+
         end
         #
         #SCM6
@@ -1683,13 +1718,17 @@ class ReportsController < ApplicationController
 
           results = report.xpath("report/results").children
 
+          @probe = Probe.where(ipaddress: user).first
+
+          # Update agent version
+          @probe.update_attributes(agent_version: report.xpath("report/version").inner_text)
+
           results.each do |result|
               case result.name
               when "availability"
                   total = result.xpath("total").children.text.to_i
                   success = result.xpath("success").children.text.to_i
 
-                  @probe = Probe.find_by_ipaddress(user)
                   @schedule = @probe.schedules.last
 
                   @metric = Metric.find_by_plugin("availability")

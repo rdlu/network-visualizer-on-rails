@@ -108,7 +108,13 @@
                     type: 'POST',
                     url: "<%= detail_eaq2_table_reports_url %>",
                     data: { month: aux[1], type: <%= @type.to_json.html_safe %>, agent_type: <%= @agent_type.to_json.html_safe %>, states: <%= @states.to_json.html_safe %>
-                        , cn: <%= @cn.to_json.html_safe %>
+                        , cn: <%= @cn.to_json.html_safe %> , goal_filter: <%= @goal_filter.to_json.html_safe %>
+                    },
+                    beforeSend: function() {
+                        jQuery('#detail2-'+id).prepend('<div id=\"row-loading\" class="row-fluid"><div   class=\"span12\"><div id=\"box-loading\" style="height:25px;width: 400px"><%=image_tag 'ajax-loader.gif' %> <strong>Requisitando o relatório selecionado, aguarde...</strong></div></div></div>');
+                    },
+                    complete: function() {
+                        jQuery('#row-loading').remove();
                     },
                     success: function(data){
                         $('#detail2-'+id).html(data);

@@ -1,6 +1,5 @@
 <%- model_class = Nameserver -%>
-<div class="page-header">
-  <h1><%=t '.title', :default => t('helpers.titles.new', :model => model_class.model_name.human,
-                                 :default => "New #{model_class.model_name.human}") %></h1>
+<div class="row-fluid">
+  <h2><%=t '.title', :default => "Novo Nameserver" %></h2>
 </div>
 <%= render :partial => 'form' %>
