@@ -1,3 +1,4 @@
+# coding: utf-8
 class RawXmlProfilesController < ApplicationController
     def new
         authorize! :manage, self
@@ -63,4 +64,11 @@ class RawXmlProfilesController < ApplicationController
             end
         end
     end
+
+
+  def self.types
+    [%w(Métricas\ Ativas raw_xml),
+     %w(DNS dns),
+     %w(Webload url)]
+  end
 end
