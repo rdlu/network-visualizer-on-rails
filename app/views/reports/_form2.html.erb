@@ -4,14 +4,19 @@
         <div class="control-group">
           <label class="control-label"  for="type">Agente: </label>
           <div class="controls">
-            <%=  select :agent,'', Probe.types,{}, :onchange => 'displayTypes(this.value)', :id=>"agent"  %>
+            <!-- select :agent,'', Probe.types,{}, :onchange => 'displayTypes(this.value)', :id=>"agent"  -->
+            <select  name = "agent[]"  id="probe-agent" onchange="displayTypes(this.value)" >
+              <option name="agent[]" value="android">Android</option>
+              <option name="agent[]" value="linux">Linux</option>
+              <option name="agent[]" value="all">Todas</option>
+            </select>
           </div>
         </div>
         <div class="control-group">
           <label  for="goal_all" class="control-label">Somente Agentes:</label>
             <div  class="controls" style="margin-left: 70px !important" >
-              <div id="goal_all" style=" float: left;margin-left: 20px;width: 140px;"> <%= check_box_tag  "goal_filter[]","all",:id=>"type_a" %> Categoria Anatel </div>
-              <div style=" float: right;width: 215px;"> <%= check_box_tag  "goal_filter[]","under",:id=>"type_u" %> Abaixo da Meta</div>
+              <div id="goal_all" style=" float: left;margin-left: 20px;width: 140px;"> <%= check_box_tag  "goal_filter[]","true",:id=>"type_a" %> Categoria Anatel </div>
+              <!--div style=" float: right;width: 215px;"> < % = check_box_tag  "goal_filter[]","false",:id=>"type_u" %> Abaixo da Meta</div-->
             </div>
         </div>
         <div class="control-group">
