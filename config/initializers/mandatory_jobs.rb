@@ -5,7 +5,7 @@ unless defined?(Rails::Console)
 
   #calculo de medianas todos os dias
   Delayed::Job.enqueue CalculateMediansJob.new(Time.now.end_of_day, true), :queue => 'calculate', :run_at => DateTime.current.end_of_day+1.hour
-  Delayed::Job.enqueue CalculateMonthlyCompliance.new(Time.now.end_of_day, true), :queue => 'calculate', :run_at => DateTime.current.end_of_day+1.hour
+  Delayed::Job.enqueue CalculateMonthlyCompliance.new(Time.now.end_of_day, true), :queue => 'calculate', :run_at => DateTime.current.end_of_day+2.hour
   Delayed::Job.enqueue UpdateTopSitesJob.new, :queue => 'updatetop100', :run_at => DateTime.current.end_of_day
   Delayed::Job.enqueue VerifyStatus.new, :queue => 'checkstatus', :run_at => DateTime.current + 5.minutes
 end
