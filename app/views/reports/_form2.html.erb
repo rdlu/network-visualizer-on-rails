@@ -8,7 +8,7 @@
             <select  name = "agent[]"  id="probe-agent" onchange="displayTypes(this.value)" >
               <option name="agent[]" value="android">Android</option>
               <option name="agent[]" value="linux">Linux</option>
-              <option name="agent[]" value="all">Todas</option>
+              <option name="agent[]" value="all">Todos</option>
             </select>
           </div>
         </div>
@@ -45,19 +45,36 @@
         </div>
       </div>
       <div class="span3">
-        <div id="ag_types" style="float:right ;display: none">
+        <div id="ag_types" class="control-group" style="float:right ;display: none">
           <label class="control-label" style="width: 60px !important" for="agent_type">Tipo: </label>
           <!--label class="checkbox">
                   <input type="checkbox" name="agent_type[]" value="mobile" checked="true"> Móvel<br/>
                   <input type="checkbox" name="agent_type[]"  value="fixed"> Fixo
             </label-->
           <div class="controls" style="margin-left: 70px !important" >
-            <div style=" float: left;margin-left: 20px;width: 120px;"> <%= check_box_tag  "agent_type[]","mobile",:id=>"type_m" %> Móvel </div>
-            <div style=" float: left;width: 60px;"> <%= check_box_tag  "agent_type[]","fixed",:id=>"type_f" %> Fixo </div>
+            <div style=" float: left;margin-left: 20px;width: 120px;"> <%= check_box_tag  "agent_type[]","mobile",:id =>"type_m" %> Móvel </div>
+            <div style=" float: left;width: 60px;"> <%= check_box_tag  "agent_type[]","fixed",{},:id=>"type_f", :onclick=> 'displayBRAS(this.checked)' %> Fixo </div>
           </div>
         </div>
-
+        <div id="bras" class="control-group">
+          <label class="control-label" style="width: 60px !important" for="bras">BRAS: </label>
+          <div class="controls" style="margin-left: 90px; display: block">
+            <select multiple="true"  name="bras[]"  onchange="" >
+              <option value="1">Todas</option>
+            </select>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" style="width: 60px !important" for="pop">POP: </label>
+          <div class="controls" style="margin-left: 90px">
+            <select multiple="true"  name="pop[]" id="pop" onchange="" >
+              <option value="1">Todas</option>
+            </select>
+          </div>
+        </div>
       </div>
+
+
       <div id="op_col2"  class="span5" style="">
         <div class="control-group">
           <%= label :date, :start2, "Início: ", :class => 'control-label' %>
@@ -103,12 +120,25 @@
 
 <script>
 
+  function displayBRAS(value)
+  {
+     if (value)
+        $('#bras').attr('style','display:block');
+     else
+        $('#bras').attr('style','display:none');
+  }
+
   function displayTypes(value)
   {
      if(value == "linux"){
         $('#ag_types').attr('style','display:block');
+         if ($('#type_f').checked == true )
+             $('#bras').attr('style','display:block');
+         else
+             $('#bras').attr('style','display:none');
      }else{
          $('#ag_types').attr('style','display:none');
+         $('#bras').attr('style','display:block');
      }
 
   }

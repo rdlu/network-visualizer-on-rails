@@ -74,6 +74,8 @@ class ReportsController < ApplicationController
     @states = params[:state]
     @cn = params[:cn]
     @goal_filter = params[:goal_filter] #array: true or false
+    @pop = params[:pop]
+    @bras = params[:bras]
 
     if @goal_filter.nil?
       @goal_filter = [false]
@@ -374,6 +376,8 @@ class ReportsController < ApplicationController
     @states = params[:states]
     @cn = params[:cn]
     @goal_filter= params[:goal_filter]
+    @pop = params[:pop]
+    @bras = params[:bras]
 
     if @type == "android"
       @agent_type = ["fixed", "mobile"]
@@ -667,6 +671,8 @@ class ReportsController < ApplicationController
     @states = params[:states]
     @cn = params[:cn]
     @goal_filter= params[:goal_filter]
+    @pop = params[:pop]
+    @bras = params[:bras]
 
     if @type == "android"
       @agent_type = ["fixed", "mobile"]
@@ -998,7 +1004,8 @@ class ReportsController < ApplicationController
     @states = params[:states]
     @cn = params[:cn]
     @goal_filter= params[:goal_filter]
-
+    @pop = params[:pop]
+    @bras = params[:bras]
 
     if @type == "android"
       @agent_type = ["fixed", "mobile"]
