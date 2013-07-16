@@ -12,17 +12,19 @@ class VerifyStatus
 
   def perform
     Probe.all.each do |probe|
-      if probe.updated_at < Time.now - (probe.schedules.first.polling*2).minutes
-        probe.status = 2
-      end
+      unless probe.schedules.empty?
+        if probe.updated_at < Time.now - (probe.schedules.first.polling*2).minutes
+          probe.status = 2
+        end
 
-      if probe.updated_at < Time.now - (probe.schedules.first.polling*3).minutes
-        probe.status = 3
-      end
+        if probe.updated_at < Time.now - (probe.schedules.first.polling*3).minutes
+          probe.status = 3
+        end
 
-      probe.record_timestamps=false
-      probe.save
-      probe.record_timestamps=true
+        probe.record_timestamps=false
+        probe.save
+        probe.record_timestamps=true
+      end
     end
 
   end

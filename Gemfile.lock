@@ -79,6 +79,7 @@ GEM
     foreigner (1.4.1)
       activerecord (>= 3.0.0)
     geocoder (1.1.8)
+    god (0.13.2)
     has_scope (0.5.1)
     highcharts-rails (3.0.1.5)
       cocaine (~> 0.4.0)
@@ -220,6 +221,7 @@ DEPENDENCIES
   faker
   foreigner
   geocoder
+  god
   has_scope
   highcharts-rails (~> 3.0.1)
   immigrant

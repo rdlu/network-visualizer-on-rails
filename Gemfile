@@ -27,6 +27,8 @@ gem 'airbrake'
 gem 'highcharts-rails', '~> 3.0.1'
 gem 'ruby-units'
 
+gem 'god'
+
 # To use ActiveModel has_secure_password
 gem 'bcrypt-ruby', '~> 3.0.0'
 
