@@ -132,11 +132,10 @@
   {
      if(value == "linux"){
         $('#ag_types').attr('style','display:block');
-         if ($('#type_f').checked == undefined )
+         if ($('#type_f').checked == true )
              $('#bras').attr('style','display:block');
-         else if ($('#type_f').checked == true)
-                $('#bras').attr('style','display:block');
-             else  $('#bras').attr('style','display:none');
+         else
+             $('#bras').attr('style','display:none');
      }else{
          $('#ag_types').attr('style','display:none');
          $('#bras').attr('style','display:block');
