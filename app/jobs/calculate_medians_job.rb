@@ -11,10 +11,11 @@ class CalculateMediansJob
   end
 
   def enqueue(job)
-
+    Yell.new(:gelf, :facility => 'netmetric-jobs').info 'Calculo de medianas entrou na fila'
   end
 
   def perform
+    Yell.new(:gelf, :facility => 'netmetric-jobs').info "Perform: Calculo de medianas #{@reference_date} #{@reeschedule} #{@force_disabled}"
     Schedule.all.each do |schedule|
       if schedule.destination.status != 0 || @force_disabled
         schedule.metrics.each do |metric|
@@ -27,15 +28,15 @@ class CalculateMediansJob
   end
 
   def before(job)
-    Yell.new(:gelf, :facility => 'netmetric').info 'Calculo de medianas iniciando...'
+    Yell.new(:gelf, :facility => 'netmetric-jobs').info 'Calculo de medianas iniciando...'
   end
 
   def after(job)
-    Yell.new(:gelf, :facility => 'netmetric').info 'Calculo de medianas encerrado.'
+    Yell.new(:gelf, :facility => 'netmetric-jobs').info 'Calculo de medianas encerrado.'
   end
 
   def success(job)
-    Yell.new(:gelf, :facility => 'netmetric').info 'Calculo de medianas encerrado com sucesso.'
+    Yell.new(:gelf, :facility => 'netmetric-jobs').info 'Calculo de medianas encerrado com sucesso.'
     #programa a próxima chamada
     if @reeschedule
       Delayed::Job.enqueue CalculateMediansJob.new(Time.now.end_of_day,true), :queue => 'calculate', :run_at => DateTime.current.end_of_day+1.hour
@@ -43,7 +44,7 @@ class CalculateMediansJob
   end
 
   def error(job, exception)
-    Yell.new(:gelf, :facility => 'netmetric').error 'Ooops no calculo de mediana.'
+    Yell.new(:gelf, :facility => 'netmetric-jobs').error 'Ooops no calculo de mediana.'
     Airbrake.notify(exception)
   end
 
