@@ -23,11 +23,11 @@ class User < ActiveRecord::Base
   end
 
   def active_for_authentication?
-    super && !!self.adm_block
+    super && !self.adm_block
   end
 
   def inactive_message
-   if super && self.adm_block == 0
+   if super && self.adm_block
      :unconfirmed
    else
      :locked

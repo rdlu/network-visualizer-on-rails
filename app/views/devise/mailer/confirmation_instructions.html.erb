@@ -1,6 +1,6 @@
 <html>
 <body>
-<% if @resource.adm_block  %>
+<% unless @resource.adm_block  %>
     <p>Bem-vindo,  <%= @resource.email %>!</p>
     <p>Você foi cadastrado no sistema NetMetric MoM. Confirme sua conta de e-mail através do link abaixo:</p>
 
