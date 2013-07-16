@@ -46,7 +46,6 @@ class VerifyStatus
 
   def failure
     Yell.new(:gelf, :facility => 'netmetric').info 'Falha na verificação dos status das sondas'
-    Airbrake.notify(exception)
     Delayed::Job.destroy_all(:queue => 'checkstatus')
     Delayed::Job.enqueue VerifyStatus.new, :queue => 'checkstatus', :run_at => DateTime.current + 5.minutes
   end
