@@ -140,7 +140,7 @@ class UsersController < ApplicationController
         format.xml  { head :ok }
         format.html {  redirect_to go_to, :notice =>"Conta alterada com sucesso." }
       else
-        format.json { render :text => "Could not update user", :status => :unprocessable_entity } #placeholder
+        format.json { render :text => "Usuário não pode ser alterado", :status => :unprocessable_entity } #placeholder
         format.xml  { render :xml => @user.errors, :status => :unprocessable_entity }
         format.html { render :action => :edit, :status => :unprocessable_entity }
       end
@@ -159,7 +159,7 @@ class UsersController < ApplicationController
     authorize! :read, self
 
     @user = User.find(params[:user_id])
-    if @user.confirmation_token == nil
+    if @user.confirmation_token.nil?
       @user.skip_confirmation!
       @user.confirmed_at = DateTime.current
       @user.confirmation_token = Devise.token_authentication_key
