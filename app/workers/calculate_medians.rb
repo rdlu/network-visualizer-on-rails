@@ -5,7 +5,7 @@ class CalculateMedians
       if schedule.destination.status != 0
         schedule.metrics.each do |metric|
           metric.thresholds.each do |threshold|
-            Median.calculate schedule, threshold, Time.now.end_of_day
+            Median.calculate schedule, threshold, Time.now.end_of_day - 1.day
           end
         end
       end
