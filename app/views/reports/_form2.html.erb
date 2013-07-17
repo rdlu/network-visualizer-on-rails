@@ -61,7 +61,9 @@
           <div class="controls" style="margin-left: 90px; display: block">
             <select multiple="true"  name="bras[]" id="bras" onchange="setAllOpt(this.value,'bras')" >
               <option value="all">Todas</option>
-              <% Probe.all.each do |p|
+              <% probeUniq = Array.new
+                 probeUniq = Probe.all.uniq{|x| x.bras}
+                 probeUniq.each do |p|
                    unless p.bras.nil?
               %>
                       <option value="<%= p.bras %>"><%= p.bras %></option>
@@ -75,8 +77,10 @@
           <div class="controls" style="margin-left: 90px">
             <select multiple="true"  name="pop[]" id="pop" onchange="setAllOpt(this.value,'pop')" >
               <option value="all">Todas</option>
-              <% Probe.all.each do |p|
-                unless p.pop.nil?
+              <% probeUniq = Array.new
+                 probeUniq = Probe.all.uniq{|x| x.pop}
+                 probeUniq.each do |p|
+                   unless p.pop.nil?
               %>
                       <option value="<%= p.pop %>"><%= p.pop %></option>
                   <% end
