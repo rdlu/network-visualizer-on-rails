@@ -18,7 +18,6 @@ gem 'pry-rails'
 gem 'will_paginate', '~> 3.0'
 gem 'has_scope'
 gem 'snmp'
-gem 'delayed_job_active_record'
 gem 'yell-adapters-gelf'
 gem 'yell-rails'
 gem 'daemons'
@@ -26,7 +25,7 @@ gem 'foreigner' #sincroniza chaves estrangeiras para o banco de dados
 gem 'airbrake'
 gem 'highcharts-rails', '~> 3.0.1'
 gem 'ruby-units'
-
+gem 'whenever', :require => false
 gem 'god'
 
 # To use ActiveModel has_secure_password
