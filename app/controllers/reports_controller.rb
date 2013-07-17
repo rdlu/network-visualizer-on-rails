@@ -83,11 +83,11 @@ class ReportsController < ApplicationController
     end
 
     if @pop.include? 'all'
-      @pop << nil
+      @pop << "null"
     end
 
     if @bras.include? 'all'
-      @bras << nil
+      @bras << "null"
     end
 
     if @agent_type.nil?
