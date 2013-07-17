@@ -248,6 +248,8 @@
 
             var agent = jQuery('#agent').val();
             var cn = jQuery('#probe-cn').val();
+            var pop = jQuery('#pop').val();
+            var bras = jQuery('#bras').val();
             //var goal_filter = jQuery('#goal_filter').val();
             var states = jQuery('#probe-state').val();
 
@@ -266,6 +268,23 @@
                     aux.item(i).selected = true;
                 }
                 states = jQuery('#probe-state').val();
+
+            }
+            if (pop == null){
+                var aux =  document.getElementById('pop').options;
+                aux.selected = false;
+                for (var i =0; i < aux.length; i++){
+                    aux.item(i).selected = true;
+                }
+                pop = jQuery('pop').val();
+            }
+            if (bras == null){
+                var aux =  document.getElementById('bras').options;
+                aux.selected = false;
+                for (var i =0; i < aux.length; i++){
+                    aux.item(i).selected = true;
+                }
+                bras = jQuery('bras').val();
 
             }
 
