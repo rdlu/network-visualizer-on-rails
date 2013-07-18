@@ -1,5 +1,6 @@
 class Profile < ActiveRecord::Base
   attr_accessible :config_method, :config_parameters, :name, :connection_profile_id, :metric_ids, :nameservers, :sites
+  attr_accessible :type_test, :source_probe, :timeout, :probe_size, :train_count, :metrics, :train_len, :time
 
   #relationships
   belongs_to :connection_profile
@@ -7,6 +8,54 @@ class Profile < ActiveRecord::Base
   has_many :schedules, :through => :evaluations
 
   accepts_nested_attributes_for :metrics
+
+  def timeout
+  end
+
+  def timeout=(t)
+  end
+
+  def probe_size
+  end
+
+  def probe_size=(t)
+  end
+
+  def type_test
+  end
+
+  def type_test=(t)
+  end
+
+  def source_probe
+  end
+
+  def source_probe=(t)
+  end
+
+  def probe_size
+  end
+
+  def probe_size=(t)
+  end
+
+  def train_count
+  end
+
+  def train_count=(t)
+  end
+
+  def train_len
+  end
+
+  def train_len=(t)
+  end
+
+  def time
+  end
+
+  def time=(t)
+  end
 
   def nameservers=(ns)
     # if config_parameters is empty, build it. Otherwise, leave it alone

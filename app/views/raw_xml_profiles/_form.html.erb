@@ -13,7 +13,7 @@
        <div class="control-group">
           <label class="control-label"  for="name">Nome: </label>
           <div class="controls">
-            <%= f.text_field :name,:id=>"name"  %>
+            <%= f.text_field :name  %>
           </div>
        </div>
       <div class="control-group">
@@ -28,21 +28,21 @@
       <div class="control-group">
         <label class="control-label"  for="timeout">Tempo de Expiração: </label>
         <div class="controls">
-          <%= f.text_field :timeout,:id=>"timeout"  %>
+          <%= f.text_field :timeout %>
         </div>
       </div>
 
       <div class="control-group">
         <label class="control-label"  for="probe_size">Tamanho da Probe: </label>
         <div class="controls">
-          <%= f.text_field :probe_size,{:id=>"probesize"}  %>
+          <%= f.text_field :probe_size %>
         </div>
       </div>
 
       <div class="control-group">
         <label class="control-label"  for="train_count">Tamanho do Trem: </label>
         <div class="controls">
-          <%= f.text_field :train_count, :id=>"traincount" %>
+          <%= f.text_field :train_count %>
         </div>
       </div>
 
@@ -50,8 +50,8 @@
         <label class="control-label"  for="Protocol">Protocolo: </label>
         <div class="controls">
           <select  name = "protocol[]"  id="protocol" onchange="" >
-            <option name="protocol" value="tcp">TCP</option>
-            <option name="protocol" value="udp">UDP</option>
+            <option name="protocol[]" value="tcp">TCP</option>
+            <option name="protocol[]" value="udp">UDP</option>
           </select>
         </div>
       </div>
@@ -60,7 +60,9 @@
         <div class="span6" >
           <label class="control-label"  for="metrics">Métricas: </label>
           <div class="controls">
-            <%= check_box :metrics, Metric.all,{} %>
+           <% Metric.all.each do |m| %>
+              <input type="checkbox" name="metrics[]" value="<%= m.plugin %>" /> <%= m.name %> <br/>
+           <% end %>
           </div>
         </div>
       </div>
@@ -68,7 +70,7 @@
       <div class="control-group" style="display: none">
         <label class="control-label"  for="train_len">Número do Trens: </label>
         <div class="controls">
-          <%= f.text_field :train_len, :id=>"trainlenght" %>
+          <%= f.text_field :train_len %>
         </div>
       </div>
 
@@ -86,7 +88,7 @@
       <div class="control-group">
         <label class="control-label"  for="time">Tempo de Medição: </label>
         <div class="controls">
-          <%= f.text_field :time, :id=>"time",:include_blank => "Segundos" %>
+          <%= f.text_field :time,:include_blank => "Segundos" %>
         </div>
       </div>
 
