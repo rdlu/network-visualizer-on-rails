@@ -188,17 +188,36 @@
             var source_id = jQuery('#source_id').val();
             var metric_id = jQuery('#metric_id').val();
             var report_type = jQuery('#report_type').val();
+            var date_start = new Date(jQuery('#date_start').val().split('/').reverse());
+            var date_end = new Date(jQuery('#date_end').val().split('/').reverse());
+            var day_in_milisecs = 1000 * 60 * 60 * 24;
+            var date_diff = (date_end - date_start) / day_in_milisecs;
+
+
+            if (report_type == 'graph' && date_diff > 3)
+                report_type = "dygraphs_bruto";
 
             if (source_id != '' && destination_id != '' && metric_id != '')
                 jQuery.ajax("<%= reports_url %>/" + report_type, {
-                    beforeSend: function() {
+                    beforeSend: function () {
                         jQuery('#graphs-area').prepend('<div id=\"row-loading\" class="row-fluid"><div   class=\"span12\"><div id=\"box-loading\" style="height:100px;"><%=image_tag 'ajax-loader.gif' %> <strong>Requisitando o relatório selecionado, aguarde...</strong></div></div></div>');
                     },
-                    complete: function() {
+                    complete: function (obj, status) {
                         jQuery('#row-loading').remove();
+                    },
+                    error: function (obj, status) {
+                        console.log(obj);
+                        console.log("Query Error " + status);
                     },
                     success: function (result, status) {
                         switch (report_type) {
+                            case 'dygraphs_bruto':
+                                if (!jQuery("#box-dygraph-" + source_id+'-'+destination_id+'-'+metric_id).is(':empty')) {
+                                    jQuery("#box-dygraph-" + source_id + '-' + destination_id+'-'+metric_id).remove();
+                                }
+
+                                jQuery('#graphs-area').prepend(result);
+                                break;
                             case 'graph':
                                 var graph = new Graph(result.source, result.destination, result.metric, result.range, result.results);
                                 graphs[graph.idName] = graph;
@@ -238,12 +257,12 @@
         jQuery('#report-form2').submit(function (event) {
             event.preventDefault();
             var from = jQuery('#date_start2').val();
-            var to =jQuery('#date_end2').val();
-            if ( from !='')
-                 from = moment(jQuery('#date_start2').val(), "DD\MM\YYYY HH:mm Z").utc().format();
-            else from ='';
-            if(to != '')
-                 to = moment(jQuery('#date_end2').val(), "DD\MM\YYYY HH:mm Z").utc().format();
+            var to = jQuery('#date_end2').val();
+            if (from != '')
+                from = moment(jQuery('#date_start2').val(), "DD\MM\YYYY HH:mm Z").utc().format();
+            else from = '';
+            if (to != '')
+                to = moment(jQuery('#date_end2').val(), "DD\MM\YYYY HH:mm Z").utc().format();
             else to = '';
 
             var agent = jQuery('#agent').val();
@@ -251,45 +270,45 @@
             //var goal_filter = jQuery('#goal_filter').val();
             var states = jQuery('#probe-state').val();
 
-            if (cn == null){
-                var aux =  document.getElementById('probe-cn').options;
+            if (cn == null) {
+                var aux = document.getElementById('probe-cn').options;
                 aux.selected = false;
-                for (var i =0; i < aux.length; i++){
+                for (var i = 0; i < aux.length; i++) {
                     aux.item(i).selected = true;
                 }
                 cn = jQuery('probe-cn').val();
             }
-            if (states == null){
-                var aux =  document.getElementById('probe-state').options;
+            if (states == null) {
+                var aux = document.getElementById('probe-state').options;
                 aux.selected = false;
-                for (var i =0; i < aux.length; i++){
+                for (var i = 0; i < aux.length; i++) {
                     aux.item(i).selected = true;
                 }
                 states = jQuery('#probe-state').val();
 
             }
 
-            if (from != '' && to != '' ){
-            jQuery.ajax("<%= eaq2_table_reports_url %>/", {
-                data: $(this).serialize(),
-                method: 'post',
-                beforeSend: function() {
-                    jQuery('#graphs-area').prepend('<div id=\"row-loading\" class="row-fluid"><div class=\"span12\"><div id=\"box-loading\" style="height:100px;"><%=image_tag 'ajax-loader.gif' %> <strong>Requisitando o relatório selecionado, aguarde...</strong></div></div></div>');
-                },
-                complete: function() {
-                    jQuery('#row-loading').remove();
-                },
-                success: function (result, status) {
-                    if (jQuery("box-"+from).is(':empty')) {
-                        jQuery('#graphs-area').prepend(result);
-                    } else {
-                        $("#box-"+from).remove();
-                        jQuery('#graphs-area').prepend(result);
+            if (from != '' && to != '') {
+                jQuery.ajax("<%= eaq2_table_reports_url %>/", {
+                    data: $(this).serialize(),
+                    method: 'post',
+                    beforeSend: function () {
+                        jQuery('#graphs-area').prepend('<div id=\"row-loading\" class="row-fluid"><div class=\"span12\"><div id=\"box-loading\" style="height:100px;"><%=image_tag 'ajax-loader.gif' %> <strong>Requisitando o relatório selecionado, aguarde...</strong></div></div></div>');
+                    },
+                    complete: function () {
+                        jQuery('#row-loading').remove();
+                    },
+                    success: function (result, status) {
+                        if (jQuery("box-" + from).is(':empty')) {
+                            jQuery('#graphs-area').prepend(result);
+                        } else {
+                            $("#box-" + from).remove();
+                            jQuery('#graphs-area').prepend(result);
+                        }
                     }
-                }
-            });
-        }else {
-             jQuery('#report2-add').prop('disabled', true);
+                });
+            } else {
+                jQuery('#report2-add').prop('disabled', true);
             }
         });
 
@@ -350,10 +369,11 @@
                 };
 
 
-                this.series = function() {
+                this.series = function () {
                     var directions = [
                         {name: 'dsavg', title: 'Upload'},
-                        {name: 'sdavg', title: 'Download'}];
+                        {name: 'sdavg', title: 'Download'}
+                    ];
 
                     var retorno = [];
 
@@ -523,38 +543,6 @@
                         url: 'http://200.220.254.22/batik/'
                     }
                 });
-                /*	  self.chartObject = new Highcharts.Chart({
-                 chart:{
-                 renderTo:'chart-'+self.idName,
-                 type:'spline',
-                 zoomType:'x'
-                 },
-                 title:{
-                 text:'Gráfico de Indicadores do Anatel: '+self.threshold.name+' ('+self.threshold.description+')'
-                 },
-                 subtitle:{
-                 text:'Origem: ' + self.source.name + ' | Destino: ' + self.destination.name + ' | Data: ' + self.range.start.format('YYYY-MM-DD HH:mm:ss Z') + ' à ' + self.range.end.format('YYYY-MM-DD HH:mm:ss Z')
-                 },
-                 xAxis:{
-                 type:'datetime',
-                 min: self.range.start.valueOf(),
-                 max: self.range.end.valueOf()
-                 },
-                 yAxis:{
-                 title:{
-                 text:self.metric.name.toUpperCase()
-                 },
-                 min:0
-                 },
-                 tooltip:{
-                 formatter:function () {
-                 return '<strong>' + this.series.name+': '+conversion.stringFromMetric(self.metric.plugin, this.y) + '</strong><br/><em>' +
-                 moment(this.x).format('YYYY-MM-DD HH:mm:ss Z') + '</em><br />';
-                 }
-                 },
-                 series: self.series()
-                 });
-                 */
             };
         }
 

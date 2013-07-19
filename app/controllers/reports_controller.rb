@@ -74,6 +74,8 @@ class ReportsController < ApplicationController
     @states = params[:state]
     @cn = params[:cn]
     @goal_filter = params[:goal_filter] #array: true or false
+    @pop = params[:pop]
+    @bras = params[:bras]
 
     if @goal_filter.nil?
       @goal_filter = [false]
@@ -374,6 +376,8 @@ class ReportsController < ApplicationController
     @states = params[:states]
     @cn = params[:cn]
     @goal_filter= params[:goal_filter]
+    @pop = params[:pop]
+    @bras = params[:bras]
 
     if @type == "android"
       @agent_type = ["fixed", "mobile"]
@@ -667,6 +671,8 @@ class ReportsController < ApplicationController
     @states = params[:states]
     @cn = params[:cn]
     @goal_filter= params[:goal_filter]
+    @pop = params[:pop]
+    @bras = params[:bras]
 
     if @type == "android"
       @agent_type = ["fixed", "mobile"]
@@ -998,7 +1004,8 @@ class ReportsController < ApplicationController
     @states = params[:states]
     @cn = params[:cn]
     @goal_filter= params[:goal_filter]
-
+    @pop = params[:pop]
+    @bras = params[:bras]
 
     if @type == "android"
       @agent_type = ["fixed", "mobile"]
@@ -1431,6 +1438,29 @@ class ReportsController < ApplicationController
 
     respond_to do |format|
       format.csv { send_data @end_csv }
+    end
+  end
+
+  def dygraphs_bruto
+    @source = Probe.where(:id => params[:source][:id]).first
+    @destination = Probe.where(:id => params[:destination][:id]).first
+    @metric = Metric.where(:id => params[:metric][:id]).first
+    @schedule = Schedule.where(:destination_id => @destination).where(:source_id => @source).all.last
+
+    @from = DateTime.parse(params[:date][:start]+' '+params[:time][:start]+' '+DateTime.current.zone).in_time_zone
+    @to = DateTime.parse(params[:date][:end]+' '+params[:time][:end]+' '+DateTime.current.zone).in_time_zone
+
+    @raw_results = Results.
+        where(:schedule_id => @schedule.id).
+        where(:metric_id => @metric.id).
+        where(:timestamp => @from..@to).order('timestamp ASC').all
+
+    @idName = "dygraph-" << @source.id.to_s << "-" << @destination.id.to_s << "-" << @metric.id.to_s #<< "-" << @from.strftime("%s") << "-" << @to.strftime("%s")
+    @exportFileName = @destination.name + '-' + @metric.plugin + '-' + @from.strftime("%Y%m%d_%H%M%S") + '-' +@to.strftime("%Y%m%d_%H%M%S")
+    @exportParams = "source=#{@source.id}&destination=#{@destination.id}&metric=#{@metric.id}&from=#{@from.iso8601}&to=#{@to.iso8601}"
+
+    respond_to do |format|
+      format.html { render :layout => false }
     end
   end
 
