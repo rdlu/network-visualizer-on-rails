@@ -1,5 +1,6 @@
 class Profile < ActiveRecord::Base
   attr_accessible :config_method, :config_parameters, :name, :connection_profile_id, :metric_ids, :nameservers, :sites
+  attr_accessible :type_test, :source_probe, :timeout, :probe_size, :train_count, :metrics, :train_len ,:time
 
   #relationships
   belongs_to :connection_profile
