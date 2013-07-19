@@ -96,4 +96,14 @@ class Profile < ActiveRecord::Base
       []
     end
   end
+
+  private
+
+  def load_hash_from_xml
+    Hash.from_xml self.config_parameters if self.config_method == "raw_xml"
+  end
+
+  def save_xml_from_hash(h)
+    self.config_parameters = h.to_xml if self.config_method == "raw_xml"
+  end
 end
