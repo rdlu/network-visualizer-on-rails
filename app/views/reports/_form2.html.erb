@@ -45,30 +45,46 @@
         </div>
       </div>
       <div class="span3">
-        <div id="ag_types" class="control-group" style="float:right ;display: none">
+        <div id="ag_types" class="control-group" style="float:right ;" disabled>
           <label class="control-label" style="width: 60px !important" for="agent_type">Tipo: </label>
           <!--label class="checkbox">
                   <input type="checkbox" name="agent_type[]" value="mobile" checked="true"> Móvel<br/>
                   <input type="checkbox" name="agent_type[]"  value="fixed"> Fixo
             </label-->
           <div class="controls" style="margin-left: 70px !important" >
-            <div style=" float: left;margin-left: 20px;width: 120px;"> <%= check_box_tag  "agent_type[]","mobile",:id =>"type_m" %> Móvel </div>
-            <div style=" float: left;width: 60px;"> <%= check_box_tag  "agent_type[]","fixed",{},:id=>"type_f", :onclick=> 'displayBRAS(this.checked)' %> Fixo </div>
+            <div style=" float: left;margin-left: 20px;width: 120px;"> <%= check_box_tag  "agent_type[]","mobile",{},:id =>"type_m",:readonly=>true,:disabled=>true %> Móvel </div>
+            <div style=" float: left;width: 60px;"> <%= check_box_tag  "agent_type[]","fixed",{},:id=>"type_f",:readonly=>true,:disabled=>true, :onclick=>'displayBRAS(this.checked)' %> Fixo </div>
           </div>
         </div>
-        <div id="bras" class="control-group">
+        <div  class="control-group">
           <label class="control-label" style="width: 60px !important" for="bras">BRAS: </label>
           <div class="controls" style="margin-left: 90px; display: block">
-            <select multiple="true"  name="bras[]"  onchange="" >
-              <option value="1">Todas</option>
+            <select multiple="true"  name="bras[]" id="bras" onchange="setAllOpt(this.value,'bras')" >
+              <option value="all">Todas</option>
+              <% probeUniq = Array.new
+                 probeUniq = Probe.all.uniq{|x| x.bras}
+                 probeUniq.each do |p|
+                   unless p.bras.nil?
+              %>
+                      <option value="<%= p.bras %>"><%= p.bras %></option>
+              <% end
+                 end %>
             </select>
           </div>
         </div>
         <div class="control-group">
           <label class="control-label" style="width: 60px !important" for="pop">POP: </label>
           <div class="controls" style="margin-left: 90px">
-            <select multiple="true"  name="pop[]" id="pop" onchange="" >
-              <option value="1">Todas</option>
+            <select multiple="true"  name="pop[]" id="pop" onchange="setAllOpt(this.value,'pop')" >
+              <option value="all">Todas</option>
+              <% probeUniq = Array.new
+                 probeUniq = Probe.all.uniq{|x| x.pop}
+                 probeUniq.each do |p|
+                   unless p.pop.nil?
+              %>
+                      <option value="<%= p.pop %>"><%= p.pop %></option>
+                  <% end
+                     end %>
             </select>
           </div>
         </div>
@@ -122,23 +138,36 @@
 
   function displayBRAS(value)
   {
-     if (value)
-        $('#bras').attr('style','display:block');
-     else
-        $('#bras').attr('style','display:none');
+      if (value){
+          $('#bras').attr('readonly',false);
+          $('#bras').attr('disabled',false);
+      }
+      else {
+          $('#bras').attr('readonly','readonly');
+          $('#bras').attr('disabled',true);
+      }
   }
+
 
   function displayTypes(value)
   {
      if(value == "linux"){
-        $('#ag_types').attr('style','display:block');
-         if ($('#type_f').checked == true )
-             $('#bras').attr('style','display:block');
-         else
-             $('#bras').attr('style','display:none');
+        $('#type_m').attr('readonly',false);
+        $('#type_f').attr('readonly',false);
+        $('#type_m').attr('disabled',false);
+        $('#type_f').attr('disabled',false);
+        if ($('#type_f').checked == undefined){
+            $('#bras').attr('readonly',false);
+            $('#bras').attr('disabled',false);
+        }
+
      }else{
-         $('#ag_types').attr('style','display:none');
-         $('#bras').attr('style','display:block');
+         $('#type_m').attr('readonly','readonly');
+         $('#type_f').attr('readonly','readonly');
+         $('#type_m').attr('disabled',true);
+         $('#type_f').attr('disabled',true);
+         $('#bras').attr('readonly',false);
+         $('#bras').attr('disabled',false);
      }
 
   }
@@ -146,7 +175,7 @@
   function setAllOpt(value,id)
   {
 
-      if (value == "" || value == 1){
+      if (value == "" || value == 1 || value == "all"){
           var aux =  document.getElementById(id).options;
           aux.selected = false;
           for (var i =0; i < aux.length; i++){
