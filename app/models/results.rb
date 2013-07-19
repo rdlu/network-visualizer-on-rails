@@ -62,4 +62,12 @@ class Results < ActiveRecord::Base
   def upload_with_view_unit
     "#{self.upload} #{self.metric.raw_db_unit}".to_unit(self.metric.raw_view_unit)
   end
+
+  def pretty_scalar_download
+    "#{self.download} #{self.metric.raw_db_unit}".to_unit(self.metric.raw_view_unit).scalar
+  end
+
+  def pretty_scalar_upload
+    "#{self.upload} #{self.metric.raw_db_unit}".to_unit(self.metric.raw_view_unit).scalar
+  end
 end

@@ -133,6 +133,8 @@
                               "<option value='2'>Ultimos 2 dias</option>"+
                               "<option value='3'>Ultimos 3 dias</option>"+
                               "<option value='7'>Ultimos 7 dias</option>"+
+                              "<option value='14'>Ultimos 14 dias</option>"+
+                              "<option value='30'>Ultimos 30 dias</option>"+
                               "</select>";
                           $('#date_start').datepicker('setValue',moment(Date.current).subtract('days',1).format('DD/MM/YYYY'));
                           $('#date_end').datepicker('setValue',moment(Date.current).format('DD/MM/YYYY'));
