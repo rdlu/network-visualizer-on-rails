@@ -37,24 +37,42 @@
       <div class="control-group">
         <label class="control-label"  for="timeout">Tempo de Expiração: </label>
         <div class="controls">
-          <%= f.text_field :timeout %>
+          <%= f.text_field :timeout, {:placeholder => "segundos"} %>
         </div>
       </div>
 
       <div class="control-group">
         <label class="control-label"  for="probe_size">Tamanho da Probe: </label>
         <div class="controls">
-          <%= f.text_field :probe_size %>
+          <%= f.text_field :probe_size , {:placeholder => "byte"}%>
         </div>
       </div>
+
+        <div class="control-group">
+          <label class="control-label"  for="probe_size">Tamanho do Trem: </label>
+          <div class="controls">
+            <%= f.text_field :train_len %>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label"  for="interval">Intervalo entre Trens: </label>
+          <div class="controls">
+            <%= f.text_field :interval %>
+          </div>
+          <div class="controls">
+            <input type="radio" name="uni" value="ms" checked/> ms
+            <input type="radio" name="uni" value="us"/> us
+          </div>
+        </div>
 
 
       <div class="control-group">
         <label class="control-label"  for="Protocol">Protocolo: </label>
         <div class="controls">
           <select  name = "protocol[]"  id="protocol" onchange=" displayTypes(this.value)" >
-            <option name="protocol[]" value="tcp">TCP</option>
-            <option name="protocol[]" value="udp">UDP</option>
+            <option name="protocol" value="tcp">TCP</option>
+            <option name="protocol" value="udp">UDP</option>
           </select>
         </div>
       </div>
@@ -65,13 +83,6 @@
           <label class="control-label"  for="train_count">Conexões Simultâneas: </label>
           <div class="controls">
             <%= f.text_field :train_count %>
-          </div>
-        </div>
-
-        <div class="control-group" style="display: none">
-          <label class="control-label"  for="train_len">Número do Trens: </label>
-          <div class="controls">
-            <%= f.text_field :train_len %>
           </div>
         </div>
 
@@ -89,7 +100,7 @@
         <div class="control-group">
           <label class="control-label"  for="time">Tempo de Medição: </label>
           <div class="controls">
-            <%= f.text_field :time,:include_blank => "Segundos" %>
+            <%= f.text_field :time, {:placeholder => "segundos"} %>
           </div>
         </div>
 
