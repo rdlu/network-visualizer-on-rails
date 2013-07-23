@@ -89,7 +89,6 @@
                 labelsKMG2: true,
                 ylabel: "<%=@metric.name%> (<%=@metric.db_unit%>)",
                 clickCallback: function (e, x, pts) {
-                    console.log(graphs["<%=@idName%>"].file_[pts[0].idx]);
                     jQuery.ajax({
                         url: "<%=show_kpi_url%>",
                         type: 'post',
@@ -97,8 +96,17 @@
                         data: {
                             uuid: graphs["<%=@idName%>"].file_[pts[0].idx][1]
                         },
-                        success: function (data) {
-                            console.log(data);
+                        success: function (kpi) {
+                            var extras = '';
+                            extras += '<b>LAC: </b>' + kpi.lac + '<br />' + '<b>CELLID: </b>' + kpi.cell_id + '<br />';
+                            extras += '<b>Marca: </b>' + kpi.brand + '<br />' + '<b>Modelo: </b>' + kpi.model + '<br />';
+                            extras += '<b>Tec. Conex.: </b>' + kpi.conn_tech + '<br />' + '<b>Sinal: </b>' + kpi.signal + 'dB<br />';
+                            extras += '<b>Atraso DNS: </b>' + kpi.dns_latency + 'ms<br />';
+                            jQuery.pnotify({
+                                title: "KPI Info",
+                                text: extras,
+                                type: 'success'
+                            });
                         },
                         error: function (status, msg, error) {
 
