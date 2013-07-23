@@ -1,75 +1,112 @@
-<div id="box-<%=@idName%>" class="row-fluid">
+<div id="box-<%= @idName %>" class="row-fluid">
   <div class="span12">
     <div class="row-fluid">
       <div class="span12">
-        <h5 style="text-align: center">Origem: <%=@source.name%> | Destino: <%=@destination.name%> | Data: <%=@from.strftime('%Y-%m-%d %H:%M:%S %Z')%> à <%=@to.strftime('%Y-%m-%d %H:%M:%S %Z')%></h5>
-        <div id="chart-<%=@idName%>" style="height:250px;"></div>
+        <h5 style="text-align: center">Origem: <%= @source.name %> | Destino: <%= @destination.name %> |
+          Data: <%= @from.strftime('%Y-%m-%d %H:%M:%S %Z') %> à <%= @to.strftime('%Y-%m-%d %H:%M:%S %Z') %></h5>
+
+        <div id="chart-<%= @idName %>" style="height:250px;"></div>
       </div>
     </div>
     <div class="row-fluid">
       <div class="span12">
         <div class="chart-bottom" style="padding-top: 10px;">
           <div class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="jQuery('#box-<%=@idName%>').remove();">Remover</div>
-          <a id="export-<%=@idName%>"  class="btn btn-success" style="float:right; margin-right: 5px ;margin-bottom: 20px" href="<%= reports_csv_bruto_url @exportFileName+".csv" %>?<%=@exportParams%>">Exportar CSV</a>
-          <a id="exportxls-<%=@idName%>"  class="btn btn-success" style="float:right; margin-right: 5px ;margin-bottom: 20px" href="<%= reports_xls_bruto_url @exportFileName+".xls" %>?<%=@exportParams%>">Exportar XLS</a>
-          <div id="legend-<%=@idName%>" style="float:right; margin-right: 5px ;margin-bottom: 20px">Ponto Atual: </div>
+          <a id="export-<%= @idName %>" class="btn btn-success" style="float:right; margin-right: 5px ;margin-bottom: 20px" href="<%= reports_csv_bruto_url @exportFileName+".csv" %>?<%= @exportParams %>">Exportar
+            CSV</a>
+          <a id="exportxls-<%= @idName %>" class="btn btn-success" style="float:right; margin-right: 5px ;margin-bottom: 20px" href="<%= reports_xls_bruto_url @exportFileName+".xls" %>?<%= @exportParams %>">Exportar
+            XLS</a>
+
+          <div id="legend-<%= @idName %>" style="float:right; margin-right: 5px ;margin-bottom: 20px">Ponto Atual:</div>
         </div>
       </div>
     </div>
   </div>
 </div>
 <script type="text/javascript">
-    new Dygraph(
+    graphs["<%=@idName%>"] = new Dygraph(
             document.getElementById("chart-<%=@idName%>"),
             <% case @metric.plugin  %>
             <% when "jitter" %>
             [
                 <% @raw_results.each do |res| %>
-                [new Date("<%=res.timestamp.strftime("%b %d, %Y %H:%M:%S %z")%>"), <%=res.pretty_scalar_download %> ,<%=res.pretty_scalar_upload %>]<%=(res!=@raw_results.last)?",":""%>
+                [new Date("<%=res.timestamp.strftime("%b %d, %Y %H:%M:%S %z")%>"), "<%=res.uuid %>", <%=res.pretty_scalar_download %> , <%=res.pretty_scalar_upload %>]<%=(res!=@raw_results.last)?",":""%>
                 <% end %>
             ],
             {
-                labels: ["Data", "Download", "Upload"],
+                labels: ["Data", "uuid", "Download", "Upload"],
+                visibility: [false, true, true],
                 labelsKMB: false,
                 labelsDiv: document.getElementById('legend-<%=@idName%>'),
-                ylabel: "<%=@metric.name%> (<%=@metric.view_unit%>)"
+                ylabel: "<%=@metric.name%> (<%=@metric.view_unit%>)",
+                clickCallback: function (e, x, pts) {
+                    console.log(graphs["<%=@idName%>"].file_[pts[0].idx]);
+                }
+
             }
-             <% when "loss" %>
-             [
+                    <% when "loss" %>
+                    [
                     <% @raw_results.each do |res| %>
-                    [new Date("<%=res.timestamp.strftime("%b %d, %Y %H:%M:%S %z")%>"), <%=res.download %> ,<%=res.upload %>]<%=(res!=@raw_results.last)?",":""%>
-                    <% end %>
-             ],
-            {
-                labels: ["Data", "Download", "Upload"],
-                labelsKMB: false,
-                labelsDiv: document.getElementById('legend-<%=@idName%>'),
-                ylabel: "<%=@metric.name%> (<%=@metric.view_unit%>)"
-            }
-            <% when 'rtt' %>
-            [
-                    <% @raw_results.each do |res| %>
-                    [new Date("<%=res.timestamp.strftime("%b %d, %Y %H:%M:%S %z")%>"), <%=res.pretty_scalar_upload %>]<%=(res!=@raw_results.last)?",":""%>
+                    [new Date("<%=res.timestamp.strftime("%b %d, %Y %H:%M:%S %z")%>"), "<%=res.uuid %>", <%=res.download %> , <%=res.upload %>]<%=(res!=@raw_results.last)?",":""%>
                     <% end %>
                     ],
             {
-                labels: ["Data", "RTT"],
+                labels: ["Data", "uuid", "Download", "Upload"],
+                visibility: [false, true, true],
                 labelsKMB: false,
                 labelsDiv: document.getElementById('legend-<%=@idName%>'),
-                ylabel: "<%=@metric.name%> (<%=@metric.view_unit%>)"
+                ylabel: "<%=@metric.name%> (<%=@metric.view_unit%>)",
+                clickCallback: function (e, x, pts) {
+                    console.log(graphs["<%=@idName%>"].file_[pts[0].idx]);
+                }
             }
-            <% else %>
-            [
-                <% @raw_results.each do |res| %>
-                [new Date("<%=res.timestamp.strftime("%b %d, %Y %H:%M:%S %z")%>"), <%=res.sdavg%>, <%=res.dsavg%>]<%=(res!=@raw_results.last)?",":""%>
-                <% end %>
-            ],
+                    <% when 'rtt' %>
+                    [
+                    <% @raw_results.each do |res| %>
+                    [new Date("<%=res.timestamp.strftime("%b %d, %Y %H:%M:%S %z")%>"), "<%=res.uuid %>", <%=res.pretty_scalar_upload %>]<%=(res!=@raw_results.last)?",":""%>
+                    <% end %>
+                    ],
             {
-                labels: ["Data", "Download", "Upload"],
+                labels: ["Data", "uuid", "RTT"],
+                labelsKMB: false,
+                labelsDiv: document.getElementById('legend-<%=@idName%>'),
+                ylabel: "<%=@metric.name%> (<%=@metric.view_unit%>)",
+                visibility: [false, true],
+                clickCallback: function (e, x, pts) {
+                    console.log(graphs["<%=@idName%>"].file_[pts[0].idx]);
+                }
+            }
+                    <% else %>
+                    [
+                    <% @raw_results.each do |res| %>
+                    [new Date("<%=res.timestamp.strftime("%b %d, %Y %H:%M:%S %z")%>"), "<%=res.uuid %>", <%=res.sdavg%>, <%=res.dsavg%>]<%=(res!=@raw_results.last)?",":""%>
+                    <% end %>
+                    ],
+            {
+                labels: ["Data", "uuid", "Download", "Upload"],
+                visibility: [false, true, true],
                 labelsDiv: document.getElementById('legend-<%=@idName%>'),
                 labelsKMG2: true,
-                ylabel: "<%=@metric.name%> (<%=@metric.db_unit%>)"
+                ylabel: "<%=@metric.name%> (<%=@metric.db_unit%>)",
+                clickCallback: function (e, x, pts) {
+                    console.log(graphs["<%=@idName%>"].file_[pts[0].idx]);
+                    jQuery.ajax({
+                        url: "<%=show_kpi_url%>",
+                        type: 'post',
+                        dataType: 'json',
+                        data: {
+                            uuid: graphs["<%=@idName%>"].file_[pts[0].idx][1]
+                        },
+                        success: function (data) {
+                            console.log(data);
+                        },
+                        error: function (status, msg, error) {
+
+                        }
+                    });
+                }
             }
             <% end %>
     );
+
 </script>
