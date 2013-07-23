@@ -1,3 +1,5 @@
+require 'xmlsimple'
+
 class Profile < ActiveRecord::Base
   attr_accessible :config_method, :config_parameters, :name, :connection_profile_id, :metric_ids, :nameservers, :sites
   attr_accessible :type_test, :source_probe, :timeout, :probe_size, :train_count, :metrics, :train_len, :time, :interval
@@ -112,10 +114,10 @@ class Profile < ActiveRecord::Base
   private
 
   def load_hash_from_xml
-    Hash.from_xml self.config_parameters if self.config_method == "raw_xml"
+    XmlSimple.xml_in(self.config_parameters, { 'KeepRoot' => true }) if self.config_method == "raw_xml"
   end
 
   def save_xml_from_hash(h)
-    self.config_parameters = h.to_xml if self.config_method == "raw_xml"
+    self.config_parameters = XmlSimple.xml_out(h, { 'KeepRoot' => true }) if self.config_method == "raw_xml"
   end
 end

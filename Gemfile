@@ -26,6 +26,7 @@ gem 'foreigner' #sincroniza chaves estrangeiras para o banco de dados
 gem 'airbrake'
 gem 'highcharts-rails', '~> 3.0.1'
 gem 'ruby-units'
+gem 'xml-simple'
 
 # To use ActiveModel has_secure_password
 gem 'bcrypt-ruby', '~> 3.0.0'
