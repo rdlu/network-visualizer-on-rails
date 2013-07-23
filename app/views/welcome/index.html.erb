@@ -127,6 +127,7 @@
             //data: {},
             success: function (response) {
                 //alert(response.length);
+                console.log(response);
                 var context =
                         '<table id="table_bruto" class="table table-bordered table-hover table-condensed sortable" >' +
                         '<thead>' +
@@ -142,6 +143,7 @@
                         '<th  style="text-align: center">Jitter<br/>&dArr;/&uArr; (ms)</th>' +
                         '<th  style="text-align: center">Loss<br/>&dArr;/&uArr; (%)</th>' +
                         '<th  style="text-align: center">Pom<br/>&dArr;/&uArr; (%)</th>' +
+                        '<th  style="text-align: center">Versão (Agente/S.O.)</th>' +
                         '</tr>' +
                         '</thead><tbody>';
 
@@ -166,7 +168,7 @@
                             '<tr>' +
                             '<td style="background-color:' + color + ';width: 25px;" sorttable_customkey="'+response[i]['status']+'"></td>' +
                             '<td style="text-align: center">' + response[i]['name'] + '</td>' +
-                            '<td style="text-align: center">' + response[i]['city'] + ' -' + response[i]['state'] + '</td>';
+                            '<td style="text-align: center">' + response[i]['city'] + '/' + response[i]['state'].toUpperCase() + '</td>';
 
                     if (typeof(response[i]['results']) != 'undefined') {
 
@@ -211,9 +213,10 @@
                         if (response[i]['results']['pom'] == null)
                             context = context + '<td style="text-align: center">NULL</td>';
                         else context = context + '<td style="text-align: center">' + response[i]['results']['pom']['download'] + '/' + response[i]['results']['pom']['download'] + '</td>';
-                        context = context + '</tr>';
+
+                        context = context + '<td style="text-align: center">' + (response[i]['agentversion']==null?'Sem info':response[i]['agentversion']) + '<br />'+(response[i]['osversion']==null?'Sem info':response[i]['osversion']) + '</td></tr>';
                     } else {
-                        context = context + '<td colspan="8" style="background-color: rgba(170,170,170,0.57) ;text-align: center">Não há dados para esta sonda.</td>';
+                        context = context + '<td colspan="8" style="background-color: rgba(170,170,170,0.57) ;text-align: center">Não há dados para esta sonda.</td><td style="text-align: center">' + (response[i]['agentversion']==null?'Sem info':response[i]['agentversion']) + '<br />'+(response[i]['osversion']==null?'Sem info':response[i]['osversion']) + '</td></tr>';
                     }
 
                 }
