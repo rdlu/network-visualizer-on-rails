@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130716165039) do
+ActiveRecord::Schema.define(:version => 20130722132931) do
 
   create_table "compliances", :force => true do |t|
     t.integer   "schedule_id"
@@ -228,10 +228,11 @@ ActiveRecord::Schema.define(:version => 20130716165039) do
     t.string    "city",                                                      :null => false
     t.string    "state",                                                     :null => false
     t.integer   "areacode"
-    t.string    "agent_version"
     t.boolean   "anatel"
+    t.string    "agent_version"
     t.string    "pop"
     t.string    "bras"
+    t.string    "osversion"
   end
 
   add_index "probes", ["ipaddress"], :name => "index_probes_on_ipaddress", :unique => true

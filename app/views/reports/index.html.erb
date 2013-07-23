@@ -35,6 +35,7 @@
 
 
 <script type="text/javascript">
+    var graphs = {};
     $(function () {
         $('#acc_name').click(function () {
             var text = document.getElementById('acc_name').getAttribute('name');
@@ -218,6 +219,13 @@
 
                                 jQuery('#graphs-area').prepend(result);
                                 break;
+                            case 'highcharts_bruto':
+                                if (!jQuery("#box-highcharts-" + source_id+'-'+destination_id+'-'+metric_id).is(':empty')) {
+                                    jQuery("#box-highcharts-" + source_id + '-' + destination_id+'-'+metric_id).remove();
+                                }
+
+                                jQuery('#graphs-area').prepend(result);
+                                break;
                             case 'graph':
                                 var graph = new Graph(result.source, result.destination, result.metric, result.range, result.results);
                                 graphs[graph.idName] = graph;
@@ -330,9 +338,6 @@
                 jQuery('#report2-add').prop('disabled', true);
             }
         });
-
-
-        var graphs = {};
 
 
         function EAQGraph(source, destination, threshold, metric, range, results, goal_lines) {
