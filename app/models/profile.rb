@@ -18,54 +18,71 @@ class Profile < ActiveRecord::Base
   accepts_nested_attributes_for :metrics
 
   def timeout
+      h = load_hash_from_xml
+      h['timeout']
   end
 
   def timeout=(t)
   end
 
   def probe_size
+      h = load_hash_from_xml
+      h['probe-size']
   end
 
   def probe_size=(t)
   end
 
   def type_test
+      nil
   end
 
   def type_test=(t)
   end
 
   def source_probe
+      h = load_hash_from_xml
+      p = Probe.where(id: h['agt-index'])
+      p
   end
 
   def source_probe=(t)
+      # t eh a id de uma probe
   end
 
   def probe_size
+      h = load_hash_from_xml
+      h['probe-size']
   end
 
   def probe_size=(t)
   end
 
   def train_count
+      h = load_hash_from_xml
+      h['train-count']
   end
 
   def train_count=(t)
   end
 
   def train_len
+      h = load_hash_from_xml
+      h['train-len']
   end
 
   def train_len=(t)
   end
 
   def time
+      h = load_hash_from_xml
   end
 
   def time=(t)
   end
 
   def interval
+      h = load_hash_from_xml
   end
 
   def interval=(t)
@@ -114,7 +131,7 @@ class Profile < ActiveRecord::Base
   private
 
   def load_hash_from_xml
-    XmlSimple.xml_in(self.config_parameters, { 'KeepRoot' => true }) if self.config_method == "raw_xml"
+      XmlSimple.xml_in(self.config_parameters, { 'KeepRoot' => true }) if self.config_method == "raw_xml" else {}
   end
 
   def save_xml_from_hash(h)
