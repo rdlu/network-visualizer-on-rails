@@ -17,6 +17,14 @@ class Profile < ActiveRecord::Base
 
   accepts_nested_attributes_for :metrics
 
+  def manager_ip
+      h = load_hash_from_xml
+      h['manager-ip']
+  end
+
+  def manager_ip=(m)
+  end
+
   def timeout
       h = load_hash_from_xml
       h['timeout']
@@ -25,12 +33,90 @@ class Profile < ActiveRecord::Base
   def timeout=(t)
   end
 
+  def port
+      h = load_hash_from_xml
+      h['port']
+  end
+
+  def port=(p)
+  end
+
+  def protocol
+      h = load_hash_from_xml
+      h['protocol']
+  end
+
+  def protocol=(p)
+  end
+
+  def train_count
+      h = load_hash_from_xml
+      h['train-count']
+  end
+
+  def train_count=(tc)
+  end
+
   def probe_size
       h = load_hash_from_xml
       h['probe-size']
   end
 
-  def probe_size=(t)
+  def probe_size=(ps)
+  end
+
+  def train_len
+      h = load_hash_from_xml
+      h['train-len']
+  end
+
+  def train_len=(t)
+  end
+
+  def gap_value
+      h = load_hash_from_xml
+      h['gap-value']
+  end
+
+  def gap_value=(gv)
+  end
+
+  def time_mode
+      h = load_hash_from_xml
+      h['time-mode']
+  end
+
+  def time_mode=(tm)
+  end
+
+  def max_time
+      h = load_hash_from_xml
+      h['max-time']
+  end
+
+  def max_time=(mt)
+  end
+
+  def num_conexoes
+      h = load_hash_from_xml
+      h['num-conexoes']
+  end
+
+  def num_conexoes=(nc)
+  end
+
+  def ignore_gap
+      h = load_hash_from_xml
+      h['ignore-gap']
+  end
+
+  def ignore_gap(ig)
+  end
+
+  def plugins
+  end
+
+  def plugins=(ps)
   end
 
   def type_test
@@ -50,39 +136,13 @@ class Profile < ActiveRecord::Base
       # t eh a id de uma probe
   end
 
-  def probe_size
-      h = load_hash_from_xml
-      h['probe-size']
-  end
-
-  def probe_size=(t)
-  end
-
-  def train_count
-      h = load_hash_from_xml
-      h['train-count']
-  end
-
-  def train_count=(t)
-  end
-
-  def train_len
-      h = load_hash_from_xml
-      h['train-len']
-  end
-
-  def train_len=(t)
-  end
-
   def time
-      h = load_hash_from_xml
   end
 
   def time=(t)
   end
 
   def interval
-      h = load_hash_from_xml
   end
 
   def interval=(t)
