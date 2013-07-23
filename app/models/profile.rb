@@ -1,6 +1,12 @@
 class Profile < ActiveRecord::Base
   attr_accessible :config_method, :config_parameters, :name, :connection_profile_id, :metric_ids, :nameservers, :sites
-  attr_accessible :type_test, :source_probe, :timeout, :probe_size, :train_count, :metrics, :train_len, :time
+  attr_accessible :type_test, :source_probe, :timeout, :probe_size, :train_count, :metrics, :train_len, :time, :interval
+
+  #validates
+  validates :interval, :presence => true, :numericality => {:only_integer => true}
+  validates :train_len, :presence => true, :numericality => {:only_integer => true}
+  validates :timeout, :presence => true, :numericality => {:only_integer => true}
+  validates :probe_size, :presence => true, :numericality => {:only_integer => true}
 
   #relationships
   belongs_to :connection_profile
@@ -55,6 +61,12 @@ class Profile < ActiveRecord::Base
   end
 
   def time=(t)
+  end
+
+  def interval
+  end
+
+  def interval=(t)
   end
 
   def nameservers=(ns)
