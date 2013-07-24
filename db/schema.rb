@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130625161506) do
+ActiveRecord::Schema.define(:version => 20130722132931) do
 
   create_table "compliances", :force => true do |t|
     t.integer   "schedule_id"
@@ -204,6 +204,13 @@ ActiveRecord::Schema.define(:version => 20130625161506) do
 
   add_index "plans", ["name"], :name => "index_plans_on_name", :unique => true
 
+  create_table "probe_version", :id => false, :force => true do |t|
+    t.string    "probe_name"
+    t.string    "probe_type"
+    t.string    "version"
+    t.timestamp "timestamp",  :limit => 6
+  end
+
   create_table "probes", :force => true do |t|
     t.string    "name",                                                      :null => false
     t.string    "ipaddress",                                                 :null => false
@@ -221,7 +228,11 @@ ActiveRecord::Schema.define(:version => 20130625161506) do
     t.string    "city",                                                      :null => false
     t.string    "state",                                                     :null => false
     t.integer   "areacode"
+    t.boolean   "anatel"
     t.string    "agent_version"
+    t.string    "pop"
+    t.string    "bras"
+    t.string    "osversion"
   end
 
   add_index "probes", ["ipaddress"], :name => "index_probes_on_ipaddress", :unique => true

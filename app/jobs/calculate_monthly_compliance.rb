@@ -11,10 +11,11 @@ class CalculateMonthlyCompliance
   end
 
   def enqueue(job)
-
+    Yell.new(:gelf, :facility => 'netmetric-jobs').info 'Calculo de compliances entrou na fila'
   end
 
   def perform
+    Yell.new(:gelf, :facility => 'netmetric-jobs').info "Perform: Calculo de compliances #{@reference_date} #{@reeschedule} #{@force_disabled}"
     Schedule.all.each do |schedule|
       if schedule.destination.status != 0 || @force_disabled
         schedule.metrics.each do |metric|

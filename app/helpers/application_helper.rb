@@ -83,6 +83,8 @@ module ApplicationHelper
       all_probes["#{probe.id}"][:type] = probe.type
       all_probes["#{probe.id}"][:status] = probe.status
       all_probes["#{probe.id}"][:pretty_status] = probe.pretty_status
+      all_probes["#{probe.id}"][:osversion] = probe.osversion
+      all_probes["#{probe.id}"][:agentversion] = probe.agent_version
 
       schedule = probe.schedules_as_destination.last
 

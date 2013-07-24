@@ -1,4 +1,4 @@
-<table class="table table-bordered table-hover table-condensed" >
+<table id="<%= @id %>" class="table table-bordered table-hover table-condensed" >
   <thead>
   <tr >
     <th ></th>
@@ -15,10 +15,10 @@
          <td style="text-align: center"><%= threshold.name %> <br/></td>
     <% end %>
   </tr>
-  <% unless @report_results[:fixed][:linux].nil? %>
+  <% unless @report_results[:fixed].nil? || @report_results[:fixed][:linux].nil? ||  @report_results[:fixed][:linux].empty? %>
   <!-- LINUX FIXO -->
   <tr>
-    <td rowspan="<%= @report_results[:fixed][:linux].size + 1 %>" style="padding-top: 50px; text-align: center"> Linux Fixo</td>
+    <td rowspan="<%= @report_results[:fixed][:linux].size + 1 %>" style="padding-top: 10px; text-align: center"> Linux Fixo</td>
   <% @probes.all.each do |pb| %>
         <% if pb.connection_profile.conn_type == "fixed" && pb.type == "linux" && !@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id].nil? %>
           <tr>
@@ -57,10 +57,10 @@
     <% end %>
     </tr>
   <% end %>
-  <% unless @report_results[:mobile][:linux].nil? %>
+  <% unless @report_results[:mobile].nil? || @report_results[:mobile][:linux].nil? || @report_results[:mobile][:linux].empty?  %>
     <!-- LINUX MOVEL -->
     <tr>
-      <td rowspan="<%= @report_results[:mobile][:linux].size + 1 %>" style="padding-top: 50px; text-align: center"> Linux Móvel</td>
+      <td rowspan="<%= @report_results[:mobile][:linux].size + 1 %>" style="padding-top: 10px; text-align: center"> Linux Móvel</td>
       <% @probes.all.each do |pb| %>
           <% if pb.connection_profile.conn_type == "mobile" && pb.type == "linux" && !@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id].nil? %>
           <tr>
@@ -97,12 +97,13 @@
           </tr>
       <% end %>
   <% end %>
+
   </tr>
   <% end %>
   <!-- ANDROID -->
-  <% unless @report_results[:mobile][:android].nil? %>
+  <% unless @report_results[:mobile].nil? || @report_results[:mobile][:android].nil? || @report_results[:mobile][:android].empty? %>
   <tr>
-    <td rowspan="<%= @report_results[:mobile][:android].size + @report_results[:fixed][:android].size + 1 %>" style="padding-top: 50px; text-align: center">Android</td>
+    <td rowspan="<%= @report_results[:mobile][:android].size  + 1 %>" style="padding-top: 10px; text-align: center">Android</td>
     <% @probes.all.each do |pb| %>
         <% if pb.type == "android" && !@report_results[pb.connection_profile.conn_type.to_sym][pb.type.to_sym][pb.id].nil? %>
           <tr>
