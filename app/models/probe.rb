@@ -53,7 +53,7 @@ class Probe < ActiveRecord::Base
   def status_color
     case self.status
       when 0
-        "grey"
+        "gray"
       when 1
         "green"
       when 2
