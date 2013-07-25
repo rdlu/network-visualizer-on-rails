@@ -50,7 +50,7 @@ MomRails::Application.routes.draw do
   match 'probes/:id/thresholds/:source_id' => 'probes#thresholds', :via => [:get]
 
   resources :metrics
-
+  resources :process
   resources :profiles
   resources :dns_profiles
   resources :url_profiles
