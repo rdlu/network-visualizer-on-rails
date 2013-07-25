@@ -40,4 +40,14 @@ class Metric < ActiveRecord::Base
         ['KPI','kpi']
     ]
   end
+
+  def search_metric_types(search_term)
+    self.metric_types.each do |type|
+      return type if type[1] == search_term
+    end
+  end
+
+  def pretty_metric_type
+    self.search_metric_types(self.metric_type)[0]
+  end
 end
