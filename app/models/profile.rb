@@ -5,10 +5,12 @@ class Profile < ActiveRecord::Base
   attr_accessible :type_test, :source_probe, :timeout, :probe_size, :train_count, :metrics, :train_len, :time, :interval
 
   #validates
+=begin
   validates :interval, :presence => true, :numericality => {:only_integer => true}
   validates :train_len, :presence => true, :numericality => {:only_integer => true}
   validates :timeout, :presence => true, :numericality => {:only_integer => true}
   validates :probe_size, :presence => true, :numericality => {:only_integer => true}
+=end
 
   #relationships
   belongs_to :connection_profile
@@ -69,7 +71,7 @@ class Profile < ActiveRecord::Base
   def train_count=(tc)
       h = load_hash_from_xml
       h['NMAgent']['train-count'] = tc
-      save_xml_from_hash
+      save_xml_from_hash(h)
   end
 
   def probe_size
@@ -157,7 +159,7 @@ class Profile < ActiveRecord::Base
   def plugins=(ps)
       h = load_hash_from_xml
       h['NMAgent']['plugins'] = ps
-      save_xml_from_hash
+      save_xml_from_hash(h)
   end
 
   def type_test
