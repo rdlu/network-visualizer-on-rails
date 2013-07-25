@@ -1,22 +1,23 @@
-<p id="notice"><%= notice %></p>
-
+<h2>Visualização do Perfil de Teste <%= @profile.name %></h2>
+<div class="row-fluid">
+  <div class="span7">
 <p>
-  <b>Name:</b>
+  <b>Nome:</b>
   <%= @profile.name %>
 </p>
 <p>
-  <b>Config method:</b>
+  <b>Método Configurado:</b>
   <%= @profile.config_method %>
 </p>
 
 <p>
-  <b>Metrics:</b>
+  <b>Métricas:</b>
   <% @profile.metrics.each do |metric| %>
       <span class="label label-info etooltip" data-title="<%= metric.description %>"><%= metric.name %></span>
   <% end %>
 </p>
- 
-<h3>Nameservers configurados</h3>
+<% unless @nameservers.nil? %>
+<h3>Nameservers configurados:</h3>
 <table class="table table-bordered table-striped">
   <thead>
     <tr>
@@ -41,8 +42,10 @@
     <% end %>
   </tbody>
 </table>
+<% end %>
 
-<h3>Sites a serem testados</h3>
+<% unless @sites.nil? %>
+<h3>Sites a serem testados:</h3>
 <table class="table table-bordered table-striped">
   <thead>
     <th>ID</th>
@@ -59,6 +62,14 @@
     <% end %>
   </tbody>
 </table>
+<% end %>
 
-<%= link_to 'Edit', edit_profile_path(@profile) %> |
-<%= link_to 'Back', profiles_path %>
+    <div class="control-group" >
+      <div class="controls">
+        <%= link_to 'Editar', edit_profile_path(@profile) , :class => "btn btn-primary btn-large " if can? :edit, Profile  %>
+        <%= link_to 'Voltar', profiles_path, :class => "btn btn-inverse btn-large " %>
+      </div>
+    </div>
+  </div>
+
+</div>
