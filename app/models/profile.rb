@@ -233,7 +233,7 @@ class Profile < ActiveRecord::Base
 
   def load_hash_from_xml
       if self.config_method == "raw_xml" || self.config_method.nil?
-          if self.config_parameters == ""
+          if self.config_parameters == "" || self.config_parameters.nil?
               self.config_parameters = "<NMAgent></NMAgent>"
           end
           XmlSimple.xml_in(self.config_parameters, { 'KeepRoot' => true })
