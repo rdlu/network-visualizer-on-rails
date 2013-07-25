@@ -236,7 +236,11 @@ class Profile < ActiveRecord::Base
           if self.config_parameters == "" || self.config_parameters.nil?
               self.config_parameters = "<NMAgent></NMAgent>"
           end
-          XmlSimple.xml_in(self.config_parameters, { 'KeepRoot' => true })
+          h = XmlSimple.xml_in(self.config_parameters, { 'KeepRoot' => true })
+          if h['NMAgent'] == [{}]
+              h['NMAgent'] = {}
+          end
+          return h
       else
           {}
       end
