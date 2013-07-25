@@ -1912,6 +1912,7 @@ class ReportsController < ApplicationController
       report = Nokogiri::XML(params[:report])
 
       user = report.xpath("report/user").children.to_s
+      user = user.gsub("_","-")
       uuid = Schedule.where(destination_id: Probe.where(ipaddress: user)).first.uuid
       timestamp = report.xpath("report/timestamp").children.to_s
       agent_type = report.xpath("report/agent_type").children.to_s
