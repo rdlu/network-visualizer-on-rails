@@ -114,6 +114,8 @@ class Profile < ActiveRecord::Base
   end
 
   def plugins
+      h = load_hash_from_xml
+      h['plugins']
   end
 
   def plugins=(ps)
