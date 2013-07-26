@@ -55,7 +55,7 @@
             <div id="ag_types" class="control-group" >
               <label class="control-label" for="agent_type">Tipo: </label>
               <div class="controls">
-                <%= select :agent_type,{},[['Móvel'],["Fixo"]]%>
+                <%= select :agent_type,{},[['Movel'],["Fixo"]]%>
               </div>
             </div>
             <div class="control-group">
@@ -96,13 +96,13 @@
             <div class="control-group">
               <span class="control-label" >Variação Métrica:</span>
               <div class="controls">
-                <%= select :variation,{},[["Média"],["Mínimo"],["Máximo"]] %>
+                <%= select :variation,{},[["Media"],["Minimo"],["Maximo"]] %>
               </div>
             </div>
         </div>
         <div class="span3">
           <div class="control-group">
-            <span class="control-label" >Métricas:</span>
+            <span class="control-label" >DNS:</span>
             <div class="controls">
               <select multiple="true" value="metrics[]">
                 <% Metric.all.each do |m| %>
