@@ -8,7 +8,7 @@
         <div class="control-group">
           <label class="control-label"  for="type_test">Tipo de Teste: </label>
           <div class="controls">
-            <%=  select :type_test,'', RawXmlProfilesController.types,{}, :id=>"type_test"  %>
+            <%=  select :profile, :type_test, RawXmlProfilesController.types,{}, :id=>"type_test"  %>
           </div>
         </div>
            <div class="control-group">
@@ -20,7 +20,7 @@
           <div class="control-group">
             <label class="control-label"  for="source_probe">Gerente: </label>
             <div class="controls">
-              <%= collection_select :source_probe, :id, Probe.order(:name).all, :id, :pretty_name_with_location, {:include_blank => "Selecione uma sonda de origem..."}, {:class => 'input-block-level'} %>
+              <%= collection_select :profile, :source_probe, Probe.order(:name).all, :id, :pretty_name_with_location, {:include_blank => "Selecione uma sonda de origem..."}, {:class => 'input-block-level'} %>
             </div>
           </div>
 
@@ -28,7 +28,7 @@
             <label class="control-label"  for="metrics">Métricas: </label>
             <div class="controls">
               <% Metric.all.each do |m| %>
-                  <input type="checkbox" name="metrics[]" value="<%= m.plugin %>" /> <%= m.name %> <br/>
+                  <input type="checkbox" name="profile[metrics[]]" value="<%= m.plugin %>" /> <%= m.name %> <br/>
               <% end %>
           </div>
         </div>

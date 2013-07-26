@@ -2,7 +2,7 @@ require 'xmlsimple'
 
 class Profile < ActiveRecord::Base
   attr_accessible :config_method, :config_parameters, :name, :connection_profile_id, :metric_ids, :nameservers, :sites
-  attr_accessible :type_test, :source_probe, :timeout, :probe_size, :train_count, :metrics, :train_len, :time, :interval
+  attr_accessible :type_test, :source_probe, :timeout, :probe_size, :train_count, :metrics, :train_len, :time, :interval, :metrics
 
   #validates
 =begin
@@ -18,6 +18,17 @@ class Profile < ActiveRecord::Base
   has_many :schedules, :through => :evaluations
 
   accepts_nested_attributes_for :metrics
+
+  #def metrics
+  #    h = load_hash_from_xml
+  #    Metric.where(plugin: h['NMAgent']['plugins'])
+  #end
+
+  #def metrics=(ms)
+  #    h = load_hash_from_xml
+  #    h['NMAgent']['plugins'] = ms
+  #    save_xml_from_hash(ms)
+  #end
 
   def manager_ip
       h = load_hash_from_xml
@@ -171,12 +182,25 @@ class Profile < ActiveRecord::Base
 
   def source_probe
       h = load_hash_from_xml
-      p = Probe.where(id: h['NMAgent']['agt-index'])
-      p
+      h['NMAgent']['agt-index']
   end
 
   def source_probe=(t)
       # t eh a id de uma probe
+      h = load_hash_from_xml
+      p = Probe.find(t)
+      h['NMAgent']['agt-index'] = t
+      h['NMAgent']['literal-addr'] = p.ipaddress
+      h['NMAgent']['android'] = if p.type == "android"
+                                    1
+                                else
+                                    0
+                                end
+      h['NMAgent']['location'] ||= {}
+      h['NMAgent']['location']['name'] = p.name
+      h['NMAgent']['location']['city'] = p.city
+      h['NMAgent']['location']['state'] = p.state
+      save_xml_from_hash(h)
   end
 
   def time
@@ -238,11 +262,7 @@ class Profile < ActiveRecord::Base
           if self.config_parameters == "" || self.config_parameters.nil?
               self.config_parameters = "<NMAgent></NMAgent>"
           end
-          h = XmlSimple.xml_in(self.config_parameters, { 'KeepRoot' => true, 'ForceArray' => false, 'NoAttr' => true })
-          if h['NMAgent'] == [{}]
-              h['NMAgent'] = {}
-          end
-          return h
+          XmlSimple.xml_in(self.config_parameters, { 'KeepRoot' => true, 'ForceArray' => false, 'NoAttr' => true })
       else
           {}
       end
