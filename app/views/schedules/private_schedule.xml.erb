@@ -4,6 +4,28 @@
             <uuid><%= schedule.uuid %></uuid>
         </config>
         <metrics>
+            <% schedule.profiles.where(config_method: "http").each do |profile| %>
+                <throughput_http>
+                    <% cfg = ActiveSupport::JSON.decode(profile.config_parameters) %>
+                    <download>
+                        <numCon><%= cfg["download"]["numCon"] %></numCon>
+                        <testTime><%= cfg["download"]["testTime"] %></testTime>
+                        <% cfg["download"]["paths"].each do |path| %>
+                            <% path.each do |type, file| %>
+                                <path type="<%= type %>"><%= file %></path>
+                            <% end %>
+                        <% end %>
+                    </download>
+                    <upload>
+                        <path><% cfg["upload"]["path"] %></path>
+                        <% cfg["upload"]["files"].each do |file| %>
+                            <% file.each do |t, f| %>
+                                <file type="<%= t %>"><%= f %></file>
+                            <% end %>
+                        <% end %>
+                    </upload>
+                </throughput_http>
+            <% end %>
             <% schedule.profiles.where(config_method: "raw_xml").each do |profile| %>
                 <%= profile.config_parameters %>
             <% end %>

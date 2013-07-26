@@ -269,7 +269,7 @@ class Profile < ActiveRecord::Base
 
   def http_numcon
       self.config_parameters ||= setup_http_params
-      a = ActiveSupport::JSON.decode(self.config_parameters)["numCon"]
+      a = ActiveSupport::JSON.decode(self.config_parameters)["download"]["numCon"]
       if a
           a
       else
@@ -280,7 +280,7 @@ class Profile < ActiveRecord::Base
   def http_numcon=(n)
       self.config_parameters ||= setup_http_params
       cfg_params = ActiveSupport::JSON.decode(self.config_parameters)
-      cfg_params["numCon"] = n
+      cfg_params["download"]["numCon"] = n
       self.config_parameters = cfg_params.to_json
   end
 
@@ -307,7 +307,7 @@ class Profile < ActiveRecord::Base
       if a
           a
       else
-          []
+          [{}]
       end
   end
 
@@ -341,7 +341,7 @@ class Profile < ActiveRecord::Base
       if a
           a
       else
-          []
+          [{}]
       end
   end
 
@@ -372,6 +372,6 @@ class Profile < ActiveRecord::Base
   end
 
   def setup_http_params
-      {numCon: 0, download: {testTime: 0, paths: []}, upload: {path: "", files: []}}
+      {download: {numCon: 0, testTime: 0, paths: [{}]}, upload: {path: "", files: [{}]}}
   end
 end
