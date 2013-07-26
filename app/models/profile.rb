@@ -2,7 +2,7 @@ require 'xmlsimple'
 
 class Profile < ActiveRecord::Base
   attr_accessible :config_method, :config_parameters, :name, :connection_profile_id, :metric_ids, :nameservers, :sites
-  attr_accessible :type_test, :source_probe, :timeout, :probe_size, :train_count, :metrics, :train_len, :time, :interval, :metrics, :protocol, :mode
+  attr_accessible :type_test, :source_probe, :timeout, :probe_size, :train_count, :metrics, :train_len, :time, :interval, :plugins, :protocol, :mode
 
   #validates
 =begin
@@ -19,16 +19,16 @@ class Profile < ActiveRecord::Base
 
   accepts_nested_attributes_for :metrics
 
-  #def metrics
-  #    h = load_hash_from_xml
-  #    Metric.where(plugin: h['NMAgent']['plugins'])
-  #end
+  def plugins
+      h = load_hash_from_xml
+      Metric.where(plugin: h['NMAgent']['plugins']).all
+  end
 
-  #def metrics=(ms)
-  #    h = load_hash_from_xml
-  #    h['NMAgent']['plugins'] = ms
-  #    save_xml_from_hash(ms)
-  #end
+  def plugins=(ms)
+      h = load_hash_from_xml
+      h['NMAgent']['plugins'] = ms
+      save_xml_from_hash(ms)
+  end
 
   def manager_ip
       h = load_hash_from_xml
