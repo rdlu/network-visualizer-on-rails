@@ -22,12 +22,7 @@ class Profile < ActiveRecord::Base
 
   def plugins
       h = load_hash_from_xml
-      m = Metric.where(plugin: h['NMAgent']['plugins'])
-      unless m.nil?
-          m
-      else
-          []
-      end
+      Metric.where(plugin: h['NMAgent']['plugins']).all
   end
 
   def plugins=(ms)
@@ -188,17 +183,6 @@ class Profile < ActiveRecord::Base
   def ignore_gap(ig)
       h = load_hash_from_xml
       h['NMAgent']['ignore-gap'] = ig
-      save_xml_from_hash(h)
-  end
-
-  def plugins
-      h = load_hash_from_xml
-      h['NMAgent']['plugins']
-  end
-
-  def plugins=(ps)
-      h = load_hash_from_xml
-      h['NMAgent']['plugins'] = ps
       save_xml_from_hash(h)
   end
 
