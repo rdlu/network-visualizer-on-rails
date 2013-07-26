@@ -45,7 +45,7 @@
               <% end %>
               <% if test_profile.config_method == "raw_xml" %>
                   <% test_profile.plugins.each do |metric| %>
-                  <span class="label label-info etooltip" data-title="<%= Metric.where(plugin: metric).first.description %>"><%= Metric.where(plugin: metric).first.name %></span>
+                  <span class="label label-info etooltip" data-title="<%= Metric.where(plugin: metric.plugin).first.description %>"><%= Metric.where(plugin: metric.plugin).first.name %></span>
                   <% end %>
               <% end %>
             </td>
