@@ -21,7 +21,7 @@ class Profile < ActiveRecord::Base
 
   def plugins
       h = load_hash_from_xml
-      Metric.where(plugin: h['NMAgent']['plugins']).all
+      Metric.where(plugin: h['NMAgent']['plugins'])
   end
 
   def plugins=(ms)
