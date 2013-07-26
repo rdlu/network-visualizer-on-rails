@@ -1,6 +1,5 @@
 # coding: utf-8
 class SchedulesController < ApplicationController
-  before_filter :authenticate_user!
   # GET /schedules
   # GET /schedules.json
   def index
