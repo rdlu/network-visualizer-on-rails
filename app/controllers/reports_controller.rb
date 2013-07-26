@@ -1653,6 +1653,18 @@ class ReportsController < ApplicationController
     end
   end
 
+  #RELATORIO DE PERFORMANCE
+  def performance
+
+    respond_to do |format|
+      format.html { render :layout => false }
+    end
+
+  end
+
+
+
+  #########################
   def csv_bruto
     source = Probe.find(params[:source])
     destination = Probe.find(params[:destination])
