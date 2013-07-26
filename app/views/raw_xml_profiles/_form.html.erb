@@ -70,40 +70,40 @@
       <div class="control-group">
         <label class="control-label"  for="Protocol">Protocolo: </label>
         <div class="controls">
-          <select  name = "profile[protocol][]"  id="protocol" onchange=" displayTypes(this.value)" >
-            <option name="profile[protocol]" value="tcp">TCP</option>
-            <option name="profile[protocol]" value="udp">UDP</option>
+          <select  name = "profile[protocol]"  id="protocol" onchange=" displayTypes(this.value)" >
+              <option name="profile[protocol]" value="tcp" <%= "selected=true" if @profile.protocol == "TCP" %>>TCP</option>
+              <option name="profile[protocol]" value="udp" <%= "selected=true" if @profile.protocol == "UDP" %>>UDP</option>
           </select>
         </div>
       </div>
 
       </div>
-      <div id="opt_tcp" class="span4">
-        <div class="control-group">
-          <label class="control-label"  for="train_count">Conexões Simultâneas: </label>
-          <div class="controls">
-            <%= f.text_field :train_count %>
-          </div>
-        </div>
+          <div id="opt_tcp" class="span4" <%= "style=display:none;" if @profile.protocol == "UDP" %>>
+            <div class="control-group">
+              <label class="control-label"  for="train_count">Conexões Simultâneas: </label>
+              <div class="controls">
+                <%= f.text_field :train_count %>
+              </div>
+            </div>
 
-        <div class="control-group">
-          <label class="control-label"  for="mode">Modo de Medição: </label>
-          <div class="controls">
-            <select  name = "profile[mode]"  id="mode" onchange="" >
-              <option name="profile[mode]" value="normal" <%= "selected=true" if @profile.mode == "normal" %>>Normal</option>
-              <option name="profile[mode]" value="time" <%= "selected=true" if @profile.mode == "time" %>>Tempo</option>
-              <option name="profile[mode]" value="mixed" <%= "selected=true" if @profile.mode == "mixed" %>>Misto</option>
-            </select>
-          </div>
-        </div>
+            <div class="control-group">
+              <label class="control-label"  for="mode">Modo de Medição: </label>
+              <div class="controls">
+                <select  name = "profile[mode]"  id="mode" onchange="" >
+                  <option name="profile[mode]" value="normal" <%= "selected=true" if @profile.mode == "normal" %>>Normal</option>
+                  <option name="profile[mode]" value="time" <%= "selected=true" if @profile.mode == "time" %>>Tempo</option>
+                  <option name="profile[mode]" value="mixed" <%= "selected=true" if @profile.mode == "mixed" %>>Misto</option>
+                </select>
+              </div>
+            </div>
 
-        <div class="control-group">
-          <label class="control-label"  for="time">Tempo de Medição: </label>
-          <div class="controls">
-            <%= f.text_field :time, {:placeholder => "segundos"} %>
+            <div class="control-group">
+              <label class="control-label"  for="time">Tempo de Medição: </label>
+              <div class="controls">
+                <%= f.text_field :time, {:placeholder => "segundos"} %>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
     </div>
       <div class="row-fluid">
         <div class="span4">

@@ -65,19 +65,19 @@ class Profile < ActiveRecord::Base
 
   def protocol
       h = load_hash_from_xml
-      if h['NMAgent']['protocol'] == 1
-          "TCP"
+      if h['NMAgent']['protocol'] == "1"
+          "tcp"
       else
-          "UDP"
+          "udp"
       end
   end
 
   def protocol=(p)
       h = load_hash_from_xml
-      h['NMAgent']['protocol'] = if p == "TCP"
-                                     1
+      h['NMAgent']['protocol'] = if p == "tcp"
+                                     "1"
                                  else
-                                     0
+                                     "0"
                                  end
       save_xml_from_hash(h)
   end
