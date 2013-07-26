@@ -4,63 +4,33 @@
             <uuid><%= schedule.uuid %></uuid>
         </config>
         <metrics>
-            <% schedule.profile.each do |profile| %>
-                <% case profile.name
-                    when "throughput_tcp" %>
-                    <% when "throughput" %>
-                    <% when "throughput_http" %>
-                        <throughput_http>
-                            <download>
-                                <numCon>3</numCon>
-                                <testTime>2000</testTime>   //Valor em ms
-                                <path type=”outro”>http://143.54.85.34/files/httptest/arquivo_OUTROS_down</path>
-                                <path type=”3G”>http://143.54.85.34/files/httptest/arquivo_3G_down</path>
-                            </download>
-                            <upload>
-                                <path>http://143.54.85.34/handle_upload_1.php</path>
-                                <file type=”outro”>arquivo_OUTROS_up</file>
-                                <file  type=”3G”>arquivo_3G_up</file>
-                            </upload>
-                        </throughput_http>
-                    <% when "rtt" %>
-                    <% when "loss" %>
-                    <% when "jitter" %>
-                    <% when "owd" %>
-                    <% when "pom" %>
-                    <% when "availability" %>
-                    <% when "dns" %>
-                        <dns>
-                            <servers>
-                                <server>200.204.135.240</server>
-                                <server>200.204.135.241</server>
-                            </servers>
-                            <urls>
-                                <url>http://www.g1.globo.com</url>
-                                <url>http://www.uol.com.br </url>
-                            </urls>
-                            <config>
-                                <timeout>2000</timeout> //Valor em ms
-                            </config>
-                        </dns>
-                    <% when "webload" %>
-                        <cargaWeb>
-                            <urls>
-                                <url>http://www.vivo.com.br</url>
-                                <url>http://www.google.com.br</url>
-                            </urls>
-                        </cargaWeb>
-                    <% when "sms" %>
-                        <sms>
-                            <% # Se for apenas teste pra ele mesmo, enviar “self” no lugar de um numero de telefone. %>
-                            <phoneNumber>4569</phoneNumber>
-                            <% # pode ter mais um de um telefone aqui %>
-                            <timeout>5</timeout>	
-                            <% # em segundos %>
-                        </sms>
-                <% else %>
-                    <% # Do nothing %>
+            <% schedule.profiles.where(config_method: "raw_xml").each do |profile| %>
+                <%= profile.config_parameters %>
             <% end %>
-            </metrics>
-        <% end %>
+            <% schedule.profiles.where(config_method: "dns").each do |profile| %>
+                <dns>
+                    <servers>
+                        <% profile.nameservers.each do |ns| %>
+                            <server><%= Nameserver.find(ns).address %></server>
+                        <% end %>
+                    </servers>
+                    <urls>
+                        <% profile.sites.each do |site| %>
+                            <url><%= Site.find(site).url %></url>
+                        <% end %>
+                    </urls>
+                </dns>
+            <% end %>
+            <% schedule.profiles.where(config_method: "url").each do |profile| %>
+                <cargaWeb>
+                    <urls>
+                        <% profile.sites.each do |site| %>
+                            <url><%= Site.find(site).url %></url>
+                        <% end %>
+                    </urls>
+                </cargaWeb>
+            <% end %>
+            <% end %>
+        </metrics>
     </schedule>
 <% end %>
