@@ -107,12 +107,12 @@ class Profile < ActiveRecord::Base
       save_xml_from_hash(h)
   end
 
-  def gap_value
+  def interval
       h = load_hash_from_xml
       h['NMAgent']['gap-value']
   end
 
-  def gap_value=(gv)
+  def interval=(gv)
       h = load_hash_from_xml
       h['NMAgent']['gap-value'] = gv
       save_xml_from_hash(h)
@@ -207,12 +207,6 @@ class Profile < ActiveRecord::Base
   end
 
   def time=(t)
-  end
-
-  def interval
-  end
-
-  def interval=(t)
   end
 
   def nameservers=(ns)
