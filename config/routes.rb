@@ -55,6 +55,7 @@ MomRails::Application.routes.draw do
   resources :dns_profiles
   resources :url_profiles
   resources :raw_xml_profiles
+  resources :http_profiles
 
   resources :connection_profiles do
     resources :plans

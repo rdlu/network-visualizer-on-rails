@@ -28,6 +28,9 @@ class ProfilesController < ApplicationController
     when "raw_xml"
         redirect_to raw_xml_profile_path(@profile)
         return
+    when "http"
+        redirect_to http_profile_path(@profile)
+        return
     else
         # do nothing
     end
@@ -65,6 +68,9 @@ class ProfilesController < ApplicationController
         return
     when "raw_xml"
         redirect_to edit_raw_xml_profile_path(@profile)
+        return
+    when "http"
+        redirect_to edit_http_profile_path(@profile)
         return
     else
         # do nothing
@@ -105,6 +111,9 @@ class ProfilesController < ApplicationController
         return
     when "raw_xml"
         redirect_to raw_xml_profile_path(@profile)
+        return
+    when "http"
+        redirect_to http_profile_path(@profile)
         return
     else
         # do nothing
