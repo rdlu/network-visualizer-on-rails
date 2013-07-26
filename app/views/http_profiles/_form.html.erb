@@ -1,0 +1,60 @@
+<div class="alert alert-warning">
+  Os perfis de teste devem ser planejados com cautela antes de qualquer cadastramento ou modificação.<br>
+  Eles podem mudar todo o comportamento dos testes!
+</div>
+<%= form_for([:http, @profile], :html => {:class => "form-horizontal form-stop"},:id=>"http_form") do |f| %>
+    <div class="row-fluid">
+      <div class="span4">
+        <label> Download</label>
+        <div class="control-group">
+          <label class="control-label"  for="http_numcon">Número de Conexões: </label>
+          <div class="controls">
+            <%= f.text_field :http_numcon  %>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label"  for="http_download_testtime">Tempo de Teste: </label>
+          <div class="controls">
+            <%= f.text_field :http_download_testtime  %>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label"  for="type">Tipo de Conexão: </label>
+          <div class="controls">
+            <input type="text" value="" id="type"/>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label"  for="path">Arquivo: </label>
+          <div class="controls">
+            <input type="text" value="" id="path"/>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row-fluid">
+      <div class="span4">
+        <div class=" control-group">
+          <div class="controls">
+            <%= f.submit "Salvar", :class => "btn btn-primary btn-large btn-block" %>
+          </div>
+        </div>
+      </div>
+      <div class="span2 ">
+        <div><%= link_to "Voltar", :back , :class => 'btn btn-inverse btn-large btn-block' %></div>
+      </div>
+    </div>
+
+<% end %>
+
+<script>
+    jQuery('#http_form').submit(function (event) {
+        var type = $("#type").val();
+        var path = $("#path").val();
+
+
+
+        });
+
+</script>

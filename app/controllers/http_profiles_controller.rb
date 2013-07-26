@@ -1,4 +1,4 @@
-class HttpProfilesControllerController < ApplicationController
+class HttpProfilesController < ApplicationController
   def new
     authorize! :manage, self
     @profile = Profile.new

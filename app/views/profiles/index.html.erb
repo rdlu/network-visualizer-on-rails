@@ -4,10 +4,10 @@
     <% if can? :create, Profile %>
         <div class="navbar">
           <div class="navbar-inner">
-            <div class="span4 offset2">
+            <div class="span3">
               <%= link_to "Novo Perfil de Teste de DNS", new_dns_profile_path, :class => "btn btn-primary btn-block" %>
             </div>
-            <div class="span4">
+            <div class="span3">
               <%= link_to "Novo Perfil de Teste de URL", new_url_profile_path, :class => "btn btn-primary btn-block" %>
             </div>
             <div class="span2">
@@ -15,6 +15,9 @@
             </div>
             <div class="span2">
               <%= link_to "Novo Perfil de Teste XML", new_raw_xml_profile_path, :class => "btn btn-primary btn-block" %>
+            </div>
+            <div class="span2">
+              <%= link_to "Novo Perfil de Teste HTTP", new_http_profile_path, :class => "btn btn-primary btn-block" %>
             </div>
             </div>
           </div>
@@ -68,4 +71,6 @@
 </div>
 <script type="text/javascript">
     $('.etooltip').tooltip();
+
+
 </script>
