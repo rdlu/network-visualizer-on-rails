@@ -42,6 +42,12 @@
       </div>
     </div>
     <div class="control-group">
+      <%= f.label :metric_type, "Tipo de métrica", :class => "control-label" %>
+      <div class="controls">
+        <%= f.select :metric_type, @metric.metric_types %>
+      </div>
+    </div>
+    <div class="control-group">
       <%= f.label :reverse, :class => "control-label" %>
       <div class="controls">
         <%= f.check_box :reverse %>

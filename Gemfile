@@ -56,6 +56,7 @@ group :assets do
 end
 
 group :development do
+  gem 'quiet_assets'
   gem 'immigrant' #plugin do foreigner que regenera migrations com chaves estrangeiras em nivel de BD
   gem 'meta_request'
   gem 'better_errors'

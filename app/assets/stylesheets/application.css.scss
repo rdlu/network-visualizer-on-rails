@@ -31,5 +31,7 @@ $infoText: darken(#908A62, 5%);
 // And finally bootswatch style itself
 @import "bootswatch/cerulean/bootswatch";
 
+@import "pnotify";
+
 // Whatever application styles you have go last
 @import "base";

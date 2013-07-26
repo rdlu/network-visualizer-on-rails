@@ -1697,6 +1697,70 @@ class ReportsController < ApplicationController
     end
   end
 
+  def dygraphs_bruto
+    @source = Probe.where(:id => params[:source][:id]).first
+    @destination = Probe.where(:id => params[:destination][:id]).first
+    @metric = Metric.where(:id => params[:metric][:id]).first
+    @schedule = Schedule.where(:destination_id => @destination).where(:source_id => @source).all.last
+
+    @from = DateTime.parse(params[:date][:start]+' '+params[:time][:start]+' '+DateTime.current.zone).in_time_zone
+    @to = DateTime.parse(params[:date][:end]+' '+params[:time][:end]+' '+DateTime.current.zone).in_time_zone
+
+    @raw_results = Results.
+        where(:schedule_id => @schedule.id).
+        where(:metric_id => @metric.id).
+        where(:timestamp => @from..@to).order('timestamp ASC').all
+
+    @idName = "dygraph-" << @source.id.to_s << "-" << @destination.id.to_s << "-" << @metric.id.to_s #<< "-" << @from.strftime("%s") << "-" << @to.strftime("%s")
+    @exportFileName = @destination.name + '-' + @metric.plugin + '-' + @from.strftime("%Y%m%d_%H%M%S") + '-' +@to.strftime("%Y%m%d_%H%M%S")
+    @exportParams = "source=#{@source.id}&destination=#{@destination.id}&metric=#{@metric.id}&from=#{@from.iso8601}&to=#{@to.iso8601}"
+
+    respond_to do |format|
+      format.html { render :layout => false }
+    end
+  end
+
+  def highcharts_bruto
+      @source = Probe.find(params[:source][:id])
+      @destination = Probe.find(params[:destination][:id])
+      @metric = Metric.find(params[:metric][:id])
+      @schedule = Schedule.where(:destination_id => @destination.id).where(:source_id => @source.id).all.last
+
+      @from = DateTime.parse(params[:date][:start]+' '+params[:time][:start]+' '+DateTime.current.zone).in_time_zone
+      @to = DateTime.parse(params[:date][:end]+' '+params[:time][:end]+' '+DateTime.current.zone).in_time_zone
+
+      @choosenSeries = case @metric.plugin
+                         when /rtt|loss/
+                           {dsavg:"dsdsadsa" }
+                         else
+                           {sdavg: "Download (Avg)", dsavg:"Upload (Avg)" }
+                       end
+
+      @series = Hash.new
+      @choosenSeries.each do |key,series|
+        @series[key] = {name:series, data:[]}
+      end
+
+      @raw_results = Results.
+          where(:schedule_id => @schedule.id).
+          where(:metric_id => @metric.id).
+          where(:timestamp => @from..@to).order('timestamp ASC').all
+
+      @raw_results.each do |res|
+        @choosenSeries.each do |key,series|
+          @series[key][:data] << [res.timestamp,res[key]]
+        end
+      end
+
+      @idName = "highcharts-" << @source.id.to_s << "-" << @destination.id.to_s << "-" << @metric.id.to_s #<< "-" << @from.strftime("%s") << "-" << @to.strftime("%s")
+      @exportFileName = @destination.name + '-' + @metric.plugin + '-' + @from.strftime("%Y%m%d_%H%M%S") + '-' +@to.strftime("%Y%m%d_%H%M%S")
+      @exportParams = "source=#{@source.id}&destination=#{@destination.id}&metric=#{@metric.id}&from=#{@from.iso8601}&to=#{@to.iso8601}"
+
+      respond_to do |format|
+        format.html { render :layout => false }
+      end
+  end
+
   def xls_bruto
     @source = Probe.find(params[:source])
     @destination = Probe.find(params[:destination])
@@ -1860,7 +1924,7 @@ class ReportsController < ApplicationController
       report = Nokogiri::XML(params[:report])
 
       user = report.xpath("report/user").children.to_s
-      uuid = SecureRandom.uuid # Nao estamos mandando um UUID de verdade ainda no XML.
+      uuid = Schedule.where(destination_id: Probe.where(ipaddress: user)).first.uuid
       timestamp = report.xpath("report/timestamp").children.to_s
       agent_type = report.xpath("report/agent_type").children.to_s
 

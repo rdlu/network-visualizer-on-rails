@@ -47,6 +47,7 @@
             <th>UF</th>
             <th>Conexão / Plano</th>
             <th>Ult. Atualização</th>
+            <th>Versão</th>
             <th>Status</th>
             <th colspan="3">Ações</th>
           </tr>
@@ -68,7 +69,8 @@
           <td><%= probe.state.upcase %></td>
           <td><%= probe.connection_profile.name %> / <%= probe.plan.name %></td>
           <td><%= probe.updated_at.to_datetime %></td>
-          <td><%= probe.status %></td>
+          <td><%= probe.agent_version.nil? ? '-' : probe.agent_version %>/<%= probe.osversion.nil? ? '-' : probe.osversion %></td>
+          <td><%= probe.pretty_status.capitalize %></td>
           <td><%= link_to 'Visualizar', probe %></td>
           <td><%= link_to "Editar", edit_probe_path(probe) if can? :edit, Probe %></td>
           <td><%= link_to 'Excluir', probe, method: :delete, data: { confirm: 'Você tem certeza que deseja excluir este Agente?' } if can? :edit, Probe %></td>

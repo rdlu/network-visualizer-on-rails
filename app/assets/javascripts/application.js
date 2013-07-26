@@ -15,4 +15,5 @@
 //= require bootstrap
 //= require conversion
 //= require sorttable
+//= require pnotify
 //= require_tree .
