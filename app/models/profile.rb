@@ -3,6 +3,7 @@ require 'xmlsimple'
 class Profile < ActiveRecord::Base
   attr_accessible :config_method, :config_parameters, :name, :connection_profile_id, :metric_ids, :nameservers, :sites
   attr_accessible :type_test, :source_probe, :timeout, :probe_size, :train_count, :metrics, :train_len, :time, :interval, :plugins, :protocol, :mode
+  attr_accessible :http_numcon, :http_download_testtime, :http_download_paths, :http_upload_path, :http_upload_files
 
   #validates
 =begin
@@ -264,6 +265,36 @@ class Profile < ActiveRecord::Base
     else
       []
     end
+  end
+
+  def http_numcon
+  end
+
+  def http_numcon=(n)
+  end
+
+  def http_download_testtime
+  end
+
+  def http_download_testtime=(t)
+  end
+
+  def http_download_paths
+  end
+
+  def http_download_paths=(ps)
+  end
+
+  def http_upload_path
+  end
+
+  def http_upload_path=(p)
+  end
+
+  def http_upload_files
+  end
+
+  def http_upload_files=(fs)
   end
 
   private
