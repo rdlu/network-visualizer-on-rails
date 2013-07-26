@@ -16,6 +16,11 @@
       <span class="label label-info etooltip" data-title="<%= metric.description %>"><%= metric.name %></span>
   <% end %>
 </p>
+
+<p>
+    <b>Raw XML (Para debug):</b>
+    <%= @profile.config_parameters %>
+</p>
 <% unless @nameservers.nil? %>
 <h3>Nameservers configurados:</h3>
 <table class="table table-bordered table-striped">

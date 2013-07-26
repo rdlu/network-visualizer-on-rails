@@ -238,7 +238,7 @@ class Profile < ActiveRecord::Base
           if self.config_parameters == "" || self.config_parameters.nil?
               self.config_parameters = "<NMAgent></NMAgent>"
           end
-          h = XmlSimple.xml_in(self.config_parameters, { 'KeepRoot' => true })
+          h = XmlSimple.xml_in(self.config_parameters, { 'KeepRoot' => true, 'ForceArray' => false, 'NoAttr' => true })
           if h['NMAgent'] == [{}]
               h['NMAgent'] = {}
           end
@@ -249,8 +249,8 @@ class Profile < ActiveRecord::Base
   end
 
   def save_xml_from_hash(h)
-      if self.config_method == "raw_xml"
-          self.config_parameters = XmlSimple.xml_out(h, { 'KeepRoot' => true })
+      if self.config_method == "raw_xml" || self.config_method.nil?
+          self.config_parameters = XmlSimple.xml_out(h, { 'KeepRoot' => true, 'NoAttr' => true })
       end
   end
 end
