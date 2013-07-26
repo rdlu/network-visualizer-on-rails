@@ -58,13 +58,13 @@ class ProfilesController < ApplicationController
 
     case @profile.config_method
     when "dns"
-        redirect_to dns_profile_path(@profile)
+        redirect_to edit_dns_profile_path(@profile)
         return
     when "url"
-        redirect_to url_profile_path(@profile)
+        redirect_to edit_url_profile_path(@profile)
         return
     when "raw_xml"
-        redirect_to raw_xml_profile_path(@profile)
+        redirect_to edit_raw_xml_profile_path(@profile)
         return
     else
         # do nothing
