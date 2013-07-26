@@ -28,7 +28,7 @@
             <label class="control-label"  for="metrics">Métricas: </label>
             <div class="controls">
               <% Metric.all.each do |m| %>
-                  <input type="checkbox" name="profile[metrics[]]" value="<%= m.plugin %>" /> <%= m.name %> <br/>
+                  <input type="checkbox" name="profile[metrics][]" value="<%= m.plugin %>" /> <%= m.name %> <br/>
               <% end %>
           </div>
         </div>
@@ -70,9 +70,9 @@
       <div class="control-group">
         <label class="control-label"  for="Protocol">Protocolo: </label>
         <div class="controls">
-          <select  name = "protocol[]"  id="protocol" onchange=" displayTypes(this.value)" >
-            <option name="protocol" value="tcp">TCP</option>
-            <option name="protocol" value="udp">UDP</option>
+          <select  name = "profile[protocol][]"  id="protocol" onchange=" displayTypes(this.value)" >
+            <option name="profile[protocol]" value="tcp">TCP</option>
+            <option name="profile[protocol]" value="udp">UDP</option>
           </select>
         </div>
       </div>
@@ -89,10 +89,10 @@
         <div class="control-group">
           <label class="control-label"  for="mode">Modo de Medição: </label>
           <div class="controls">
-            <select  name = "mode[]"  id="mode" onchange="" >
-              <option name="mode" value="normal">Normal</option>
-              <option name="mode" value="time">Tempo</option>
-              <option name="mode" value="mixed">Misto</option>
+            <select  name = "profile[mode]"  id="mode" onchange="" >
+              <option name="profile[mode]" value="normal" <%= "selected=true" if @profile.mode == "normal" %>>Normal</option>
+              <option name="profile[mode]" value="time" <%= "selected=true" if @profile.mode == "time" %>>Tempo</option>
+              <option name="profile[mode]" value="mixed" <%= "selected=true" if @profile.mode == "mixed" %>>Misto</option>
             </select>
           </div>
         </div>

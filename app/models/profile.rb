@@ -2,7 +2,7 @@ require 'xmlsimple'
 
 class Profile < ActiveRecord::Base
   attr_accessible :config_method, :config_parameters, :name, :connection_profile_id, :metric_ids, :nameservers, :sites
-  attr_accessible :type_test, :source_probe, :timeout, :probe_size, :train_count, :metrics, :train_len, :time, :interval, :metrics
+  attr_accessible :type_test, :source_probe, :timeout, :probe_size, :train_count, :metrics, :train_len, :time, :interval, :metrics, :protocol, :mode
 
   #validates
 =begin
@@ -65,12 +65,20 @@ class Profile < ActiveRecord::Base
 
   def protocol
       h = load_hash_from_xml
-      h['NMAgent']['protocol']
+      if h['NMAgent']['protocol'] == 1
+          "TCP"
+      else
+          "UDP"
+      end
   end
 
   def protocol=(p)
       h = load_hash_from_xml
-      h['NMAgent']['protocol'] = p
+      h['NMAgent']['protocol'] = if p == "TCP"
+                                     1
+                                 else
+                                     0
+                                 end
       save_xml_from_hash(h)
   end
 
@@ -118,23 +126,38 @@ class Profile < ActiveRecord::Base
       save_xml_from_hash(h)
   end
 
-  def time_mode
+  def mode
       h = load_hash_from_xml
-      h['NMAgent']['time-mode']
+      case h['NMAgent']['time-mode']
+      when "0"
+          "normal"
+      when "1"
+          "time"
+      when "2"
+          "mixed"
+      else
+          "ERROR"
+      end
   end
 
-  def time_mode=(tm)
+  def mode=(tm)
       h = load_hash_from_xml
-      h['NMAgent']['time-mode'] = tm
+      h['NMAgent']['time-mode'] = if tm == "normal"
+                                      0
+                                  elsif tm == "time"
+                                      1
+                                  elsif tm == "mixed"
+                                      2
+                                  end
       save_xml_from_hash(h)
   end
 
-  def max_time
+  def time
       h = load_hash_from_xml
       h['NMAgent']['max-time']
   end
 
-  def max_time=(mt)
+  def time=(mt)
       h = load_hash_from_xml
       h['NMAgent']['max-time'] = mt
       save_xml_from_hash(h)
@@ -201,12 +224,6 @@ class Profile < ActiveRecord::Base
       h['NMAgent']['location']['city'] = p.city
       h['NMAgent']['location']['state'] = p.state
       save_xml_from_hash(h)
-  end
-
-  def time
-  end
-
-  def time=(t)
   end
 
   def nameservers=(ns)
