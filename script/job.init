@@ -9,8 +9,9 @@
 ### END INIT INFO
 
 N=/etc/init.d/delayed_job
-app_root=/usr/share/mom-rails
-user=www-data
+app_root=/usr/share/mom-rails/
+app_root=/home/rodrigo/Projetos/mom-rails/
+user=rodrigo
 service="delayed_job"
 
 set -e

@@ -21,6 +21,7 @@
         <th>Descrição</th>
         <th><span class="etooltip" data-title="Unidade preferencial de visualização da medida">Unid. Prefer.</span></th>
         <th><span class="etooltip" data-title="Unidade em que está efetivamente guardada no Banco de Dados">Unid. no BD</span></th>
+        <th><span class="etooltip" data-title="Usado pelo NetMetric para tratar os resultados recebidos e guardá-los">Tipo de Métrica</span></th>
         <th><span class="etooltip" data-title="Quanto menor, melhor o resultado">Métrica reversa</span></th>
         <th><span class="etooltip" data-title="Ordem de preferência na apresentação de relatórios">Ordem de apresentação</span></th>
         <th colspan="2"></th>
@@ -33,6 +34,7 @@
             <td><%= metric.description %></td>
             <td><%= metric.view_unit %></td>
             <td><%= metric.db_unit %></td>
+            <td><%= metric.pretty_metric_type %></td>
             <td><%= metric.reverse %></td>
             <td><%= metric.order %></td>
             <td><%= link_to 'Visualizar', metric %></td>

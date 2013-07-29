@@ -7,3 +7,4 @@
 //= require moment-js/moment
 //= require moment-js/lang
 //= require conversion
+//= require dygraph-combined

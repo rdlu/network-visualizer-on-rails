@@ -74,38 +74,139 @@ class ReportsController < ApplicationController
     @states = params[:state]
     @cn = params[:cn]
     @goal_filter = params[:goal_filter] #all,above or under
+    @pop = params[:pop]
+    @bras = params[:bras]
 
 
-    if @type == "android"
+    if @type.include? "android"
       @agent_type = ["fixed", "mobile"]
+    end
+
+    if @type.include? "all"
+      @type = ["android","linux"]
+      @agent_type = ["fixed", "mobile"]
+    end
+
+
+    if @agent_type.nil?
+      @agent_type = ["fixed", "mobile"]
+    end
+
+    if @goal_filter.nil?
+      @goal_filter = false
     end
 
     # Garantir que não tenhamos nulos
     @cn.delete("")
     @states.delete("")
 
-    fixed_conn_profile = ConnectionProfile.
+    if @agent_type.include? 'fixed'
+      fixed_conn_profile = ConnectionProfile.
         where(:conn_type => "fixed")
+    else
+      fixed_conn_profile = nil
+    end
 
-    mobile_conn_profile = ConnectionProfile.
+    if @agent_type.include? 'mobile'
+      mobile_conn_profile = ConnectionProfile.
         where(:conn_type => "mobile")
+    else
+      mobile_conn_profile = nil
+    end
 
-    fixed_probes = Probe.
+    if !(@pop.include? 'all') && !(@bras.include? 'all')
+      fixed_probes = Probe.
         where(:connection_profile_id => fixed_conn_profile).
         where(:state => @states).
         where(:areacode => @cn).
-        where(:type => @type)
+        where(:type => @type).
+        where(:anatel => @goal_filter).
+        where(:pop => @pop).
+        where(:bras => @bras)
 
     mobile_probes = Probe.
         where(:connection_profile_id => mobile_conn_profile).
         where(:state => @states).
         where(:areacode => @cn).
-        where(:type => @type)
+        where(:type => @type).
+        where(:anatel => @goal_filter).
+        where(:pop => @pop).
+        where(:bras => @bras)
 
-    all_probes = Probe.
+    else if (@pop.include? 'all') && (@bras.include? 'all')
+       fixed_probes = Probe.
+        where(:connection_profile_id => fixed_conn_profile).
         where(:state => @states).
         where(:areacode => @cn).
-        where(:type => @type)
+        where(:type => @type).
+        where(:anatel => @goal_filter)
+
+      mobile_probes = Probe.
+        where(:connection_profile_id => mobile_conn_profile).
+        where(:state => @states).
+        where(:areacode => @cn).
+        where(:type => @type).
+        where(:anatel => @goal_filter)
+
+      all_probes = Probe.
+          where(:state => @states).
+          where(:areacode => @cn).
+          where(:type => @type).
+          where(:anatel => @goal_filter)
+      else if @pop.include? 'all'
+           fixed_probes = Probe.
+               where(:connection_profile_id => fixed_conn_profile).
+               where(:state => @states).
+               where(:areacode => @cn).
+               where(:type => @type).
+               where(:anatel => @goal_filter).
+               where(:bras => @bras)
+
+           mobile_probes = Probe.
+               where(:connection_profile_id => mobile_conn_profile).
+               where(:state => @states).
+               where(:areacode => @cn).
+               where(:type => @type).
+               where(:anatel => @goal_filter).
+               where(:bras => @bras)
+
+           all_probes = Probe.
+               where(:state => @states).
+               where(:areacode => @cn).
+               where(:type => @type).
+               where(:anatel => @goal_filter).
+               where(:bras => @bras)
+
+         else if @bras.include? 'all'
+           fixed_probes = Probe.
+               where(:connection_profile_id => fixed_conn_profile).
+               where(:state => @states).
+               where(:areacode => @cn).
+               where(:type => @type).
+               where(:anatel => @goal_filter).
+               where(:pop => @pop)
+
+           mobile_probes = Probe.
+               where(:connection_profile_id => mobile_conn_profile).
+               where(:state => @states).
+               where(:areacode => @cn).
+               where(:type => @type).
+               where(:anatel => @goal_filter).
+               where(:pop => @pop)
+
+           all_probes = Probe.
+               where(:state => @states).
+               where(:areacode => @cn).
+               where(:type => @type).
+               where(:anatel => @goal_filter).
+               where(:pop => @pop)
+              end
+         end
+      end
+    end
+
+
+
 
     fixed_schedules = Schedule.
         where(:destination_id => fixed_probes)
@@ -356,37 +457,116 @@ class ReportsController < ApplicationController
     @agent_type = params[:agent_type] # fixed or mobile, if linux
     @states = params[:states]
     @cn = params[:cn]
+    @goal_filter = params[:goal_filter]
+    @pop = params[:pop]
+    @bras = params[:bras]
 
-    if @type == "android"
-      @agent_type = ["fixed", "mobile"]
+
+    if @agent_type.include? 'fixed'
+      fixed_conn_profile = ConnectionProfile.
+          where(:conn_type => "fixed")
+    else
+      fixed_conn_profile = nil
     end
 
-    # Garantir que não tenhamos nulos
-    @cn.delete("")
-    @states.delete("")
+    if @agent_type.include? 'mobile'
+      mobile_conn_profile = ConnectionProfile.
+          where(:conn_type => "mobile")
+    else
+      mobile_conn_profile = nil
+    end
 
-    fixed_conn_profile = ConnectionProfile.
-        where(:conn_type => "fixed")
 
-    mobile_conn_profile = ConnectionProfile.
-        where(:conn_type => "mobile")
+    if !(@pop.include? 'all') && !(@bras.include? 'all')
+      fixed_probes = Probe.
+          where(:connection_profile_id => fixed_conn_profile).
+          where(:state => @states).
+          where(:areacode => @cn).
+          where(:type => @type).
+          where(:anatel => @goal_filter).
+          where(:pop => @pop).
+          where(:bras => @bras)
 
-    fixed_probes = Probe.
-        where(:connection_profile_id => fixed_conn_profile).
-        where(:state => @states).
-        where(:areacode => @cn).
-        where(:type => @type)
+      mobile_probes = Probe.
+          where(:connection_profile_id => mobile_conn_profile).
+          where(:state => @states).
+          where(:areacode => @cn).
+          where(:type => @type).
+          where(:anatel => @goal_filter).
+          where(:pop => @pop).
+          where(:bras => @bras)
 
-    mobile_probes = Probe.
-        where(:connection_profile_id => mobile_conn_profile).
-        where(:state => @states).
-        where(:areacode => @cn).
-        where(:type => @type)
+    else if (@pop.include? 'all') && (@bras.include? 'all')
+           fixed_probes = Probe.
+               where(:connection_profile_id => fixed_conn_profile).
+               where(:state => @states).
+               where(:areacode => @cn).
+               where(:type => @type).
+               where(:anatel => @goal_filter)
 
-    all_probes = Probe.
-        where(:state => @states).
-        where(:areacode => @cn).
-        where(:type => @type)
+           mobile_probes = Probe.
+               where(:connection_profile_id => mobile_conn_profile).
+               where(:state => @states).
+               where(:areacode => @cn).
+               where(:type => @type).
+               where(:anatel => @goal_filter)
+
+           all_probes = Probe.
+               where(:state => @states).
+               where(:areacode => @cn).
+               where(:type => @type).
+               where(:anatel => @goal_filter)
+         else if @pop.include? 'all'
+                fixed_probes = Probe.
+                    where(:connection_profile_id => fixed_conn_profile).
+                    where(:state => @states).
+                    where(:areacode => @cn).
+                    where(:type => @type).
+                    where(:anatel => @goal_filter).
+                    where(:bras => @bras)
+
+                mobile_probes = Probe.
+                    where(:connection_profile_id => mobile_conn_profile).
+                    where(:state => @states).
+                    where(:areacode => @cn).
+                    where(:type => @type).
+                    where(:anatel => @goal_filter).
+                    where(:bras => @bras)
+
+                all_probes = Probe.
+                    where(:state => @states).
+                    where(:areacode => @cn).
+                    where(:type => @type).
+                    where(:anatel => @goal_filter).
+                    where(:bras => @bras)
+
+              else if @bras.include? 'all'
+                     fixed_probes = Probe.
+                         where(:connection_profile_id => fixed_conn_profile).
+                         where(:state => @states).
+                         where(:areacode => @cn).
+                         where(:type => @type).
+                         where(:anatel => @goal_filter).
+                         where(:pop => @pop)
+
+                     mobile_probes = Probe.
+                         where(:connection_profile_id => mobile_conn_profile).
+                         where(:state => @states).
+                         where(:areacode => @cn).
+                         where(:type => @type).
+                         where(:anatel => @goal_filter).
+                         where(:pop => @pop)
+
+                     all_probes = Probe.
+                         where(:state => @states).
+                         where(:areacode => @cn).
+                         where(:type => @type).
+                         where(:anatel => @goal_filter).
+                         where(:pop => @pop)
+                   end
+              end
+         end
+    end
 
     fixed_schedules = Schedule.
         where(:destination_id => fixed_probes)
@@ -644,20 +824,24 @@ class ReportsController < ApplicationController
     @agent_type = params[:agent_type] # fixed or mobile, if linux
     @states = params[:states]
     @cn = params[:cn]
+    @goal_filter= params[:goal_filter]
+    @pop = params[:pop]
+    @bras = params[:bras]
 
-    if @type == "android"
-      @agent_type = ["fixed", "mobile"]
+
+    if @agent_type.include? 'fixed'
+      fixed_conn_profile = ConnectionProfile.
+          where(:conn_type => "fixed")
+    else
+      fixed_conn_profile = nil
     end
 
-    # Garantir que não tenhamos nulos
-    @cn.delete("")
-    @states.delete("")
-
-    fixed_conn_profile = ConnectionProfile.
-        where(:conn_type => "fixed").all
-
-    mobile_conn_profile = ConnectionProfile.
-        where(:conn_type => "mobile").all
+    if @agent_type.include? 'mobile'
+      mobile_conn_profile = ConnectionProfile.
+          where(:conn_type => "mobile")
+    else
+      mobile_conn_profile = nil
+    end
 
     @report_results = {}
 
@@ -667,24 +851,96 @@ class ReportsController < ApplicationController
       @report_results[c.to_sym][:upload] = {}
     end
 
+    if !(@pop.include? 'all') && !(@bras.include? 'all')
+      fixed_probes = Probe.
+          where(:connection_profile_id => fixed_conn_profile).
+          where(:state => @states).
+          where(:areacode => @cn).
+          where(:type => @type).
+          where(:anatel => @goal_filter).
+          where(:pop => @pop).
+          where(:bras => @bras)
 
+      mobile_probes = Probe.
+          where(:connection_profile_id => mobile_conn_profile).
+          where(:state => @states).
+          where(:areacode => @cn).
+          where(:type => @type).
+          where(:anatel => @goal_filter).
+          where(:pop => @pop).
+          where(:bras => @bras)
 
-    fixed_probes = Probe.
-        where(:connection_profile_id => fixed_conn_profile).
-        where(:state => @states).
-        where(:areacode => @cn).
-        where(:type => @type).all
+    else if (@pop.include? 'all') && (@bras.include? 'all')
+           fixed_probes = Probe.
+               where(:connection_profile_id => fixed_conn_profile).
+               where(:state => @states).
+               where(:areacode => @cn).
+               where(:type => @type).
+               where(:anatel => @goal_filter)
 
-    mobile_probes = Probe.
-        where(:connection_profile_id => mobile_conn_profile).
-        where(:state => @states).
-        where(:areacode => @cn).
-        where(:type => @type).all
+           mobile_probes = Probe.
+               where(:connection_profile_id => mobile_conn_profile).
+               where(:state => @states).
+               where(:areacode => @cn).
+               where(:type => @type).
+               where(:anatel => @goal_filter)
 
-    all_probes = Probe.
-        where(:state => @states).
-        where(:areacode => @cn).
-        where(:type => @type).all
+           all_probes = Probe.
+               where(:state => @states).
+               where(:areacode => @cn).
+               where(:type => @type).
+               where(:anatel => @goal_filter)
+         else if @pop.include? 'all'
+                fixed_probes = Probe.
+                    where(:connection_profile_id => fixed_conn_profile).
+                    where(:state => @states).
+                    where(:areacode => @cn).
+                    where(:type => @type).
+                    where(:anatel => @goal_filter).
+                    where(:bras => @bras)
+
+                mobile_probes = Probe.
+                    where(:connection_profile_id => mobile_conn_profile).
+                    where(:state => @states).
+                    where(:areacode => @cn).
+                    where(:type => @type).
+                    where(:anatel => @goal_filter).
+                    where(:bras => @bras)
+
+                all_probes = Probe.
+                    where(:state => @states).
+                    where(:areacode => @cn).
+                    where(:type => @type).
+                    where(:anatel => @goal_filter).
+                    where(:bras => @bras)
+
+              else if @bras.include? 'all'
+                     fixed_probes = Probe.
+                         where(:connection_profile_id => fixed_conn_profile).
+                         where(:state => @states).
+                         where(:areacode => @cn).
+                         where(:type => @type).
+                         where(:anatel => @goal_filter).
+                         where(:pop => @pop)
+
+                     mobile_probes = Probe.
+                         where(:connection_profile_id => mobile_conn_profile).
+                         where(:state => @states).
+                         where(:areacode => @cn).
+                         where(:type => @type).
+                         where(:anatel => @goal_filter).
+                         where(:pop => @pop)
+
+                     all_probes = Probe.
+                         where(:state => @states).
+                         where(:areacode => @cn).
+                         where(:type => @type).
+                         where(:anatel => @goal_filter).
+                         where(:pop => @pop)
+                   end
+              end
+         end
+    end
 
     fixed_schedules = Schedule.
         where(:destination_id => fixed_probes).all
@@ -702,6 +958,7 @@ class ReportsController < ApplicationController
         where('start_timestamp <= ?', DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
         where(:schedule_id => fixed_schedules).
         where(:threshold_id => 1).
+        where("dsavg is not null").
         order('start_timestamp ASC').all
     #
     # SMP10
@@ -711,6 +968,7 @@ class ReportsController < ApplicationController
           where('start_timestamp <= ?',  DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
           where(:schedule_id => mobile_schedules).
           where(:threshold_id => 1).
+          where("dsavg is not null").
           order('start_timestamp ASC').all
       #
       # SCM5
@@ -720,6 +978,7 @@ class ReportsController < ApplicationController
           where('start_timestamp <= ?',  DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
           where(:schedule_id => fixed_schedules).
           where(:threshold_id => 2).
+          where("dsavg is not null").
           order('start_timestamp ASC').all
 
       #
@@ -730,6 +989,7 @@ class ReportsController < ApplicationController
           where('start_timestamp <= ?',  DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
           where(:schedule_id => mobile_schedules).
           where(:threshold_id => 2).
+          where("dsavg is not null").
           order('start_timestamp ASC').all
 
       #
@@ -740,6 +1000,7 @@ class ReportsController < ApplicationController
           where('start_timestamp <= ?',  DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
           where(:schedule_id => all_schedules).
           where(:threshold_id => 3).
+          where("dsavg is not null").
           order('start_timestamp ASC').all
 
       #
@@ -750,6 +1011,7 @@ class ReportsController < ApplicationController
           where('start_timestamp <= ?',  DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
           where(:schedule_id => all_schedules).
           where(:threshold_id => 4).
+          where("dsavg is not null").
           order('start_timestamp ASC').all
 
       #
@@ -760,6 +1022,7 @@ class ReportsController < ApplicationController
           where('start_timestamp <= ?',  DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
           where(:schedule_id => all_schedules).
           where(:threshold_id => 5).
+          where("dsavg is not null").
           order('start_timestamp ASC').all
 
       #
@@ -770,6 +1033,7 @@ class ReportsController < ApplicationController
           where('start_timestamp <= ?', DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
           where(:schedule_id => all_schedules).
           where(:threshold_id => 6).
+          where("dsavg is not null").
           order('start_timestamp ASC').all
 
 
@@ -963,14 +1227,9 @@ class ReportsController < ApplicationController
     @agent_type = params[:agent_type] # fixed or mobile, if linux
     @states = params[:states]
     @cn = params[:cn]
-
-    if @type == "android"
-      @agent_type = ["fixed", "mobile"]
-    end
-
-    # Garantir que não tenhamos nulos
-    @cn.delete("")
-    @states.delete("")
+    @goal_filter = params[:goal_filter]
+    @pop = params[:pop]
+    @bras = params[:bras]
 
     fixed_conn_profile = ConnectionProfile.
         where(:conn_type => "fixed")
@@ -978,10 +1237,41 @@ class ReportsController < ApplicationController
     mobile_conn_profile = ConnectionProfile.
         where(:conn_type => "mobile")
 
-    @probes = Probe.
-        where(:state => @states).
-        where(:areacode => @cn).
-        where(:type => @type)
+
+    if !(@pop.include? 'all') && !(@bras.include? 'all')
+      @probes = Probe.
+          where(:state => @states).
+          where(:areacode => @cn).
+          where(:type => @type).
+          where(:anatel => @goal_filter).
+          where(:pop => @pop).
+          where(:bras => @bras)
+
+    else if (@pop.include? 'all') && (@bras.include? 'all')
+           @probes = Probe.
+               where(:state => @states).
+               where(:areacode => @cn).
+               where(:type => @type).
+               where(:anatel => @goal_filter)
+         else if @pop.include? 'all'
+                @probes = Probe.
+                    where(:state => @states).
+                    where(:areacode => @cn).
+                    where(:type => @type).
+                    where(:anatel => @goal_filter).
+                    where(:bras => @bras)
+
+              else if @bras.include? 'all'
+                     @probes = Probe.
+                         where(:state => @states).
+                         where(:areacode => @cn).
+                         where(:type => @type).
+                         where(:anatel => @goal_filter).
+                         where(:pop => @pop)
+                   end
+              end
+         end
+    end
 
 
     unless @agent_type.include?("fixed") && @agent_type.include?("mobile")
@@ -1363,6 +1653,18 @@ class ReportsController < ApplicationController
     end
   end
 
+  #RELATORIO DE PERFORMANCE
+  def performance
+
+    respond_to do |format|
+      format.html { render :layout => false }
+    end
+
+  end
+
+
+
+  #########################
   def csv_bruto
     source = Probe.find(params[:source])
     destination = Probe.find(params[:destination])
@@ -1393,6 +1695,70 @@ class ReportsController < ApplicationController
     respond_to do |format|
       format.csv { send_data @end_csv }
     end
+  end
+
+  def dygraphs_bruto
+    @source = Probe.where(:id => params[:source][:id]).first
+    @destination = Probe.where(:id => params[:destination][:id]).first
+    @metric = Metric.where(:id => params[:metric][:id]).first
+    @schedule = Schedule.where(:destination_id => @destination).where(:source_id => @source).all.last
+
+    @from = DateTime.parse(params[:date][:start]+' '+params[:time][:start]+' '+DateTime.current.zone).in_time_zone
+    @to = DateTime.parse(params[:date][:end]+' '+params[:time][:end]+' '+DateTime.current.zone).in_time_zone
+
+    @raw_results = Results.
+        where(:schedule_id => @schedule.id).
+        where(:metric_id => @metric.id).
+        where(:timestamp => @from..@to).order('timestamp ASC').all
+
+    @idName = "dygraph-" << @source.id.to_s << "-" << @destination.id.to_s << "-" << @metric.id.to_s #<< "-" << @from.strftime("%s") << "-" << @to.strftime("%s")
+    @exportFileName = @destination.name + '-' + @metric.plugin + '-' + @from.strftime("%Y%m%d_%H%M%S") + '-' +@to.strftime("%Y%m%d_%H%M%S")
+    @exportParams = "source=#{@source.id}&destination=#{@destination.id}&metric=#{@metric.id}&from=#{@from.iso8601}&to=#{@to.iso8601}"
+
+    respond_to do |format|
+      format.html { render :layout => false }
+    end
+  end
+
+  def highcharts_bruto
+      @source = Probe.find(params[:source][:id])
+      @destination = Probe.find(params[:destination][:id])
+      @metric = Metric.find(params[:metric][:id])
+      @schedule = Schedule.where(:destination_id => @destination.id).where(:source_id => @source.id).all.last
+
+      @from = DateTime.parse(params[:date][:start]+' '+params[:time][:start]+' '+DateTime.current.zone).in_time_zone
+      @to = DateTime.parse(params[:date][:end]+' '+params[:time][:end]+' '+DateTime.current.zone).in_time_zone
+
+      @choosenSeries = case @metric.plugin
+                         when /rtt|loss/
+                           {dsavg:"dsdsadsa" }
+                         else
+                           {sdavg: "Download (Avg)", dsavg:"Upload (Avg)" }
+                       end
+
+      @series = Hash.new
+      @choosenSeries.each do |key,series|
+        @series[key] = {name:series, data:[]}
+      end
+
+      @raw_results = Results.
+          where(:schedule_id => @schedule.id).
+          where(:metric_id => @metric.id).
+          where(:timestamp => @from..@to).order('timestamp ASC').all
+
+      @raw_results.each do |res|
+        @choosenSeries.each do |key,series|
+          @series[key][:data] << [res.timestamp,res[key]]
+        end
+      end
+
+      @idName = "highcharts-" << @source.id.to_s << "-" << @destination.id.to_s << "-" << @metric.id.to_s #<< "-" << @from.strftime("%s") << "-" << @to.strftime("%s")
+      @exportFileName = @destination.name + '-' + @metric.plugin + '-' + @from.strftime("%Y%m%d_%H%M%S") + '-' +@to.strftime("%Y%m%d_%H%M%S")
+      @exportParams = "source=#{@source.id}&destination=#{@destination.id}&metric=#{@metric.id}&from=#{@from.iso8601}&to=#{@to.iso8601}"
+
+      respond_to do |format|
+        format.html { render :layout => false }
+      end
   end
 
   def xls_bruto
@@ -1558,7 +1924,7 @@ class ReportsController < ApplicationController
       report = Nokogiri::XML(params[:report])
 
       user = report.xpath("report/user").children.to_s
-      uuid = SecureRandom.uuid # Nao estamos mandando um UUID de verdade ainda no XML.
+      uuid = Schedule.where(destination_id: Probe.where(ipaddress: user)).first.uuid
       timestamp = report.xpath("report/timestamp").children.to_s
       agent_type = report.xpath("report/agent_type").children.to_s
 

@@ -96,7 +96,9 @@
                     type: 'POST',
                     url: "<%= detail_speed_type_eaq2_table_reports_url %>",
                     data: { date: moment(uid[0]).format('DD/MM/YYYY') , id: uid[1], type: <%= @type.to_json.html_safe %>,
-                            agent_type: <%= @agent_type.to_json.html_safe %>, states: <%= @states.to_json.html_safe %>, cn: <%= @cn.to_json.html_safe %> },
+                            agent_type: <%= @agent_type.to_json.html_safe %>, states: <%= @states.to_json.html_safe %>
+                            , cn: <%= @cn.to_json.html_safe %>, goal_filter: <%= @goal_filter.to_json.html_safe%>
+                            , pop:<%= @pop.to_json.html_safe %>, bras: <%= @bras.to_json.html_safe %> },
                     success: function(data){
                         $('#modal-'+id).html(data).modal({show:true});
                     }

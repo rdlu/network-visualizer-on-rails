@@ -16,6 +16,21 @@
       <%= @metric.description %>
     </p>
 
+  <p>
+    <b>Unidade Preferencial de Visualização:</b>
+    <%= @metric.view_unit %>
+  </p>
+
+  <p>
+    <b>Unidade efetiva no banco de dados:</b>
+    <%= @metric.db_unit %>
+  </p>
+
+  <p>
+    <b>Tipo (Grupo) de Métricas:</b>
+    <%= @metric.pretty_metric_type %>
+  </p>
+
     <p>
       <b>Reverse:</b>
       <%= @metric.reverse %>

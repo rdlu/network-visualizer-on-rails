@@ -5,14 +5,6 @@ class Profile < ActiveRecord::Base
   attr_accessible :type_test, :source_probe, :timeout, :probe_size, :train_count, :metrics, :train_len, :time, :interval, :plugins, :protocol, :mode
   attr_accessible :http_numcon, :http_download_testtime, :http_download_paths, :http_upload_path, :http_upload_files
 
-  #validates
-=begin
-  validates :interval, :presence => true, :numericality => {:only_integer => true}
-  validates :train_len, :presence => true, :numericality => {:only_integer => true}
-  validates :timeout, :presence => true, :numericality => {:only_integer => true}
-  validates :probe_size, :presence => true, :numericality => {:only_integer => true}
-=end
-
   #relationships
   belongs_to :connection_profile
   has_and_belongs_to_many :metrics
@@ -180,7 +172,7 @@ class Profile < ActiveRecord::Base
       h['NMAgent']['ignore-gap']
   end
 
-  def ignore_gap(ig)
+  def ignore_gap=(ig)
       h = load_hash_from_xml
       h['NMAgent']['ignore-gap'] = ig
       save_xml_from_hash(h)
@@ -254,117 +246,5 @@ class Profile < ActiveRecord::Base
     else
       []
     end
-  end
-
-  def http_numcon
-      self.config_parameters = setup_http_params
-      a = ActiveSupport::JSON.decode(self.config_parameters)["download"]["numCon"]
-      if a
-          a
-      else
-          ""
-      end
-  end
-
-  def http_numcon=(n)
-      self.config_parameters = setup_http_params
-      cfg_params = ActiveSupport::JSON.decode(self.config_parameters)
-      cfg_params["download"]["numCon"] = n
-      self.config_parameters = cfg_params.to_json
-  end
-
-  def http_download_testtime
-      self.config_parameters = setup_http_params
-      a = ActiveSupport::JSON.decode(self.config_parameters)["download"]["testtime"]
-      if a
-          a
-      else
-          ""
-      end
-  end
-
-  def http_download_testtime=(t)
-      self.config_parameters = setup_http_params
-      cfg_params = ActiveSupport::JSON.decode(self.config_parameters)
-      cfg_params["download"]["testime"] = t
-      self.config_parameters = cfg_params.to_json
-  end
-
-  def http_download_paths
-      self.config_parameters = setup_http_params
-      a = ActiveSupport::JSON.decode(self.config_parameters)["download"]["paths"]
-      if a
-          a
-      else
-          ""
-      end
-  end
-
-  def http_download_paths=(ps)
-      self.config_parameters = setup_http_params
-      cfg_params = ActiveSupport::JSON.decode(self.config_parameters)
-      cfg_params["download"]["paths"] = ps
-      self.config_parameters = cfg_params.to_json
-  end
-
-  def http_upload_path
-      self.config_parameters = setup_http_params
-      a = ActiveSupport::JSON.decode(self.config_parameters)["upload"]["path"]
-      if a
-          a
-      else
-          ""
-      end
-  end
-
-  def http_upload_path=(p)
-      self.config_parameters = setup_http_params
-      cfg_params = ActiveSupport::JSON.decode(self.config_parameters)
-      cfg_params["upload"]["path"] = p
-      self.config_parameters = cfg_params.to_json
-  end
-
-  def http_upload_files
-      self.config_parameters = setup_http_params
-      a = ActiveSupport::JSON.decode(self.config_parameters)["upload"]["files"]
-      if a
-          a
-      else
-          [{}]
-      end
-  end
-
-  def http_upload_files=(fs)
-      self.config_parameters = setup_http_params
-      cfg_params = ActiveSupport::JSON.decode(self.config_parameters)
-      cfg_params["upload"]["files"] = fs
-      self.config_parameters = cfg_params.to_json
-  end
-
-  private
-
-  def load_hash_from_xml
-      if self.config_method == "raw_xml" || self.config_method.nil?
-          if self.config_parameters == "" || self.config_parameters.nil?
-              self.config_parameters = "<NMAgent></NMAgent>"
-          end
-          XmlSimple.xml_in(self.config_parameters, { 'KeepRoot' => true, 'ForceArray' => false, 'NoAttr' => true })
-      else
-          {}
-      end
-  end
-
-  def save_xml_from_hash(h)
-      if self.config_method == "raw_xml" || self.config_method.nil?
-          self.config_parameters = XmlSimple.xml_out(h, { 'KeepRoot' => true, 'NoAttr' => true })
-      end
-  end
-
-  def setup_http_params
-      if self.config_parameters.nil? || self.config_parameters == "{}"
-          {download: {numCon: "", testTime: "", paths: ""}, upload: {path: "", files: ""}}.to_json
-      else
-          self.config_parameters
-      end
   end
 end

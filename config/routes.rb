@@ -11,6 +11,8 @@ MomRails::Application.routes.draw do
   get 'reports/index', :as => 'index_reports'
   match 'reports/graph/:source_id/:destination_id/:metric_id' => 'reports#graph', :via => [:get]
   post 'reports/graph', :as =>'graph_reports'
+  post 'reports/dygraphs_bruto', :as =>'dygraphs_bruto_reports'
+  post 'reports/highcharts_bruto', :as =>'highcharts_bruto_reports'
   post 'reports/eaq_graph', :as =>'eaq_graph_reports'
   post 'reports/eaq_compliance_graph', :as =>'eaq_compliance_graph_reports'
   post 'reports/eaq_table', :as =>'eaq_table_reports'
@@ -28,7 +30,7 @@ MomRails::Application.routes.draw do
   match 'reports/xls_diario/:filename' => 'reports#xls_diario', :as => 'reports_xls_diario', :via => [:get]
   match 'reports/xls_mensal/:filename' => 'reports#xls_mensal', :as => 'reports_xls_mensal', :via => [:get]
   post 'reports/send' => 'reports#send_report', :as => 'send_reports'
-
+  post 'reports/performance', :as =>'performance_reports'
   resources :metrics
   resources :tests
   resources :schedules
