@@ -21,9 +21,13 @@
         <div class="control-group">
             <label class="control-label"  for="plugins">Métricas: </label>
             <div class="controls">
-              <% Metric.all.each do |m| %>
-                  <input type="checkbox" name="profile[plugins][]" value="<%= m.plugin %>" <%= "checked=true" if @profile.plugins.include? m.plugin %>/> <%= m.name %> <br/>
-              <% end %>
+              <% Metric.all.each do |m|
+                unless m.metric_type == ""
+              %>
+                  <input onclick="toggle(this)" type="checkbox" name="profile[plugins][]" value="<%= m.plugin %>" <%= "checked=true" if @profile.plugins.include? m.plugin %>/> <%= m.name %> <br/>
+              <%  end
+                end
+              %>
           </div>
         </div>
       </div>
@@ -60,19 +64,20 @@
           </div>
         </div>
 
-
+<!--
       <div class="control-group">
         <label class="control-label"  for="Protocol">Protocolo: </label>
         <div class="controls">
           <select  name = "profile[protocol]"  id="protocol" onchange=" displayTypes(this.value)" >
-              <option name="profile[protocol]" value="tcp" <%= "selected=true" if @profile.protocol == "TCP" %>>TCP</option>
-              <option name="profile[protocol]" value="udp" <%= "selected=true" if @profile.protocol == "UDP" %>>UDP</option>
+              <option name="profile[protocol]" value="tcp" <= "selected=true" if @profile.protocol == "TCP" %>>TCP</option>
+              <option name="profile[protocol]" value="udp" <= "selected=true" if @profile.protocol == "UDP" %>>UDP</option>
           </select>
         </div>
       </div>
+-->
 
       </div>
-          <div id="opt_tcp" class="span4" <%= "style=display:none;" if @profile.protocol == "UDP" %>>
+          <div id="opt_tcp" class="span4" style="display:none" <%= "style=display:none;" if @profile.protocol == "throughput" %>>
             <div class="control-group">
               <label class="control-label"  for="train_count">Conexões Simultâneas: </label>
               <div class="controls">
@@ -114,13 +119,63 @@
 <% end %>
 
 <script>
-    function displayTypes(id)
-    {
-        if(id == "tcp"){
-            $('#opt_tcp').attr('style','display:block');
-        }else{
-            $('#opt_tcp').attr('style','display:none');
+
+    function toggle(obj){
+      var boxs = document.getElementsByName("profile[plugins][]");
+      var len = document.getElementsByName("profile[plugins][]").length;
+      var i;
+
+      if (obj.value == "throughput_tcp" && obj.checked == true){
+          $('#opt_tcp').attr('style','display:block');
+          for (i=0; i< len;i++){
+            if (boxs.item(i).value != obj.value) {
+            boxs.item(i).checked = false;
+            boxs.item(i).disabled = true; }
+          }
+      }else if (obj.value == "throughput_tcp" && obj.checked == false){
+          $('#opt_tcp').attr('style','display:none');
+          for (i=0; i< len;i++){
+              if (boxs.item(i).value != obj.value) {
+                  boxs.item(i).disabled = false;
+              }
+          }
+      }
+
+      if (obj.value == "throughput" && obj.checked == true){
+          for (i=0; i< len;i++){
+              if (boxs.item(i).value == "throughput_tcp" ) {
+                  boxs.item(i).checked = false;
+                  boxs.item(i).disabled = true; }
+          }
+      }else  if (obj.value == "throughput" && obj.checked == false){
+        $('#opt_tcp').attr('style','display:none');
+        for (i=0; i< len;i++){
+            if (boxs.item(i).value != obj.value) {
+                boxs.item(i).disabled = false;
+            }
         }
+      }
+
+      if ((obj.value != "throughput" && obj.value != "throughput_tcp") && obj.checked == true){
+          for (i=0; i< len;i++){
+              if (boxs.item(i).value == "throughput_tcp") {
+                  boxs.item(i).checked = false;
+                  boxs.item(i).disabled = true;
+              }
+          }
+      }else if ((obj.value != "throughput" && obj.value != "throughput_tcp") && obj.checked == false){
+          $('#opt_tcp').attr('style','display:none');
+          var count =0 ;
+          for (i=0; i< len;i++){
+              if (boxs.item(i).checked == false) {
+                  count++;
+              }
+          }
+          if (count == len)
+              for (i=0; i< len;i++)
+                  boxs.item(i).disabled = false;
+      }
 
     }
+
 </script>

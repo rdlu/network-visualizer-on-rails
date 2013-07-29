@@ -229,8 +229,8 @@ ActiveRecord::Schema.define(:version => 20130724180025) do
     t.string    "city",                                                      :null => false
     t.string    "state",                                                     :null => false
     t.integer   "areacode"
-    t.boolean   "anatel"
     t.string    "agent_version"
+    t.boolean   "anatel"
     t.string    "pop"
     t.string    "bras"
     t.string    "osversion"

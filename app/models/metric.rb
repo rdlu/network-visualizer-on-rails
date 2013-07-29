@@ -37,7 +37,8 @@ class Metric < ActiveRecord::Base
         ['DNS','dns'],
         ['DNS Errors','dns_detail'],
         ['Carga Web','web_load'],
-        ['KPI','kpi']
+        ['KPI','kpi'],
+        ['Outra','']
     ]
   end
 

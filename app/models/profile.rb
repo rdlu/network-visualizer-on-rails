@@ -247,4 +247,116 @@ class Profile < ActiveRecord::Base
       []
     end
   end
+
+  def http_numcon
+      self.config_parameters = setup_http_params
+      a = ActiveSupport::JSON.decode(self.config_parameters)["download"]["numCon"]
+      if a
+          a
+      else
+          []
+      end
+  end
+
+  def http_numcon=(n)
+      self.config_parameters = setup_http_params
+      cfg_params = ActiveSupport::JSON.decode(self.config_parameters)
+      cfg_params["download"]["numCon"] = n
+      self.config_parameters = cfg_params.to_json
+  end
+
+  def http_download_testtime
+      self.config_parameters = setup_http_params
+      a = ActiveSupport::JSON.decode(self.config_parameters)["download"]["testtime"]
+      if a
+          a
+      else
+          0
+      end
+  end
+
+  def http_download_testtime=(t)
+      self.config_parameters = setup_http_params
+      cfg_params = ActiveSupport::JSON.decode(self.config_parameters)
+      cfg_params["download"]["testime"] = t
+      self.config_parameters = cfg_params.to_json
+  end
+
+  def http_download_paths
+      self.config_parameters = setup_http_params
+      a = ActiveSupport::JSON.decode(self.config_parameters)["download"]["paths"]
+      if a
+          a
+      else
+          [{}]
+      end
+  end
+
+  def http_download_paths=(ps)
+      self.config_parameters = setup_http_params
+      cfg_params = ActiveSupport::JSON.decode(self.config_parameters)
+      cfg_params["download"]["paths"] = ps
+      self.config_parameters = cfg_params.to_json
+  end
+
+  def http_upload_path
+      self.config_parameters = setup_http_params
+      a = ActiveSupport::JSON.decode(self.config_parameters)["upload"]["path"]
+      if a
+          a
+      else
+          ""
+      end
+  end
+
+  def http_upload_path=(p)
+      self.config_parameters = setup_http_params
+      cfg_params = ActiveSupport::JSON.decode(self.config_parameters)
+      cfg_params["upload"]["path"] = p
+      self.config_parameters = cfg_params.to_json
+  end
+
+  def http_upload_files
+      self.config_parameters = setup_http_params
+      a = ActiveSupport::JSON.decode(self.config_parameters)["upload"]["files"]
+      if a
+          a
+      else
+          [{}]
+      end
+  end
+
+  def http_upload_files=(fs)
+      self.config_parameters = setup_http_params
+      cfg_params = ActiveSupport::JSON.decode(self.config_parameters)
+      cfg_params["upload"]["files"] = fs
+      self.config_parameters = cfg_params.to_json
+  end
+
+  private
+
+  def load_hash_from_xml
+      if self.config_method == "raw_xml" || self.config_method.nil?
+          if self.config_parameters == "" || self.config_parameters.nil?
+              self.config_parameters = "<NMAgent></NMAgent>"
+          end
+          XmlSimple.xml_in(self.config_parameters, { 'KeepRoot' => true, 'ForceArray' => false, 'NoAttr' => true })
+      else
+          {}
+      end
+  end
+
+  def save_xml_from_hash(h)
+      if self.config_method == "raw_xml" || self.config_method.nil?
+          self.config_parameters = XmlSimple.xml_out(h, { 'KeepRoot' => true, 'NoAttr' => true })
+      end
+  end
+
+  def setup_http_params
+      if self.config_parameters.nil? || self.config_parameters == {}
+          {download: {numCon: 0, testTime: 0, paths: [{}]}, upload: {path: "", files: [{}]}}
+      else
+          self.config_parameters
+      end
+  end
 end
