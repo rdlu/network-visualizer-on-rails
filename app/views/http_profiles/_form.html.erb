@@ -4,27 +4,49 @@
 </div>
 <%= form_for([:http, @profile], :html => {:class => "form-horizontal form-stop"},:id=>"http_form") do |f| %>
     <div class="row-fluid">
-      <div class="span4">
-        <label> Download</label>
-        <div class="control-group">
-          <label class="control-label"  for="http_numcon">Número de Conexões: </label>
-          <div class="controls">
-            <%= f.text_field :http_numcon  %>
-          </div>
+      <div class="span4 ">
+      <div class="control-group">
+        <label class="control-label"  for="http_numcon">Número de Conexões: </label>
+        <div class="controls">
+          <%= f.text_field :http_numcon  %>
         </div>
-        <div class="control-group">
-          <label class="control-label"  for="http_download_testtime">Tempo de Teste: </label>
-          <div class="controls">
-            <%= f.text_field :http_download_testtime  %>
-          </div>
+      </div>
+      <div class="control-group">
+        <label class="control-label"  for="http_download_testtime">Tempo de Teste: </label>
+        <div class="controls">
+          <%= f.text_field :http_download_testtime  %>
         </div>
+      </div>
 
+      <div class="control-group">
+        <%= f.label :connection_profile_id, "Perfil de Conexão", :class => "control-label" %>
+        <div class="controls">
+          <%= f.collection_select :connection_profile_id, ConnectionProfile.all, :id, :name %>
+        </div>
+      </div>
+    </div>
+
+    </div>
+
+    <div class="row-fluid">
+      <div class="span6">
+       <label class="control-label" style="width:50%"> <b>Download</b></label>
+      </div>
+     <div class="span2">
+       <label class="control-label" style="width:50%" ><b> Upload</b></label>
+     </div>
+   </div>
+    <br/>
+    <div class="row-fluid">
+      <div class="span4">
         <div class="control-group">
-          <label class="control-label"  for="type">Tipo de Conexão: </label>
+          <label class="control-label"  for="path">Arquivo: </label>
           <div class="controls">
-            <input type="text" value="" id="type"/>
+            <input type="text" value="" id="path"/>
           </div>
         </div>
+      </div>
+      <div class="span4">
         <div class="control-group">
           <label class="control-label"  for="path">Arquivo: </label>
           <div class="controls">
