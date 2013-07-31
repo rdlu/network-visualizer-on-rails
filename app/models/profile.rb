@@ -20,7 +20,7 @@ class Profile < ActiveRecord::Base
   def plugins=(ms)
       h = load_hash_from_xml
       h['ativas']['plugins'] = ms
-      save_xml_from_hash(ms)
+      save_xml_from_hash(h)
   end
 
   def manager_ip
@@ -340,7 +340,7 @@ class Profile < ActiveRecord::Base
           if self.config_parameters == "" || self.config_parameters.nil?
               self.config_parameters = "<ativas></ativas>"
           end
-          XmlSimple.xml_in(self.config_parameters, { 'KeepRoot' => true, 'ForceArray' => false, 'NoAttr' => true })
+          XmlSimple.xml_in(self.config_parameters, { 'KeepRoot' => true, 'ForceArray' => false, 'NoAttr' => true, 'AnonymousTag' => 'ativas' })
       else
           {}
       end
@@ -348,7 +348,7 @@ class Profile < ActiveRecord::Base
 
   def save_xml_from_hash(h)
       if self.config_method == "raw_xml" || self.config_method.nil?
-          self.config_parameters = XmlSimple.xml_out(h, { 'KeepRoot' => true, 'NoAttr' => true })
+          self.config_parameters = XmlSimple.xml_out(h, { 'KeepRoot' => true, 'NoAttr' => true, 'AnonymousTag' => 'ativas' })
       end
   end
 
