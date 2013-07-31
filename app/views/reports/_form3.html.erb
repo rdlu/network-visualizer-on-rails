@@ -17,8 +17,9 @@
             <div class="controls"  >
               <select multiple="true"  name="by_pop[]" id="by_pop" onchange="setAllOpt(this.value,'pop')" >
                 <option value="all">Todas</option>
-                <%
-                   Probe.pops.each do |p|
+                <% probeUniq = Array.new
+                   probeUniq = Probe.all.uniq{|x| x.pop}
+                   probeUniq.each do |p|
                      unless p.pop.nil?
                 %>
                         <option value="<%= p.pop %>"><%= p.pop %></option>
