@@ -14,51 +14,51 @@ class Profile < ActiveRecord::Base
 
   def plugins
       h = load_hash_from_xml
-      Metric.where(plugin: h['NMAgent']['plugins']).all
+      Metric.where(plugin: h['ativas']['plugins']).all
   end
 
   def plugins=(ms)
       h = load_hash_from_xml
-      h['NMAgent']['plugins'] = ms
+      h['ativas']['plugins'] = ms
       save_xml_from_hash(ms)
   end
 
   def manager_ip
       h = load_hash_from_xml
-      h['NMAgent']['manager-ip']
+      h['ativas']['manager-ip']
   end
 
   def manager_ip=(m)
       h = load_hash_from_xml
-      h['NMAgent']['manager-ip'] = m
+      h['ativas']['manager-ip'] = m
       save_xml_from_hash(h)
   end
 
   def timeout
       h = load_hash_from_xml
-      h['NMAgent']['timeout']
+      h['ativas']['timeout']
   end
 
   def timeout=(t)
       h = load_hash_from_xml
-      h['NMAgent']['timeout'] = t
+      h['ativas']['timeout'] = t
       save_xml_from_hash(h)
   end
 
   def port
       h = load_hash_from_xml
-      h['NMAgent']['port']
+      h['ativas']['port']
   end
 
   def port=(p)
       h = load_hash_from_xml
-      h['NMAgent']['port'] = p
+      h['ativas']['port'] = p
       save_xml_from_hash(h)
   end
 
   def protocol
       h = load_hash_from_xml
-      if h['NMAgent']['protocol'] == "1"
+      if h['ativas']['protocol'] == "1"
           "tcp"
       else
           "udp"
@@ -67,7 +67,7 @@ class Profile < ActiveRecord::Base
 
   def protocol=(p)
       h = load_hash_from_xml
-      h['NMAgent']['protocol'] = if p == "tcp"
+      h['ativas']['protocol'] = if p == "tcp"
                                      "1"
                                  else
                                      "0"
@@ -77,51 +77,51 @@ class Profile < ActiveRecord::Base
 
   def train_count
       h = load_hash_from_xml
-      h['NMAgent']['train-count']
+      h['ativas']['train-count']
   end
 
   def train_count=(tc)
       h = load_hash_from_xml
-      h['NMAgent']['train-count'] = tc
+      h['ativas']['train-count'] = tc
       save_xml_from_hash(h)
   end
 
   def probe_size
       h = load_hash_from_xml
-      h['NMAgent']['probe-size']
+      h['ativas']['probe-size']
   end
 
   def probe_size=(ps)
       h = load_hash_from_xml
-      h['NMAgent']['probe-size'] = ps
+      h['ativas']['probe-size'] = ps
       save_xml_from_hash(h)
   end
 
   def train_len
       h = load_hash_from_xml
-      h['NMAgent']['train-len']
+      h['ativas']['train-len']
   end
 
   def train_len=(t)
       h = load_hash_from_xml
-      h['NMAgent']['train-len'] = t
+      h['ativas']['train-len'] = t
       save_xml_from_hash(h)
   end
 
   def interval
       h = load_hash_from_xml
-      h['NMAgent']['gap-value']
+      h['ativas']['gap-value']
   end
 
   def interval=(gv)
       h = load_hash_from_xml
-      h['NMAgent']['gap-value'] = gv
+      h['ativas']['gap-value'] = gv
       save_xml_from_hash(h)
   end
 
   def mode
       h = load_hash_from_xml
-      case h['NMAgent']['time-mode']
+      case h['ativas']['time-mode']
       when "0"
           "normal"
       when "1"
@@ -135,7 +135,7 @@ class Profile < ActiveRecord::Base
 
   def mode=(tm)
       h = load_hash_from_xml
-      h['NMAgent']['time-mode'] = if tm == "normal"
+      h['ativas']['time-mode'] = if tm == "normal"
                                       0
                                   elsif tm == "time"
                                       1
@@ -147,34 +147,34 @@ class Profile < ActiveRecord::Base
 
   def time
       h = load_hash_from_xml
-      h['NMAgent']['max-time']
+      h['ativas']['max-time']
   end
 
   def time=(mt)
       h = load_hash_from_xml
-      h['NMAgent']['max-time'] = mt
+      h['ativas']['max-time'] = mt
       save_xml_from_hash(h)
   end
 
   def num_conexoes
       h = load_hash_from_xml
-      h['NMAgent']['num-conexoes']
+      h['ativas']['num-conexoes']
   end
 
   def num_conexoes=(nc)
       h = load_hash_from_xml
-      h['NMAgent']['num-conexoes'] = nc
+      h['ativas']['num-conexoes'] = nc
       save_xml_from_hash(h)
   end
 
   def ignore_gap
       h = load_hash_from_xml
-      h['NMAgent']['ignore-gap']
+      h['ativas']['ignore-gap']
   end
 
   def ignore_gap=(ig)
       h = load_hash_from_xml
-      h['NMAgent']['ignore-gap'] = ig
+      h['ativas']['ignore-gap'] = ig
       save_xml_from_hash(h)
   end
 
@@ -187,24 +187,24 @@ class Profile < ActiveRecord::Base
 
   def source_probe
       h = load_hash_from_xml
-      h['NMAgent']['agt-index']
+      h['ativas']['agt-index']
   end
 
   def source_probe=(t)
       # t eh a id de uma probe
       h = load_hash_from_xml
       p = Probe.find(t)
-      h['NMAgent']['agt-index'] = t
-      h['NMAgent']['literal-addr'] = p.ipaddress
-      h['NMAgent']['android'] = if p.type == "android"
+      h['ativas']['agt-index'] = t
+      h['ativas']['literal-addr'] = p.ipaddress
+      h['ativas']['android'] = if p.type == "android"
                                     1
                                 else
                                     0
                                 end
-      h['NMAgent']['location'] ||= {}
-      h['NMAgent']['location']['name'] = p.name
-      h['NMAgent']['location']['city'] = p.city
-      h['NMAgent']['location']['state'] = p.state
+      h['ativas']['location'] ||= {}
+      h['ativas']['location']['name'] = p.name
+      h['ativas']['location']['city'] = p.city
+      h['ativas']['location']['state'] = p.state
       save_xml_from_hash(h)
   end
 
@@ -338,7 +338,7 @@ class Profile < ActiveRecord::Base
   def load_hash_from_xml
       if self.config_method == "raw_xml" || self.config_method.nil?
           if self.config_parameters == "" || self.config_parameters.nil?
-              self.config_parameters = "<NMAgent></NMAgent>"
+              self.config_parameters = "<ativas></ativas>"
           end
           XmlSimple.xml_in(self.config_parameters, { 'KeepRoot' => true, 'ForceArray' => false, 'NoAttr' => true })
       else
