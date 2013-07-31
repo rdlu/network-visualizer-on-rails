@@ -32,6 +32,9 @@ class Probe < ActiveRecord::Base
   scope :by_city, proc { |city| where(:city => city) }
   scope :by_state, proc { |state| where(:state => state) }
   scope :by_type, proc { |type| where(:type => type) }
+  scope :is_anatel, proc { |anatel| where(:anatel => anatel)}
+  scope :by_pop, proc { |pop| where(:pop => pop) }
+  scope :by_modem, proc { |modem| where(:modem => modem) }
 
   def pretty_name
     "#{self.name} (#{self.ipaddress})"

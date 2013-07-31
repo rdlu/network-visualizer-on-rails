@@ -6,6 +6,10 @@ class ProbesController < ApplicationController
   has_scope :by_city
   has_scope :by_state
   has_scope :by_type
+  has_scope :by_pop
+  has_scope :by_bras
+  has_scope :is_anatel
+  has_scope :by_modem
 
   def index
     authorize! :read, self
