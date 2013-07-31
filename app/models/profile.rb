@@ -249,7 +249,7 @@ class Profile < ActiveRecord::Base
   end
 
   def http_numcon
-      self.config_parameters ||= setup_http_params
+      self.config_parameters = setup_http_params
       a = ActiveSupport::JSON.decode(self.config_parameters)["download"]["numCon"]
       if a
           a
@@ -259,14 +259,14 @@ class Profile < ActiveRecord::Base
   end
 
   def http_numcon=(n)
-      self.config_parameters ||= setup_http_params
+      self.config_parameters = setup_http_params
       cfg_params = ActiveSupport::JSON.decode(self.config_parameters)
       cfg_params["download"]["numCon"] = n
       self.config_parameters = cfg_params.to_json
   end
 
   def http_download_testtime
-      self.config_parameters ||= setup_http_params
+      self.config_parameters = setup_http_params
       a = ActiveSupport::JSON.decode(self.config_parameters)["download"]["testTime"]
       if a
           a
@@ -276,31 +276,31 @@ class Profile < ActiveRecord::Base
   end
 
   def http_download_testtime=(t)
-      self.config_parameters ||= setup_http_params
+      self.config_parameters = setup_http_params
       cfg_params = ActiveSupport::JSON.decode(self.config_parameters)
       cfg_params["download"]["testTime"] = t
       self.config_parameters = cfg_params.to_json
   end
 
   def http_download_file
-      self.config_parameters ||= setup_http_params
+      self.config_parameters = setup_http_params
       a = ActiveSupport::JSON.decode(self.config_parameters)["download"]["path"]
       if a
           a
       else
-          [{}]
+          ""
       end
   end
 
   def http_download_file=(p)
-      self.config_parameters ||= setup_http_params
+      self.config_parameters = setup_http_params
       cfg_params = ActiveSupport::JSON.decode(self.config_parameters)
       cfg_params["download"]["path"] = p
       self.config_parameters = cfg_params.to_json
   end
 
   def http_upload_path
-      self.config_parameters ||= setup_http_params
+      self.config_parameters = setup_http_params
       a = ActiveSupport::JSON.decode(self.config_parameters)["upload"]["path"]
       if a
           a
@@ -310,14 +310,14 @@ class Profile < ActiveRecord::Base
   end
 
   def http_upload_path=(p)
-      self.config_parameters ||= setup_http_params
+      self.config_parameters = setup_http_params
       cfg_params = ActiveSupport::JSON.decode(self.config_parameters)
       cfg_params["upload"]["path"] = p
       self.config_parameters = cfg_params.to_json
   end
 
   def http_upload_file
-      self.config_parameters ||= setup_http_params
+      self.config_parameters = setup_http_params
       a = ActiveSupport::JSON.decode(self.config_parameters)["upload"]["file"]
       if a
           a
@@ -327,7 +327,7 @@ class Profile < ActiveRecord::Base
   end
 
   def http_upload_file=(f)
-      self.config_parameters ||= setup_http_params
+      self.config_parameters = setup_http_params
       cfg_params = ActiveSupport::JSON.decode(self.config_parameters)
       cfg_params["upload"]["file"] = f
       self.config_parameters = cfg_params.to_json
@@ -353,6 +353,10 @@ class Profile < ActiveRecord::Base
   end
 
   def setup_http_params
-      {download: {numCon: 0, testTime: 0, path: ""}, upload: {path: "", file: ""}}.to_json
+      if self.config_parameters == "{}" || self.config_parameters.nil?
+          {download: {numCon: 0, testTime: 0, path: ""}, upload: {path: "", file: ""}}.to_json
+      else
+          self.config_parameters
+      end
   end
 end
