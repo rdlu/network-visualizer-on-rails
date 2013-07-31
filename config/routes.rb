@@ -35,6 +35,7 @@ MomRails::Application.routes.draw do
   resources :tests
   resources :schedules
   get 'schedules/win/schedule' => 'schedules#win', :as => 'windows_schedules'
+  post 'schedules/private_schedule' => 'schedules#private_schedule', :as => 'private_schedules'
  
   resources :probes do
     member do
@@ -51,10 +52,12 @@ MomRails::Application.routes.draw do
   match 'probes/:id/thresholds/:source_id' => 'probes#thresholds', :via => [:get]
 
   resources :metrics
-
+  resources :process
   resources :profiles
   resources :dns_profiles
   resources :url_profiles
+  resources :raw_xml_profiles
+  resources :http_profiles
 
   resources :connection_profiles do
     resources :plans

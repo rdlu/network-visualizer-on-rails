@@ -27,6 +27,7 @@ gem 'highcharts-rails', '~> 3.0.1'
 gem 'ruby-units'
 gem 'whenever', :require => false
 gem 'god'
+gem 'xml-simple'
 
 # To use ActiveModel has_secure_password
 gem 'bcrypt-ruby', '~> 3.0.0'

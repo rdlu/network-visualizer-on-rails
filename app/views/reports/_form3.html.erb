@@ -1,20 +1,6 @@
 <%= form_tag(performance_reports_path, :class => 'form-horizontal', :id => 'report-form3') do %>
     <div class="row-fluid">
-        <div class="span4">
-            <div class="control-group">
-              <label class="control-label" for="destination_id">Sonda de Destino: </label>
-
-              <div class="controls">
-                <%= collection_select :destination, :id, Probe.order(:name).all, :id, :pretty_name_with_location, {:include_blank => "Selecione..."}, {:class => 'input-block-level'} %>
-              </div>
-            </div>
-            <div class="control-group">
-              <label for="source_id" class="control-label">Sonda de Origem:</label>
-
-              <div class="controls">
-                <%= collection_select :source, :id, {}, :id, :pretty_name_with_location, {:include_blank => "Selecione a sonda de destino primeiro"}, {:class => 'input-block-level', :disabled => 'disabled'} %>
-              </div>
-            </div>
+        <div class="span5">
           <div class="control-group">
             <label for="probe-type" class="control-label">UF:</label>
             <div class="controls">
@@ -26,18 +12,10 @@
               </select>
             </div>
           </div>
-        </div>
-        <div class="span3">
-            <div class="control-group">
-              <label class="control-label"  for="type">Tipo de Destino: </label>
-              <div class="controls">
-                <%= select :agent,'', Probe.types,{}, :onchange => 'displayTypes(this.value)', :id=>"agent", :style => "width:150px"  %>
-              </div>
-            </div>
           <div class="control-group">
             <label class="control-label" for="pop">POP: </label>
             <div class="controls"  >
-              <select multiple="true"  name="pop[]" id="pop" onchange="setAllOpt(this.value,'pop')" style="width: 150px">
+              <select multiple="true"  name="by_pop[]" id="by_pop" onchange="setAllOpt(this.value,'pop')" >
                 <option value="all">Todas</option>
                 <% probeUniq = Array.new
                    probeUniq = Probe.all.uniq{|x| x.pop}
@@ -51,11 +29,17 @@
             </div>
           </div>
         </div>
-        <div class="span3">
+        <div class="span4">
+            <div class="control-group">
+                <label class="control-label"  for="by_type">Tipo de Destino: </label>
+                <div class="controls">
+                  <%= select :by_type,'', Probe.types,{}, :onchange => 'displayTypes(this.value)', :id=>"by_type"  %>
+                </div>
+            </div>
             <div id="ag_types" class="control-group" >
-              <label class="control-label" for="agent_type">Tipo: </label>
+              <label class="control-label" for="by_conn_type">Tipo: </label>
               <div class="controls">
-                <%= select :agent_type,{},[['Movel'],["Fixo"]]%>
+                <%= select :by_conn_type,{},[['Movel'],["Fixo"]]%>
               </div>
             </div>
             <div class="control-group">
@@ -70,39 +54,56 @@
               <%= select :tecno,{},[['Metro'],["Outro"]]%>
             </div>
           </div>
-            <div class="control-group">
-                <label class="control-label" for="horario">Horário: </label>
-                <div class="controls">
-                    <%= select :horario,{},[['24h'],["12h"]]%>
-                </div>
-            </div>
         </div>
     </div>
 
     <div class="row-fluid" style="border-top: 1px solid #CCCCCC;">
-      <div class="span12" style="margin-top: 10px">
-        <div class="span4">
-            <div class="control-group">
-              <span class="control-label" >Métricas:</span>
-                <div class="controls">
-                  <select multiple="true" value="metrics[]">
-                    <% Metric.all.each do |m| %>
-                        <option value="<%= m.id %>"><%= m.name %></option>
-                    <% end %>
-                  </select>
-                </div>
-              </div>
+      <div class="span6">
+          <div class="control-group" style="margin-top: 10px">
+            <label class="control-label" for="destination_id">Sonda de Destino: </label>
 
-            <div class="control-group">
-              <span class="control-label" >Variação Métrica:</span>
-              <div class="controls">
-                <%= select :variation,{},[["Media"],["Minimo"],["Maximo"]] %>
-              </div>
+            <div class="controls">
+              <%= collection_select :destination, :id, Probe.order(:name).all, :id, :pretty_name_with_location, {:include_blank => "Selecione..."}, {:class => 'input-block-level',:id=>"destino"} %>
             </div>
-        </div>
-        <div class="span3">
+          </div>
+          <div class="control-group">
+            <label for="source_id" class="control-label">Sonda de Origem:</label>
+
+            <div class="controls">
+              <%= collection_select :source, :id, {}, :id, :pretty_name_with_location, {:include_blank => "Selecione a sonda de destino primeiro"}, {:class => 'input-block-level',:id=>"origem"} %>
+            </div>
+          </div>
+      </div>
+    </div>
+
+    <div class="row-fluid" style="border-top: 1px solid #CCCCCC;">
+      <div class="span12" style="margin-top: 10px">
+        <div class="span5">
           <div class="control-group">
             <span class="control-label" >DNS:</span>
+            <div class="controls">
+              <select multiple="true" value="metrics[]" >
+                <% Metric.all.each do |m| %>
+                    <option value="<%= m.id %>"><%= m.name %></option>
+                <% end %>
+              </select>
+            </div>
+          </div>
+          <div class="control-group">
+            <span class="control-label" >Sites:</span>
+            <div class="controls">
+              <select multiple="true" value="sites[]">
+                <option value="all">Todos</option>
+                <% Site.all.each do |site| %>
+                    <option value="<%= site.id %>"><%= site.url %></option>
+                <% end %>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="span4">
+          <div class="control-group">
+            <span class="control-label" >Métricas:</span>
             <div class="controls">
               <select multiple="true" value="metrics[]">
                 <% Metric.all.each do |m| %>
@@ -111,17 +112,16 @@
               </select>
             </div>
           </div>
-        </div>
-        <div class="span4">
           <div class="control-group">
-            <span class="control-label" >Sites:</span>
+            <span class="control-label" >Variação Métrica:</span>
             <div class="controls">
-              <select multiple="true" value="sites[]">
-                <option value="all">Todos</option>
-              <% Site.all.each do |site| %>
-                 <option value="<%= site.id %>"><%= site.url %></option>
-              <% end %>
-              </select>
+              <%= select :variation,{},[["Media"],["Minimo"],["Maximo"]] %>
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label" for="horario">Horário: </label>
+            <div class="controls">
+              <%= select :horario,{},[['24h','24'],["48h",'48'],['72h','72']]%>
             </div>
           </div>
         </div>
@@ -129,13 +129,41 @@
     </div>
 
     <div class="row-fluid ">
-      <div class="offset8 span4">
+      <div class="offset5 span4">
           <div class="control-group">
             <div class="controls">
-              <input class="btn btn-primary " type="submit" name="add" id="report-add3" value="Adicionar"  data-toggle="collapse" data-target="#accordion_forms"/>
+              <input class="btn btn-primary btn-block " type="submit" name="add" id="report-add3" value="Adicionar"  data-toggle="collapse" data-target="#accordion_forms"/>
             </div>
           </div>
       </div>
     </div>
 
 <% end %>
+
+<script>
+    jQuery("#destino").change(function (evt) {
+        var destination_id = evt.currentTarget.value;
+        if (destination_id != '')
+            jQuery.ajax("<%=probes_url %>/" + destination_id + "/sources", {
+                success: function (result, status) {
+                    var options = jQuery('#origem');
+                    options.html('');
+                    options.removeAttr('disabled');
+                    jQuery.each(result, function (index, item) {
+                        options.append($("<option />").val(item.id).text(item.name + ' (' + item.ipaddress + ') - ' + item.city + '/' + item.state.toUpperCase()));
+                        jQuery("#origem").trigger('change');
+                    });
+                    if (result.length == 0) {
+                        options.append($("<option />").val('').text('Essa sonda não recebe testes')).prop('disabled', true);
+                    }
+                },
+                dataType: 'json'
+            });
+        else {
+               jQuery('#origem').html('').append($("<option />").val('').text('Selecione a sonda de destino primeiro')).prop('disabled', true).trigger('change');
+
+            }
+
+    });
+
+</script>
