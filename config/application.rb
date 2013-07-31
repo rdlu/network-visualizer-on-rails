@@ -89,3 +89,14 @@ ActionView::Base.field_error_proc = Proc.new do |html_tag, instance|
   end
   html
 end
+
+#mokey patch para o has_scope aceitar array ou string
+module HasScope
+  ALLOWED_TYPES = {
+      :array   => [ Array ],
+      :hash    => [ Hash ],
+      :boolean => [ Object ],
+      :default => [ String, Numeric ],
+      :array_or_string => [String,Array]
+  }
+end

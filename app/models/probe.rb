@@ -35,6 +35,9 @@ class Probe < ActiveRecord::Base
   scope :is_anatel, proc { |anatel| where(:anatel => anatel)}
   scope :by_pop, proc { |pop| where(:pop => pop) }
   scope :by_modem, proc { |modem| where(:modem => modem) }
+  scope :by_tech, lambda { |tech|
+    joins(:connection_profile).where('connection_profiles.name_id' => tech)
+  }
 
   def pretty_name
     "#{self.name} (#{self.ipaddress})"
@@ -120,6 +123,14 @@ class Probe < ActiveRecord::Base
   def polling?
     min_wait = 300000 #300 secs
     self.polling * 1000 >= min_wait
+  end
+
+  def self.techs
+    arr = []
+    ConnectionProfile.all.each do |connprofile|
+      arr << connprofile.name_id
+    end
+    arr
   end
 
   def self.modems
