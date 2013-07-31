@@ -122,6 +122,14 @@ class Probe < ActiveRecord::Base
     self.polling * 1000 >= min_wait
   end
 
+  def self.modems
+    %w(Alcatel Huawei Nokia Ericsson)
+  end
+
+  def self.pops
+    %w(RJ/ES SP PR/SC RS BA)
+  end
+
   def self.types
     [%w(Android android),
      %w(Linux linux)]
