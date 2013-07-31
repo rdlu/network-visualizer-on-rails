@@ -4,7 +4,7 @@ class ProbesController < ApplicationController
 
   #escopos
   has_scope :by_city
-  has_scope :by_state, :type => :array
+  has_scope :by_state, :type => :array_or_string
   has_scope :by_type, :type => :array
   has_scope :by_pop, :type => :array
   has_scope :by_bras, :type => :array

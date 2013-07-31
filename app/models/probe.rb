@@ -125,6 +125,14 @@ class Probe < ActiveRecord::Base
     self.polling * 1000 >= min_wait
   end
 
+  def self.techs
+    arr = []
+    ConnectionProfile.all.each do |connprofile|
+      arr << connprofile.name_id
+    end
+    arr
+  end
+
   def self.modems
     %w(Alcatel Huawei Nokia Ericsson)
   end
