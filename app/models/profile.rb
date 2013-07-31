@@ -3,7 +3,7 @@ require 'xmlsimple'
 class Profile < ActiveRecord::Base
   attr_accessible :config_method, :config_parameters, :name, :connection_profile_id, :metric_ids, :nameservers, :sites
   attr_accessible :type_test, :source_probe, :timeout, :probe_size, :train_count, :metrics, :train_len, :time, :interval, :plugins, :protocol, :mode
-  attr_accessible :http_numcon, :http_download_testtime, :http_download_paths, :http_upload_path, :http_upload_files
+  attr_accessible :http_numcon, :http_download_testtime, :http_download_file, :http_upload_path, :http_upload_file
 
   #relationships
   belongs_to :connection_profile
@@ -249,7 +249,7 @@ class Profile < ActiveRecord::Base
   end
 
   def http_numcon
-      self.config_parameters = setup_http_params
+      self.config_parameters ||= setup_http_params
       a = ActiveSupport::JSON.decode(self.config_parameters)["download"]["numCon"]
       if a
           a
@@ -259,15 +259,15 @@ class Profile < ActiveRecord::Base
   end
 
   def http_numcon=(n)
-      self.config_parameters = setup_http_params
+      self.config_parameters ||= setup_http_params
       cfg_params = ActiveSupport::JSON.decode(self.config_parameters)
       cfg_params["download"]["numCon"] = n
       self.config_parameters = cfg_params.to_json
   end
 
   def http_download_testtime
-      self.config_parameters = setup_http_params
-      a = ActiveSupport::JSON.decode(self.config_parameters)["download"]["testtime"]
+      self.config_parameters ||= setup_http_params
+      a = ActiveSupport::JSON.decode(self.config_parameters)["download"]["testTime"]
       if a
           a
       else
@@ -276,14 +276,14 @@ class Profile < ActiveRecord::Base
   end
 
   def http_download_testtime=(t)
-      self.config_parameters = setup_http_params
+      self.config_parameters ||= setup_http_params
       cfg_params = ActiveSupport::JSON.decode(self.config_parameters)
-      cfg_params["download"]["testime"] = t
+      cfg_params["download"]["testTime"] = t
       self.config_parameters = cfg_params.to_json
   end
 
-  def http_download_path
-      self.config_parameters = setup_http_params
+  def http_download_file
+      self.config_parameters ||= setup_http_params
       a = ActiveSupport::JSON.decode(self.config_parameters)["download"]["path"]
       if a
           a
@@ -292,15 +292,15 @@ class Profile < ActiveRecord::Base
       end
   end
 
-  def http_download_path=(p)
-      self.config_parameters = setup_http_params
+  def http_download_file=(p)
+      self.config_parameters ||= setup_http_params
       cfg_params = ActiveSupport::JSON.decode(self.config_parameters)
       cfg_params["download"]["path"] = p
       self.config_parameters = cfg_params.to_json
   end
 
   def http_upload_path
-      self.config_parameters = setup_http_params
+      self.config_parameters ||= setup_http_params
       a = ActiveSupport::JSON.decode(self.config_parameters)["upload"]["path"]
       if a
           a
@@ -310,24 +310,24 @@ class Profile < ActiveRecord::Base
   end
 
   def http_upload_path=(p)
-      self.config_parameters = setup_http_params
+      self.config_parameters ||= setup_http_params
       cfg_params = ActiveSupport::JSON.decode(self.config_parameters)
       cfg_params["upload"]["path"] = p
       self.config_parameters = cfg_params.to_json
   end
 
   def http_upload_file
-      self.config_parameters = setup_http_params
+      self.config_parameters ||= setup_http_params
       a = ActiveSupport::JSON.decode(self.config_parameters)["upload"]["file"]
       if a
           a
       else
-          [{}]
+          ""
       end
   end
 
   def http_upload_file=(f)
-      self.config_parameters = setup_http_params
+      self.config_parameters ||= setup_http_params
       cfg_params = ActiveSupport::JSON.decode(self.config_parameters)
       cfg_params["upload"]["file"] = f
       self.config_parameters = cfg_params.to_json
@@ -353,10 +353,6 @@ class Profile < ActiveRecord::Base
   end
 
   def setup_http_params
-      if self.config_parameters.nil? || self.config_parameters == {} || self.config_parameters = "{}"
-          {download: {numCon: 0, testTime: 0, path: ""}, upload: {path: "", files: ""}}.to_json
-      else
-          self.config_parameters
-      end
+      {download: {numCon: 0, testTime: 0, path: ""}, upload: {path: "", file: ""}}.to_json
   end
 end
