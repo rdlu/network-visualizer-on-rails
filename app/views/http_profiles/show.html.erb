@@ -1,1 +1,29 @@
+<h2>Visualização do Perfil de Teste HTTP</h2>
+<div class="row-fluid">
+  <div class="span7">
+    <p>
+      <b>Tempo de Teste:</b>
+      <%= @profile.http_download_testtime %>
+    </p>
+    <p>
+    <p>
+      <b>Número de Conexões:</b>
+      <%= @profile.http_numcon %>
+    </p>
+    <p>
+      <b>Arquivo de Download:</b>
+      <%= @profile.http_download_file %>
+    </p>
 
+    <p>
+      <b>Arquivo de Upload:</b>
+      <%= @profile.http_upload_file %>
+    </p>
+
+    <p>
+      <b>Caminho do arquivo de Upload:</b>
+      <%= @profile.http_upload_path %>
+    </p>
+
+  </div>
+</div>
