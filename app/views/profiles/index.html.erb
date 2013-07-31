@@ -4,14 +4,20 @@
     <% if can? :create, Profile %>
         <div class="navbar">
           <div class="navbar-inner">
-            <div class="span4 offset2">
+            <div class="span3">
               <%= link_to "Novo Perfil de Teste de DNS", new_dns_profile_path, :class => "btn btn-primary btn-block" %>
             </div>
-            <div class="span4">
+            <div class="span3">
               <%= link_to "Novo Perfil de Teste de URL", new_url_profile_path, :class => "btn btn-primary btn-block" %>
             </div>
             <div class="span2">
               <%= link_to "Novo Perfil de Teste", new_profile_path, :class => "btn btn-primary btn-block" %>
+            </div>
+            <div class="span2">
+              <%= link_to "Novo Perfil de Teste XML", new_raw_xml_profile_path, :class => "btn btn-primary btn-block" %>
+            </div>
+            <div class="span2">
+              <%= link_to "Novo Perfil de Teste HTTP", new_http_profile_path, :class => "btn btn-primary btn-block" %>
             </div>
             </div>
           </div>
@@ -40,6 +46,11 @@
               <% test_profile.metrics.each do |metric| %>
               <span class="label label-info etooltip" data-title="<%= metric.description %>"><%= metric.name %></span>
               <% end %>
+              <% if test_profile.config_method == "raw_xml" %>
+                  <% test_profile.plugins.each do |metric| %>
+                  <span class="label label-info etooltip" data-title="<%= Metric.where(plugin: metric.plugin).first.description %>"><%= Metric.where(plugin: metric.plugin).first.name %></span>
+                  <% end %>
+              <% end %>
             </td>
             <td><%= test_profile.config_method %></td>
             <td>
@@ -60,4 +71,6 @@
 </div>
 <script type="text/javascript">
     $('.etooltip').tooltip();
+
+
 </script>

@@ -18,12 +18,21 @@ class ProfilesController < ApplicationController
     authorize! :read, self
     @profile = Profile.find(params[:id])
 
-    if @profile.config_method == "dns"
-      redirect_to dns_profile_path(@profile)
-      return
-    elsif @profile.config_method == "url"
-      redirect_to url_profile_path(@profile)
-      return
+    case @profile.config_method
+    when "dns"
+        redirect_to dns_profile_path(@profile)
+        return
+    when "url"
+        redirect_to url_profile_path(@profile)
+        return
+    when "raw_xml"
+        redirect_to raw_xml_profile_path(@profile)
+        return
+    when "http"
+        redirect_to http_profile_path(@profile)
+        return
+    else
+        # do nothing
     end
 
     respond_to do |format|
@@ -49,10 +58,22 @@ class ProfilesController < ApplicationController
   def edit
     authorize! :manage, self
     @profile = Profile.find(params[:id])
-    if @profile.config_method == "dns"
-      redirect_to edit_dns_profile_path(@profile)
-    elsif @profile.config_method == "url"
-      redirect_to edit_url_profile_path(@profile)
+
+    case @profile.config_method
+    when "dns"
+        redirect_to edit_dns_profile_path(@profile)
+        return
+    when "url"
+        redirect_to edit_url_profile_path(@profile)
+        return
+    when "raw_xml"
+        redirect_to edit_raw_xml_profile_path(@profile)
+        return
+    when "http"
+        redirect_to edit_http_profile_path(@profile)
+        return
+    else
+        # do nothing
     end
   end
 
@@ -81,12 +102,21 @@ class ProfilesController < ApplicationController
     params[:profile][:metric_ids] ||= []
     @profile = Profile.find(params[:id])
 
-    if @profile.config_method == "dns"
-      redirect_to update_dns_profile_path(@profile)
-      return
-    elsif @profile.config_method == "url"
-      redirect_to update_url_profile_path(@profile)
-      return
+    case @profile.config_method
+    when "dns"
+        redirect_to dns_profile_path(@profile)
+        return
+    when "url"
+        redirect_to url_profile_path(@profile)
+        return
+    when "raw_xml"
+        redirect_to raw_xml_profile_path(@profile)
+        return
+    when "http"
+        redirect_to http_profile_path(@profile)
+        return
+    else
+        # do nothing
     end
 
     respond_to do |format|
