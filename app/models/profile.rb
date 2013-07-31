@@ -282,9 +282,9 @@ class Profile < ActiveRecord::Base
       self.config_parameters = cfg_params.to_json
   end
 
-  def http_download_paths
+  def http_download_path
       self.config_parameters = setup_http_params
-      a = ActiveSupport::JSON.decode(self.config_parameters)["download"]["paths"]
+      a = ActiveSupport::JSON.decode(self.config_parameters)["download"]["path"]
       if a
           a
       else
@@ -292,10 +292,10 @@ class Profile < ActiveRecord::Base
       end
   end
 
-  def http_download_paths=(ps)
+  def http_download_path=(p)
       self.config_parameters = setup_http_params
       cfg_params = ActiveSupport::JSON.decode(self.config_parameters)
-      cfg_params["download"]["paths"] = ps
+      cfg_params["download"]["path"] = p
       self.config_parameters = cfg_params.to_json
   end
 
@@ -316,9 +316,9 @@ class Profile < ActiveRecord::Base
       self.config_parameters = cfg_params.to_json
   end
 
-  def http_upload_files
+  def http_upload_file
       self.config_parameters = setup_http_params
-      a = ActiveSupport::JSON.decode(self.config_parameters)["upload"]["files"]
+      a = ActiveSupport::JSON.decode(self.config_parameters)["upload"]["file"]
       if a
           a
       else
@@ -326,10 +326,10 @@ class Profile < ActiveRecord::Base
       end
   end
 
-  def http_upload_files=(fs)
+  def http_upload_file=(f)
       self.config_parameters = setup_http_params
       cfg_params = ActiveSupport::JSON.decode(self.config_parameters)
-      cfg_params["upload"]["files"] = fs
+      cfg_params["upload"]["file"] = f
       self.config_parameters = cfg_params.to_json
   end
 
@@ -354,7 +354,7 @@ class Profile < ActiveRecord::Base
 
   def setup_http_params
       if self.config_parameters.nil? || self.config_parameters == {} || self.config_parameters = "{}"
-          {download: {numCon: 0, testTime: 0, paths: [{}]}, upload: {path: "", files: [{}]}}.to_json
+          {download: {numCon: 0, testTime: 0, path: ""}, upload: {path: "", files: ""}}.to_json
       else
           self.config_parameters
       end
