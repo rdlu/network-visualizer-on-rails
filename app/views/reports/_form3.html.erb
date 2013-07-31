@@ -7,7 +7,7 @@
               <select multiple="true"  name = "by_state[]"  id="by-state" onchange="filterUFs()" >
                 <option name="by_state" value="">Todas</option>
                 <% Probe.states.each do |state| %>
-                    <option name="by_state" value="<%= state.at(1) %>" <%= params[:by_state].to_s == state.at(1).to_s ? "selected=\"selected\"".html_safe : "" %>><%= state.at(1).upcase %></option>
+                    <option  value="<%= state.at(1) %>" <%= params[:by_state].to_s == state.at(1).to_s ? "selected=\"selected\"".html_safe : "" %>><%= state.at(1).upcase %></option>
                 <% end %>
               </select>
             </div>
@@ -16,9 +16,9 @@
             <label class="control-label" for="pop">POP: </label>
             <div class="controls"  >
               <select multiple="true"  name="by_pop[]" id="by_pop" onchange="setAllOpt(this.value,'pop')" >
-                <option value="all">Todas</option>
+                <option value="">Todas</option>
                 <%  Probe.pops.each do |p|  %>
-                      <option value="<%= p %>"><%= p %></option>
+                      <option  value="<%= p %>"><%= p %></option>
                 <% end %>
               </select>
             </div>
@@ -41,8 +41,9 @@
               <label class="control-label" for="modem">Modem: </label>
                 <div class="controls">
                   <select  name="by_modem[]" id="by_modem"  >
+                    <option value="">Todos</option>
                     <%  Probe.modems.each do |p|  %>
-                        <option value="<%= p %>"><%= p %></option>
+                        <option  value="<%= p %>"><%= p %></option>
                     <% end %>
                   </select>
                 </div>
@@ -51,6 +52,7 @@
             <label class="control-label" for="by_tech">Tecnologia: </label>
             <div class="controls">
               <select  name="by_tech[]" id="by_tech"  >
+                <option value="">Todas</option>
                 <%  Probe.techs.each do |p|  %>
                     <option value="<%= p %>"><%= p %></option>
                 <% end %>
@@ -66,7 +68,7 @@
             <label class="control-label" for="destino">Sonda de Destino: </label>
             <div class="controls ">
               <select class="input-block-level" value="destination[id]" id="destino">
-               <option> Selecione um UF primeiro...</option>
+               <option value=""> Selecione um UF primeiro...</option>
               <!--%= collection_select :destination, :id, Probe.order(:name).all, :id, :pretty_name_with_location, {:include_blank => "Selecione..."}, {:class => 'input-block-level',:id=>"destino"} %>
             -->
               </select>
@@ -87,7 +89,8 @@
           <div class="control-group">
             <span class="control-label" >DNS:</span>
             <div class="controls">
-              <select multiple="true" value="metrics[]" >
+              <select multiple="true" name="metrics[]" >
+                <option value="">Todos</option>
                 <% Metric.all.each do |m|
                     if m.metric_type == "" || m.metric_type == "dns_details"
                 %>
@@ -100,8 +103,8 @@
           <div class="control-group">
             <span class="control-label" >Sites:</span>
             <div class="controls">
-              <select multiple="true" value="sites[]">
-                <option value="all">Todos</option>
+              <select multiple="true" name="sites[]">
+                <option value="">Todos</option>
                 <% Site.all.each do |site| %>
                     <option value="<%= site.id %>"><%= site.url %></option>
                 <% end %>
@@ -113,7 +116,8 @@
           <div class="control-group">
             <span class="control-label" >Métricas:</span>
             <div class="controls">
-              <select multiple="true" value="metrics[]">
+              <select multiple="true" name="metrics[]">
+                <option value="">Todas</option>
                 <% Metric.all.each do |m|
                     if m.metric_type == "active"
                 %>
@@ -126,7 +130,7 @@
           <div class="control-group">
             <span class="control-label" >Variação Métrica:</span>
             <div class="controls">
-              <%= select :variation,'',[["Media"],["Minimo"],["Maximo"]] %>
+              <%= select :variation,'',[["Média","avg"],["Mínimo","min"],["Máximo","max"]] %>
             </div>
           </div>
           <div class="control-group">
@@ -183,7 +187,7 @@
                 if (data == "")
                     html = "<option value='not'>Este UF não possui sonda.</option>";
                 else{
-                    html = html + "<option >Selecione...</option>";
+                    html = html + "<option value=''>Todas</option>";
                     for (dst in data){
                         html = html + "<option value='"+data[dst]["id"]+"'>"+data[dst]["name"]+"</option>";
                     }
