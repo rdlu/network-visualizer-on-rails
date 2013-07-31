@@ -10,19 +10,11 @@
                     <download>
                         <numCon><%= cfg["download"]["numCon"] %></numCon>
                         <testTime><%= cfg["download"]["testTime"] %></testTime>
-                        <% cfg["download"]["paths"].each do |path| %>
-                            <% path.each do |type, file| %>
-                                <path type="<%= type %>"><%= file %></path>
-                            <% end %>
-                        <% end %>
+                        <path type="outro"><%= cfg["download"]["path"] %></path>
                     </download>
                     <upload>
                         <path><% cfg["upload"]["path"] %></path>
-                        <% cfg["upload"]["files"].each do |file| %>
-                            <% file.each do |t, f| %>
-                                <file type="<%= t %>"><%= f %></file>
-                            <% end %>
-                        <% end %>
+                        <file type="outro"><%= cfg["upload"]["file"] %></path>
                     </upload>
                 </throughput_http>
             <% end %>
