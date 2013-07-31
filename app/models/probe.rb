@@ -35,6 +35,9 @@ class Probe < ActiveRecord::Base
   scope :is_anatel, proc { |anatel| where(:anatel => anatel)}
   scope :by_pop, proc { |pop| where(:pop => pop) }
   scope :by_modem, proc { |modem| where(:modem => modem) }
+  scope :by_tech, lambda { |tech|
+    joins(:connection_profile).where('connection_profiles.name_id' => tech)
+  }
 
   def pretty_name
     "#{self.name} (#{self.ipaddress})"

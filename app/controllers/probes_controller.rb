@@ -4,12 +4,13 @@ class ProbesController < ApplicationController
 
   #escopos
   has_scope :by_city
-  has_scope :by_state
-  has_scope :by_type
-  has_scope :by_pop
-  has_scope :by_bras
+  has_scope :by_state, :type => :array
+  has_scope :by_type, :type => :array
+  has_scope :by_pop, :type => :array
+  has_scope :by_bras, :type => :array
   has_scope :is_anatel
-  has_scope :by_modem
+  has_scope :by_modem, :type => :array
+  has_scope :by_tech, :type => :array
 
   def index
     authorize! :read, self
