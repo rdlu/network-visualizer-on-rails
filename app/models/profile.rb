@@ -353,8 +353,8 @@ class Profile < ActiveRecord::Base
   end
 
   def setup_http_params
-      if self.config_parameters.nil? || self.config_parameters == {}
-          {download: {numCon: 0, testTime: 0, paths: [{}]}, upload: {path: "", files: [{}]}}
+      if self.config_parameters.nil? || self.config_parameters == {} || self.config_parameters = "{}"
+          {download: {numCon: 0, testTime: 0, paths: [{}]}, upload: {path: "", files: [{}]}}.to_json
       else
           self.config_parameters
       end
