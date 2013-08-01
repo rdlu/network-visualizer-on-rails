@@ -30,13 +30,16 @@ class Probe < ActiveRecord::Base
   #escopos de pesquisa
   scope :active, where(:status => 1)
   scope :by_city, proc { |city| where(:city => city) unless city == '' }
-  scope :by_state, proc { |state| where(:state => state) unless state == '' }
-  scope :by_type, proc { |type| where(:type => type) unless type == '' }
+  scope :by_state, proc { |state| where(:state => state) unless state == '' or state[0] == '' }
+  scope :by_type, proc { |type| where(:type => type) unless type == '' or type[0] == '' }
+  scope :by_bras, proc { |bras| where(:bras => bras) unless bras == '' or bras[0] == '' }
   scope :is_anatel, proc { |anatel| where(:anatel => anatel)}
-  scope :by_pop, proc { |pop| where(:pop => pop) unless pop == '' }
-  scope :by_modem, proc { |modem| where(:modem => modem) unless modem == '' }
+  scope :by_pop, proc { |pop|
+    where(:pop => pop) unless pop == '' or pop[0] == ''
+  }
+  scope :by_modem, proc { |modem| where(:modem => modem) unless modem == '' or modem[0] == '' }
   scope :by_tech, lambda { |tech|
-    joins(:connection_profile).where('connection_profiles.name_id' => tech) unless tech == ''
+    joins(:connection_profile).where('connection_profiles.name_id' => tech) unless tech == '' or tech[0] == ''
   }
 
   def pretty_name
