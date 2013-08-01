@@ -94,6 +94,7 @@ GEM
       railties (>= 3.1)
     hike (1.2.3)
     hirb (0.6.2)
+    hiredis (0.4.5)
     i18n (0.6.1)
     immigrant (0.1.4)
       activerecord (>= 3.0)
@@ -192,6 +193,7 @@ GEM
     rake (10.1.0)
     rdoc (3.12.2)
       json (~> 1.4)
+    redis (3.0.4)
     ref (1.0.5)
     rolify (3.2.0)
     rspec-core (2.14.4)
@@ -269,6 +271,7 @@ DEPENDENCIES
   god
   has_scope
   highcharts-rails (~> 3.0.1)
+  hiredis
   immigrant
   ipaddress
   jazz_hands
@@ -286,6 +289,7 @@ DEPENDENCIES
   quiet_assets
   rails (= 3.2.13)
   rails-i18n
+  redis
   rolify
   rspec-rails
   ruby-units

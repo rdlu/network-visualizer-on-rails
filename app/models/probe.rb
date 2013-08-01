@@ -134,11 +134,11 @@ class Probe < ActiveRecord::Base
   end
 
   def self.modems
-    %w(Alcatel Huawei Nokia Ericsson)
+      $redis.smembers "Probe:Modems"
   end
 
   def self.pops
-    %w(RJ/ES SP PR/SC RS BA)
+      $redis.smembers "Probe:Pops"
   end
 
   def self.types
@@ -256,4 +256,5 @@ class Probe < ActiveRecord::Base
   def default_values
     self.status ||= 1
   end
+
 end

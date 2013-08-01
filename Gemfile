@@ -28,6 +28,8 @@ gem 'ruby-units'
 gem 'whenever', :require => false
 gem 'god'
 gem 'xml-simple'
+gem 'redis'
+gem 'hiredis'
 
 # To use ActiveModel has_secure_password
 gem 'bcrypt-ruby', '~> 3.0.0'
