@@ -335,6 +335,9 @@
                     }
                 });
             } else {
+               //$('#accordion_forms').toggleClass();
+                $('#error_Ini2').html('Você deve escolher uma data.');
+                $('#error_Ini2').attr('style','display:block');
                 jQuery('#report2-add').prop('disabled', true);
             }
         });
