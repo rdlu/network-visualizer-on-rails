@@ -177,4 +177,34 @@ class ProbesController < ApplicationController
     end
   end
 
-end
+  def filter_destination
+    uf = Array.new
+    uf = params[:uf]
+    dest_uf =  Array.new
+    Probe.states.each do |state|
+      uf.each do |uf|
+        if state.at(1) == uf
+          dest_uf << state.at(1)
+        end
+      end
+    end
+
+    destinations = Array.new
+    dest_uf.each do |ufs|
+      Probe.all.each do |p|
+        if ufs == p.state.downcase
+          destinations << p
+        end
+      end
+    end
+
+    respond_to do |format|
+      format.json { render :json => destinations }
+    end
+
+
+
+  end
+
+
+  end

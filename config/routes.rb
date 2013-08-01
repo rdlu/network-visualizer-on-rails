@@ -47,6 +47,7 @@ MomRails::Application.routes.draw do
 
   post 'probes/load_location',:as=> 'probes_load_location'
   post 'probes/filter_uf', :as => 'probes_filter_uf'
+  post 'probes/filter_destination', :as => 'probes_filter_destination'
 
   match 'probes/:id/metrics/:source_id' => 'probes#metrics', :via => [:get]
   match 'probes/:id/thresholds/:source_id' => 'probes#thresholds', :via => [:get]

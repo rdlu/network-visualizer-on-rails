@@ -2,12 +2,12 @@
     <div class="row-fluid">
         <div class="span5">
           <div class="control-group">
-            <label for="probe-type" class="control-label">UF:</label>
+            <label for="probe-state" class="control-label">UF:</label>
             <div class="controls">
-              <select multiple="true"  name = "state[]"  id="probe-state" onchange="filterUFs()" >
-                <option name="state" value="">Todas</option>
+              <select multiple="true"  name = "by_state[]"  id="by-state" onchange="filterUFs()" >
+                <option name="by_state" value="">Todas</option>
                 <% Probe.states.each do |state| %>
-                    <option name="state" value="<%= state.at(1) %>" <%= params[:by_state].to_s == state.at(1).to_s ? "selected=\"selected\"".html_safe : "" %>><%= state.at(1).upcase %></option>
+                    <option name="by_state" value="<%= state.at(1) %>" <%= params[:by_state].to_s == state.at(1).to_s ? "selected=\"selected\"".html_safe : "" %>><%= state.at(1).upcase %></option>
                 <% end %>
               </select>
             </div>
@@ -17,14 +17,9 @@
             <div class="controls"  >
               <select multiple="true"  name="by_pop[]" id="by_pop" onchange="setAllOpt(this.value,'pop')" >
                 <option value="all">Todas</option>
-                <% probeUniq = Array.new
-                   probeUniq = Probe.all.uniq{|x| x.pop}
-                   probeUniq.each do |p|
-                     unless p.pop.nil?
-                %>
-                        <option value="<%= p.pop %>"><%= p.pop %></option>
-                    <% end
-                       end %>
+                <%  Probe.pops.each do |p|  %>
+                      <option value="<%= p %>"><%= p %></option>
+                <% end %>
               </select>
             </div>
           </div>
@@ -39,19 +34,27 @@
             <div id="ag_types" class="control-group" >
               <label class="control-label" for="by_conn_type">Tipo: </label>
               <div class="controls">
-                <%= select :by_conn_type,{},[['Movel'],["Fixo"]]%>
+                <%= select :by_conn_type,'',[['Móvel','movel'],["Fixo","fixo"]]%>
               </div>
             </div>
             <div class="control-group">
               <label class="control-label" for="modem">Modem: </label>
                 <div class="controls">
-                  <%= select :modem,{},[['ALCATEL'],["Outro"]]%>
+                  <select  name="by_modem[]" id="by_modem"  >
+                    <%  Probe.modems.each do |p|  %>
+                        <option value="<%= p %>"><%= p %></option>
+                    <% end %>
+                  </select>
                 </div>
             </div>
           <div class="control-group">
-            <label class="control-label" for="tecno">Tecnologia: </label>
+            <label class="control-label" for="by_tech">Tecnologia: </label>
             <div class="controls">
-              <%= select :tecno,{},[['Metro'],["Outro"]]%>
+              <select  name="by_tech[]" id="by_tech"  >
+                <%  Probe.techs.each do |p|  %>
+                    <option value="<%= p %>"><%= p %></option>
+                <% end %>
+              </select>
             </div>
           </div>
         </div>
@@ -60,15 +63,17 @@
     <div class="row-fluid" style="border-top: 1px solid #CCCCCC;">
       <div class="span6">
           <div class="control-group" style="margin-top: 10px">
-            <label class="control-label" for="destination_id">Sonda de Destino: </label>
-
-            <div class="controls">
-              <%= collection_select :destination, :id, Probe.order(:name).all, :id, :pretty_name_with_location, {:include_blank => "Selecione..."}, {:class => 'input-block-level',:id=>"destino"} %>
+            <label class="control-label" for="destino">Sonda de Destino: </label>
+            <div class="controls ">
+              <select class="input-block-level" value="destination[id]" id="destino">
+               <option> Selecione um UF primeiro...</option>
+              <!--%= collection_select :destination, :id, Probe.order(:name).all, :id, :pretty_name_with_location, {:include_blank => "Selecione..."}, {:class => 'input-block-level',:id=>"destino"} %>
+            -->
+              </select>
             </div>
           </div>
           <div class="control-group">
             <label for="source_id" class="control-label">Sonda de Origem:</label>
-
             <div class="controls">
               <%= collection_select :source, :id, {}, :id, :pretty_name_with_location, {:include_blank => "Selecione a sonda de destino primeiro"}, {:class => 'input-block-level',:id=>"origem"} %>
             </div>
@@ -83,9 +88,12 @@
             <span class="control-label" >DNS:</span>
             <div class="controls">
               <select multiple="true" value="metrics[]" >
-                <% Metric.all.each do |m| %>
+                <% Metric.all.each do |m|
+                    if m.metric_type == "" || m.metric_type == "dns_details"
+                %>
                     <option value="<%= m.id %>"><%= m.name %></option>
-                <% end %>
+                <% end
+                end %>
               </select>
             </div>
           </div>
@@ -106,22 +114,25 @@
             <span class="control-label" >Métricas:</span>
             <div class="controls">
               <select multiple="true" value="metrics[]">
-                <% Metric.all.each do |m| %>
+                <% Metric.all.each do |m|
+                    if m.metric_type == "active"
+                %>
                     <option value="<%= m.id %>"><%= m.name %></option>
-                <% end %>
+                <% end
+                end %>
               </select>
             </div>
           </div>
           <div class="control-group">
             <span class="control-label" >Variação Métrica:</span>
             <div class="controls">
-              <%= select :variation,{},[["Media"],["Minimo"],["Maximo"]] %>
+              <%= select :variation,'',[["Media"],["Minimo"],["Maximo"]] %>
             </div>
           </div>
           <div class="control-group">
             <label class="control-label" for="horario">Horário: </label>
             <div class="controls">
-              <%= select :horario,{},[['24h','24'],["48h",'48'],['72h','72']]%>
+              <%= select :horario,'',[['Últimas 24h','24'],["Últimas 48h",'48'],['Últimas 72h','72']]%>
             </div>
           </div>
         </div>
@@ -141,6 +152,50 @@
 <% end %>
 
 <script>
+
+    function setAllOpt(value,id)
+    {
+
+        if (value == "" || value == 1 || value == "all"){
+            var aux =  document.getElementById(id).options;
+            aux.selected = false;
+            for (var i =0; i < aux.length; i++){
+                aux.item(i).selected = true;
+            }
+        }
+
+        return  $('select#'+id).val();
+    }
+
+    function filterUFs(){
+        var value = [];
+        value = $('select#by-state').val();
+        value = setAllOpt(value,'by-state');
+
+        $.ajax({
+            type: 'POST',
+            url: "<%= probes_filter_destination_path %>",
+            data: {
+                'uf': value
+            },
+            success: function(data){
+                var html = "";
+                if (data == "")
+                    html = "<option value='not'>Este UF não possui sonda.</option>";
+                else{
+                    html = html + "<option >Selecione...</option>";
+                    for (dst in data){
+                        html = html + "<option value='"+data[dst]["id"]+"'>"+data[dst]["name"]+"</option>";
+                    }
+                }
+
+                $('#destino').html(html);
+
+            }
+        });
+
+    }
+
     jQuery("#destino").change(function (evt) {
         var destination_id = evt.currentTarget.value;
         if (destination_id != '')
