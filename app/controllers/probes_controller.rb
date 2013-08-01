@@ -152,7 +152,6 @@ class ProbesController < ApplicationController
   end
 
   def filter_uf
-    uf = Array.new
     uf = params[:uf]
     cod_uf =  Array.new
     Probe.states.each do |state|
@@ -178,7 +177,6 @@ class ProbesController < ApplicationController
   end
 
   def filter_destination
-    uf = Array.new
     uf = params[:uf]
     dest_uf =  Array.new
     Probe.states.each do |state|
@@ -201,10 +199,6 @@ class ProbesController < ApplicationController
     respond_to do |format|
       format.json { render :json => destinations }
     end
-
-
-
   end
-
 
   end
