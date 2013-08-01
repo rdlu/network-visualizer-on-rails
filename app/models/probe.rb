@@ -29,14 +29,14 @@ class Probe < ActiveRecord::Base
 
   #escopos de pesquisa
   scope :active, where(:status => 1)
-  scope :by_city, proc { |city| where(:city => city) }
-  scope :by_state, proc { |state| where(:state => state) }
-  scope :by_type, proc { |type| where(:type => type) }
+  scope :by_city, proc { |city| where(:city => city) unless city == '' }
+  scope :by_state, proc { |state| where(:state => state) unless state == '' }
+  scope :by_type, proc { |type| where(:type => type) unless type == '' }
   scope :is_anatel, proc { |anatel| where(:anatel => anatel)}
-  scope :by_pop, proc { |pop| where(:pop => pop) }
-  scope :by_modem, proc { |modem| where(:modem => modem) }
+  scope :by_pop, proc { |pop| where(:pop => pop) unless pop == '' }
+  scope :by_modem, proc { |modem| where(:modem => modem) unless modem == '' }
   scope :by_tech, lambda { |tech|
-    joins(:connection_profile).where('connection_profiles.name_id' => tech)
+    joins(:connection_profile).where('connection_profiles.name_id' => tech) unless tech == ''
   }
 
   def pretty_name
