@@ -2017,10 +2017,12 @@ class ReportsController < ApplicationController
               dns_server = c.children.search("server").inner_text
               dns_url = c.children.search("url").inner_text
               dns_delay = c.children.search("delay").inner_text.to_f
+              dns_status = c.children.search("status").inner_text.to_f
 
               @dns_dynamic_results << DnsDynamicResult.create(server: dns_server,
                                                               url: dns_url,
                                                               delay: dns_delay,
+                                                              status: dns_status,
                                                               uuid: uuid)
           end
 
@@ -2106,13 +2108,15 @@ class ReportsController < ApplicationController
                       server = c.children.search("server").inner_text
                       url = c.children.search("url").inner_text
                       delay = c.children.search("delay").inner_text.to_i
+                      dns_status = c.children.search("status").inner_text.to_f
                       @dns_results << DnsResult.create(url: url,
                                                        server: server,
                                                        delay: delay,
+                                                       status: dns_status,
                                                        uuid: uuid)
                   end
                   efic = report.xpath("report/results/dns/efic").inner_text.to_f
-                  average = report.xpath("report/results/dns/average").inner_text.to_f
+                  average = report.xpath("report/results/dns/media").inner_text.to_f
                   timeout_errors = report.xpath("report/results/dns/errors/timeout")
                   server_failure_errors = report.xpath("report/results/dns/errors/server_failures")
                   @dns_detail = DnsDetail.create(efic: efic,
