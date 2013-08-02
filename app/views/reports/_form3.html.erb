@@ -1,5 +1,4 @@
 <%= form_tag(performance_reports_path, :class => 'form-horizontal', :id => 'report-form3') do %>
-
     <div class="row-fluid">
         <div class="span5">
           <div class="control-group">
@@ -273,9 +272,17 @@
             $('#accordion_forms').attr("class","accordion-body collapse in");
             $('#accordion_forms').attr("style","height: auto");
         }else{
-            alert('oi, eu sou goku!');
+
             $('#accordion_forms').attr("class","accordion-body collapse");
             $('#accordion_forms').attr("style","height: 0px");
+
+            jQuery.ajax("<%= performance_reports_url %>/", {
+              data: $(this).serialize(),
+                type: 'POST',
+              success: function(result){
+                  jQuery('#graphs-area').prepend(result);
+              }
+            });
         }
 
     });
