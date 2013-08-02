@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130802163739) do
+ActiveRecord::Schema.define(:version => 20130802172605) do
 
   create_table "compliances", :force => true do |t|
     t.integer   "schedule_id"
@@ -67,25 +67,28 @@ ActiveRecord::Schema.define(:version => 20130802163739) do
     t.string   "uuid",                  :limit => nil
     t.datetime "created_at",                           :null => false
     t.datetime "updated_at",                           :null => false
+    t.string   "schedule_uuid",         :limit => nil
   end
 
   create_table "dns_dynamic_results", :force => true do |t|
     t.string   "server"
     t.string   "url"
     t.float    "delay"
-    t.string   "uuid",       :limit => nil
-    t.datetime "created_at",                :null => false
-    t.datetime "updated_at",                :null => false
+    t.string   "uuid",          :limit => nil
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
+    t.string   "schedule_uuid", :limit => nil
   end
 
   create_table "dns_results", :force => true do |t|
     t.string   "server"
     t.string   "url"
     t.integer  "delay"
-    t.string   "uuid",       :limit => nil
-    t.datetime "created_at",                :null => false
-    t.datetime "updated_at",                :null => false
+    t.string   "uuid",          :limit => nil
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
     t.string   "status"
+    t.string   "schedule_uuid", :limit => nil
   end
 
   create_table "dynamic_results", :force => true do |t|
@@ -108,6 +111,7 @@ ActiveRecord::Schema.define(:version => 20130802163739) do
     t.integer  "dns_timeout_errors"
     t.integer  "dns_server_failure_errors"
     t.string   "user"
+    t.string   "schedule_uuid",             :limit => nil
   end
 
   create_table "evaluations", :force => true do |t|
@@ -350,9 +354,10 @@ ActiveRecord::Schema.define(:version => 20130802163739) do
     t.float    "time"
     t.float    "size"
     t.float    "throughput"
-    t.string   "uuid",       :limit => nil
-    t.datetime "created_at",                :null => false
-    t.datetime "updated_at",                :null => false
+    t.string   "uuid",          :limit => nil
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
+    t.string   "schedule_uuid", :limit => nil
   end
 
   create_table "web_load_results", :force => true do |t|
@@ -369,6 +374,7 @@ ActiveRecord::Schema.define(:version => 20130802163739) do
     t.string   "uuid",                    :limit => nil
     t.datetime "created_at",                             :null => false
     t.datetime "updated_at",                             :null => false
+    t.string   "schedule_uuid",           :limit => nil
   end
 
   add_foreign_key "compliances", "schedules", :name => "compliances_schedule_id_fk", :dependent => :delete
