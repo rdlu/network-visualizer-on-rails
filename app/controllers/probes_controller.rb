@@ -72,6 +72,8 @@ class ProbesController < ApplicationController
     end
 
     if @probe.save
+      Probe.add_pop @probe.pop
+      Probe.add_modem @probe.modem
       respond_to do |format|
         format.json { render :json => @probe.to_json, :status => 200 }
         format.xml  { head :ok }
@@ -92,6 +94,8 @@ class ProbesController < ApplicationController
 
     respond_to do |format|
       if @probe.update_attributes(params[:probe])
+        Probe.add_pop @probe.pop
+        Probe.add_modem @probe.modem
         format.html { redirect_to probes_path, notice: 'Suas alterações foram salvas com sucesso.' }
         format.json { head :no_content }
       else

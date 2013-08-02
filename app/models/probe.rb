@@ -1,7 +1,7 @@
 # coding: utf-8
 class Probe < ActiveRecord::Base
   before_save :default_values
-  attr_accessible :address, :description, :ipaddress, :latitude, :longitude, :name, :pre_address, :status, :type, :city, :state, :connection_profile_id, :plan_id, :areacode, :agent_version, :anatel, :pop,:bras, :osversion
+  attr_accessible :address, :description, :ipaddress, :latitude, :longitude, :name, :pre_address, :status, :type, :city, :state, :connection_profile_id, :plan_id, :areacode, :agent_version, :anatel, :pop,:bras, :osversion, :modem
 
   #validacao
   validates :name, :presence => true, :length => {:maximum => 255, :minimum => 3}, :format => {:with => %r{^[0-9a-zA-Z][0-9a-zA-Z\-\_]+[0-9a-zA-Z]$}},
@@ -139,6 +139,14 @@ class Probe < ActiveRecord::Base
 
   def self.pops
       $redis.smembers "Probe:Pops"
+  end
+
+  def self.add_modem(modem)
+      $redis.sadd 'Probe:Modems', modem
+  end
+
+  def self.add_pop(pop)
+      $redis.sadd 'Probe:Pops', pop
   end
 
   def self.types
