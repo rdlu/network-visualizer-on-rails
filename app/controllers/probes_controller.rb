@@ -5,12 +5,12 @@ class ProbesController < ApplicationController
   #escopos
   has_scope :by_city
   has_scope :by_state, :type => :array_or_string
-  has_scope :by_type, :type => :array
-  has_scope :by_pop, :type => :array
-  has_scope :by_bras, :type => :array
+  has_scope :by_type, :type => :array_or_string
+  has_scope :by_pop, :type => :array_or_string
+  has_scope :by_bras, :type => :array_or_string
   has_scope :is_anatel
-  has_scope :by_modem, :type => :array
-  has_scope :by_tech, :type => :array
+  has_scope :by_modem, :type => :array_or_string
+  has_scope :by_tech, :type => :array_or_string
 
   def index
     authorize! :read, self
@@ -156,7 +156,6 @@ class ProbesController < ApplicationController
   end
 
   def filter_uf
-    uf = Array.new
     uf = params[:uf]
     cod_uf =  Array.new
     Probe.states.each do |state|
@@ -182,7 +181,6 @@ class ProbesController < ApplicationController
   end
 
   def filter_destination
-    uf = Array.new
     uf = params[:uf]
     dest_uf =  Array.new
     Probe.states.each do |state|
@@ -205,10 +203,6 @@ class ProbesController < ApplicationController
     respond_to do |format|
       format.json { render :json => destinations }
     end
-
-
-
   end
-
 
   end

@@ -95,7 +95,7 @@
           <div class="controls">
             <div class="input-prepend">
               <label for="date_start2" style="display: inline"><span id="icon2" class="add-on" style="margin-top: 1px;"><i class="icon-calendar"></i></span></label>
-              <%= text_field :date, :start, :class => 'input-small datepicker', :"data-date-format".to_sym => "dd/mm/yyyy", :id => 'date_start2'  %>
+              <%= text_field :date, :start, :class => 'input-small datepicker', :"data-date-format".to_sym => "dd/mm/yyyy", :id => 'date_start2',:value=> DateTime.current.strftime('%d/%m/%Y')  %>
             </div>
             <div class="input-prepend">
               <span class="add-on"><i class="icon-time"></i></span>
@@ -111,7 +111,7 @@
           <div class="controls">
             <div class="input-prepend">
               <label for="date_end2" style="display: inline"><span id="icon3" class="add-on" style="margin-top: 1px;"><i class="icon-calendar"></i></span></label>
-              <%= text_field :date, :end, :class => 'input-small datepicker', :"data-date-format".to_sym => "dd/mm/yyyy", :id => 'date_end2' %>
+              <%= text_field :date, :end, :class => 'input-small datepicker', :"data-date-format".to_sym => "dd/mm/yyyy", :id => 'date_end2',:value=> DateTime.current.strftime('%d/%m/%Y') %>
             </div>
             <div class="input-prepend">
               <span class="add-on"><i class="icon-time"></i></span>
