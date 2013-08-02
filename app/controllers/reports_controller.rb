@@ -1924,7 +1924,8 @@ class ReportsController < ApplicationController
       report = Nokogiri::XML(params[:report])
 
       user = report.xpath("report/user").children.to_s
-      uuid = Schedule.where(destination_id: Probe.where(ipaddress: user)).first.uuid
+      schedule_uuid = report.xpath("report/uuid").children.to_s
+      uuid = report.xpath("report/meas_uuid").children.to_s
       timestamp = report.xpath("report/timestamp").children.to_s
       agent_type = report.xpath("report/agent_type").children.to_s
 
@@ -1963,8 +1964,8 @@ class ReportsController < ApplicationController
           route = report.xpath("report/kpis/route").children.first.to_s
           route = nil if route == "-"
 
-          @kpi = Kpi.create(schedule_uuid: uuid,
-                            uuid: SecureRandom.uuid,
+          @kpi = Kpi.create(schedule_uuid: schedule_uuid,
+                            uuid: uuid,
                             cell_id: cell_id,
                             model: model,
                             conn_tech: conn_tech,
@@ -2005,6 +2006,7 @@ class ReportsController < ApplicationController
                                                  pom_down: pom_down,
                                                  pom_up: pom_up,
                                                  uuid: uuid,
+                                                 schedule_uuid: schedule_uuid,
                                                  dns_efic: dns_efic,
                                                  dns_timeout_errors: dns_timeout_errors,
                                                  dns_server_failure_errors: dns_server_failure_errors,
@@ -2023,6 +2025,7 @@ class ReportsController < ApplicationController
                                                               url: dns_url,
                                                               delay: dns_delay,
                                                               status: dns_status,
+                                                              schedule_uuid: schedule_uuid,
                                                               uuid: uuid)
           end
 
@@ -2039,6 +2042,7 @@ class ReportsController < ApplicationController
                                                                        time: web_load_time,
                                                                        size: web_load_size,
                                                                        throughput: web_load_throughput,
+                                                                       schedule_uuid: schedule_uuid,
                                                                        uuid: uuid)
           end
 
@@ -2098,6 +2102,7 @@ class ReportsController < ApplicationController
                                                                 time_other_domain: time_other_domain,
                                                                 size_other_domain: size_other_domain,
                                                                 throughput_other_domain: throughput_other_domain,
+                                                                schedule_uuid: schedule_uuid,
                                                                 uuid: uuid)
                   end
               when "dns"
@@ -2113,6 +2118,7 @@ class ReportsController < ApplicationController
                                                        server: server,
                                                        delay: delay,
                                                        status: dns_status,
+                                                       schedule_uuid: schedule_uuid,
                                                        uuid: uuid)
                   end
                   efic = report.xpath("report/results/dns/efic").inner_text.to_f
@@ -2123,6 +2129,7 @@ class ReportsController < ApplicationController
                                                  average: average,
                                                  timeout_errors: timeout_errors,
                                                  server_failure_errors: server_failure_errors,
+                                                 schedule_uuid: schedule_uuid,
                                                  uuid: uuid)
               when "throughput_http"
                   throughput_http_down = report.xpath("report/results/throughput_http/down").to_s.to_f
@@ -2134,7 +2141,7 @@ class ReportsController < ApplicationController
 
                   @results = Results.create(schedule_id: schedule.id,
                                             metric_id: metric,
-                                            schedule_uuid: schedule.uuid,
+                                            schedule_uuid: schedule_uuid,
                                             uuid: uuid,
                                             metric_name: "throughput_http",
                                             timestamp: timestamp,
