@@ -1655,6 +1655,7 @@ class ReportsController < ApplicationController
 
   #RELATORIO DE PERFORMANCE
   def performance
+    @metrics = params[:metrics]
 
     respond_to do |format|
       format.html { render :layout => false }

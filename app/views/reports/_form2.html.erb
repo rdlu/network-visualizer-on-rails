@@ -46,7 +46,7 @@
         </div>
       </div>
 
-      <div class="span3">
+      <div class="span3_5">
         <div id="ag_types" class="control-group" >
           <label class="control-label" for="agent_type">Tipo: </label>
           <div class="controls">
@@ -75,21 +75,16 @@
           <div class="controls"  >
             <select multiple="true"  name="pop[]" id="pop" onchange="setAllOpt(this.value,'pop')" style="width: 155px">
               <option value="all">Todas</option>
-              <% probeUniq = Array.new
-                 probeUniq = Probe.all.uniq{|x| x.pop}
-                 probeUniq.each do |p|
-                   unless p.pop.nil?
-              %>
-                      <option value="<%= p.pop %>"><%= p.pop %></option>
-                  <% end
-                     end %>
+              <%  Probe.pops.each do |p|  %>
+                  <option  value="<%= p %>"><%= p %></option>
+              <% end %>
             </select>
           </div>
         </div>
       </div>
 
 
-      <div id="op_col2"  class="span5" >
+      <div id="op_col2"  class="span4" >
         <div class="control-group">
           <%= label :date, :start2, "Início: ", :class => 'control-label' %>
           <div class="controls">
