@@ -1,4 +1,24 @@
 # coding: utf-8
+# == Schema Information
+#
+# Table name: compliances
+#
+#  id              :integer          not null, primary key
+#  schedule_id     :integer
+#  threshold_id    :integer
+#  schedule_uuid   :string(255)
+#  start_timestamp :timestamp(6)
+#  end_timestamp   :timestamp(6)
+#  expected_days   :integer
+#  total_days      :integer
+#  download        :float
+#  upload          :float
+#  created_at      :timestamp(6)     not null
+#  updated_at      :timestamp(6)     not null
+#  type            :string(255)
+#  calc_method     :string(255)
+#
+
 class Compliance < ActiveRecord::Base
   belongs_to :schedule
   belongs_to :threshold

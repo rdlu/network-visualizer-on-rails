@@ -65,6 +65,9 @@ group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'yaml_db'
+  gem 'lol_dba'
+  gem 'bullet'
+  gem 'annotate'
 
   # Debugging
   unless ENV["RM_INFO"]
@@ -81,6 +84,7 @@ group :test, :development do
 	gem 'rspec-rails'
 	gem 'fabrication'
 	gem 'faker'
+  gem 'railroady'
 end
 
 # Deploy with Capistrano

@@ -32,6 +32,8 @@ GEM
       activesupport
       builder
       json
+    annotate (2.5.0)
+      rake
     arel (3.0.2)
     awesome_print (1.0.2)
     bcrypt-ruby (3.0.1)
@@ -45,6 +47,8 @@ GEM
     bootswatch-rails (0.5.0)
       railties (>= 3.1)
     builder (3.0.4)
+    bullet (4.6.0)
+      uniform_notifier
     callsite (0.0.11)
     cancan (1.6.10)
     chronic (0.9.1)
@@ -123,6 +127,10 @@ GEM
     less (2.3.2)
       commonjs (~> 0.2.6)
     libv8 (3.11.8.17)
+    lol_dba (1.6.0)
+      actionpack (>= 3.0)
+      activerecord (>= 3.0)
+      railties (>= 3.0)
     mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
@@ -173,6 +181,7 @@ GEM
       rack
     rack-test (0.6.2)
       rack (>= 1.0)
+    railroady (1.1.1)
     rails (3.2.13)
       actionmailer (= 3.2.13)
       actionpack (= 3.2.13)
@@ -232,6 +241,7 @@ GEM
     uglifier (2.1.2)
       execjs (>= 0.3.0)
       multi_json (~> 1.0, >= 1.0.2)
+    uniform_notifier (1.2.0)
     warden (1.2.3)
       rack (>= 1.0)
     whenever (0.8.4)
@@ -254,11 +264,13 @@ PLATFORMS
 
 DEPENDENCIES
   airbrake
+  annotate
   bcrypt-ruby (~> 3.0.0)
   better_errors
   binding_of_caller
   bootstrap-sass
   bootswatch-rails
+  bullet
   cancan
   coffee-rails (~> 3.2.2)
   daemons
@@ -278,6 +290,7 @@ DEPENDENCIES
   jbuilder
   jquery-rails
   less
+  lol_dba
   meta_request
   nokogiri
   pg
@@ -287,6 +300,7 @@ DEPENDENCIES
   pry-remote
   pry-stack_explorer
   quiet_assets
+  railroady
   rails (= 3.2.13)
   rails-i18n
   redis

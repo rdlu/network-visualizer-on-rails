@@ -1,3 +1,20 @@
+# == Schema Information
+#
+# Table name: metrics
+#
+#  id          :integer          not null, primary key
+#  name        :string(255)
+#  plugin      :string(255)
+#  description :string(255)
+#  reverse     :boolean
+#  order       :integer
+#  created_at  :timestamp(6)     not null
+#  updated_at  :timestamp(6)     not null
+#  view_unit   :string(255)
+#  db_unit     :string(255)
+#  metric_type :string(255)      default("active"), not null
+#
+
 class Metric < ActiveRecord::Base
   attr_accessible :description, :name, :order, :plugin, :reverse, :db_unit, :view_unit, :metric_type
 

@@ -1,4 +1,15 @@
 # coding: utf-8
+# == Schema Information
+#
+# Table name: sites
+#
+#  id         :integer          not null, primary key
+#  url        :string(255)
+#  vip        :boolean
+#  created_at :timestamp(6)     not null
+#  updated_at :timestamp(6)     not null
+#
+
 class Site < ActiveRecord::Base
   attr_accessible :url, :vip
 
