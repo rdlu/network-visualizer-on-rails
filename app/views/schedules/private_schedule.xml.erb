@@ -1,0 +1,49 @@
+<% @schedules.each do |schedule| %>
+    <schedule>
+        <config>
+            <uuid><%= schedule.uuid %></uuid>
+        </config>
+        <metrics>
+            <% schedule.profiles.where(config_method: "http").each do |profile| %>
+                <throughput_http>
+                    <% cfg = ActiveSupport::JSON.decode(profile.config_parameters) %>
+                    <download>
+                        <numCon><%= cfg["download"]["numCon"] %></numCon>
+                        <testTime><%= cfg["download"]["testTime"] %></testTime>
+                        <path type="outro"><%= cfg["download"]["path"] %></path>
+                    </download>
+                    <upload>
+                        <path><% cfg["upload"]["path"] %></path>
+                        <file type="outro"><%= cfg["upload"]["file"] %></file>
+                    </upload>
+                </throughput_http>
+            <% end %>
+            <% schedule.profiles.where(config_method: "raw_xml").each do |profile| %>
+                <%= profile.config_parameters %>
+            <% end %>
+            <% schedule.profiles.where(config_method: "dns").each do |profile| %>
+                <dns>
+                    <servers>
+                        <% profile.nameservers.each do |ns| %>
+                            <server><%= Nameserver.find(ns).address %></server>
+                        <% end %>
+                    </servers>
+                    <urls>
+                        <% profile.sites.each do |site| %>
+                            <url><%= Site.find(site).url %></url>
+                        <% end %>
+                    </urls>
+                </dns>
+            <% end %>
+            <% schedule.profiles.where(config_method: "url").each do |profile| %>
+                <cargaWeb>
+                    <urls>
+                        <% profile.sites.each do |site| %>
+                            <url><%= Site.find(site).url %></url>
+                        <% end %>
+                    </urls>
+                </cargaWeb>
+            <% end %>
+        </metrics>
+    </schedule>
+<% end %>

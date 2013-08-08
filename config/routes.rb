@@ -30,11 +30,12 @@ MomRails::Application.routes.draw do
   match 'reports/xls_diario/:filename' => 'reports#xls_diario', :as => 'reports_xls_diario', :via => [:get]
   match 'reports/xls_mensal/:filename' => 'reports#xls_mensal', :as => 'reports_xls_mensal', :via => [:get]
   post 'reports/send' => 'reports#send_report', :as => 'send_reports'
-
+  post 'reports/performance', :as =>'performance_reports'
   resources :metrics
   resources :tests
   resources :schedules
   get 'schedules/win/schedule' => 'schedules#win', :as => 'windows_schedules'
+  post 'schedules/private_schedule' => 'schedules#private_schedule', :as => 'private_schedules'
  
   resources :probes do
     member do
@@ -46,15 +47,18 @@ MomRails::Application.routes.draw do
 
   post 'probes/load_location',:as=> 'probes_load_location'
   post 'probes/filter_uf', :as => 'probes_filter_uf'
+  post 'probes/filter_destination', :as => 'probes_filter_destination'
 
   match 'probes/:id/metrics/:source_id' => 'probes#metrics', :via => [:get]
   match 'probes/:id/thresholds/:source_id' => 'probes#thresholds', :via => [:get]
 
   resources :metrics
-
+  resources :process
   resources :profiles
   resources :dns_profiles
   resources :url_profiles
+  resources :raw_xml_profiles
+  resources :http_profiles
 
   resources :connection_profiles do
     resources :plans

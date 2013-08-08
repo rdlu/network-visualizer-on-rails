@@ -1653,6 +1653,19 @@ class ReportsController < ApplicationController
     end
   end
 
+  #RELATORIO DE PERFORMANCE
+  def performance
+    @metrics = params[:metrics]
+
+    respond_to do |format|
+      format.html { render :layout => false }
+    end
+
+  end
+
+
+
+  #########################
   def csv_bruto
     source = Probe.find(params[:source])
     destination = Probe.find(params[:destination])
@@ -1912,8 +1925,8 @@ class ReportsController < ApplicationController
       report = Nokogiri::XML(params[:report])
 
       user = report.xpath("report/user").children.to_s
-      user = user.gsub("_","-")
-      uuid = Schedule.where(destination_id: Probe.where(ipaddress: user)).first.uuid
+      schedule_uuid = report.xpath("report/uuid").children.to_s
+      uuid = report.xpath("report/meas_uuid").children.to_s
       timestamp = report.xpath("report/timestamp").children.to_s
       agent_type = report.xpath("report/agent_type").children.to_s
 
@@ -1952,8 +1965,8 @@ class ReportsController < ApplicationController
           route = report.xpath("report/kpis/route").children.first.to_s
           route = nil if route == "-"
 
-          @kpi = Kpi.create(schedule_uuid: uuid,
-                            uuid: SecureRandom.uuid,
+          @kpi = Kpi.create(schedule_uuid: schedule_uuid,
+                            uuid: uuid,
                             cell_id: cell_id,
                             model: model,
                             conn_tech: conn_tech,
@@ -1994,6 +2007,7 @@ class ReportsController < ApplicationController
                                                  pom_down: pom_down,
                                                  pom_up: pom_up,
                                                  uuid: uuid,
+                                                 schedule_uuid: schedule_uuid,
                                                  dns_efic: dns_efic,
                                                  dns_timeout_errors: dns_timeout_errors,
                                                  dns_server_failure_errors: dns_server_failure_errors,
@@ -2006,10 +2020,13 @@ class ReportsController < ApplicationController
               dns_server = c.children.search("server").inner_text
               dns_url = c.children.search("url").inner_text
               dns_delay = c.children.search("delay").inner_text.to_f
+              dns_status = c.children.search("status").inner_text.to_f
 
               @dns_dynamic_results << DnsDynamicResult.create(server: dns_server,
                                                               url: dns_url,
                                                               delay: dns_delay,
+                                                              status: dns_status,
+                                                              schedule_uuid: schedule_uuid,
                                                               uuid: uuid)
           end
 
@@ -2026,6 +2043,7 @@ class ReportsController < ApplicationController
                                                                        time: web_load_time,
                                                                        size: web_load_size,
                                                                        throughput: web_load_throughput,
+                                                                       schedule_uuid: schedule_uuid,
                                                                        uuid: uuid)
           end
 
@@ -2085,6 +2103,7 @@ class ReportsController < ApplicationController
                                                                 time_other_domain: time_other_domain,
                                                                 size_other_domain: size_other_domain,
                                                                 throughput_other_domain: throughput_other_domain,
+                                                                schedule_uuid: schedule_uuid,
                                                                 uuid: uuid)
                   end
               when "dns"
@@ -2095,19 +2114,23 @@ class ReportsController < ApplicationController
                       server = c.children.search("server").inner_text
                       url = c.children.search("url").inner_text
                       delay = c.children.search("delay").inner_text.to_i
+                      dns_status = c.children.search("status").inner_text.to_f
                       @dns_results << DnsResult.create(url: url,
                                                        server: server,
                                                        delay: delay,
+                                                       status: dns_status,
+                                                       schedule_uuid: schedule_uuid,
                                                        uuid: uuid)
                   end
                   efic = report.xpath("report/results/dns/efic").inner_text.to_f
-                  average = report.xpath("report/results/dns/average").inner_text.to_f
+                  average = report.xpath("report/results/dns/media").inner_text.to_f
                   timeout_errors = report.xpath("report/results/dns/errors/timeout")
                   server_failure_errors = report.xpath("report/results/dns/errors/server_failures")
                   @dns_detail = DnsDetail.create(efic: efic,
                                                  average: average,
                                                  timeout_errors: timeout_errors,
                                                  server_failure_errors: server_failure_errors,
+                                                 schedule_uuid: schedule_uuid,
                                                  uuid: uuid)
               when "throughput_http"
                   throughput_http_down = report.xpath("report/results/throughput_http/down").to_s.to_f
@@ -2119,7 +2142,7 @@ class ReportsController < ApplicationController
 
                   @results = Results.create(schedule_id: schedule.id,
                                             metric_id: metric,
-                                            schedule_uuid: schedule.uuid,
+                                            schedule_uuid: schedule_uuid,
                                             uuid: uuid,
                                             metric_name: "throughput_http",
                                             timestamp: timestamp,

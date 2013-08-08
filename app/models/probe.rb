@@ -1,7 +1,35 @@
 # coding: utf-8
+# == Schema Information
+#
+# Table name: probes
+#
+#  id                    :integer          not null, primary key
+#  name                  :string(255)      not null
+#  ipaddress             :string(255)      not null
+#  description           :text
+#  status                :integer          default(0), not null
+#  type                  :string(255)      default("android")
+#  address               :text
+#  pre_address           :text
+#  latitude              :float            default(0.0)
+#  longitude             :float            default(0.0)
+#  plan_id               :integer
+#  connection_profile_id :integer
+#  created_at            :timestamp(6)     not null
+#  updated_at            :timestamp(6)     not null
+#  city                  :string(255)      not null
+#  state                 :string(255)      not null
+#  areacode              :integer
+#  anatel                :boolean
+#  agent_version         :string(255)
+#  pop                   :string(255)
+#  bras                  :string(255)
+#  osversion             :string(255)
+#
+
 class Probe < ActiveRecord::Base
   before_save :default_values
-  attr_accessible :address, :description, :ipaddress, :latitude, :longitude, :name, :pre_address, :status, :type, :city, :state, :connection_profile_id, :plan_id, :areacode, :agent_version, :anatel, :pop,:bras, :osversion
+  attr_accessible :address, :description, :ipaddress, :latitude, :longitude, :name, :pre_address, :status, :type, :city, :state, :connection_profile_id, :plan_id, :areacode, :agent_version, :anatel, :pop,:bras, :osversion, :modem
 
   #validacao
   validates :name, :presence => true, :length => {:maximum => 255, :minimum => 3}, :format => {:with => %r{^[0-9a-zA-Z][0-9a-zA-Z\-\_]+[0-9a-zA-Z]$}},
@@ -29,9 +57,18 @@ class Probe < ActiveRecord::Base
 
   #escopos de pesquisa
   scope :active, where(:status => 1)
-  scope :by_city, proc { |city| where(:city => city) }
-  scope :by_state, proc { |state| where(:state => state) }
-  scope :by_type, proc { |type| where(:type => type) }
+  scope :by_city, proc { |city| where(:city => city) unless city == '' }
+  scope :by_state, proc { |state| where(:state => state) unless state == '' or state[0] == '' }
+  scope :by_type, proc { |type| where(:type => type) unless type == '' or type[0] == '' }
+  scope :by_bras, proc { |bras| where(:bras => bras) unless bras == '' or bras[0] == '' }
+  scope :is_anatel, proc { |anatel| where(:anatel => anatel)}
+  scope :by_pop, proc { |pop|
+    where(:pop => pop) unless pop == '' or pop[0] == ''
+  }
+  scope :by_modem, proc { |modem| where(:modem => modem) unless modem == '' or modem[0] == '' }
+  scope :by_tech, lambda { |tech|
+    joins(:connection_profile).where('connection_profiles.name_id' => tech) unless tech == '' or tech[0] == ''
+  }
 
   def pretty_name
     "#{self.name} (#{self.ipaddress})"
@@ -119,8 +156,33 @@ class Probe < ActiveRecord::Base
     self.polling * 1000 >= min_wait
   end
 
+  def self.techs
+    arr = []
+    ConnectionProfile.all.each do |connprofile|
+      arr << connprofile.name_id
+    end
+    arr
+  end
+
+  def self.modems
+      $redis.smembers "Probe:Modems"
+  end
+
+  def self.pops
+      $redis.smembers "Probe:Pops"
+  end
+
+  def self.add_modem(modem)
+      $redis.sadd 'Probe:Modems', modem
+  end
+
+  def self.add_pop(pop)
+      $redis.sadd 'Probe:Pops', pop
+  end
+
   def self.types
-    [%w(Android android),
+    [%w(Todos \ ),
+     %w(Android android),
      %w(Linux linux)]
   end
 
@@ -234,4 +296,5 @@ class Probe < ActiveRecord::Base
   def default_values
     self.status ||= 1
   end
+
 end

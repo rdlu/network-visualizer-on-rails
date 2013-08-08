@@ -1,0 +1,19 @@
+<h2>Processos</h2>
+<div class="row-fluid">
+  <div class="span12">
+    <% if can? :create, User %>
+        <div class="navbar">
+          <div class="navbar-inner">
+            <div class="span5 offset7">
+              <%= link_to 'Novo Agendamento de Processo de Medição', new_proces_url, :class => "btn btn-primary btn-block" %>
+            </div>
+          </div>
+        </div>
+    <% end %>
+  </div>
+</div>
+<div class="row-fluid">
+  <div class="span12">
+    aqui tabela
+  </div>
+</div>

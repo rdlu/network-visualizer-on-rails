@@ -1,6 +1,5 @@
 # coding: utf-8
 class SchedulesController < ApplicationController
-  before_filter :authenticate_user!
   # GET /schedules
   # GET /schedules.json
   def index
@@ -110,9 +109,22 @@ class SchedulesController < ApplicationController
     render :layout => false
   end
 
+  # Windows Schedules
   def win
 	  respond_to do |format|
 		  format.xml
 	  end
+  end
+
+  # Android / Linux Schedules
+  def private_schedule
+      ipaddress = params[:ipaddress]
+      @probe = Probe.where(ipaddress: ipaddress).first
+
+      @schedules = Schedule.where(destination_id: @probe.id).all
+
+      respond_to do |format|
+          format.xml
+      end
   end
 end

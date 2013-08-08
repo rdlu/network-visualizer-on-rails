@@ -13,14 +13,14 @@
           <ul class="nav nav-tabs ">
             <li class="active"><a href="#form_1" data-toggle="tab">Formato 1</a></li>
             <li><a href="#form_2" data-toggle="tab">Formato 2</a></li>
-            <li><a href="#form_3" data-toggle="tab">Formato 3</a></li>
+            <li><a href="#form_3" data-toggle="tab">Performance</a></li>
           </ul>
           <div class="tab-content tab-content-border" style="min-height: 50px !important">
             <div class="tab-pane active" id="form_1">
               <%= render 'form1' %>
             </div>
             <div class="tab-pane" id="form_2"> <%= render 'form2' %> </div>
-            <div class="tab-pane" id="form_3"> 3</div>
+            <div class="tab-pane" id="form_3"> <%= render 'form3' %></div>
           </div>
         </div>
 
@@ -195,7 +195,7 @@
             var date_diff = (date_end - date_start) / day_in_milisecs;
 
 
-            if (report_type == 'graph' && date_diff > 3)
+            if (report_type == 'graph')
                 report_type = "dygraphs_bruto";
 
             if (source_id != '' && destination_id != '' && metric_id != '')
@@ -335,6 +335,9 @@
                     }
                 });
             } else {
+               //$('#accordion_forms').toggleClass();
+                $('#error_Ini2').html('Você deve escolher uma data.');
+                $('#error_Ini2').attr('style','display:block');
                 jQuery('#report2-add').prop('disabled', true);
             }
         });

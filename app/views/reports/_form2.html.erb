@@ -1,5 +1,6 @@
 <%= form_tag(eaq2_table_reports_path, :class => 'form-horizontal', :id => 'report-form2') do %>
-    <div class="row-fluid">
+    <div class="container-fluid">
+     <div class="row-fluid">
       <div class="span4">
         <div class="control-group">
           <label class="control-label"  for="type">Agente: </label>
@@ -30,10 +31,10 @@
             </select>
             </div>
         </div>
-        <div class="control-group"  >
+        <div class="control-group">
           <label  for="probe-cn" class="control-label">CN(Cód. Área):</label>
           <div id="op_cn" class="controls">
-            <select multiple="true"  name="cn[]" id="probe-cn" onchange="setAllOpt(this.value,'probe-cn')" >
+            <select multiple="true"  name="cn[]" id="probe-cn" onchange="setAllOpt(this.value,'probe-cn')"  >
               <option value="1">Todas</option>
               <option value="0">Sem DDD</option>
               <% Probe.cod_area.each do |cn|
@@ -44,22 +45,19 @@
           </div>
         </div>
       </div>
-      <div class="span3">
-        <div id="ag_types" class="control-group" style="float:right ;" disabled>
-          <label class="control-label" style="width: 60px !important" for="agent_type">Tipo: </label>
-          <!--label class="checkbox">
-                  <input type="checkbox" name="agent_type[]" value="mobile" checked="true"> Móvel<br/>
-                  <input type="checkbox" name="agent_type[]"  value="fixed"> Fixo
-            </label-->
-          <div class="controls" style="margin-left: 70px !important" >
-            <div style=" float: left;margin-left: 20px;width: 120px;"> <%= check_box_tag  "agent_type[]","mobile",{},:id =>"type_m",:readonly=>true,:disabled=>true %> Móvel </div>
-            <div style=" float: left;width: 60px;"> <%= check_box_tag  "agent_type[]","fixed",{},:id=>"type_f",:readonly=>true,:disabled=>true, :onclick=>'displayBRAS(this.checked)' %> Fixo </div>
+
+      <div class="span3_5">
+        <div id="ag_types" class="control-group" >
+          <label class="control-label" for="agent_type">Tipo: </label>
+          <div class="controls">
+            <div> <%= check_box_tag  "agent_type[]","mobile",{},:id =>"type_m" %> Móvel </div>
+            <div> <%= check_box_tag  "agent_type[]","fixed",{},:id=>"type_f", :onclick=>'displayBRAS(this.checked)' %> Fixo </div>
           </div>
         </div>
         <div  class="control-group">
-          <label class="control-label" style="width: 60px !important" for="bras">BRAS: </label>
-          <div class="controls" style="margin-left: 90px; display: block">
-            <select multiple="true"  name="bras[]" id="bras" onchange="setAllOpt(this.value,'bras')" >
+          <label class="control-label " for="bras">BRAS: </label>
+          <div class="controls">
+            <select multiple="true"  name="bras[]" id="bras" onchange="setAllOpt(this.value,'bras')" style="width: 155px">
               <option value="all">Todas</option>
               <% probeUniq = Array.new
                  probeUniq = Probe.all.uniq{|x| x.bras}
@@ -73,31 +71,26 @@
           </div>
         </div>
         <div class="control-group">
-          <label class="control-label" style="width: 60px !important" for="pop">POP: </label>
-          <div class="controls" style="margin-left: 90px">
-            <select multiple="true"  name="pop[]" id="pop" onchange="setAllOpt(this.value,'pop')" >
+          <label class="control-label" for="pop">POP: </label>
+          <div class="controls"  >
+            <select multiple="true"  name="pop[]" id="pop" onchange="setAllOpt(this.value,'pop')" style="width: 155px">
               <option value="all">Todas</option>
-              <% probeUniq = Array.new
-                 probeUniq = Probe.all.uniq{|x| x.pop}
-                 probeUniq.each do |p|
-                   unless p.pop.nil?
-              %>
-                      <option value="<%= p.pop %>"><%= p.pop %></option>
-                  <% end
-                     end %>
+              <%  Probe.pops.each do |p|  %>
+                  <option  value="<%= p %>"><%= p %></option>
+              <% end %>
             </select>
           </div>
         </div>
       </div>
 
 
-      <div id="op_col2"  class="span5" style="">
+      <div id="op_col2"  class="span4" >
         <div class="control-group">
           <%= label :date, :start2, "Início: ", :class => 'control-label' %>
           <div class="controls">
             <div class="input-prepend">
               <label for="date_start2" style="display: inline"><span id="icon2" class="add-on" style="margin-top: 1px;"><i class="icon-calendar"></i></span></label>
-              <%= text_field :date, :start, :class => 'input-small datepicker', :"data-date-format".to_sym => "dd/mm/yyyy", :id => 'date_start2'  %>
+              <%= text_field :date, :start, :class => 'input-small datepicker', :"data-date-format".to_sym => "dd/mm/yyyy", :id => 'date_start2',:value=> DateTime.current.strftime('%d/%m/%Y')  %>
             </div>
             <div class="input-prepend">
               <span class="add-on"><i class="icon-time"></i></span>
@@ -113,7 +106,7 @@
           <div class="controls">
             <div class="input-prepend">
               <label for="date_end2" style="display: inline"><span id="icon3" class="add-on" style="margin-top: 1px;"><i class="icon-calendar"></i></span></label>
-              <%= text_field :date, :end, :class => 'input-small datepicker', :"data-date-format".to_sym => "dd/mm/yyyy", :id => 'date_end2' %>
+              <%= text_field :date, :end, :class => 'input-small datepicker', :"data-date-format".to_sym => "dd/mm/yyyy", :id => 'date_end2',:value=> DateTime.current.strftime('%d/%m/%Y') %>
             </div>
             <div class="input-prepend">
               <span class="add-on"><i class="icon-time"></i></span>
@@ -131,6 +124,7 @@
         </div>
       </div>
 
+     </div>
     </div>
 <% end %>
 
@@ -152,20 +146,12 @@
   function displayTypes(value)
   {
      if(value == "linux"){
-        $('#type_m').attr('readonly',false);
-        $('#type_f').attr('readonly',false);
-        $('#type_m').attr('disabled',false);
-        $('#type_f').attr('disabled',false);
         if ($('#type_f').checked == undefined){
             $('#bras').attr('readonly',false);
             $('#bras').attr('disabled',false);
         }
 
      }else{
-         $('#type_m').attr('readonly','readonly');
-         $('#type_f').attr('readonly','readonly');
-         $('#type_m').attr('disabled',true);
-         $('#type_f').attr('disabled',true);
          $('#bras').attr('readonly',false);
          $('#bras').attr('disabled',false);
      }

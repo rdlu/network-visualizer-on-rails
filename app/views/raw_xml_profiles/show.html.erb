@@ -1,0 +1,80 @@
+<h2>Visualização do Perfil de Teste <%= @profile.name %></h2>
+<div class="row-fluid">
+  <div class="span7">
+<p>
+  <b>Nome:</b>
+  <%= @profile.name %>
+</p>
+<p>
+  <b>Método Configurado:</b>
+  <%= @profile.config_method %>
+</p>
+
+<p>
+  <b>Métricas:</b>
+  <% @profile.metrics.each do |metric| %>
+      <span class="label label-info etooltip" data-title="<%= metric.description %>"><%= metric.name %></span>
+  <% end %>
+</p>
+
+<p>
+    <b>Raw XML (Para debug):</b>
+    <%= @profile.config_parameters %>
+</p>
+<% unless @nameservers.nil? %>
+<h3>Nameservers configurados:</h3>
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Endereço</th>
+      <th>Nome</th>
+      <th>Interno/Externo</th>
+      <th>Primário/Secundário</th>
+      <th>VIP/Principal</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @nameservers.each do |ns| %>
+      <tr>
+        <td><%= ns.id %></td>
+        <td><%= ns.address %></td>
+        <td><%= ns.name %></td>
+        <td><%= ns.internal ? "Interno" : "Externo" %></td>
+        <td><%= ns.primary ? "Primário" : "Secundário" %></td>
+        <td><%= ns.vip ? "VIP" : "Principal" %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<% end %>
+
+<% unless @sites.nil? %>
+<h3>Sites a serem testados:</h3>
+<table class="table table-bordered table-striped">
+  <thead>
+    <th>ID</th>
+    <th>URL</th>
+    <th>VIP/Top100?</th>
+  </thead>
+  <tbody>
+    <% @sites.each do |s| %>
+      <tr>
+        <td><%= s.id %></td>
+        <td><%= s.url %></td>
+        <td><%= s.vip ? "VIP" : "Top100" %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<% end %>
+
+    <div class="control-group" >
+      <div class="controls">
+        <%= link_to 'Editar', edit_profile_path(@profile) , :class => "btn btn-primary btn-large " if can? :edit, Profile  %>
+        <%= link_to 'Voltar', profiles_path, :class => "btn btn-inverse btn-large " %>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -27,6 +27,9 @@ gem 'highcharts-rails', '~> 3.0.1'
 gem 'ruby-units'
 gem 'whenever', :require => false
 gem 'god'
+gem 'xml-simple'
+gem 'redis'
+gem 'hiredis'
 
 # To use ActiveModel has_secure_password
 gem 'bcrypt-ruby', '~> 3.0.0'
@@ -56,11 +59,15 @@ group :assets do
 end
 
 group :development do
+  gem 'quiet_assets'
   gem 'immigrant' #plugin do foreigner que regenera migrations com chaves estrangeiras em nivel de BD
   gem 'meta_request'
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'yaml_db'
+  gem 'lol_dba'
+  gem 'bullet'
+  gem 'annotate'
 
   # Debugging
   unless ENV["RM_INFO"]
@@ -77,6 +84,7 @@ group :test, :development do
 	gem 'rspec-rails'
 	gem 'fabrication'
 	gem 'faker'
+  gem 'railroady'
 end
 
 # Deploy with Capistrano
