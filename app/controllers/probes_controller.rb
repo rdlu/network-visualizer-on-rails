@@ -74,6 +74,7 @@ class ProbesController < ApplicationController
     if @probe.save
       Probe.add_pop @probe.pop unless @probe.pop.nil?
       Probe.add_modem @probe.modem unless @probe.modem.nil?
+      Probe.add_bras @probe.bras unless @probe.bras.nil?
       respond_to do |format|
         format.json { render :json => @probe.to_json, :status => 200 }
         format.xml  { head :ok }
@@ -96,6 +97,7 @@ class ProbesController < ApplicationController
       if @probe.update_attributes(params[:probe])
         Probe.add_pop @probe.pop unless @probe.pop.nil?
         Probe.add_modem @probe.modem unless @probe.modem.nil?
+        Probe.add_bras @probe.bras unless @probe.bras.nil?
         format.html { redirect_to probes_path, notice: 'Suas alterações foram salvas com sucesso.' }
         format.json { head :no_content }
       else
@@ -202,6 +204,12 @@ class ProbesController < ApplicationController
 
     respond_to do |format|
       format.json { render :json => destinations }
+    end
+  end
+
+  def bras
+    respond_to do |format|
+      format.json { render :json => Probe.brass }
     end
   end
 

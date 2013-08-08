@@ -172,12 +172,20 @@ class Probe < ActiveRecord::Base
       $redis.smembers "Probe:Pops"
   end
 
+  def self.brass
+    $redis.smembers "Probe:Brass"
+  end
+
   def self.add_modem(modem)
       $redis.sadd 'Probe:Modems', modem
   end
 
   def self.add_pop(pop)
       $redis.sadd 'Probe:Pops', pop
+  end
+
+  def self.add_bras(bras)
+    $redis.sadd 'Probe:Brass', bras
   end
 
   def self.types
