@@ -154,5 +154,13 @@
         });
     });
 
+    $('#probe_bras').typeahead({
+        source: <%=Probe.brass.to_json.html_safe %>
+    });
+
+    $('#probe_pop').typeahead({
+        source: <%=Probe.pops.to_json.html_safe %>
+    });
+
     $('.etooltip').tooltip();
 </script>
