@@ -1099,7 +1099,7 @@ class ReportsController < ApplicationController
             end
           end
       end
-      @report_results[:scm4][:download][plan.throughput_down] = media4
+      @report_results[:scm4][:download][plan.throughput_down]= media4
       @report_results[:scm4][:upload][plan.throughput_up] = mediaup4
       #
       # SMP10
@@ -1138,7 +1138,7 @@ class ReportsController < ApplicationController
 
         end
       end
-      @report_results[:scm5][:download][plan.throughput_down] = {:total_up => mediaup5, :total_down => media5}
+      @report_results[:scm5][:download][plan.throughput_down]= {:total_up => mediaup5, :total_down => media5}
       @report_results[:scm5][:upload][plan.throughput_up]= {:total_up => mediaup5up, :total_down => media5up}
       #
       # SMP11
@@ -1215,6 +1215,7 @@ class ReportsController < ApplicationController
       points != 0? @report_results[:scm9][:download][plan.throughput_down] = ((total_points/points)*100).to_f.round(2) : @report_results[:scm9][:download][plan.throughput_down] = 0.0
 
     end #fim for plan
+
 
     respond_to do |format|
       format.html { render :layout => false }
