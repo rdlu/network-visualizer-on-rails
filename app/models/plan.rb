@@ -1,4 +1,18 @@
 # coding: utf-8
+# == Schema Information
+#
+# Table name: plans
+#
+#  id                    :integer          not null, primary key
+#  name                  :string(255)
+#  description           :text
+#  throughput_down       :integer
+#  connection_profile_id :integer
+#  created_at            :timestamp(6)     not null
+#  updated_at            :timestamp(6)     not null
+#  throughput_up         :integer
+#
+
 class Plan < ActiveRecord::Base
   attr_accessible :description, :name, :throughput_down, :throughput_up, :connection_profile_id
 

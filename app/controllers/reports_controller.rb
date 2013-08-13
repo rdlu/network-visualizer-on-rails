@@ -1931,6 +1931,9 @@ class ReportsController < ApplicationController
       timestamp = report.xpath("report/timestamp").children.to_s
       agent_type = report.xpath("report/agent_type").children.to_s
 
+      #fallback para versoes antigas
+      uuid = uuid.empty? ? SecureRandom.uuid : uuid
+
       case agent_type
       when /windows/i
           # KPI

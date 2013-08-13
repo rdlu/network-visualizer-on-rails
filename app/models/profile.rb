@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: profiles
+#
+#  id                    :integer          not null, primary key
+#  name                  :string(255)
+#  config_parameters     :text
+#  config_method         :string(255)
+#  connection_profile_id :integer
+#  created_at            :timestamp(6)     not null
+#  updated_at            :timestamp(6)     not null
+#
+
 require 'xmlsimple'
 
 class Profile < ActiveRecord::Base

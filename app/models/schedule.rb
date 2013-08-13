@@ -1,4 +1,20 @@
 # coding: utf-8
+# == Schema Information
+#
+# Table name: schedules
+#
+#  id             :integer          not null, primary key
+#  start          :timestamp(6)
+#  end            :timestamp(6)
+#  polling        :integer
+#  status         :string(255)
+#  created_at     :timestamp(6)     not null
+#  updated_at     :timestamp(6)     not null
+#  uuid           :string
+#  destination_id :integer
+#  source_id      :integer
+#
+
 class Schedule < ActiveRecord::Base
   before_save :default_values
   attr_accessible :end, :polling, :start, :status, :destination_id, :source_id, :profile_ids

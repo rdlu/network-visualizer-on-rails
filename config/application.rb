@@ -92,6 +92,7 @@ end
 
 #mokey patch para o has_scope aceitar array ou string
 module HasScope
+  v, $VERBOSE = $VERBOSE, nil
   ALLOWED_TYPES = {
       :array   => [ Array ],
       :hash    => [ Hash ],
@@ -99,4 +100,5 @@ module HasScope
       :default => [ String, Numeric ],
       :array_or_string => [String,Array]
   }
+  $VERBOSE = v
 end

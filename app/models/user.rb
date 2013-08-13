@@ -1,4 +1,28 @@
 # coding: utf-8
+# == Schema Information
+#
+# Table name: users
+#
+#  id                     :integer          not null, primary key
+#  email                  :string(255)      default(""), not null
+#  encrypted_password     :string(255)      default(""), not null
+#  reset_password_token   :string(255)
+#  reset_password_sent_at :timestamp(6)
+#  remember_created_at    :timestamp(6)
+#  sign_in_count          :integer          default(0)
+#  current_sign_in_at     :timestamp(6)
+#  last_sign_in_at        :timestamp(6)
+#  current_sign_in_ip     :string(255)
+#  last_sign_in_ip        :string(255)
+#  confirmation_token     :string(255)
+#  confirmed_at           :timestamp(6)
+#  confirmation_sent_at   :timestamp(6)
+#  unconfirmed_email      :string(255)
+#  created_at             :timestamp(6)     not null
+#  updated_at             :timestamp(6)     not null
+#  adm_block              :boolean          default(TRUE)
+#
+
 class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :token_authenticatable, :confirmable,

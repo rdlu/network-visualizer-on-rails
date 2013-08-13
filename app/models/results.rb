@@ -1,3 +1,24 @@
+# == Schema Information
+#
+# Table name: results
+#
+#  id            :integer          not null, primary key
+#  schedule_id   :integer
+#  metric_id     :integer
+#  schedule_uuid :string
+#  uuid          :string
+#  metric_name   :string(255)
+#  timestamp     :timestamp(6)
+#  dsavg         :float
+#  sdavg         :float
+#  dsmin         :float
+#  sdmin         :float
+#  dsmax         :float
+#  sdmax         :float
+#  created_at    :timestamp(6)     not null
+#  updated_at    :timestamp(6)     not null
+#
+
 class Results < ActiveRecord::Base
   belongs_to :schedule
   belongs_to :metric

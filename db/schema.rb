@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130802172605) do
+ActiveRecord::Schema.define(:version => 20130806181006) do
 
   create_table "compliances", :force => true do |t|
     t.integer   "schedule_id"
@@ -121,6 +121,10 @@ ActiveRecord::Schema.define(:version => 20130802172605) do
     t.timestamp "updated_at",  :limit => 6, :null => false
   end
 
+  add_index "evaluations", ["profile_id", "schedule_id"], :name => "index_evaluations_on_profile_id_and_schedule_id"
+  add_index "evaluations", ["profile_id"], :name => "index_evaluations_on_profile_id"
+  add_index "evaluations", ["schedule_id"], :name => "index_evaluations_on_schedule_id"
+
   create_table "kpis", :force => true do |t|
     t.string    "schedule_uuid",    :limit => nil
     t.string    "uuid",             :limit => nil
@@ -147,6 +151,7 @@ ActiveRecord::Schema.define(:version => 20130802172605) do
   end
 
   add_index "kpis", ["destination_id"], :name => "index_kpis_on_destination_id"
+  add_index "kpis", ["schedule_id"], :name => "index_kpis_on_schedule_id"
   add_index "kpis", ["source_id"], :name => "index_kpis_on_source_id"
   add_index "kpis", ["uuid"], :name => "index_kpis_on_uuid"
 
@@ -188,6 +193,9 @@ ActiveRecord::Schema.define(:version => 20130802172605) do
     t.integer "profile_id"
   end
 
+  add_index "metrics_profiles", ["metric_id", "profile_id"], :name => "index_metrics_profiles_on_metric_id_and_profile_id"
+  add_index "metrics_profiles", ["profile_id", "metric_id"], :name => "index_metrics_profiles_on_profile_id_and_metric_id"
+
   create_table "nameservers", :force => true do |t|
     t.string    "address"
     t.string    "name"
@@ -208,7 +216,15 @@ ActiveRecord::Schema.define(:version => 20130802172605) do
     t.integer   "throughput_up"
   end
 
+  add_index "plans", ["connection_profile_id"], :name => "index_plans_on_connection_profile_id"
   add_index "plans", ["name"], :name => "index_plans_on_name", :unique => true
+
+  create_table "probe_version", :id => false, :force => true do |t|
+    t.string    "probe_name"
+    t.string    "probe_type"
+    t.string    "version"
+    t.timestamp "timestamp",  :limit => 6
+  end
 
   create_table "probes", :force => true do |t|
     t.string    "name",                                                      :null => false
@@ -227,16 +243,18 @@ ActiveRecord::Schema.define(:version => 20130802172605) do
     t.string    "city",                                                      :null => false
     t.string    "state",                                                     :null => false
     t.integer   "areacode"
-    t.string    "agent_version"
     t.boolean   "anatel"
+    t.string    "agent_version"
     t.string    "pop"
     t.string    "bras"
     t.string    "osversion"
     t.string    "modem"
   end
 
+  add_index "probes", ["connection_profile_id"], :name => "index_probes_on_connection_profile_id"
   add_index "probes", ["ipaddress"], :name => "index_probes_on_ipaddress", :unique => true
   add_index "probes", ["name"], :name => "index_probes_on_name", :unique => true
+  add_index "probes", ["plan_id"], :name => "index_probes_on_plan_id"
 
   create_table "profiles", :force => true do |t|
     t.string    "name"
@@ -246,6 +264,8 @@ ActiveRecord::Schema.define(:version => 20130802172605) do
     t.timestamp "created_at",            :limit => 6, :null => false
     t.timestamp "updated_at",            :limit => 6, :null => false
   end
+
+  add_index "profiles", ["connection_profile_id"], :name => "index_profiles_on_connection_profile_id"
 
   create_table "reports", :force => true do |t|
     t.string   "user"
@@ -289,6 +309,9 @@ ActiveRecord::Schema.define(:version => 20130802172605) do
     t.integer "user_id"
   end
 
+  add_index "roles_users", ["role_id", "user_id"], :name => "index_roles_users_on_role_id_and_user_id"
+  add_index "roles_users", ["user_id", "role_id"], :name => "index_roles_users_on_user_id_and_role_id"
+
   create_table "schedules", :force => true do |t|
     t.timestamp "start",          :limit => 6
     t.timestamp "end",            :limit => 6
@@ -301,6 +324,9 @@ ActiveRecord::Schema.define(:version => 20130802172605) do
     t.integer   "source_id"
   end
 
+  add_index "schedules", ["destination_id", "source_id"], :name => "index_schedules_on_destination_id_and_source_id"
+  add_index "schedules", ["destination_id"], :name => "index_schedules_on_destination_id"
+  add_index "schedules", ["source_id"], :name => "index_schedules_on_source_id"
   add_index "schedules", ["uuid"], :name => "index_schedules_on_uuid"
 
   create_table "sites", :force => true do |t|
@@ -325,6 +351,9 @@ ActiveRecord::Schema.define(:version => 20130802172605) do
     t.string    "description"
     t.integer   "base_year"
   end
+
+  add_index "thresholds", ["connection_profile_id"], :name => "index_thresholds_on_connection_profile_id"
+  add_index "thresholds", ["metric_id"], :name => "index_thresholds_on_metric_id"
 
   create_table "users", :force => true do |t|
     t.string    "email",                               :default => "",   :null => false

@@ -1,4 +1,32 @@
 # coding: utf-8
+# == Schema Information
+#
+# Table name: probes
+#
+#  id                    :integer          not null, primary key
+#  name                  :string(255)      not null
+#  ipaddress             :string(255)      not null
+#  description           :text
+#  status                :integer          default(0), not null
+#  type                  :string(255)      default("android")
+#  address               :text
+#  pre_address           :text
+#  latitude              :float            default(0.0)
+#  longitude             :float            default(0.0)
+#  plan_id               :integer
+#  connection_profile_id :integer
+#  created_at            :timestamp(6)     not null
+#  updated_at            :timestamp(6)     not null
+#  city                  :string(255)      not null
+#  state                 :string(255)      not null
+#  areacode              :integer
+#  anatel                :boolean
+#  agent_version         :string(255)
+#  pop                   :string(255)
+#  bras                  :string(255)
+#  osversion             :string(255)
+#
+
 class Probe < ActiveRecord::Base
   before_save :default_values
   attr_accessible :address, :description, :ipaddress, :latitude, :longitude, :name, :pre_address, :status, :type, :city, :state, :connection_profile_id, :plan_id, :areacode, :agent_version, :anatel, :pop,:bras, :osversion, :modem
@@ -144,12 +172,20 @@ class Probe < ActiveRecord::Base
       $redis.smembers "Probe:Pops"
   end
 
+  def self.brass
+    $redis.smembers "Probe:Brass"
+  end
+
   def self.add_modem(modem)
       $redis.sadd 'Probe:Modems', modem
   end
 
   def self.add_pop(pop)
       $redis.sadd 'Probe:Pops', pop
+  end
+
+  def self.add_bras(bras)
+    $redis.sadd 'Probe:Brass', bras
   end
 
   def self.types

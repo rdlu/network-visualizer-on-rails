@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.13'
+gem 'rails', '3.2.14'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -26,7 +26,6 @@ gem 'airbrake'
 gem 'highcharts-rails', '~> 3.0.1'
 gem 'ruby-units'
 gem 'whenever', :require => false
-gem 'god'
 gem 'xml-simple'
 gem 'redis'
 gem 'hiredis'
@@ -65,6 +64,9 @@ group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'yaml_db'
+  gem 'lol_dba'
+  gem 'bullet'
+  gem 'annotate'
 
   # Debugging
   unless ENV["RM_INFO"]
@@ -81,6 +83,7 @@ group :test, :development do
 	gem 'rspec-rails'
 	gem 'fabrication'
 	gem 'faker'
+  gem 'railroady'
 end
 
 # Deploy with Capistrano
