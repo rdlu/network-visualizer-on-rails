@@ -91,19 +91,24 @@
       <div class="span12" style="margin-top: 10px">
         <div class="span5">
           <div class="control-group">
-            <span class="control-label" >DNS:</span>
+            <span class="control-label" >Métricas:</span>
             <div class="controls">
-              <select multiple="true" name="metrics[]" >
-                <% Metric.all.each do |m|
-                    if m.metric_type == "dns" || m.metric_type == "dns_details"
-                %>
-                    <option value="<%= m.id %>"><%= m.name %></option>
-                <% end
-                end %>
+              <select id="metrics" name="metrics[]">
+                <% Metric.all.each do |m| %>
+                    <option value="<%= m.id %>,<%= m.metric_type %>"><%= m.name %></option>
+                <% end %>
               </select>
             </div>
           </div>
           <div class="control-group">
+            <label class="control-label" for="horario">Horário: </label>
+            <div class="controls">
+              <%= select :horario,'',[['Últimas 24h','24'],["Últimas 48h",'48'],['Últimas 72h','72']]%>
+            </div>
+          </div>
+        </div>
+        <div class="span4">
+          <div id="sites" class="control-group" style="display: none">
             <span class="control-label" >Sites:</span>
             <div class="controls">
               <select multiple="true" name="sites[]">
@@ -114,31 +119,10 @@
               </select>
             </div>
           </div>
-        </div>
-        <div class="span4">
-          <div class="control-group">
-            <span class="control-label" >Métricas:</span>
-            <div class="controls">
-              <select multiple="true" name="metrics[]">
-                <% Metric.all.each do |m|
-                    if m.metric_type == "active"
-                %>
-                    <option value="<%= m.id %>"><%= m.name %></option>
-                <% end
-                end %>
-              </select>
-            </div>
-          </div>
-          <div class="control-group">
+          <div id="variation" class="control-group" style="display:block">
             <span class="control-label" >Variação Métrica:</span>
             <div class="controls">
               <%= select :variation,'',[["Média","avg"],["Mínimo","min"],["Máximo","max"]] %>
-            </div>
-          </div>
-          <div class="control-group">
-            <label class="control-label" for="horario">Horário: </label>
-            <div class="controls">
-              <%= select :horario,'',[['Últimas 24h','24'],["Últimas 48h",'48'],['Últimas 72h','72']]%>
             </div>
           </div>
         </div>
@@ -158,9 +142,27 @@
 <% end %>
 
 <script>
+    jQuery('#metrics').change(function (){
+         var value = $(this).val();
+         var type = value.split(',')[1];
+
+         if (type == "web_load"){
+            $('#sites').attr('style','display:block');
+            $('#variation').attr('style','display:none');
+         }else if (type == "active"){
+             $('#sites').attr('style','display:none');
+             $('#variation').attr('style','display:block');
+             }else{
+             $('#sites').attr('style','display:none');
+             $('#variation').attr('style','display:none');
+         }
+
+
+    });
+
 
     jQuery('#by_state').change(function () {
-          filter_all();}
+                filter_all();}
     );
     jQuery('#by_pop').change(function () {
                 filter_all();}
