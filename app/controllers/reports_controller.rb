@@ -1657,7 +1657,18 @@ class ReportsController < ApplicationController
 
   #RELATORIO DE PERFORMANCE
   def performance
-    @metrics = params[:metrics]
+    @metric_id = params[:metrics].first
+
+    if params[:destination][:id].nil? && params[:source][:id].nil?
+      @probes = apply_scopes(Probe).order(:name).all
+    else if params[:source][:id].nil?
+           @probes
+         else
+
+         end
+    end
+
+
 
     respond_to do |format|
       format.html { render :layout => false }
