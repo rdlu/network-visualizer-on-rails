@@ -69,6 +69,7 @@ class ReportsController < ApplicationController
     @from = DateTime.parse(params[:date][:start])
     @to = DateTime.parse(params[:date][:end])
     @months = @from.all_months_until @to
+    @months[0] = Date.parse(@from.to_s)
     @type = params[:agent] # android or linux
     @agent_type = params[:agent_type] # fixed or mobile, if linux
     @states = params[:state]
@@ -583,7 +584,7 @@ class ReportsController < ApplicationController
     #  SCM4
     #
     @medians_scm4 = Median.
-        where('start_timestamp >= ?', Time.parse(@month).beginning_of_month).
+        where('start_timestamp >= ?', Time.parse(@month)).
         where('end_timestamp <= ?', Time.parse(@month).end_of_month).
         where(:schedule_id => fixed_schedules).
         where(:threshold_id => 1).
@@ -592,7 +593,7 @@ class ReportsController < ApplicationController
     # SMP10
     #
     @medians_smp10 = Median.
-        where('start_timestamp >= ?', Time.parse(@month).beginning_of_month).
+        where('start_timestamp >= ?', Time.parse(@month)).
         where('end_timestamp <= ?', Time.parse(@month).end_of_month).
         where(:schedule_id => mobile_schedules).
         where(:threshold_id => 1).
@@ -601,7 +602,7 @@ class ReportsController < ApplicationController
     # SCM5
     #
     @medians_scm5 = Median.
-        where('start_timestamp >= ?', Time.parse(@month).beginning_of_month).
+        where('start_timestamp >= ?', Time.parse(@month)).
         where('end_timestamp <= ?', Time.parse(@month).end_of_month).
         where(:schedule_id => fixed_schedules).
         where(:threshold_id => 2).
@@ -611,7 +612,7 @@ class ReportsController < ApplicationController
     # SMP11
     #
     @medians_smp11 = Median.
-        where('start_timestamp >= ?', Time.parse(@month).beginning_of_month).
+        where('start_timestamp >= ?', Time.parse(@month)).
         where('end_timestamp <= ?', Time.parse(@month).end_of_month).
         where(:schedule_id => mobile_schedules).
         where(:threshold_id => 2).
@@ -621,7 +622,7 @@ class ReportsController < ApplicationController
     # SCM6
     #
     @medians_scm6 = Median.
-        where('start_timestamp >= ?', Time.parse(@month).beginning_of_month).
+        where('start_timestamp >= ?', Time.parse(@month)).
         where('end_timestamp <= ?', Time.parse(@month).end_of_month).
         where(:schedule_id => all_schedules).
         where(:threshold_id => 3).
@@ -631,7 +632,7 @@ class ReportsController < ApplicationController
     # SCM7
     #
     @medians_scm7 = Median.
-        where('start_timestamp >= ?', Time.parse(@month).beginning_of_month).
+        where('start_timestamp >= ?', Time.parse(@month)).
         where('end_timestamp <= ?', Time.parse(@month).end_of_month).
         where(:schedule_id => all_schedules).
         where(:threshold_id => 4).
@@ -641,7 +642,7 @@ class ReportsController < ApplicationController
     # SCM8
     #
     @medians_scm8 = Median.
-        where('start_timestamp >= ?', Time.parse(@month).beginning_of_month).
+        where('start_timestamp >= ?', Time.parse(@month)).
         where('end_timestamp <= ?', Time.parse(@month).end_of_month).
         where(:schedule_id => all_schedules).
         where(:threshold_id => 5).
@@ -651,7 +652,7 @@ class ReportsController < ApplicationController
     # SCM9
     #
     @medians_scm9 = Median.
-        where('start_timestamp >= ?', Time.parse(@month).beginning_of_month).
+        where('start_timestamp >= ?', Time.parse(@month)).
         where('end_timestamp <= ?', Time.parse(@month).end_of_month).
         where(:schedule_id => all_schedules).
         where(:threshold_id => 6).
@@ -668,7 +669,7 @@ class ReportsController < ApplicationController
       end_date = Date.current.day
     end
 
-    (1..end_date).each do |day|
+    (Date.parse(@month).day..end_date).each do |day|
       beginning_of_day = DateTime.parse(@month).change(:day => day).beginning_of_day
       end_of_day = DateTime.parse(@month).change(:day => day).end_of_day
 
