@@ -1,3 +1,5 @@
+require 'open-uri'
+
 class UpdateTopSites
   def self.perform
     Yell.new(:gelf, :facility => 'netmetric-jobs').info "Updating Top Sites"
