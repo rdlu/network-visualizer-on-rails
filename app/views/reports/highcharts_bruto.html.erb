@@ -103,6 +103,9 @@
                                 },
                                 error: function (status, msg, error) {
                                     //graphReport.objects[metric].tooltip.refresh([evt.currentTarget]);
+                                },
+                                headers: {
+                                    'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
                                 }
                             });
                         }

@@ -189,6 +189,9 @@
                 html = html + "<option value='"+data[cdn]+"'>"+data[cdn]+"</option>";
              }
              $('#probe-cn').html(html);
+          },
+          headers: {
+              'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
           }
       });
 
