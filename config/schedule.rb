@@ -22,6 +22,8 @@ set :output, {:error => '/usr/share/mom-rails/log/cron_error.log', :standard => 
 set :job_template, "bash -i -c ':job'"
 env :PATH, ENV['PATH']
 
+job_type :restart, "cd :path && touch tmp/restart.txt && echo \"MoM reiniciado `date`\" >> log/cron_status.log"
+
 every 5.minutes do
   runner 'VerifyStatus.perform'
 end
@@ -36,4 +38,8 @@ end
 
 every 1.day, :at => '2:00 am' do
   runner 'CalculateCompliances.perform'
+end
+
+every 3.hour do
+  restart 's'
 end
