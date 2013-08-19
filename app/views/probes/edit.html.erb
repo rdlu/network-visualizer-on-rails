@@ -150,7 +150,10 @@
                     $("#probe_plan_id").append('<option value=\"'+plan.id+"\">"+plan.name+" ("+plan.throughputDown+"/"+plan.throughputUp+")</option>")
                 });
             },
-            dataType: 'json'
+            dataType: 'json',
+            headers: {
+                'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+            }
         });
     });
 

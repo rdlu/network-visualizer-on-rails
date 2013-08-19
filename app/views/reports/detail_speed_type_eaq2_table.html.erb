@@ -46,6 +46,9 @@
                         , pop:<%= @pop.to_json.html_safe %>, bras: <%= @bras.to_json.html_safe %>  },
                     success: function(data){
                         $('#detail_agent2-<%= @id %>').html(data);
+                    },
+                    headers: {
+                        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
                     }
                 });
             }

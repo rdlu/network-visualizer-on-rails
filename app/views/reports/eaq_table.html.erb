@@ -69,6 +69,9 @@
                   },
                   success: function(data){
                       $('#detail'+id).html(data);
+                  },
+                  headers: {
+                      'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
                   }
               });
           }

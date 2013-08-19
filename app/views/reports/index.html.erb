@@ -102,7 +102,10 @@
                             jQuery('#metric_id').html('').append($("<option />").val('').text('Selecione as sonda de origem e de destino primeiro')).prop('disabled', true);
                         }
                     },
-                    dataType: 'json'
+                    dataType: 'json',
+                    headers: {
+                        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                    }
                 });
             else {
                 jQuery('#source_id').html('').append($("<option />").val('').text('Selecione a sonda de destino primeiro')).prop('disabled', true).trigger('change');
@@ -160,7 +163,10 @@
                         jQuery('#metric_id').html('').append($("<option />").val('tb_invalid').text('Tipo inválido')).prop('disabled', true);
                         jQuery("#metric_id").trigger('change');
                     },
-                    dataType: 'json'
+                    dataType: 'json',
+                    headers: {
+                        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                    }
                 });
             else if (action == '') {
                 jQuery('#metric_id').html('').append($("<option />").val('tb_invalid').text('Tabela Anatel')).prop('disabled', false);
@@ -255,7 +261,10 @@
                     },
                     //dataType: 'json',
                     data: $(this).serialize(),
-                    method: 'post'
+                    method: 'post',
+                    headers: {
+                        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                    }
                 });
             else {
                 jQuery('#report-add').prop('disabled', true);
@@ -332,6 +341,9 @@
                             $("#box-" + from).remove();
                             jQuery('#graphs-area').prepend(result);
                         }
+                    },
+                    headers: {
+                        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
                     }
                 });
             } else {
@@ -840,6 +852,9 @@
                                             },
                                             error: function (status, msg, error) {
                                                 //graphReport.objects[metric].tooltip.refresh([evt.currentTarget]);
+                                            },
+                                            headers: {
+                                                'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
                                             }
                                         });
                                     }
@@ -860,6 +875,9 @@
          alert(graph);
          $.ajax({
          type: 'POST',
+         headers: {
+         'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+         },
          url: "
         <%= reports_csv_bruto_url '' %>"+graph.destination.name+'-'+graph.metric.plugin+'-'+graph.range.start.format("YYYYMMDD_HHmmss")+'-'+graph.range.end.format("YYYYMMDD_HHmmss")+'.csv',
          data: {
