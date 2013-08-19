@@ -18,7 +18,7 @@
        else
          end_date = Date.current.day
     end
-     (1..end_date).each do |day|
+     (Date.parse(@month).day..end_date).each do |day|
        result = ""
        uid = SecureRandom.uuid %>
 

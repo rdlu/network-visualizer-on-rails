@@ -29,74 +29,89 @@
   <!-- DOWNLOAD -->
   <tr>
     <td rowspan="<%= Plan.all.size %>" style="padding-top: 50px; text-align: center"> Download </td>
-    <%  Plan.all.each do |plan| %>
-        <td style="text-align: center"> <%= plan.throughput_down %></td>
-        <% Threshold.all.each do |threshold|
-           case threshold.id
-            when 1
-        %>
-            <td style="text-align: center">
-              <% unless @report_results[:scm4][:download][plan.throughput_down].empty?  %>
-                <%= "<span style=\"color:#{@report_results[:scm4][:download][plan.throughput_down].instance_eval { reduce(:+) / size.to_f }.to_f * 100 >= threshold.compliance_level.to_f * 100 ? 'green':'red'}\">#{"%.2f" % [@report_results[:scm4][:download][plan.throughput_down].instance_eval { reduce(:+) / size.to_f }.to_f * 100]}%</span>".html_safe %>
-              <% else %>
-                  Sem dados
-              <% end %>
-            </td>
+    <%  Plan.all.each do |plan|  %>
+      <td style="text-align: center"> <%= plan.throughput_down %></td>
+     <% unless (@report_results[:scm4][:download][plan.throughput_down].empty? && @report_results[:scm4][:upload][plan.throughput_up].empty? &&
+              @report_results[:smp10][:download][plan.throughput_down].empty? && @report_results[:smp10][:upload][plan.throughput_up].empty? &&
+              @report_results[:scm5][:download][plan.throughput_down][:total_down].empty? &&  @report_results[:scm5][:download][plan.throughput_down][:total_up].empty? &&
+              @report_results[:scm5][:upload][plan.throughput_up][:total_down].empty? &&  @report_results[:scm5][:upload][plan.throughput_up][:total_up].empty? &&
+              @report_results[:smp11][:download][plan.throughput_down][:total_down].empty? &&  @report_results[:smp11][:download][plan.throughput_down][:total_up].empty? &&
+              @report_results[:smp11][:upload][plan.throughput_up][:total_down].empty? &&  @report_results[:smp11][:upload][plan.throughput_up][:total_up].empty? &&
+              @report_results[:scm6][:download][plan.throughput_down] == 0.0 &&
+              @report_results[:scm7][:download][plan.throughput_down]== 0.0 &&
+              @report_results[:scm8][:download][plan.throughput_down] == 0.0 &&
+              @report_results[:scm9][:download][plan.throughput_down]== 0.0 ) %>
 
-            <td style="text-align: center">
-              <% unless @report_results[:smp10][:download][plan.throughput_down].empty? %>
-                <%= "<span style=\"color:#{@report_results[:smp10][:download][plan.throughput_down].instance_eval { reduce(:+) / size.to_f }.to_f * 100 >= threshold.compliance_level.to_f * 100 ? 'green':'red'}\">#{"%.2f" % [@report_results[:smp10][:download][plan.throughput_down].instance_eval { reduce(:+) / size.to_f }.to_f * 100]}%</span>".html_safe %>
-              <% else %>
-                  Sem dados
-              <% end %>
-            </td>
-        <% when 2 %>
-            <td style="text-align: center">
-              <% unless @report_results[:scm5][:download][plan.throughput_down][:total_down].empty? || @report_results[:scm5][:download][plan.throughput_down][:total_up].empty? %>
-                 <%= "<span style=\"color:#{if @report_results[:scm5][:download][plan.throughput_down][:total_down].instance_eval { reduce(:+) / size.to_f }.to_f * 100  >= (threshold.compliance_level.to_f * 100) && @report_results[:scm5][:download][plan.throughput_down][:total_up].instance_eval { reduce(:+) / size.to_f }.to_f * 100 >= (threshold.compliance_level.to_f * 100)
-                                               'green'
-                                             else 'red'
-                                             end
-                  }\">#{"%.2f" % [@report_results[:scm5][:download][plan.throughput_down][:total_down].instance_eval { reduce(:+) / size.to_f }.to_f * 100] }%/#{"%.2f" % [@report_results[:scm5][:download][plan.throughput_down][:total_up].instance_eval { reduce(:+) / size.to_f }.round(2) * 100]}%</span>".html_safe %>
-              <% else %>
-                  Sem dados
-              <% end %>
-            </td>
-            <td style="text-align: center">
-              <% unless @report_results[:smp11][:download][plan.throughput_down][:total_down].empty?  || @report_results[:smp11][:download][plan.throughput_down][:total_up].empty? %>
-                 <%= "<span style=\"color:#{if @report_results[:smp11][:download][plan.throughput_down][:total_down].instance_eval { reduce(:+) / size.to_f }.to_f * 100 >= (threshold.compliance_level.to_f * 100) &&  @report_results[:smp11][:download][plan.throughput_down][:total_up].instance_eval { reduce(:+) / size.to_f }.to_f * 100 >= (threshold.compliance_level.to_f * 100)
-                                               'green'
-                                             else 'red'
-                                             end
-                  }\">  #{"%.2f" % [@report_results[:smp11][:download][plan.throughput_down][:total_down].instance_eval { reduce(:+) / size.to_f }.to_f * 100]}%/#{ "%.2f" % [ @report_results[:smp11][:download][plan.throughput_down][:total_up].instance_eval { reduce(:+) / size.to_f }.to_f * 100]}%</span>".html_safe %>
-              <% else %>
-                  Sem dados
-              <% end %>
-            </td>
-        <% when 3 %>
-                <td style="text-align: center">
-                   <%= "<span style=\"color:#{@report_results[:scm6][:download][plan.throughput_down] >= threshold.compliance_level.to_f * 100 ? 'green':'red'}\">#{@report_results[:scm6][:download][plan.throughput_down]}%</span>".html_safe %>
+                <% Threshold.all.each do |threshold|
+                   case threshold.id
+                    when 1
+                %>
+                    <td style="text-align: center">
+                      <% unless @report_results[:scm4][:download][plan.throughput_down].empty?  %>
+                        <%= "<span style=\"color:#{@report_results[:scm4][:download][plan.throughput_down].instance_eval { reduce(:+) / size.to_f }.to_f * 100 >= threshold.compliance_level.to_f * 100 ? 'green':'red'}\">#{"%.2f" % [@report_results[:scm4][:download][plan.throughput_down].instance_eval { reduce(:+) / size.to_f }.to_f * 100]}%</span>".html_safe %>
+                      <% else %>
+                          Sem dados
+                      <% end %>
+                    </td>
 
-                </td>
-        <% when 4 %>
-                <td style="text-align: center">
-                  <%= "<span style=\"color:#{@report_results[:scm7][:download][plan.throughput_down] >= threshold.compliance_level.to_f * 100 ? 'green':'red'}\">#{@report_results[:scm7][:download][plan.throughput_down]}%</span>".html_safe %>
+                    <td style="text-align: center">
+                      <% unless @report_results[:smp10][:download][plan.throughput_down].empty? %>
+                        <%= "<span style=\"color:#{@report_results[:smp10][:download][plan.throughput_down].instance_eval { reduce(:+) / size.to_f }.to_f * 100 >= threshold.compliance_level.to_f * 100 ? 'green':'red'}\">#{"%.2f" % [@report_results[:smp10][:download][plan.throughput_down].instance_eval { reduce(:+) / size.to_f }.to_f * 100]}%</span>".html_safe %>
+                      <% else %>
+                          Sem dados
+                      <% end %>
+                    </td>
+                <% when 2 %>
+                    <td style="text-align: center">
+                      <% unless @report_results[:scm5][:download][plan.throughput_down][:total_down].empty? || @report_results[:scm5][:download][plan.throughput_down][:total_up].empty? %>
+                         <%= "<span style=\"color:#{if @report_results[:scm5][:download][plan.throughput_down][:total_down].instance_eval { reduce(:+) / size.to_f }.to_f * 100  >= (threshold.compliance_level.to_f * 100) && @report_results[:scm5][:download][plan.throughput_down][:total_up].instance_eval { reduce(:+) / size.to_f }.to_f * 100 >= (threshold.compliance_level.to_f * 100)
+                                                       'green'
+                                                     else 'red'
+                                                     end
+                          }\">#{"%.2f" % [@report_results[:scm5][:download][plan.throughput_down][:total_down].instance_eval { reduce(:+) / size.to_f }.to_f * 100] }%/#{"%.2f" % [@report_results[:scm5][:download][plan.throughput_down][:total_up].instance_eval { reduce(:+) / size.to_f }.round(2) * 100]}%</span>".html_safe %>
+                      <% else %>
+                          Sem dados
+                      <% end %>
+                    </td>
+                    <td style="text-align: center">
+                      <% unless @report_results[:smp11][:download][plan.throughput_down][:total_down].empty?  || @report_results[:smp11][:download][plan.throughput_down][:total_up].empty? %>
+                         <%= "<span style=\"color:#{if @report_results[:smp11][:download][plan.throughput_down][:total_down].instance_eval { reduce(:+) / size.to_f }.to_f * 100 >= (threshold.compliance_level.to_f * 100) &&  @report_results[:smp11][:download][plan.throughput_down][:total_up].instance_eval { reduce(:+) / size.to_f }.to_f * 100 >= (threshold.compliance_level.to_f * 100)
+                                                       'green'
+                                                     else 'red'
+                                                     end
+                          }\">  #{"%.2f" % [@report_results[:smp11][:download][plan.throughput_down][:total_down].instance_eval { reduce(:+) / size.to_f }.to_f * 100]}%/#{ "%.2f" % [ @report_results[:smp11][:download][plan.throughput_down][:total_up].instance_eval { reduce(:+) / size.to_f }.to_f * 100]}%</span>".html_safe %>
+                      <% else %>
+                          Sem dados
+                      <% end %>
+                    </td>
+                <% when 3 %>
+                        <td style="text-align: center">
+                           <%= "<span style=\"color:#{@report_results[:scm6][:download][plan.throughput_down] >= threshold.compliance_level.to_f * 100 ? 'green':'red'}\">#{@report_results[:scm6][:download][plan.throughput_down]}%</span>".html_safe %>
 
-                </td>
-        <% when 5 %>
-                <td style="text-align: center">
-                 <%= "<span style=\"color:#{@report_results[:scm8][:download][plan.throughput_down] >= threshold.compliance_level.to_f * 100 ? 'green':'red'}\">#{@report_results[:scm8][:download][plan.throughput_down]}%</span>".html_safe %>
+                        </td>
+                <% when 4 %>
+                        <td style="text-align: center">
+                          <%= "<span style=\"color:#{@report_results[:scm7][:download][plan.throughput_down] >= threshold.compliance_level.to_f * 100 ? 'green':'red'}\">#{@report_results[:scm7][:download][plan.throughput_down]}%</span>".html_safe %>
 
-                </td>
-        <% when 6 %>
-                <td style="text-align: center">
-                  <%= "<span style=\"color:#{@report_results[:scm9][:download][plan.throughput_down] >= threshold.compliance_level.to_f * 100 ? 'green':'red'}\">#{@report_results[:scm9][:download][plan.throughput_down]}%</span>".html_safe %>
+                        </td>
+                <% when 5 %>
+                        <td style="text-align: center">
+                         <%= "<span style=\"color:#{@report_results[:scm8][:download][plan.throughput_down] >= threshold.compliance_level.to_f * 100 ? 'green':'red'}\">#{@report_results[:scm8][:download][plan.throughput_down]}%</span>".html_safe %>
 
-                </td>
-        <% end
-           end %>
-      </tr>
-    <% end %>
+                        </td>
+                <% when 6 %>
+                        <td style="text-align: center">
+                          <%= "<span style=\"color:#{@report_results[:scm9][:download][plan.throughput_down] >= threshold.compliance_level.to_f * 100 ? 'green':'red'}\">#{@report_results[:scm9][:download][plan.throughput_down]}%</span>".html_safe %>
+
+                        </td>
+                <% end
+                   end
+                %>
+            </tr>
+          <% else %>
+              <td colspan="8"  style="font-weight: bold; background-color: #777777;text-align: center"> Não há valores.</td>  </tr>
+          <% end %>
+     <%end%>
 
     </tr>
     <!-- UPLOAD -->
@@ -104,6 +119,16 @@
       <td rowspan="<%= Plan.all.size %>" style="padding-top: 50px; text-align: center"> Upload </td>
       <%  Plan.all.each do |plan| %>
           <td style="text-align: center"> <%= plan.throughput_up %></td>
+          <% unless (@report_results[:scm4][:download][plan.throughput_down].empty? && @report_results[:scm4][:upload][plan.throughput_up].empty? &&
+                  @report_results[:smp10][:download][plan.throughput_down].empty? && @report_results[:smp10][:upload][plan.throughput_up].empty? &&
+                  @report_results[:scm5][:download][plan.throughput_down][:total_down].empty? &&  @report_results[:scm5][:download][plan.throughput_down][:total_up].empty? &&
+                  @report_results[:scm5][:upload][plan.throughput_up][:total_down].empty? &&  @report_results[:scm5][:upload][plan.throughput_up][:total_up].empty? &&
+                  @report_results[:smp11][:download][plan.throughput_down][:total_down].empty? &&  @report_results[:smp11][:download][plan.throughput_down][:total_up].empty? &&
+                  @report_results[:smp11][:upload][plan.throughput_up][:total_down].empty? &&  @report_results[:smp11][:upload][plan.throughput_up][:total_up].empty? &&
+                  @report_results[:scm6][:download][plan.throughput_down] == 0.0 &&
+                  @report_results[:scm7][:download][plan.throughput_down]== 0.0 &&
+                  @report_results[:scm8][:download][plan.throughput_down] == 0.0 &&
+                  @report_results[:scm9][:download][plan.throughput_down]== 0.0 ) %>
           <% Threshold.all.each do |threshold|
             case threshold.id
               when 1
@@ -171,9 +196,12 @@
                   </td>
               <% end
                  end %>
-          </tr>
-      <% end %>
+              </tr>
+          <% else %>
+              <td colspan="8"  style="font-weight: bold; background-color: #777777;text-align: center"> Não há valores.</td>  </tr>
+          <% end %>
+      <%end%>
 
-
+      </tr>
       </tbody>
 </table>

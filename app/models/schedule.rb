@@ -30,6 +30,10 @@ class Schedule < ActiveRecord::Base
 
   validates_presence_of :destination_id, :source_id
 
+  scope :active, where(:status => 1)
+  scope :by_destination, proc { |destinations| where(:destination_id => destinations) unless destinations == '' or destinations[0] == '' }
+  scope :by_source, proc { |sources| where(:source_id => sources) unless sources == '' or sources[0] == '' }
+
   def setup
     Yell.new(:gelf, :facility => 'netmetric').info 'Envio de parametros iniciado!',
                                                    '_schedule_id' => self.id
