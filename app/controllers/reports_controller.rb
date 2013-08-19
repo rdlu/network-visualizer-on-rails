@@ -856,7 +856,21 @@ class ReportsController < ApplicationController
       @report_results[c.to_sym][:upload] = {}
     end
 
-    if !(@pop.include? 'all') && !(@bras.include? 'all')
+    Plan.all.each do |plan|
+      # Inicializa um hash para cada plano
+      %w(scm4 scm5 scm6 scm7 scm8 scm9 smp10 smp11).each do |c|
+        @report_results[c.to_sym][:download][plan.throughput_down] = {}
+        @report_results[c.to_sym][:upload][plan.throughput_up] = {}
+      end
+    end
+
+   #Plan p/ throughput down
+    Plan.all.uniq{|x| x.throughput_down}.each do |plan|
+      fixed_probes = nil
+      mobile_probes = nil
+      all_probes = nil
+
+      if !(@pop.include? 'all') && !(@bras.include? 'all')
       fixed_probes = Probe.
           where(:connection_profile_id => fixed_conn_profile).
           where(:state => @states).
@@ -864,7 +878,8 @@ class ReportsController < ApplicationController
           where(:type => @type).
           where(:anatel => @goal_filter).
           where(:pop => @pop).
-          where(:bras => @bras)
+          where(:bras => @bras).
+          where(:plan_id => Plan.where(:throughput_down => plan.throughput_down))
 
       mobile_probes = Probe.
           where(:connection_profile_id => mobile_conn_profile).
@@ -873,7 +888,8 @@ class ReportsController < ApplicationController
           where(:type => @type).
           where(:anatel => @goal_filter).
           where(:pop => @pop).
-          where(:bras => @bras)
+          where(:bras => @bras).
+          where(:plan_id => Plan.where(:throughput_down => plan.throughput_down))
 
     else
       if (@pop.include? 'all') && (@bras.include? 'all')
@@ -882,20 +898,23 @@ class ReportsController < ApplicationController
             where(:state => @states).
             where(:areacode => @cn).
             where(:type => @type).
-            where(:anatel => @goal_filter)
+            where(:anatel => @goal_filter).
+            where(:plan_id => Plan.where(:throughput_down => plan.throughput_down))
 
         mobile_probes = Probe.
             where(:connection_profile_id => mobile_conn_profile).
             where(:state => @states).
             where(:areacode => @cn).
             where(:type => @type).
-            where(:anatel => @goal_filter)
+            where(:anatel => @goal_filter).
+            where(:plan_id => Plan.where(:throughput_down => plan.throughput_down))
 
         all_probes = Probe.
             where(:state => @states).
             where(:areacode => @cn).
             where(:type => @type).
-            where(:anatel => @goal_filter)
+            where(:anatel => @goal_filter).
+            where(:plan_id => Plan.where(:throughput_down => plan.throughput_down))
       else
         if @pop.include? 'all'
           fixed_probes = Probe.
@@ -904,7 +923,8 @@ class ReportsController < ApplicationController
               where(:areacode => @cn).
               where(:type => @type).
               where(:anatel => @goal_filter).
-              where(:bras => @bras)
+              where(:bras => @bras).
+              where(:plan_id => Plan.where(:throughput_down => plan.throughput_down))
 
           mobile_probes = Probe.
               where(:connection_profile_id => mobile_conn_profile).
@@ -912,14 +932,16 @@ class ReportsController < ApplicationController
               where(:areacode => @cn).
               where(:type => @type).
               where(:anatel => @goal_filter).
-              where(:bras => @bras)
+              where(:bras => @bras).
+              where(:plan_id => Plan.where(:throughput_down => plan.throughput_down))
 
           all_probes = Probe.
               where(:state => @states).
               where(:areacode => @cn).
               where(:type => @type).
               where(:anatel => @goal_filter).
-              where(:bras => @bras)
+              where(:bras => @bras).
+              where(:plan_id => Plan.where(:throughput_down => plan.throughput_down))
 
         else
           if @bras.include? 'all'
@@ -929,7 +951,8 @@ class ReportsController < ApplicationController
                 where(:areacode => @cn).
                 where(:type => @type).
                 where(:anatel => @goal_filter).
-                where(:pop => @pop)
+                where(:pop => @pop).
+                where(:plan_id => Plan.where(:throughput_down => plan.throughput_down))
 
             mobile_probes = Probe.
                 where(:connection_profile_id => mobile_conn_profile).
@@ -937,14 +960,16 @@ class ReportsController < ApplicationController
                 where(:areacode => @cn).
                 where(:type => @type).
                 where(:anatel => @goal_filter).
-                where(:pop => @pop)
+                where(:pop => @pop).
+                where(:plan_id => Plan.where(:throughput_down => plan.throughput_down))
 
             all_probes = Probe.
                 where(:state => @states).
                 where(:areacode => @cn).
                 where(:type => @type).
                 where(:anatel => @goal_filter).
-                where(:pop => @pop)
+                where(:pop => @pop).
+                where(:plan_id => Plan.where(:throughput_down => plan.throughput_down))
           end
         end
       end
@@ -1057,16 +1082,7 @@ class ReportsController < ApplicationController
     points = 0
     total_points = 0
 
-    Plan.all.each do |plan|
-      # Inicializa um hash para cada plano
-      %w(scm4 scm5 scm6 scm7 scm8 scm9 smp10 smp11).each do |c|
-        @report_results[c.to_sym][:download][plan.throughput_down] = {}
-        @report_results[c.to_sym][:upload][plan.throughput_up] = {}
-      end
-    end
 
-
-    Plan.all.each do |plan|
 
       # Armazena valores de cada plano
 
@@ -1106,7 +1122,6 @@ class ReportsController < ApplicationController
         end
       end
       @report_results[:scm4][:download][plan.throughput_down]= media4
-      @report_results[:scm4][:upload][plan.throughput_up] = mediaup4
       #
       # SMP10
       #
@@ -1127,7 +1142,6 @@ class ReportsController < ApplicationController
         end
       end
       @report_results[:smp10][:download][plan.throughput_down] = media10
-      @report_results[:smp10][:upload][plan.throughput_up] = mediaup10
       #
       # SCM5
       #
@@ -1145,7 +1159,6 @@ class ReportsController < ApplicationController
         end
       end
       @report_results[:scm5][:download][plan.throughput_down]= {:total_up => mediaup5, :total_down => media5}
-      @report_results[:scm5][:upload][plan.throughput_up]= {:total_up => mediaup5up, :total_down => media5up}
       #
       # SMP11
       #
@@ -1162,7 +1175,6 @@ class ReportsController < ApplicationController
         end
       end
       @report_results[:smp11][:download][plan.throughput_down] = {:total_down => media11, :total_up => mediaup11}
-      @report_results[:smp11][:upload][plan.throughput_up] = {:total_up => mediaup11up, :total_down => media11up}
 
       #
       # SCM6
@@ -1220,8 +1232,321 @@ class ReportsController < ApplicationController
       end
       points != 0 ? @report_results[:scm9][:download][plan.throughput_down] = ((total_points/points)*100).to_f.round(2) : @report_results[:scm9][:download][plan.throughput_down] = 0.0
 
-    end #fim for plan
+    end #fim for plan down
 
+    #Plan p/ throughput up
+    Plan.all.uniq{|x| x.throughput_up}.each do |plan|
+      fixed_probes = nil
+      mobile_probes = nil
+      all_probes = nil
+
+      if !(@pop.include? 'all') && !(@bras.include? 'all')
+        fixed_probes = Probe.
+            where(:connection_profile_id => fixed_conn_profile).
+            where(:state => @states).
+            where(:areacode => @cn).
+            where(:type => @type).
+            where(:anatel => @goal_filter).
+            where(:pop => @pop).
+            where(:bras => @bras).
+            where(:plan_id =>  Plan.where(:throughput_up => plan.throughput_up))
+
+        mobile_probes = Probe.
+            where(:connection_profile_id => mobile_conn_profile).
+            where(:state => @states).
+            where(:areacode => @cn).
+            where(:type => @type).
+            where(:anatel => @goal_filter).
+            where(:pop => @pop).
+            where(:bras => @bras).
+            where(:plan_id =>  Plan.where(:throughput_up => plan.throughput_up))
+
+      else
+        if (@pop.include? 'all') && (@bras.include? 'all')
+          fixed_probes = Probe.
+              where(:connection_profile_id => fixed_conn_profile).
+              where(:state => @states).
+              where(:areacode => @cn).
+              where(:type => @type).
+              where(:anatel => @goal_filter).
+              where(:plan_id =>  Plan.where(:throughput_up => plan.throughput_up))
+
+          mobile_probes = Probe.
+              where(:connection_profile_id => mobile_conn_profile).
+              where(:state => @states).
+              where(:areacode => @cn).
+              where(:type => @type).
+              where(:anatel => @goal_filter).
+              where(:plan_id =>  Plan.where(:throughput_up => plan.throughput_up))
+
+          all_probes = Probe.
+              where(:state => @states).
+              where(:areacode => @cn).
+              where(:type => @type).
+              where(:anatel => @goal_filter).
+              where(:plan_id =>  Plan.where(:throughput_up => plan.throughput_up))
+        else
+          if @pop.include? 'all'
+            fixed_probes = Probe.
+                where(:connection_profile_id => fixed_conn_profile).
+                where(:state => @states).
+                where(:areacode => @cn).
+                where(:type => @type).
+                where(:anatel => @goal_filter).
+                where(:bras => @bras).
+                where(:plan_id => Plan.where(:throughput_up => plan.throughput_up))
+
+            mobile_probes = Probe.
+                where(:connection_profile_id => mobile_conn_profile).
+                where(:state => @states).
+                where(:areacode => @cn).
+                where(:type => @type).
+                where(:anatel => @goal_filter).
+                where(:bras => @bras).
+                where(:plan_id =>  Plan.where(:throughput_up => plan.throughput_up))
+
+            all_probes = Probe.
+                where(:state => @states).
+                where(:areacode => @cn).
+                where(:type => @type).
+                where(:anatel => @goal_filter).
+                where(:bras => @bras).
+                where(:plan_id =>  Plan.where(:throughput_up => plan.throughput_up))
+
+          else
+            if @bras.include? 'all'
+              fixed_probes = Probe.
+                  where(:connection_profile_id => fixed_conn_profile).
+                  where(:state => @states).
+                  where(:areacode => @cn).
+                  where(:type => @type).
+                  where(:anatel => @goal_filter).
+                  where(:pop => @pop).
+                  where(:plan_id =>  Plan.where(:throughput_up => plan.throughput_up))
+
+              mobile_probes = Probe.
+                  where(:connection_profile_id => mobile_conn_profile).
+                  where(:state => @states).
+                  where(:areacode => @cn).
+                  where(:type => @type).
+                  where(:anatel => @goal_filter).
+                  where(:pop => @pop).
+                  where(:plan_id =>  Plan.where(:throughput_up => plan.throughput_up))
+
+              all_probes = Probe.
+                  where(:state => @states).
+                  where(:areacode => @cn).
+                  where(:type => @type).
+                  where(:anatel => @goal_filter).
+                  where(:pop => @pop).
+                  where(:plan_id => Plan.where(:throughput_up => plan.throughput_up))
+            end
+          end
+        end
+      end
+
+      fixed_schedules = Schedule.
+          where(:destination_id => fixed_probes).all
+
+      mobile_schedules = Schedule.
+          where(:destination_id => mobile_probes).all
+
+      all_schedules = Schedule.
+          where(:destination_id => all_probes).all
+      #
+      #  SCM4
+      #
+      @medians_scm4 = Median.
+          where('start_timestamp >= ?', DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
+          where('start_timestamp <= ?', DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
+          where(:schedule_id => fixed_schedules).
+          where(:threshold_id => 1).
+          where("dsavg is not null").
+          order('start_timestamp ASC').all
+      #
+      # SMP10
+      #
+      @medians_smp10 = Median.
+          where('start_timestamp >= ?', DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
+          where('start_timestamp <= ?', DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
+          where(:schedule_id => mobile_schedules).
+          where(:threshold_id => 1).
+          where("dsavg is not null").
+          order('start_timestamp ASC').all
+      #
+      # SCM5
+      #
+      @medians_scm5 = Median.
+          where('start_timestamp >= ?', DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
+          where('start_timestamp <= ?', DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
+          where(:schedule_id => fixed_schedules).
+          where(:threshold_id => 2).
+          where("dsavg is not null").
+          order('start_timestamp ASC').all
+
+      #
+      # SMP11
+      #
+      @medians_smp11 = Median.
+          where('start_timestamp >= ?', DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
+          where('start_timestamp <= ?', DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
+          where(:schedule_id => mobile_schedules).
+          where(:threshold_id => 2).
+          where("dsavg is not null").
+          order('start_timestamp ASC').all
+
+      #
+      # SCM6
+      #
+      @medians_scm6 = Median.
+          where('start_timestamp >= ?', DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
+          where('start_timestamp <= ?', DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
+          where(:schedule_id => all_schedules).
+          where(:threshold_id => 3).
+          where("dsavg is not null").
+          order('start_timestamp ASC').all
+
+      #
+      # SCM7
+      #
+      @medians_scm7 = Median.
+          where('start_timestamp >= ?', DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
+          where('start_timestamp <= ?', DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
+          where(:schedule_id => all_schedules).
+          where(:threshold_id => 4).
+          where("dsavg is not null").
+          order('start_timestamp ASC').all
+
+      #
+      # SCM8
+      #
+      @medians_scm8 = Median.
+          where('start_timestamp >= ?', DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
+          where('start_timestamp <= ?', DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
+          where(:schedule_id => all_schedules).
+          where(:threshold_id => 5).
+          where("dsavg is not null").
+          order('start_timestamp ASC').all
+
+      #
+      # SCM9
+      #
+      @medians_scm9 = Median.
+          where('start_timestamp >= ?', DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
+          where('start_timestamp <= ?', DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
+          where(:schedule_id => all_schedules).
+          where(:threshold_id => 6).
+          where("dsavg is not null").
+          order('start_timestamp ASC').all
+
+
+      count6 = 0
+      count_all6 = 0
+
+      count7 = 0
+      count_all7 = 0
+
+      count8 = 0
+      count_all8 = 0
+
+      points = 0
+      total_points = 0
+
+
+
+      # Armazena valores de cada plano
+
+      media4 = Array.new
+      mediaup4 = Array.new
+
+      media5 = Array.new
+      mediaup5 = Array.new
+      media5up = Array.new
+      mediaup5up = Array.new
+
+      media10 = Array.new
+      mediaup10 = Array.new
+
+      media11 = Array.new
+      mediaup11 = Array.new
+      media11up = Array.new
+      mediaup11up = Array.new
+
+      #
+      # SCM4
+      #
+      @medians_scm4.each do |median|
+        if (!median.dsavg.nil? || !median.sdavg.nil?)
+          if median.schedule.destination.plan.throughput_down.eql? plan.throughput_down
+            up = (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
+            down = (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
+            if down >= median.threshold.goal_level.round(3) && up >= median.threshold.goal_level.round(3)
+              media4 << 1
+              mediaup4 << 1
+            else
+              media4 << 0
+              mediaup4 << 0
+
+            end
+          end
+        end
+      end
+      @report_results[:scm4][:upload][plan.throughput_up] = mediaup4
+      #
+      # SMP10
+      #
+      @medians_smp10.each do |median|
+        if !median.dsavg.nil? || !median.sdavg.nil?
+          if median.schedule.destination.plan.throughput_down.eql? plan.throughput_down
+            up = (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
+            down = (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
+            if down >= median.threshold.goal_level.round(3) && up >= median.threshold.goal_level.round(3)
+              media10 << 1
+              mediaup10 << 1
+
+            else
+              media10 << 0
+              mediaup10 << 0
+            end
+          end
+        end
+      end
+      @report_results[:smp10][:upload][plan.throughput_up] = mediaup10
+      #
+      # SCM5
+      #
+      @medians_scm5.each do |median|
+        if (!median.dsavg.nil? || !median.sdavg.nil?)
+          if median.schedule.destination.plan.throughput_down.eql? plan.throughput_down
+            media5 << (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
+            mediaup5 << (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
+          end
+          if median.schedule.destination.plan.throughput_up.eql? plan.throughput_up
+            media5up << (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
+            mediaup5up << (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
+          end
+
+        end
+      end
+      @report_results[:scm5][:upload][plan.throughput_up]= {:total_up => mediaup5up, :total_down => media5up}
+      #
+      # SMP11
+      #
+      @medians_smp11.each do |median|
+        if (!median.dsavg.nil? || !median.sdavg.nil?)
+          if median.schedule.destination.plan.throughput_down.eql? plan.throughput_down
+            media11 << (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
+            mediaup11 << (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
+          end
+          if median.schedule.destination.plan.throughput_up.eql? plan.throughput_up
+            media11up << (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
+            mediaup11up << (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
+          end
+        end
+      end
+      @report_results[:smp11][:upload][plan.throughput_up] = {:total_up => mediaup11up, :total_down => media11up}
+
+    end
 
     respond_to do |format|
       format.html { render :layout => false }
