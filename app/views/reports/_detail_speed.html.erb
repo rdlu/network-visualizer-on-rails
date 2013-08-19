@@ -28,8 +28,10 @@
   </tr>
   <!-- DOWNLOAD -->
   <tr>
-    <td rowspan="<%= Plan.all.size %>" style="padding-top: 50px; text-align: center"> Download </td>
-    <%  Plan.all.each do |plan|  %>
+    <% planUniq = Array.new
+       planUniq = Plan.all.uniq{|x| x.throughput_down} %>
+    <td rowspan="<%= planUniq.size %>" style="padding-top: 50px; text-align: center"> Download </td>
+    <% planUniq.each do |plan|  %>
       <td style="text-align: center"> <%= plan.throughput_down %></td>
      <% unless (@report_results[:scm4][:download][plan.throughput_down].empty? && @report_results[:scm4][:upload][plan.throughput_up].empty? &&
               @report_results[:smp10][:download][plan.throughput_down].empty? && @report_results[:smp10][:upload][plan.throughput_up].empty? &&
@@ -116,8 +118,10 @@
     </tr>
     <!-- UPLOAD -->
     <tr>
-      <td rowspan="<%= Plan.all.size %>" style="padding-top: 50px; text-align: center"> Upload </td>
-      <%  Plan.all.each do |plan| %>
+      <%  planUniq = Array.new
+          planUniq = Plan.all.uniq{|x| x.throughput_up} %>
+      <td rowspan="<%= planUniq.size %>" style="padding-top: 50px; text-align: center"> Upload </td>
+      <% planUniq.each do |plan|  %>
           <td style="text-align: center"> <%= plan.throughput_up %></td>
           <% unless (@report_results[:scm4][:download][plan.throughput_down].empty? && @report_results[:scm4][:upload][plan.throughput_up].empty? &&
                   @report_results[:smp10][:download][plan.throughput_down].empty? && @report_results[:smp10][:upload][plan.throughput_up].empty? &&
