@@ -51,7 +51,10 @@
             success: function (data,status) {
                 $("#unused_profiles").html(data);
             },
-            dataType: 'html'
+            dataType: 'html',
+            headers: {
+                'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+            }
         });
     });
 </script>

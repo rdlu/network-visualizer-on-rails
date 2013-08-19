@@ -101,6 +101,9 @@
                             , pop:<%= @pop.to_json.html_safe %>, bras: <%= @bras.to_json.html_safe %> },
                     success: function(data){
                         $('#modal-'+id).html(data).modal({show:true});
+                    },
+                    headers: {
+                        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
                     }
                 });
             }
