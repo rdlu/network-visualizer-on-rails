@@ -67,7 +67,7 @@
           <div class="control-group" style="margin-top: 10px">
             <label class="control-label" for="destino">Sonda de Destino: </label>
             <div class="controls ">
-              <select class="input-block-level" value="destination[id]" id="destino">
+              <select class="input-block-level" name="destination[id]" id="destino">
                <option value=""> Selecione um UF primeiro...</option>
               <!--%= collection_select :destination, :id, Probe.order(:name).all, :id, :pretty_name_with_location, {:include_blank => "Selecione..."}, {:class => 'input-block-level',:id=>"destino"} %>
             -->
