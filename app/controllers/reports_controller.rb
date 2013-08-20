@@ -2498,4 +2498,11 @@ class ReportsController < ApplicationController
     end
   end
 
+  def smartrate
+
+      respond_to do |format|
+          format.xml
+      end
+  end
+
 end
