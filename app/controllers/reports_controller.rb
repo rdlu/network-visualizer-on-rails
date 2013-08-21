@@ -1,5 +1,15 @@
 # coding: utf-8
 class ReportsController < ApplicationController
+  #escopos
+  has_scope :by_city
+  has_scope :by_state, :type => :array_or_string
+  has_scope :by_type, :type => :array_or_string
+  has_scope :by_pop, :type => :array_or_string
+  has_scope :by_bras, :type => :array_or_string
+  has_scope :is_anatel
+  has_scope :by_modem, :type => :array_or_string
+  has_scope :by_tech, :type => :array_or_string
+
   def index
     @report_types = [
         ['Gráfico de Indicadores Anatel/EAQ - Consolidação Diária', 'eaq_graph'],
@@ -1665,13 +1675,24 @@ class ReportsController < ApplicationController
 
   #RELATORIO DE PERFORMANCE
   def performance
-    @metric_id = params[:metrics].first
+    @metric = Metric.find params[:metrics].first.partition(',').first
+    profiles = @metric.profiles
+    multiprobe = false
 
-    @probes = params[:destination][:id].nil? ?
-        apply_scopes(Probe).order(:name).all :
-        Probe.where(:destination_id => params[:destination][:id]).all
+    unless params[:destination][:id] == ''
+      @probes = Probe.where(:destination_id => params[:destination][:id])
+    else
+      @probes = apply_scopes(Probe).order(:name).all
+      multiprobe = true
+    end
 
-    @schedules = Schedule.where(:destination_id => @probes, :source_id => params[:source][:id]).all
+    unless params[:source][:id] == ''
+      @schedules = Schedule.joins(:evaluations).where(schedules: {:destination_id => @probes, :source_id => params[:source][:id]}, evaluations: {profile_id: profiles})
+    else
+      @schedules = Schedule.joins(:evaluations).where(schedules: {:destination_id => @probes}, evaluations: {profile_id: profiles})
+    end
+
+
 
 
     respond_to do |format|
