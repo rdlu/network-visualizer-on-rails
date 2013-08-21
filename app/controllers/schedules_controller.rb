@@ -103,7 +103,7 @@ class SchedulesController < ApplicationController
       @used_profiles += schedule.profiles
     end
     @used_profiles = @used_profiles.uniq
-    @profiles = Profile.where(:connection_profile_id => @connection_profile.id).all
+    @profiles = Profile.where(connection_profile_id: [@connection_profile.id,nil,""]).all
     @unused_profiles = @profiles - @used_profiles
 
     render :layout => false
