@@ -1675,12 +1675,15 @@ class ReportsController < ApplicationController
 
   #RELATORIO DE PERFORMANCE
   def performance
+    @from = params[:horario].first.to_i.hours.ago
+    @to = Time.now
+
     @metric = Metric.find params[:metrics].first.partition(',').first
     profiles = @metric.profiles
     multiprobe = false
 
     unless params[:destination][:id] == ''
-      @probes = Probe.where(:destination_id => params[:destination][:id])
+      @probes = Probe.find(params[:destination][:id])
     else
       @probes = apply_scopes(Probe).order(:name).all
       multiprobe = true
@@ -1692,11 +1695,28 @@ class ReportsController < ApplicationController
       @schedules = Schedule.joins(:evaluations).where(schedules: {:destination_id => @probes}, evaluations: {profile_id: profiles})
     end
 
+    unless multiprobe
+      schedule = @schedules.last
+      @destination = schedule.destination
+      @source = schedule.source
+
+      @raw_results = Results.
+          where(:schedule_id => schedule.id).
+          where(:metric_id => @metric.id).
+          where(:timestamp => @from..@to).order('timestamp ASC').all
+
+      @idName = "dygraph-" << @source.id.to_s << "-" << @destination.id.to_s << "-" << @metric.id.to_s #<< "-" << @from.strftime("%s") << "-" << @to.strftime("%s")
+      @exportFileName = @destination.name + '-' + @metric.plugin + '-' + @from.strftime("%Y%m%d_%H%M%S") + '-' +@to.strftime("%Y%m%d_%H%M%S")
+      @exportParams = "source=#{@source.id}&destination=#{@destination.id}&metric=#{@metric.id}&from=#{@from.iso8601}&to=#{@to.iso8601}"
+
+
+    end
+
 
 
 
     respond_to do |format|
-      format.html { render :layout => false }
+      format.html { render :layout => false, file: 'reports/dygraphs_bruto' }
     end
 
   end
@@ -1754,7 +1774,7 @@ class ReportsController < ApplicationController
     @exportParams = "source=#{@source.id}&destination=#{@destination.id}&metric=#{@metric.id}&from=#{@from.iso8601}&to=#{@to.iso8601}"
 
     respond_to do |format|
-      format.html { render :layout => false }
+      format.html { render layout: false  }
     end
   end
 
