@@ -51,12 +51,10 @@ class SchedulesController < ApplicationController
 
     respond_to do |format|
       if @schedule.save
-        Yell.new(:gelf, :facility=>'netmetric').info 'Configuracoes nas sondas iniciadas, parametros foram colocados na fila de envios.',
+        Yell.new(:gelf, :facility=>'netmetric').info 'Nova agenda configurada com sucesso.',
                              '_schedule_id' => @schedule.id, '_destination_name' => @schedule.destination.name,
                              '_source_name' => @schedule.source.name
-        @schedule.delay.setup
-        #@schedule.setup
-        format.html { redirect_to @schedule, notice: 'Agenda programada. Aguarde o término das configurações que pode ser visto no log abaixo.' }
+        format.html { redirect_to @schedule, notice: 'Agenda programada com sucesso.' }
         format.json { render json: @schedule, status: :created, location: @schedule }
       else
         format.html { render action: 'new' }
@@ -103,7 +101,7 @@ class SchedulesController < ApplicationController
       @used_profiles += schedule.profiles
     end
     @used_profiles = @used_profiles.uniq
-    @profiles = Profile.where(:connection_profile_id => @connection_profile.id).all
+    @profiles = Profile.where(connection_profile_id: [@connection_profile.id,nil,""]).all
     @unused_profiles = @profiles - @used_profiles
 
     render :layout => false
