@@ -2002,12 +2002,66 @@ class ReportsController < ApplicationController
 
   #RELATORIO DE PERFORMANCE
   def performance
-    @metrics = params[:metrics]
+    @from = params[:horario].first.to_i.hours.ago
+    @to = Time.now
 
-    respond_to do |format|
-      format.html { render :layout => false }
+    @metric = Metric.find params[:metrics].first.partition(',').first
+    profiles = @metric.profiles
+    multiprobe = false
+
+    unless params[:destination][:id] == ''
+      @probes = Probe.find(params[:destination][:id])
+    else
+      @probes = apply_scopes(Probe).order(:name).all
+      multiprobe = true
     end
 
+    unless params[:source][:id] == ''
+      @schedules = Schedule.joins(:evaluations).where(schedules: {:destination_id => @probes, :source_id => params[:source][:id]}, evaluations: {profile_id: profiles})
+    else
+      @schedules = Schedule.joins(:evaluations).where(schedules: {:destination_id => @probes}, evaluations: {profile_id: profiles})
+    end
+
+    unless multiprobe
+      schedule = @schedules.last
+      @destination = schedule.destination
+      @source = schedule.source
+
+      @idName = "dygraph-" << @source.id.to_s << "-" << @destination.id.to_s << "-" << @metric.id.to_s #<< "-" << @from.strftime("%s") << "-" << @to.strftime("%s")
+      @exportFileName = @destination.name + '-' + @metric.plugin + '-' + @from.strftime("%Y%m%d_%H%M%S") + '-' +@to.strftime("%Y%m%d_%H%M%S")
+      @exportParams = "source=#{@source.id}&destination=#{@destination.id}&metric=#{@metric.id}&from=#{@from.iso8601}&to=#{@to.iso8601}"
+
+
+      case @metric.metric_type
+        when 'active'
+          @raw_results = Results.
+              where(:schedule_id => schedule.id).
+              where(:metric_id => @metric.id).
+              where(:timestamp => @from..@to).order('timestamp ASC').all
+          respond_to do |format|
+            format.html { render :layout => false, file: 'reports/dygraphs_bruto' }
+          end
+        when 'dns'
+          @raw_results = DnsResult.
+              where(:schedule_uuid => schedule.uuid).
+              where(:timestamp => @from..@to).order('timestamp ASC').all
+          respond_to do |format|
+            format.html { render :layout => false, file: 'reports/dygraphs_dns' }
+          end
+        when 'dns_detail'
+          respond_to do |format|
+            format.html { render :layout => false, file: 'reports/dygraphs_dns_detail' }
+          end
+        when 'webload'
+          respond_to do |format|
+            format.html { render :layout => false, file: 'reports/dygraphs_webload' }
+          end
+        else
+          #tipo de metrica nao suportado
+      end
+    else #is multiprobe
+
+    end
   end
 
 
@@ -2453,6 +2507,7 @@ class ReportsController < ApplicationController
                                                           size_other_domain: size_other_domain,
                                                           throughput_other_domain: throughput_other_domain,
                                                           schedule_uuid: schedule_uuid,
+                                                          timestamp: timestamp,
                                                           uuid: uuid)
               end
             when "dns"
@@ -2469,6 +2524,7 @@ class ReportsController < ApplicationController
                                                  delay: delay,
                                                  status: dns_status,
                                                  schedule_uuid: schedule_uuid,
+                                                 timestamp: timestamp,
                                                  uuid: uuid)
               end
               efic = report.xpath("report/results/dns/efic").inner_text.to_f
