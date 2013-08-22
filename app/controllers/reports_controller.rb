@@ -2322,247 +2322,252 @@ class ReportsController < ApplicationController
 
   # Send é chamado pela sonda para enviar reports novos
   def send_report
-    report = Nokogiri::XML(params[:report])
+    begin
+      report = Nokogiri::XML(params[:report])
 
-    user = report.xpath("report/user").children.to_s
-    schedule_uuid = report.xpath("report/uuid").children.to_s
-    uuid = report.xpath("report/meas_uuid").children.to_s
-    timestamp = report.xpath("report/timestamp").children.to_s
-    agent_type = report.xpath("report/agent_type").children.to_s
+      user = report.xpath("report/user").children.to_s
+      schedule_uuid = report.xpath("report/uuid").children.to_s
+      uuid = report.xpath("report/meas_uuid").children.to_s
+      timestamp = report.xpath("report/timestamp").children.to_s
+      agent_type = report.xpath("report/agent_type").children.to_s
 
-    #fallback para versoes antigas
-    uuid = uuid.empty? ? SecureRandom.uuid : uuid
+      #fallback para versoes antigas
+      uuid = uuid.empty? ? SecureRandom.uuid : uuid
 
-    case agent_type
-      when /windows/i
-        # KPI
-        cell_id = report.xpath("report/kpis/cell_id").children.first.to_s
-        cell_id = nil if cell_id == "-"
+      case agent_type
+        when /windows/i
+          # KPI
+          cell_id = report.xpath("report/kpis/cell_id").children.first.to_s
+          cell_id = nil if cell_id == "-"
 
-        model = report.xpath("report/kpis/model").children.first.to_s
-        model = nil if model == "-"
+          model = report.xpath("report/kpis/model").children.first.to_s
+          model = nil if model == "-"
 
-        conn_tech = report.xpath("report/kpis/conn_tech").children.first.to_s
-        conn_tech = nil if conn_tech == "-"
+          conn_tech = report.xpath("report/kpis/conn_tech").children.first.to_s
+          conn_tech = nil if conn_tech == "-"
 
-        conn_type = report.xpath("report/kpis/conn_type").children.first.to_s
-        conn_type = nil if conn_type == "-"
+          conn_type = report.xpath("report/kpis/conn_type").children.first.to_s
+          conn_type = nil if conn_type == "-"
 
-        error_rate = report.xpath("report/kpis/error_rate").children.first.to_s
-        error_rate = nil if error_rate == "-"
+          error_rate = report.xpath("report/kpis/error_rate").children.first.to_s
+          error_rate = nil if error_rate == "-"
 
-        lac = report.xpath("report/kpis/lac").children.first.to_s
-        if lac == "-"
-          lac = nil
-        else
-          lac = lac.to_i
-        end
-
-        mtu = report.xpath("report/kpis/mtu").children.first.to_s
-        if mtu == "-"
-          mtu = nil
-        else
-          mtu = mtu.to_i
-        end
-
-        route = report.xpath("report/kpis/route").children.first.to_s
-        route = nil if route == "-"
-
-        @kpi = Kpi.create(schedule_uuid: schedule_uuid,
-                          uuid: uuid,
-                          cell_id: cell_id,
-                          model: model,
-                          conn_tech: conn_tech,
-                          conn_type: conn_type,
-                          error_rate: error_rate,
-                          lac: lac,
-                          mtu: mtu)
-
-        # Results
-        rtt = report.xpath("report/results/rtt").children.first.to_s.to_f
-        throughput_udp_down = report.xpath("report/results/throughput_udp/down").children.first.to_s.to_f
-        throughput_udp_up = report.xpath("report/results/throughput_udp/up").children.first.to_s.to_f
-        throughput_tcp_down = report.xpath("report/results/throughput_tcp/down").children.first.to_s.to_f
-        throughput_tcp_up = report.xpath("report/results/throughput_tcp/up").children.first.to_s.to_f
-        throughput_http_down = report.xpath("report/results/throughput_http/down").children.first.to_s.to_f
-        throughput_http_up = report.xpath("report/results/throughput_http/up").children.first.to_s.to_f
-        jitter_down = report.xpath("report/results/jitter/down").children.first.to_s.to_f
-        jitter_up = report.xpath("report/results/jitter/up").children.first.to_s.to_f
-        loss_down = report.xpath("report/results/loss/down").children.first.to_s.to_f
-        loss_up = report.xpath("report/results/loss/up").children.first.to_s.to_f
-        pom_down = report.xpath("report/results/pom/down").children.first.to_s.to_i
-        pom_up = report.xpath("report/results/pom/up").children.first.to_s.to_i
-        dns_efic = report.xpath("report/results/dns/efic").children.first.to_s.to_i
-        dns_timeout_errors = report.xpath("report/results/dns/errors/timeout").children.first.to_s.to_i
-        dns_server_failure_errors = report.xpath("report/results/dns/errors/server_failure").children.first.to_s.to_i
-
-        @dynamic_result = DynamicResult.create(rtt: rtt,
-                                               throughput_udp_down: throughput_udp_down,
-                                               throughput_udp_up: throughput_udp_up,
-                                               throughput_tcp_down: throughput_tcp_down,
-                                               throughput_tcp_up: throughput_tcp_up,
-                                               throughput_http_down: throughput_http_down,
-                                               throughput_http_up: throughput_http_up,
-                                               jitter_down: jitter_down,
-                                               jitter_up: jitter_up,
-                                               loss_down: loss_down,
-                                               loss_up: loss_up,
-                                               pom_down: pom_down,
-                                               pom_up: pom_up,
-                                               uuid: uuid,
-                                               schedule_uuid: schedule_uuid,
-                                               dns_efic: dns_efic,
-                                               dns_timeout_errors: dns_timeout_errors,
-                                               dns_server_failure_errors: dns_server_failure_errors,
-                                               user: user)
-
-        # DNS test results
-        dns_server = dns_url = dns_delay = nil
-        @dns_dynamic_results = []
-        report.xpath("report/results/dns/test").each do |c|
-          dns_server = c.children.search("server").inner_text
-          dns_url = c.children.search("url").inner_text
-          dns_delay = c.children.search("delay").inner_text.to_f
-          dns_status = c.children.search("status").inner_text.to_f
-
-          @dns_dynamic_results << DnsDynamicResult.create(server: dns_server,
-                                                          url: dns_url,
-                                                          delay: dns_delay,
-                                                          status: dns_status,
-                                                          schedule_uuid: schedule_uuid,
-                                                          uuid: uuid)
-        end
-
-        # Web Load test results
-        web_load_url = web_load_time = web_load_size = web_load_throughput = nil
-        @web_load_dynamic_results = []
-        report.xpath("report/results/web_load/test").each do |c|
-          web_load_url = c.children.search("url").inner_text
-          web_load_time = c.children.search("time").inner_text.to_f
-          web_load_size = c.children.search("size").inner_text.to_f
-          web_load_throughput = c.children.search("trhoughput").inner_text.to_f
-
-          @web_load_dynamic_results << WebLoadDynamicResult.create(url: web_load_url,
-                                                                   time: web_load_time,
-                                                                   size: web_load_size,
-                                                                   throughput: web_load_throughput,
-                                                                   schedule_uuid: schedule_uuid,
-                                                                   uuid: uuid)
-        end
-
-      when /linux|android/i
-        @rep = Report.create(user: user, uuid: uuid, timestamp: DateTime.strptime(timestamp, '%s'), agent_type: agent_type)
-
-        results = report.xpath("report/results").children
-
-        @probe = Probe.where(ipaddress: user).first
-
-        # Update agent version
-        @probe.update_attributes(agent_version: report.xpath("report/version").inner_text)
-
-        results.each do |result|
-          case result.name
-            when "availability"
-              total = result.xpath("total").children.text.to_i
-              success = result.xpath("success").children.text.to_i
-
-              @schedule = @probe.schedules.last
-
-              @metric = Metric.find_by_plugin("availability")
-
-              @threshold = Threshold.find_by_goal_method("availability")
-
-              @median = Median.new(schedule_uuid: @schedule.uuid,
-                                   start_timestamp: (DateTime.strptime(timestamp, '%s') - 23.hours - 59.minutes - 59.seconds),
-                                   end_timestamp: DateTime.strptime(timestamp, '%s'),
-                                   expected_points: total,
-                                   total_points: success,
-                                   dsavg: success.to_f/total.to_f)
-              @median.schedule = @schedule
-              @median.threshold = @threshold
-
-              @median.save
-            when "web_load"
-              url = time = size = throughput = time_main_domain = size_main_domain = throughput_main_domain = time_other_domain = size_other_domain = throughput_other_domain = nil
-              @web_load_results = []
-              report.xpath("report/results/web_load/test").each do |c|
-                url = c.children.search("url").inner_text
-                time = c.children.search("time").inner_text.to_f
-                size = c.children.search("size").inner_text.to_i
-                throughput = c.children.search("throughput").inner_text.to_f
-                time_main_domain = c.children.search("time_main_domain").inner_text.to_f
-                size_main_domain = c.children.search("size_main_domain").inner_text.to_i
-                throughput_main_domain = c.children.search("throughput_main_domain").inner_text.to_f
-                time_other_domain = c.children.search("time_main_domain").inner_text.to_f
-                size_other_domain = c.children.search("size_other_domain").inner_text.to_i
-                throughput_other_domain = c.children.search("throughput_other_domain").inner_text.to_f
-                @web_load_results << WebLoadResult.create(url: url,
-                                                          time: time,
-                                                          size: size,
-                                                          throughput: throughput,
-                                                          time_main_domain: time_main_domain,
-                                                          size_main_domain: size_main_domain,
-                                                          throughput_main_domain: throughput_main_domain,
-                                                          time_other_domain: time_other_domain,
-                                                          size_other_domain: size_other_domain,
-                                                          throughput_other_domain: throughput_other_domain,
-                                                          schedule_uuid: schedule_uuid,
-                                                          timestamp: timestamp,
-                                                          uuid: uuid)
-              end
-            when "dns"
-              server = url = delay = nil
-              efic = average = timeout_errors = server_failure_errors = nil
-              @dns_results = []
-              report.xpath("report/results/dns/test").each do |c|
-                server = c.children.search("server").inner_text
-                url = c.children.search("url").inner_text
-                delay = c.children.search("delay").inner_text.to_i
-                dns_status = c.children.search("status").inner_text.to_f
-                @dns_results << DnsResult.create(url: url,
-                                                 server: server,
-                                                 delay: delay,
-                                                 status: dns_status,
-                                                 schedule_uuid: schedule_uuid,
-                                                 timestamp: timestamp,
-                                                 uuid: uuid)
-              end
-              efic = report.xpath("report/results/dns/efic").inner_text.to_f
-              average = report.xpath("report/results/dns/media").inner_text.to_f
-              timeout_errors = report.xpath("report/results/dns/errors/timeout")
-              server_failure_errors = report.xpath("report/results/dns/errors/server_failures")
-              @dns_detail = DnsDetail.create(efic: efic,
-                                             average: average,
-                                             timeout_errors: timeout_errors,
-                                             server_failure_errors: server_failure_errors,
-                                             schedule_uuid: schedule_uuid,
-                                             uuid: uuid)
-            when "throughput_http"
-              throughput_http_down = report.xpath("report/results/throughput_http/down").to_s.to_f
-              throughput_http_up = report.xpath("report/results/throughput_http/up").to_s.to_f
-
-              metric = Metric.where(plugin: "throughput_http")
-              probe = Probe.where(ipaddress: user).first
-              schedule = probe.schedules_as_destination.last
-
-              @results = Results.create(schedule_id: schedule.id,
-                                        metric_id: metric,
-                                        schedule_uuid: schedule_uuid,
-                                        uuid: uuid,
-                                        metric_name: "throughput_http",
-                                        timestamp: timestamp,
-                                        sdavg: throughput_http_down,
-                                        dsavg: throughput_http_up)
-            else
-              # do nothing
+          lac = report.xpath("report/kpis/lac").children.first.to_s
+          if lac == "-"
+            lac = nil
+          else
+            lac = lac.to_i
           end
-        end
-      else
-        # do nothing
-    end
 
-    respond_to do |format|
-      format.xml { render xml: "<report><status>OK</status></report>" }
+          mtu = report.xpath("report/kpis/mtu").children.first.to_s
+          if mtu == "-"
+            mtu = nil
+          else
+            mtu = mtu.to_i
+          end
+
+          route = report.xpath("report/kpis/route").children.first.to_s
+          route = nil if route == "-"
+
+          @kpi = Kpi.create(schedule_uuid: schedule_uuid,
+                            uuid: uuid,
+                            cell_id: cell_id,
+                            model: model,
+                            conn_tech: conn_tech,
+                            conn_type: conn_type,
+                            error_rate: error_rate,
+                            lac: lac,
+                            mtu: mtu)
+
+          # Results
+          rtt = report.xpath("report/results/rtt").children.first.to_s.to_f
+          throughput_udp_down = report.xpath("report/results/throughput_udp/down").children.first.to_s.to_f
+          throughput_udp_up = report.xpath("report/results/throughput_udp/up").children.first.to_s.to_f
+          throughput_tcp_down = report.xpath("report/results/throughput_tcp/down").children.first.to_s.to_f
+          throughput_tcp_up = report.xpath("report/results/throughput_tcp/up").children.first.to_s.to_f
+          throughput_http_down = report.xpath("report/results/throughput_http/down").children.first.to_s.to_f
+          throughput_http_up = report.xpath("report/results/throughput_http/up").children.first.to_s.to_f
+          jitter_down = report.xpath("report/results/jitter/down").children.first.to_s.to_f
+          jitter_up = report.xpath("report/results/jitter/up").children.first.to_s.to_f
+          loss_down = report.xpath("report/results/loss/down").children.first.to_s.to_f
+          loss_up = report.xpath("report/results/loss/up").children.first.to_s.to_f
+          pom_down = report.xpath("report/results/pom/down").children.first.to_s.to_i
+          pom_up = report.xpath("report/results/pom/up").children.first.to_s.to_i
+          dns_efic = report.xpath("report/results/dns/efic").children.first.to_s.to_i
+          dns_timeout_errors = report.xpath("report/results/dns/errors/timeout").children.first.to_s.to_i
+          dns_server_failure_errors = report.xpath("report/results/dns/errors/server_failure").children.first.to_s.to_i
+
+          @dynamic_result = DynamicResult.create(rtt: rtt,
+                                                 throughput_udp_down: throughput_udp_down,
+                                                 throughput_udp_up: throughput_udp_up,
+                                                 throughput_tcp_down: throughput_tcp_down,
+                                                 throughput_tcp_up: throughput_tcp_up,
+                                                 throughput_http_down: throughput_http_down,
+                                                 throughput_http_up: throughput_http_up,
+                                                 jitter_down: jitter_down,
+                                                 jitter_up: jitter_up,
+                                                 loss_down: loss_down,
+                                                 loss_up: loss_up,
+                                                 pom_down: pom_down,
+                                                 pom_up: pom_up,
+                                                 uuid: uuid,
+                                                 schedule_uuid: schedule_uuid,
+                                                 dns_efic: dns_efic,
+                                                 dns_timeout_errors: dns_timeout_errors,
+                                                 dns_server_failure_errors: dns_server_failure_errors,
+                                                 user: user)
+
+          # DNS test results
+          dns_server = dns_url = dns_delay = nil
+          @dns_dynamic_results = []
+          report.xpath("report/results/dns/test").each do |c|
+            dns_server = c.children.search("server").inner_text
+            dns_url = c.children.search("url").inner_text
+            dns_delay = c.children.search("delay").inner_text.to_f
+            dns_status = c.children.search("status").inner_text.to_f
+
+            @dns_dynamic_results << DnsDynamicResult.create(server: dns_server,
+                                                            url: dns_url,
+                                                            delay: dns_delay,
+                                                            status: dns_status,
+                                                            schedule_uuid: schedule_uuid,
+                                                            uuid: uuid)
+          end
+
+          # Web Load test results
+          web_load_url = web_load_time = web_load_size = web_load_throughput = nil
+          @web_load_dynamic_results = []
+          report.xpath("report/results/web_load/test").each do |c|
+            web_load_url = c.children.search("url").inner_text
+            web_load_time = c.children.search("time").inner_text.to_f
+            web_load_size = c.children.search("size").inner_text.to_f
+            web_load_throughput = c.children.search("trhoughput").inner_text.to_f
+
+            @web_load_dynamic_results << WebLoadDynamicResult.create(url: web_load_url,
+                                                                     time: web_load_time,
+                                                                     size: web_load_size,
+                                                                     throughput: web_load_throughput,
+                                                                     schedule_uuid: schedule_uuid,
+                                                                     uuid: uuid)
+          end
+
+        when /linux|android/i
+          @rep = Report.create(user: user, uuid: uuid, timestamp: DateTime.strptime(timestamp, '%s'), agent_type: agent_type)
+
+          results = report.xpath("report/results").children
+
+          @probe = Probe.where(ipaddress: user).first
+
+          # Update agent version
+          @probe.update_attributes(agent_version: report.xpath("report/version").inner_text)
+
+          results.each do |result|
+            case result.name
+              when "availability"
+                total = result.xpath("total").children.text.to_i
+                success = result.xpath("success").children.text.to_i
+
+                @schedule = @probe.schedules.last
+
+                @metric = Metric.find_by_plugin("availability")
+
+                @threshold = Threshold.find_by_goal_method("availability")
+
+                @median = Median.new(schedule_uuid: @schedule.uuid,
+                                     start_timestamp: (DateTime.strptime(timestamp, '%s') - 23.hours - 59.minutes - 59.seconds),
+                                     end_timestamp: DateTime.strptime(timestamp, '%s'),
+                                     expected_points: total,
+                                     total_points: success,
+                                     dsavg: success.to_f/total.to_f)
+                @median.schedule = @schedule
+                @median.threshold = @threshold
+
+                @median.save
+              when "web_load"
+                url = time = size = throughput = time_main_domain = size_main_domain = throughput_main_domain = time_other_domain = size_other_domain = throughput_other_domain = nil
+                @web_load_results = []
+                report.xpath("report/results/web_load/test").each do |c|
+                  url = c.children.search("url").inner_text
+                  time = c.children.search("time").inner_text.to_f
+                  size = c.children.search("size").inner_text.to_i
+                  throughput = c.children.search("throughput").inner_text.to_f
+                  time_main_domain = c.children.search("time_main_domain").inner_text.to_f
+                  size_main_domain = c.children.search("size_main_domain").inner_text.to_i
+                  throughput_main_domain = c.children.search("throughput_main_domain").inner_text.to_f
+                  time_other_domain = c.children.search("time_main_domain").inner_text.to_f
+                  size_other_domain = c.children.search("size_other_domain").inner_text.to_i
+                  throughput_other_domain = c.children.search("throughput_other_domain").inner_text.to_f
+                  @web_load_results << WebLoadResult.create(url: url,
+                                                            time: time,
+                                                            size: size,
+                                                            throughput: throughput,
+                                                            time_main_domain: time_main_domain,
+                                                            size_main_domain: size_main_domain,
+                                                            throughput_main_domain: throughput_main_domain,
+                                                            time_other_domain: time_other_domain,
+                                                            size_other_domain: size_other_domain,
+                                                            throughput_other_domain: throughput_other_domain,
+                                                            schedule_uuid: schedule_uuid,
+                                                            timestamp: timestamp,
+                                                            uuid: uuid)
+                end
+              when "dns"
+                server = url = delay = nil
+                efic = average = timeout_errors = server_failure_errors = nil
+                @dns_results = []
+                report.xpath("report/results/dns/test").each do |c|
+                  server = c.children.search("server").inner_text
+                  url = c.children.search("url").inner_text
+                  delay = c.children.search("delay").inner_text.to_i
+                  dns_status = c.children.search("status").inner_text.to_f
+                  @dns_results << DnsResult.create(url: url,
+                                                   server: server,
+                                                   delay: delay,
+                                                   status: dns_status,
+                                                   schedule_uuid: schedule_uuid,
+                                                   timestamp: timestamp,
+                                                   uuid: uuid)
+                end
+                efic = report.xpath("report/results/dns/efic").inner_text.to_f
+                average = report.xpath("report/results/dns/media").inner_text.to_f
+                timeout_errors = report.xpath("report/results/dns/errors/timeout")
+                server_failure_errors = report.xpath("report/results/dns/errors/server_failures")
+                @dns_detail = DnsDetail.create(efic: efic,
+                                               average: average,
+                                               timeout_errors: timeout_errors,
+                                               server_failure_errors: server_failure_errors,
+                                               schedule_uuid: schedule_uuid,
+                                               uuid: uuid)
+              when "throughput_http"
+                throughput_http_down = report.xpath("report/results/throughput_http/down").to_s.to_f
+                throughput_http_up = report.xpath("report/results/throughput_http/up").to_s.to_f
+
+                metric = Metric.where(plugin: "throughput_http")
+                probe = Probe.where(ipaddress: user).first
+                schedule = probe.schedules_as_destination.last
+
+                @results = Results.create(schedule_id: schedule.id,
+                                          metric_id: metric,
+                                          schedule_uuid: schedule_uuid,
+                                          uuid: uuid,
+                                          metric_name: "throughput_http",
+                                          timestamp: timestamp,
+                                          sdavg: throughput_http_down,
+                                          dsavg: throughput_http_up)
+              else
+                # do nothing
+            end
+          end
+        else
+          # do nothing
+      end
+      respond_to do |format|
+        format.xml { render xml: "<report><status>OK</status></report>" }
+      end
+    rescue Exception => e
+      respond_to do |format|
+        format.xml { render xml: "<report><status>ERROR</status><message>#{e.message}</message></report>" }
+      end
     end
   end
 
