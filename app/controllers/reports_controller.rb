@@ -2005,6 +2005,9 @@ class ReportsController < ApplicationController
     @from = params[:horario].first.to_i.hours.ago
     @to = Time.now
 
+    @from = '2013-08-08 00:00:00 -0300'.to_datetime
+    @to = '2013-08-08 23:59:59 -0300'.to_datetime
+
     @metric = Metric.find params[:metrics].first.partition(',').first
     profiles = @metric.profiles
     multiprobe = false
@@ -2042,9 +2045,17 @@ class ReportsController < ApplicationController
             format.html { render :layout => false, file: 'reports/dygraphs_bruto' }
           end
         when 'dns'
-          @raw_results = DnsResult.
-              where(:schedule_uuid => schedule.uuid).
-              where(:timestamp => @from..@to).order('timestamp ASC').all
+          case @metric.plugin
+            when 'dns-efficiency'
+              @raw_results = DnsDetail.
+                  where(:schedule_uuid => schedule.uuid).
+                  where(:timestamp => @from..@to).order('timestamp ASC').all
+            else
+              @raw_results = DnsResult.
+                  where(:schedule_uuid => schedule.uuid).
+                  where(:timestamp => @from..@to).order('timestamp ASC').all
+          end
+
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/dygraphs_dns' }
           end
