@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130806181006) do
+ActiveRecord::Schema.define(:version => 20130822184409) do
 
   create_table "compliances", :force => true do |t|
     t.integer   "schedule_id"
@@ -70,6 +70,8 @@ ActiveRecord::Schema.define(:version => 20130806181006) do
     t.string   "schedule_uuid",         :limit => nil
   end
 
+  add_index "dns_details", ["schedule_uuid"], :name => "index_dns_details_on_schedule_uuid"
+
   create_table "dns_dynamic_results", :force => true do |t|
     t.string   "server"
     t.string   "url"
@@ -80,6 +82,8 @@ ActiveRecord::Schema.define(:version => 20130806181006) do
     t.string   "schedule_uuid", :limit => nil
   end
 
+  add_index "dns_dynamic_results", ["schedule_uuid"], :name => "index_dns_dynamic_results_on_schedule_uuid"
+
   create_table "dns_results", :force => true do |t|
     t.string   "server"
     t.string   "url"
@@ -89,7 +93,10 @@ ActiveRecord::Schema.define(:version => 20130806181006) do
     t.datetime "updated_at",                   :null => false
     t.string   "status"
     t.string   "schedule_uuid", :limit => nil
+    t.datetime "timestamp"
   end
+
+  add_index "dns_results", ["schedule_uuid"], :name => "index_dns_results_on_schedule_uuid"
 
   create_table "dynamic_results", :force => true do |t|
     t.float    "rtt"
@@ -389,6 +396,8 @@ ActiveRecord::Schema.define(:version => 20130806181006) do
     t.string   "schedule_uuid", :limit => nil
   end
 
+  add_index "web_load_dynamic_results", ["schedule_uuid"], :name => "index_web_load_dynamic_results_on_schedule_uuid"
+
   create_table "web_load_results", :force => true do |t|
     t.string   "url"
     t.float    "time"
@@ -404,7 +413,10 @@ ActiveRecord::Schema.define(:version => 20130806181006) do
     t.datetime "created_at",                             :null => false
     t.datetime "updated_at",                             :null => false
     t.string   "schedule_uuid",           :limit => nil
+    t.datetime "timestamp"
   end
+
+  add_index "web_load_results", ["schedule_uuid"], :name => "index_web_load_results_on_schedule_uuid"
 
   add_foreign_key "compliances", "schedules", :name => "compliances_schedule_id_fk", :dependent => :delete
   add_foreign_key "compliances", "thresholds", :name => "compliances_threshold_id_fk", :dependent => :delete

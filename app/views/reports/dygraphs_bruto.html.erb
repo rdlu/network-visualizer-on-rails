@@ -128,6 +128,9 @@
                                 text: "Algum erro ocorreu na hora de consultar os KPIs: "+msg,
                                 type: 'error'
                             });
+                        },
+                        headers: {
+                            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
                         }
                     });
                 }

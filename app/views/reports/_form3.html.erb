@@ -67,7 +67,7 @@
           <div class="control-group" style="margin-top: 10px">
             <label class="control-label" for="destino">Sonda de Destino: </label>
             <div class="controls ">
-              <select class="input-block-level" value="destination[id]" id="destino">
+              <select class="input-block-level" name="destination[id]" id="destino">
                <option value=""> Selecione um UF primeiro...</option>
               <!--%= collection_select :destination, :id, Probe.order(:name).all, :id, :pretty_name_with_location, {:include_blank => "Selecione..."}, {:class => 'input-block-level',:id=>"destino"} %>
             -->
@@ -233,6 +233,9 @@
                 }
                 $('#destino').html(html);
 
+            },
+            headers: {
+                'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
             }
         });
 
@@ -254,7 +257,10 @@
                         options.append($("<option />").val('').text('Essa sonda não recebe testes')).prop('disabled', true);
                     }
                 },
-                dataType: 'json'
+                dataType: 'json',
+                headers: {
+                    'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                }
             });
         else {
                jQuery('#origem').html('').append($("<option />").val('').text('Selecione a sonda de destino primeiro')).prop('disabled', true).trigger('change');
@@ -281,7 +287,10 @@
                 type: 'POST',
               success: function(result){
                   jQuery('#graphs-area').prepend(result);
-              }
+              },
+              headers: {
+                    'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                }
             });
         }
 

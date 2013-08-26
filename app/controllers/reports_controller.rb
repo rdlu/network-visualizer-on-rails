@@ -1,5 +1,15 @@
 # coding: utf-8
 class ReportsController < ApplicationController
+  #escopos
+  has_scope :by_city
+  has_scope :by_state, :type => :array_or_string
+  has_scope :by_type, :type => :array_or_string
+  has_scope :by_pop, :type => :array_or_string
+  has_scope :by_bras, :type => :array_or_string
+  has_scope :is_anatel
+  has_scope :by_modem, :type => :array_or_string
+  has_scope :by_tech, :type => :array_or_string
+
   def index
     @report_types = [
         ['Gráfico de Indicadores Anatel/EAQ - Consolidação Diária', 'eaq_graph'],
@@ -856,7 +866,21 @@ class ReportsController < ApplicationController
       @report_results[c.to_sym][:upload] = {}
     end
 
-    if !(@pop.include? 'all') && !(@bras.include? 'all')
+    Plan.all.each do |plan|
+      # Inicializa um hash para cada plano
+      %w(scm4 scm5 scm6 scm7 scm8 scm9 smp10 smp11).each do |c|
+        @report_results[c.to_sym][:download][plan.throughput_down] = {}
+        @report_results[c.to_sym][:upload][plan.throughput_up] = {}
+      end
+    end
+
+   #Plan p/ throughput down
+    Plan.all.uniq{|x| x.throughput_down}.each do |plan|
+      fixed_probes = nil
+      mobile_probes = nil
+      all_probes = nil
+
+      if !(@pop.include? 'all') && !(@bras.include? 'all')
       fixed_probes = Probe.
           where(:connection_profile_id => fixed_conn_profile).
           where(:state => @states).
@@ -864,7 +888,8 @@ class ReportsController < ApplicationController
           where(:type => @type).
           where(:anatel => @goal_filter).
           where(:pop => @pop).
-          where(:bras => @bras)
+          where(:bras => @bras).
+          where(:plan_id => Plan.where(:throughput_down => plan.throughput_down))
 
       mobile_probes = Probe.
           where(:connection_profile_id => mobile_conn_profile).
@@ -873,7 +898,8 @@ class ReportsController < ApplicationController
           where(:type => @type).
           where(:anatel => @goal_filter).
           where(:pop => @pop).
-          where(:bras => @bras)
+          where(:bras => @bras).
+          where(:plan_id => Plan.where(:throughput_down => plan.throughput_down))
 
     else
       if (@pop.include? 'all') && (@bras.include? 'all')
@@ -882,20 +908,23 @@ class ReportsController < ApplicationController
             where(:state => @states).
             where(:areacode => @cn).
             where(:type => @type).
-            where(:anatel => @goal_filter)
+            where(:anatel => @goal_filter).
+            where(:plan_id => Plan.where(:throughput_down => plan.throughput_down))
 
         mobile_probes = Probe.
             where(:connection_profile_id => mobile_conn_profile).
             where(:state => @states).
             where(:areacode => @cn).
             where(:type => @type).
-            where(:anatel => @goal_filter)
+            where(:anatel => @goal_filter).
+            where(:plan_id => Plan.where(:throughput_down => plan.throughput_down))
 
         all_probes = Probe.
             where(:state => @states).
             where(:areacode => @cn).
             where(:type => @type).
-            where(:anatel => @goal_filter)
+            where(:anatel => @goal_filter).
+            where(:plan_id => Plan.where(:throughput_down => plan.throughput_down))
       else
         if @pop.include? 'all'
           fixed_probes = Probe.
@@ -904,7 +933,8 @@ class ReportsController < ApplicationController
               where(:areacode => @cn).
               where(:type => @type).
               where(:anatel => @goal_filter).
-              where(:bras => @bras)
+              where(:bras => @bras).
+              where(:plan_id => Plan.where(:throughput_down => plan.throughput_down))
 
           mobile_probes = Probe.
               where(:connection_profile_id => mobile_conn_profile).
@@ -912,14 +942,16 @@ class ReportsController < ApplicationController
               where(:areacode => @cn).
               where(:type => @type).
               where(:anatel => @goal_filter).
-              where(:bras => @bras)
+              where(:bras => @bras).
+              where(:plan_id => Plan.where(:throughput_down => plan.throughput_down))
 
           all_probes = Probe.
               where(:state => @states).
               where(:areacode => @cn).
               where(:type => @type).
               where(:anatel => @goal_filter).
-              where(:bras => @bras)
+              where(:bras => @bras).
+              where(:plan_id => Plan.where(:throughput_down => plan.throughput_down))
 
         else
           if @bras.include? 'all'
@@ -929,7 +961,8 @@ class ReportsController < ApplicationController
                 where(:areacode => @cn).
                 where(:type => @type).
                 where(:anatel => @goal_filter).
-                where(:pop => @pop)
+                where(:pop => @pop).
+                where(:plan_id => Plan.where(:throughput_down => plan.throughput_down))
 
             mobile_probes = Probe.
                 where(:connection_profile_id => mobile_conn_profile).
@@ -937,14 +970,16 @@ class ReportsController < ApplicationController
                 where(:areacode => @cn).
                 where(:type => @type).
                 where(:anatel => @goal_filter).
-                where(:pop => @pop)
+                where(:pop => @pop).
+                where(:plan_id => Plan.where(:throughput_down => plan.throughput_down))
 
             all_probes = Probe.
                 where(:state => @states).
                 where(:areacode => @cn).
                 where(:type => @type).
                 where(:anatel => @goal_filter).
-                where(:pop => @pop)
+                where(:pop => @pop).
+                where(:plan_id => Plan.where(:throughput_down => plan.throughput_down))
           end
         end
       end
@@ -1057,16 +1092,7 @@ class ReportsController < ApplicationController
     points = 0
     total_points = 0
 
-    Plan.all.each do |plan|
-      # Inicializa um hash para cada plano
-      %w(scm4 scm5 scm6 scm7 scm8 scm9 smp10 smp11).each do |c|
-        @report_results[c.to_sym][:download][plan.throughput_down] = {}
-        @report_results[c.to_sym][:upload][plan.throughput_up] = {}
-      end
-    end
 
-
-    Plan.all.each do |plan|
 
       # Armazena valores de cada plano
 
@@ -1106,7 +1132,6 @@ class ReportsController < ApplicationController
         end
       end
       @report_results[:scm4][:download][plan.throughput_down]= media4
-      @report_results[:scm4][:upload][plan.throughput_up] = mediaup4
       #
       # SMP10
       #
@@ -1127,7 +1152,6 @@ class ReportsController < ApplicationController
         end
       end
       @report_results[:smp10][:download][plan.throughput_down] = media10
-      @report_results[:smp10][:upload][plan.throughput_up] = mediaup10
       #
       # SCM5
       #
@@ -1145,7 +1169,6 @@ class ReportsController < ApplicationController
         end
       end
       @report_results[:scm5][:download][plan.throughput_down]= {:total_up => mediaup5, :total_down => media5}
-      @report_results[:scm5][:upload][plan.throughput_up]= {:total_up => mediaup5up, :total_down => media5up}
       #
       # SMP11
       #
@@ -1162,7 +1185,6 @@ class ReportsController < ApplicationController
         end
       end
       @report_results[:smp11][:download][plan.throughput_down] = {:total_down => media11, :total_up => mediaup11}
-      @report_results[:smp11][:upload][plan.throughput_up] = {:total_up => mediaup11up, :total_down => media11up}
 
       #
       # SCM6
@@ -1220,8 +1242,323 @@ class ReportsController < ApplicationController
       end
       points != 0 ? @report_results[:scm9][:download][plan.throughput_down] = ((total_points/points)*100).to_f.round(2) : @report_results[:scm9][:download][plan.throughput_down] = 0.0
 
-    end #fim for plan
+    end #fim for plan down
 
+    #Plan p/ throughput up
+    Plan.all.uniq{|x| x.throughput_up}.each do |plan|
+      fixed_probes = nil
+      mobile_probes = nil
+      all_probes = nil
+
+      if !(@pop.include? 'all') && !(@bras.include? 'all')
+        fixed_probes = Probe.
+            where(:connection_profile_id => fixed_conn_profile).
+            where(:state => @states).
+            where(:areacode => @cn).
+            where(:type => @type).
+            where(:anatel => @goal_filter).
+            where(:pop => @pop).
+            where(:bras => @bras).
+            where(:plan_id =>  Plan.where(:throughput_up => plan.throughput_up))
+
+        mobile_probes = Probe.
+            where(:connection_profile_id => mobile_conn_profile).
+            where(:state => @states).
+            where(:areacode => @cn).
+            where(:type => @type).
+            where(:anatel => @goal_filter).
+            where(:pop => @pop).
+            where(:bras => @bras).
+            where(:plan_id =>  Plan.where(:throughput_up => plan.throughput_up))
+
+      else
+        if (@pop.include? 'all') && (@bras.include? 'all')
+          fixed_probes = Probe.
+              where(:connection_profile_id => fixed_conn_profile).
+              where(:state => @states).
+              where(:areacode => @cn).
+              where(:type => @type).
+              where(:anatel => @goal_filter).
+              where(:plan_id =>  Plan.where(:throughput_up => plan.throughput_up))
+
+          mobile_probes = Probe.
+              where(:connection_profile_id => mobile_conn_profile).
+              where(:state => @states).
+              where(:areacode => @cn).
+              where(:type => @type).
+              where(:anatel => @goal_filter).
+              where(:plan_id =>  Plan.where(:throughput_up => plan.throughput_up))
+
+          all_probes = Probe.
+              where(:state => @states).
+              where(:areacode => @cn).
+              where(:type => @type).
+              where(:anatel => @goal_filter).
+              where(:plan_id =>  Plan.where(:throughput_up => plan.throughput_up))
+        else
+          if @pop.include? 'all'
+            fixed_probes = Probe.
+                where(:connection_profile_id => fixed_conn_profile).
+                where(:state => @states).
+                where(:areacode => @cn).
+                where(:type => @type).
+                where(:anatel => @goal_filter).
+                where(:bras => @bras).
+                where(:plan_id => Plan.where(:throughput_up => plan.throughput_up))
+
+            mobile_probes = Probe.
+                where(:connection_profile_id => mobile_conn_profile).
+                where(:state => @states).
+                where(:areacode => @cn).
+                where(:type => @type).
+                where(:anatel => @goal_filter).
+                where(:bras => @bras).
+                where(:plan_id =>  Plan.where(:throughput_up => plan.throughput_up))
+
+            all_probes = Probe.
+                where(:state => @states).
+                where(:areacode => @cn).
+                where(:type => @type).
+                where(:anatel => @goal_filter).
+                where(:bras => @bras).
+                where(:plan_id =>  Plan.where(:throughput_up => plan.throughput_up))
+
+          else
+            if @bras.include? 'all'
+              fixed_probes = Probe.
+                  where(:connection_profile_id => fixed_conn_profile).
+                  where(:state => @states).
+                  where(:areacode => @cn).
+                  where(:type => @type).
+                  where(:anatel => @goal_filter).
+                  where(:pop => @pop).
+                  where(:plan_id =>  Plan.where(:throughput_up => plan.throughput_up))
+
+              mobile_probes = Probe.
+                  where(:connection_profile_id => mobile_conn_profile).
+                  where(:state => @states).
+                  where(:areacode => @cn).
+                  where(:type => @type).
+                  where(:anatel => @goal_filter).
+                  where(:pop => @pop).
+                  where(:plan_id =>  Plan.where(:throughput_up => plan.throughput_up))
+
+              all_probes = Probe.
+                  where(:state => @states).
+                  where(:areacode => @cn).
+                  where(:type => @type).
+                  where(:anatel => @goal_filter).
+                  where(:pop => @pop).
+                  where(:plan_id => Plan.where(:throughput_up => plan.throughput_up))
+            end
+          end
+        end
+      end
+
+      fixed_schedules = Schedule.
+          where(:destination_id => fixed_probes).all
+
+      mobile_schedules = Schedule.
+          where(:destination_id => mobile_probes).all
+
+      all_schedules = Schedule.
+          where(:destination_id => all_probes).all
+      #
+      #  SCM4
+      #
+      @medians_scm4 = Median.
+          where('start_timestamp >= ?', DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
+          where('start_timestamp <= ?', DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
+          where(:schedule_id => fixed_schedules).
+          where(:threshold_id => 1).
+          where("dsavg is not null").
+          order('start_timestamp ASC').all
+      #
+      # SMP10
+      #
+      @medians_smp10 = Median.
+          where('start_timestamp >= ?', DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
+          where('start_timestamp <= ?', DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
+          where(:schedule_id => mobile_schedules).
+          where(:threshold_id => 1).
+          where("dsavg is not null").
+          order('start_timestamp ASC').all
+      #
+      # SCM5
+      #
+      @medians_scm5 = Median.
+          where('start_timestamp >= ?', DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
+          where('start_timestamp <= ?', DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
+          where(:schedule_id => fixed_schedules).
+          where(:threshold_id => 2).
+          where("dsavg is not null").
+          order('start_timestamp ASC').all
+
+      #
+      # SMP11
+      #
+      @medians_smp11 = Median.
+          where('start_timestamp >= ?', DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
+          where('start_timestamp <= ?', DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
+          where(:schedule_id => mobile_schedules).
+          where(:threshold_id => 2).
+          where("dsavg is not null").
+          order('start_timestamp ASC').all
+
+      #
+      # SCM6
+      #
+      @medians_scm6 = Median.
+          where('start_timestamp >= ?', DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
+          where('start_timestamp <= ?', DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
+          where(:schedule_id => all_schedules).
+          where(:threshold_id => 3).
+          where("dsavg is not null").
+          order('start_timestamp ASC').all
+
+      #
+      # SCM7
+      #
+      @medians_scm7 = Median.
+          where('start_timestamp >= ?', DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
+          where('start_timestamp <= ?', DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
+          where(:schedule_id => all_schedules).
+          where(:threshold_id => 4).
+          where("dsavg is not null").
+          order('start_timestamp ASC').all
+
+      #
+      # SCM8
+      #
+      @medians_scm8 = Median.
+          where('start_timestamp >= ?', DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
+          where('start_timestamp <= ?', DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
+          where(:schedule_id => all_schedules).
+          where(:threshold_id => 5).
+          where("dsavg is not null").
+          order('start_timestamp ASC').all
+
+      #
+      # SCM9
+      #
+      @medians_scm9 = Median.
+          where('start_timestamp >= ?', DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
+          where('start_timestamp <= ?', DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
+          where(:schedule_id => all_schedules).
+          where(:threshold_id => 6).
+          where("dsavg is not null").
+          order('start_timestamp ASC').all
+
+
+      count6 = 0
+      count_all6 = 0
+
+      count7 = 0
+      count_all7 = 0
+
+      count8 = 0
+      count_all8 = 0
+
+      points = 0
+      total_points = 0
+
+
+
+      # Armazena valores de cada plano
+
+      media4 = Array.new
+      mediaup4 = Array.new
+
+      media5 = Array.new
+      mediaup5 = Array.new
+      media5up = Array.new
+      mediaup5up = Array.new
+
+      media10 = Array.new
+      mediaup10 = Array.new
+
+      media11 = Array.new
+      mediaup11 = Array.new
+      media11up = Array.new
+      mediaup11up = Array.new
+
+      #
+      # SCM4
+      #
+      @medians_scm4.each do |median|
+        if (!median.dsavg.nil? || !median.sdavg.nil?)
+          if median.schedule.destination.plan.throughput_down.eql? plan.throughput_down
+            up = (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
+            down = (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
+            if down >= median.threshold.goal_level.round(3) && up >= median.threshold.goal_level.round(3)
+              media4 << 1
+              mediaup4 << 1
+            else
+              media4 << 0
+              mediaup4 << 0
+
+            end
+          end
+        end
+      end
+      @report_results[:scm4][:upload][plan.throughput_up] = mediaup4
+      #
+      # SMP10
+      #
+      @medians_smp10.each do |median|
+        if !median.dsavg.nil? || !median.sdavg.nil?
+          if median.schedule.destination.plan.throughput_down.eql? plan.throughput_down
+            up = (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
+            down = (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
+            if down >= median.threshold.goal_level.round(3) && up >= median.threshold.goal_level.round(3)
+              media10 << 1
+              mediaup10 << 1
+
+            else
+              media10 << 0
+              mediaup10 << 0
+            end
+          end
+        end
+      end
+      @report_results[:smp10][:upload][plan.throughput_up] = mediaup10
+      #
+      # SCM5
+      #
+      @medians_scm5.each do |median|
+        if (!median.dsavg.nil? || !median.sdavg.nil?)
+          if median.schedule.destination.plan.throughput_down.eql? plan.throughput_down
+            media5 << (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
+            mediaup5 << (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
+          end
+          if median.schedule.destination.plan.throughput_up.eql? plan.throughput_up
+            media5up << (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
+            mediaup5up << (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
+          end
+
+        end
+      end
+      @report_results[:scm5][:download][plan.throughput_down]= {:total_up => mediaup5, :total_down => media5}
+      @report_results[:scm5][:upload][plan.throughput_up]= {:total_up => mediaup5up, :total_down => media5up}
+      #
+      # SMP11
+      #
+      @medians_smp11.each do |median|
+        if (!median.dsavg.nil? || !median.sdavg.nil?)
+          if median.schedule.destination.plan.throughput_down.eql? plan.throughput_down
+            media11 << (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
+            mediaup11 << (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
+          end
+          if median.schedule.destination.plan.throughput_up.eql? plan.throughput_up
+            media11up << (median.sdavg.to_f / (1000 * median.schedule.destination.plan.throughput_down.to_f)).round(3)
+            mediaup11up << (median.dsavg.to_f / (1000 * median.schedule.destination.plan.throughput_up.to_f)).round(3)
+          end
+        end
+      end
+      @report_results[:smp11][:download][plan.throughput_down] = {:total_down => media11, :total_up => mediaup11}
+      @report_results[:smp11][:upload][plan.throughput_up] = {:total_up => mediaup11up, :total_down => media11up}
+
+    end
 
     respond_to do |format|
       format.html { render :layout => false }
@@ -1665,12 +2002,77 @@ class ReportsController < ApplicationController
 
   #RELATORIO DE PERFORMANCE
   def performance
-    @metrics = params[:metrics]
+    @from = params[:horario].first.to_i.hours.ago
+    @to = Time.now
 
-    respond_to do |format|
-      format.html { render :layout => false }
+    @from = '2013-08-08 00:00:00 -0300'.to_datetime
+    @to = '2013-08-08 23:59:59 -0300'.to_datetime
+
+    @metric = Metric.find params[:metrics].first.partition(',').first
+    profiles = @metric.profiles
+    multiprobe = false
+
+    unless params[:destination][:id] == ''
+      @probes = Probe.find(params[:destination][:id])
+    else
+      @probes = apply_scopes(Probe).order(:name).all
+      multiprobe = true
     end
 
+    unless params[:source][:id] == ''
+      @schedules = Schedule.joins(:evaluations).where(schedules: {:destination_id => @probes, :source_id => params[:source][:id]}, evaluations: {profile_id: profiles})
+    else
+      @schedules = Schedule.joins(:evaluations).where(schedules: {:destination_id => @probes}, evaluations: {profile_id: profiles})
+    end
+
+    unless multiprobe
+      schedule = @schedules.last
+      @destination = schedule.destination
+      @source = schedule.source
+
+      @idName = "dygraph-" << @source.id.to_s << "-" << @destination.id.to_s << "-" << @metric.id.to_s #<< "-" << @from.strftime("%s") << "-" << @to.strftime("%s")
+      @exportFileName = @destination.name + '-' + @metric.plugin + '-' + @from.strftime("%Y%m%d_%H%M%S") + '-' +@to.strftime("%Y%m%d_%H%M%S")
+      @exportParams = "source=#{@source.id}&destination=#{@destination.id}&metric=#{@metric.id}&from=#{@from.iso8601}&to=#{@to.iso8601}"
+
+
+      case @metric.metric_type
+        when 'active'
+          @raw_results = Results.
+              where(:schedule_id => schedule.id).
+              where(:metric_id => @metric.id).
+              where(:timestamp => @from..@to).order('timestamp ASC').all
+          respond_to do |format|
+            format.html { render :layout => false, file: 'reports/dygraphs_bruto' }
+          end
+        when 'dns'
+          case @metric.plugin
+            when 'dns-efficiency'
+              @raw_results = DnsDetail.
+                  where(:schedule_uuid => schedule.uuid).
+                  where(:timestamp => @from..@to).order('timestamp ASC').all
+            else
+              @raw_results = DnsResult.
+                  where(:schedule_uuid => schedule.uuid).
+                  where(:timestamp => @from..@to).order('timestamp ASC').all
+          end
+
+          respond_to do |format|
+            format.html { render :layout => false, file: 'reports/dygraphs_dns' }
+          end
+        when 'dns_detail'
+          respond_to do |format|
+            format.html { render :layout => false, file: 'reports/dygraphs_dns_detail' }
+          end
+        when 'webload'
+          respond_to do |format|
+            format.html { render :layout => false, file: 'reports/dygraphs_webload' }
+          end
+        else
+          #tipo de metrica nao suportado
+      end
+    else #is multiprobe
+
+    end
   end
 
 
@@ -1931,246 +2333,262 @@ class ReportsController < ApplicationController
 
   # Send é chamado pela sonda para enviar reports novos
   def send_report
-    report = Nokogiri::XML(params[:report])
+    begin
+      report = Nokogiri::XML(params[:report])
 
-    user = report.xpath("report/user").children.to_s
-    schedule_uuid = report.xpath("report/uuid").children.to_s
-    uuid = report.xpath("report/meas_uuid").children.to_s
-    timestamp = report.xpath("report/timestamp").children.to_s
-    agent_type = report.xpath("report/agent_type").children.to_s
+      user = report.xpath("report/user").children.to_s
+      #schedule_uuid = report.xpath("report/uuid").children.to_s
+      #enquanto o william nao atualiza os agentes
+      schedule_uuid = Schedule.where(destination_id: Probe.where(ipaddress: user)).first.uuid
+      uuid = report.xpath("report/meas_uuid").children.to_s
+      timestamp = report.xpath("report/timestamp").children.to_s
+      agent_type = report.xpath("report/agent_type").children.to_s
 
-    #fallback para versoes antigas
-    uuid = uuid.empty? ? SecureRandom.uuid : uuid
+      #fallback para versoes antigas
+      uuid = uuid.empty? ? SecureRandom.uuid : uuid
 
-    case agent_type
-      when /windows/i
-        # KPI
-        cell_id = report.xpath("report/kpis/cell_id").children.first.to_s
-        cell_id = nil if cell_id == "-"
+      case agent_type
+        when /windows/i
+          # KPI
+          cell_id = report.xpath("report/kpis/cell_id").children.first.to_s
+          cell_id = nil if cell_id == "-"
 
-        model = report.xpath("report/kpis/model").children.first.to_s
-        model = nil if model == "-"
+          model = report.xpath("report/kpis/model").children.first.to_s
+          model = nil if model == "-"
 
-        conn_tech = report.xpath("report/kpis/conn_tech").children.first.to_s
-        conn_tech = nil if conn_tech == "-"
+          conn_tech = report.xpath("report/kpis/conn_tech").children.first.to_s
+          conn_tech = nil if conn_tech == "-"
 
-        conn_type = report.xpath("report/kpis/conn_type").children.first.to_s
-        conn_type = nil if conn_type == "-"
+          conn_type = report.xpath("report/kpis/conn_type").children.first.to_s
+          conn_type = nil if conn_type == "-"
 
-        error_rate = report.xpath("report/kpis/error_rate").children.first.to_s
-        error_rate = nil if error_rate == "-"
+          error_rate = report.xpath("report/kpis/error_rate").children.first.to_s
+          error_rate = nil if error_rate == "-"
 
-        lac = report.xpath("report/kpis/lac").children.first.to_s
-        if lac == "-"
-          lac = nil
-        else
-          lac = lac.to_i
-        end
-
-        mtu = report.xpath("report/kpis/mtu").children.first.to_s
-        if mtu == "-"
-          mtu = nil
-        else
-          mtu = mtu.to_i
-        end
-
-        route = report.xpath("report/kpis/route").children.first.to_s
-        route = nil if route == "-"
-
-        @kpi = Kpi.create(schedule_uuid: schedule_uuid,
-                          uuid: uuid,
-                          cell_id: cell_id,
-                          model: model,
-                          conn_tech: conn_tech,
-                          conn_type: conn_type,
-                          error_rate: error_rate,
-                          lac: lac,
-                          mtu: mtu)
-
-        # Results
-        rtt = report.xpath("report/results/rtt").children.first.to_s.to_f
-        throughput_udp_down = report.xpath("report/results/throughput_udp/down").children.first.to_s.to_f
-        throughput_udp_up = report.xpath("report/results/throughput_udp/up").children.first.to_s.to_f
-        throughput_tcp_down = report.xpath("report/results/throughput_tcp/down").children.first.to_s.to_f
-        throughput_tcp_up = report.xpath("report/results/throughput_tcp/up").children.first.to_s.to_f
-        throughput_http_down = report.xpath("report/results/throughput_http/down").children.first.to_s.to_f
-        throughput_http_up = report.xpath("report/results/throughput_http/up").children.first.to_s.to_f
-        jitter_down = report.xpath("report/results/jitter/down").children.first.to_s.to_f
-        jitter_up = report.xpath("report/results/jitter/up").children.first.to_s.to_f
-        loss_down = report.xpath("report/results/loss/down").children.first.to_s.to_f
-        loss_up = report.xpath("report/results/loss/up").children.first.to_s.to_f
-        pom_down = report.xpath("report/results/pom/down").children.first.to_s.to_i
-        pom_up = report.xpath("report/results/pom/up").children.first.to_s.to_i
-        dns_efic = report.xpath("report/results/dns/efic").children.first.to_s.to_i
-        dns_timeout_errors = report.xpath("report/results/dns/errors/timeout").children.first.to_s.to_i
-        dns_server_failure_errors = report.xpath("report/results/dns/errors/server_failure").children.first.to_s.to_i
-
-        @dynamic_result = DynamicResult.create(rtt: rtt,
-                                               throughput_udp_down: throughput_udp_down,
-                                               throughput_udp_up: throughput_udp_up,
-                                               throughput_tcp_down: throughput_tcp_down,
-                                               throughput_tcp_up: throughput_tcp_up,
-                                               throughput_http_down: throughput_http_down,
-                                               throughput_http_up: throughput_http_up,
-                                               jitter_down: jitter_down,
-                                               jitter_up: jitter_up,
-                                               loss_down: loss_down,
-                                               loss_up: loss_up,
-                                               pom_down: pom_down,
-                                               pom_up: pom_up,
-                                               uuid: uuid,
-                                               schedule_uuid: schedule_uuid,
-                                               dns_efic: dns_efic,
-                                               dns_timeout_errors: dns_timeout_errors,
-                                               dns_server_failure_errors: dns_server_failure_errors,
-                                               user: user)
-
-        # DNS test results
-        dns_server = dns_url = dns_delay = nil
-        @dns_dynamic_results = []
-        report.xpath("report/results/dns/test").each do |c|
-          dns_server = c.children.search("server").inner_text
-          dns_url = c.children.search("url").inner_text
-          dns_delay = c.children.search("delay").inner_text.to_f
-          dns_status = c.children.search("status").inner_text.to_f
-
-          @dns_dynamic_results << DnsDynamicResult.create(server: dns_server,
-                                                          url: dns_url,
-                                                          delay: dns_delay,
-                                                          status: dns_status,
-                                                          schedule_uuid: schedule_uuid,
-                                                          uuid: uuid)
-        end
-
-        # Web Load test results
-        web_load_url = web_load_time = web_load_size = web_load_throughput = nil
-        @web_load_dynamic_results = []
-        report.xpath("report/results/web_load/test").each do |c|
-          web_load_url = c.children.search("url").inner_text
-          web_load_time = c.children.search("time").inner_text.to_f
-          web_load_size = c.children.search("size").inner_text.to_f
-          web_load_throughput = c.children.search("trhoughput").inner_text.to_f
-
-          @web_load_dynamic_results << WebLoadDynamicResult.create(url: web_load_url,
-                                                                   time: web_load_time,
-                                                                   size: web_load_size,
-                                                                   throughput: web_load_throughput,
-                                                                   schedule_uuid: schedule_uuid,
-                                                                   uuid: uuid)
-        end
-
-      when /linux|android/i
-        @rep = Report.create(user: user, uuid: uuid, timestamp: DateTime.strptime(timestamp, '%s'), agent_type: agent_type)
-
-        results = report.xpath("report/results").children
-
-        @probe = Probe.where(ipaddress: user).first
-
-        # Update agent version
-        @probe.update_attributes(agent_version: report.xpath("report/version").inner_text)
-
-        results.each do |result|
-          case result.name
-            when "availability"
-              total = result.xpath("total").children.text.to_i
-              success = result.xpath("success").children.text.to_i
-
-              @schedule = @probe.schedules.last
-
-              @metric = Metric.find_by_plugin("availability")
-
-              @threshold = Threshold.find_by_goal_method("availability")
-
-              @median = Median.new(schedule_uuid: @schedule.uuid,
-                                   start_timestamp: (DateTime.strptime(timestamp, '%s') - 23.hours - 59.minutes - 59.seconds),
-                                   end_timestamp: DateTime.strptime(timestamp, '%s'),
-                                   expected_points: total,
-                                   total_points: success,
-                                   dsavg: success.to_f/total.to_f)
-              @median.schedule = @schedule
-              @median.threshold = @threshold
-
-              @median.save
-            when "web_load"
-              url = time = size = throughput = time_main_domain = size_main_domain = throughput_main_domain = time_other_domain = size_other_domain = throughput_other_domain = nil
-              @web_load_results = []
-              report.xpath("report/results/web_load/test").each do |c|
-                url = c.children.search("url").inner_text
-                time = c.children.search("time").inner_text.to_f
-                size = c.children.search("size").inner_text.to_i
-                throughput = c.children.search("throughput").inner_text.to_f
-                time_main_domain = c.children.search("time_main_domain").inner_text.to_f
-                size_main_domain = c.children.search("size_main_domain").inner_text.to_i
-                throughput_main_domain = c.children.search("throughput_main_domain").inner_text.to_f
-                time_other_domain = c.children.search("time_main_domain").inner_text.to_f
-                size_other_domain = c.children.search("size_other_domain").inner_text.to_i
-                throughput_other_domain = c.children.search("throughput_other_domain").inner_text.to_f
-                @web_load_results << WebLoadResult.create(url: url,
-                                                          time: time,
-                                                          size: size,
-                                                          throughput: throughput,
-                                                          time_main_domain: time_main_domain,
-                                                          size_main_domain: size_main_domain,
-                                                          throughput_main_domain: throughput_main_domain,
-                                                          time_other_domain: time_other_domain,
-                                                          size_other_domain: size_other_domain,
-                                                          throughput_other_domain: throughput_other_domain,
-                                                          schedule_uuid: schedule_uuid,
-                                                          uuid: uuid)
-              end
-            when "dns"
-              server = url = delay = nil
-              efic = average = timeout_errors = server_failure_errors = nil
-              @dns_results = []
-              report.xpath("report/results/dns/test").each do |c|
-                server = c.children.search("server").inner_text
-                url = c.children.search("url").inner_text
-                delay = c.children.search("delay").inner_text.to_i
-                dns_status = c.children.search("status").inner_text.to_f
-                @dns_results << DnsResult.create(url: url,
-                                                 server: server,
-                                                 delay: delay,
-                                                 status: dns_status,
-                                                 schedule_uuid: schedule_uuid,
-                                                 uuid: uuid)
-              end
-              efic = report.xpath("report/results/dns/efic").inner_text.to_f
-              average = report.xpath("report/results/dns/media").inner_text.to_f
-              timeout_errors = report.xpath("report/results/dns/errors/timeout")
-              server_failure_errors = report.xpath("report/results/dns/errors/server_failures")
-              @dns_detail = DnsDetail.create(efic: efic,
-                                             average: average,
-                                             timeout_errors: timeout_errors,
-                                             server_failure_errors: server_failure_errors,
-                                             schedule_uuid: schedule_uuid,
-                                             uuid: uuid)
-            when "throughput_http"
-              throughput_http_down = report.xpath("report/results/throughput_http/down").to_s.to_f
-              throughput_http_up = report.xpath("report/results/throughput_http/up").to_s.to_f
-
-              metric = Metric.where(plugin: "throughput_http")
-              probe = Probe.where(ipaddress: user).first
-              schedule = probe.schedules_as_destination.last
-
-              @results = Results.create(schedule_id: schedule.id,
-                                        metric_id: metric,
-                                        schedule_uuid: schedule_uuid,
-                                        uuid: uuid,
-                                        metric_name: "throughput_http",
-                                        timestamp: timestamp,
-                                        sdavg: throughput_http_down,
-                                        dsavg: throughput_http_up)
-            else
-              # do nothing
+          lac = report.xpath("report/kpis/lac").children.first.to_s
+          if lac == "-"
+            lac = nil
+          else
+            lac = lac.to_i
           end
-        end
-      else
-        # do nothing
-    end
 
-    respond_to do |format|
-      format.xml { render xml: "<report><status>OK</status></report>" }
+          mtu = report.xpath("report/kpis/mtu").children.first.to_s
+          if mtu == "-"
+            mtu = nil
+          else
+            mtu = mtu.to_i
+          end
+
+          route = report.xpath("report/kpis/route").children.first.to_s
+          route = nil if route == "-"
+
+          @kpi = Kpi.create(schedule_uuid: schedule_uuid,
+                            uuid: uuid,
+                            cell_id: cell_id,
+                            model: model,
+                            conn_tech: conn_tech,
+                            conn_type: conn_type,
+                            error_rate: error_rate,
+                            lac: lac,
+                            mtu: mtu)
+
+          # Results
+          rtt = report.xpath("report/results/rtt").children.first.to_s.to_f
+          throughput_udp_down = report.xpath("report/results/throughput_udp/down").children.first.to_s.to_f
+          throughput_udp_up = report.xpath("report/results/throughput_udp/up").children.first.to_s.to_f
+          throughput_tcp_down = report.xpath("report/results/throughput_tcp/down").children.first.to_s.to_f
+          throughput_tcp_up = report.xpath("report/results/throughput_tcp/up").children.first.to_s.to_f
+          throughput_http_down = report.xpath("report/results/throughput_http/down").children.first.to_s.to_f
+          throughput_http_up = report.xpath("report/results/throughput_http/up").children.first.to_s.to_f
+          jitter_down = report.xpath("report/results/jitter/down").children.first.to_s.to_f
+          jitter_up = report.xpath("report/results/jitter/up").children.first.to_s.to_f
+          loss_down = report.xpath("report/results/loss/down").children.first.to_s.to_f
+          loss_up = report.xpath("report/results/loss/up").children.first.to_s.to_f
+          pom_down = report.xpath("report/results/pom/down").children.first.to_s.to_i
+          pom_up = report.xpath("report/results/pom/up").children.first.to_s.to_i
+          dns_efic = report.xpath("report/results/dns/efic").children.first.to_s.to_i
+          dns_timeout_errors = report.xpath("report/results/dns/errors/timeout").children.first.to_s.to_i
+          dns_server_failure_errors = report.xpath("report/results/dns/errors/server_failure").children.first.to_s.to_i
+
+          @dynamic_result = DynamicResult.create(rtt: rtt,
+                                                 throughput_udp_down: throughput_udp_down,
+                                                 throughput_udp_up: throughput_udp_up,
+                                                 throughput_tcp_down: throughput_tcp_down,
+                                                 throughput_tcp_up: throughput_tcp_up,
+                                                 throughput_http_down: throughput_http_down,
+                                                 throughput_http_up: throughput_http_up,
+                                                 jitter_down: jitter_down,
+                                                 jitter_up: jitter_up,
+                                                 loss_down: loss_down,
+                                                 loss_up: loss_up,
+                                                 pom_down: pom_down,
+                                                 pom_up: pom_up,
+                                                 uuid: uuid,
+                                                 schedule_uuid: schedule_uuid,
+                                                 dns_efic: dns_efic,
+                                                 dns_timeout_errors: dns_timeout_errors,
+                                                 dns_server_failure_errors: dns_server_failure_errors,
+                                                 user: user)
+
+          # DNS test results
+          dns_server = dns_url = dns_delay = nil
+          @dns_dynamic_results = []
+          report.xpath("report/results/dns/test").each do |c|
+            dns_server = c.children.search("server").inner_text
+            dns_url = c.children.search("url").inner_text
+            dns_delay = c.children.search("delay").inner_text.to_f
+            dns_status = c.children.search("status").inner_text.to_f
+
+            @dns_dynamic_results << DnsDynamicResult.create(server: dns_server,
+                                                            url: dns_url,
+                                                            delay: dns_delay,
+                                                            status: dns_status,
+                                                            schedule_uuid: schedule_uuid,
+                                                            uuid: uuid)
+          end
+
+          # Web Load test results
+          web_load_url = web_load_time = web_load_size = web_load_throughput = nil
+          @web_load_dynamic_results = []
+          report.xpath("report/results/web_load/test").each do |c|
+            web_load_url = c.children.search("url").inner_text
+            web_load_time = c.children.search("time").inner_text.to_f
+            web_load_size = c.children.search("size").inner_text.to_f
+            web_load_throughput = c.children.search("trhoughput").inner_text.to_f
+
+            @web_load_dynamic_results << WebLoadDynamicResult.create(url: web_load_url,
+                                                                     time: web_load_time,
+                                                                     size: web_load_size,
+                                                                     throughput: web_load_throughput,
+                                                                     schedule_uuid: schedule_uuid,
+                                                                     uuid: uuid)
+          end
+
+        when /linux|android/i
+          @rep = Report.create(user: user, uuid: uuid, timestamp: DateTime.strptime(timestamp, '%s'), agent_type: agent_type)
+
+          results = report.xpath("report/results").children
+
+          @probe = Probe.where(ipaddress: user).first
+
+          # Update agent version
+          @probe.update_attributes(agent_version: report.xpath("report/version").inner_text)
+
+          results.each do |result|
+            case result.name
+              when "availability"
+                total = result.xpath("total").children.text.to_i
+                success = result.xpath("success").children.text.to_i
+
+                @schedule = @probe.schedules.last
+
+                @metric = Metric.find_by_plugin("availability")
+
+                @threshold = Threshold.find_by_goal_method("availability")
+
+                @median = Median.new(schedule_uuid: @schedule.uuid,
+                                     start_timestamp: (DateTime.strptime(timestamp, '%s') - 23.hours - 59.minutes - 59.seconds),
+                                     end_timestamp: DateTime.strptime(timestamp, '%s'),
+                                     expected_points: total,
+                                     total_points: success,
+                                     dsavg: success.to_f/total.to_f)
+                @median.schedule = @schedule
+                @median.threshold = @threshold
+
+                @median.save
+              when "web_load"
+                url = time = size = throughput = time_main_domain = size_main_domain = throughput_main_domain = time_other_domain = size_other_domain = throughput_other_domain = nil
+                @web_load_results = []
+                report.xpath("report/results/web_load/test").each do |c|
+                  url = c.children.search("url").inner_text
+                  time = c.children.search("time").inner_text.to_f
+                  size = c.children.search("size").inner_text.to_i
+                  throughput = c.children.search("throughput").inner_text.to_f
+                  time_main_domain = c.children.search("time_main_domain").inner_text.to_f
+                  size_main_domain = c.children.search("size_main_domain").inner_text.to_i
+                  throughput_main_domain = c.children.search("throughput_main_domain").inner_text.to_f
+                  time_other_domain = c.children.search("time_main_domain").inner_text.to_f
+                  size_other_domain = c.children.search("size_other_domain").inner_text.to_i
+                  throughput_other_domain = c.children.search("throughput_other_domain").inner_text.to_f
+                  @web_load_results << WebLoadResult.create(url: url,
+                                                            time: time,
+                                                            size: size,
+                                                            throughput: throughput,
+                                                            time_main_domain: time_main_domain,
+                                                            size_main_domain: size_main_domain,
+                                                            throughput_main_domain: throughput_main_domain,
+                                                            time_other_domain: time_other_domain,
+                                                            size_other_domain: size_other_domain,
+                                                            throughput_other_domain: throughput_other_domain,
+                                                            schedule_uuid: schedule_uuid,
+                                                            timestamp: timestamp,
+                                                            uuid: uuid)
+                end
+              when "dns"
+                server = url = delay = nil
+                efic = average = timeout_errors = server_failure_errors = nil
+                @dns_results = []
+                report.xpath("report/results/dns/test").each do |c|
+                  server = c.children.search("server").inner_text
+                  url = c.children.search("url").inner_text
+                  delay = c.children.search("delay").inner_text.to_i
+                  dns_status = c.children.search("status").inner_text.to_f
+                  @dns_results << DnsResult.create(url: url,
+                                                   server: server,
+                                                   delay: delay,
+                                                   status: dns_status,
+                                                   schedule_uuid: schedule_uuid,
+                                                   timestamp: timestamp,
+                                                   uuid: uuid)
+                end
+                efic = report.xpath("report/results/dns/efic").inner_text.to_f
+                average = report.xpath("report/results/dns/media").inner_text.to_f
+                timeout_errors = report.xpath("report/results/dns/errors/timeout")
+                server_failure_errors = report.xpath("report/results/dns/errors/server_failures")
+                @dns_detail = DnsDetail.create(efic: efic,
+                                               average: average,
+                                               timeout_errors: timeout_errors,
+                                               server_failure_errors: server_failure_errors,
+                                               schedule_uuid: schedule_uuid,
+                                               uuid: uuid)
+              when "throughput_http"
+                throughput_http_down = report.xpath("report/results/throughput_http/down").to_s.to_f
+                throughput_http_up = report.xpath("report/results/throughput_http/up").to_s.to_f
+
+                metric = Metric.where(plugin: "throughput_http")
+                probe = Probe.where(ipaddress: user).first
+                schedule = probe.schedules_as_destination.last
+
+                @results = Results.create(schedule_id: schedule.id,
+                                          metric_id: metric,
+                                          schedule_uuid: schedule_uuid,
+                                          uuid: uuid,
+                                          metric_name: "throughput_http",
+                                          timestamp: timestamp,
+                                          sdavg: throughput_http_down,
+                                          dsavg: throughput_http_up)
+              else
+                # do nothing
+            end
+          end
+        else
+          # do nothing
+      end
+      respond_to do |format|
+        format.xml { render xml: "<report><status>OK</status></report>" }
+      end
+    rescue Exception => e
+      respond_to do |format|
+        format.xml { render xml: "<report><status>ERROR</status><message>#{e.message}</message></report>" }
+      end
     end
+  end
+
+  def smartrate
+
+      respond_to do |format|
+          format.xml
+      end
   end
 
 end
