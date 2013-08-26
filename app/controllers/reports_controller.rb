@@ -9,6 +9,7 @@ class ReportsController < ApplicationController
   has_scope :is_anatel
   has_scope :by_modem, :type => :array_or_string
   has_scope :by_tech, :type => :array_or_string
+  has_scope :by_conn_type, :type => :array_or_string
 
   def index
     @report_types = [
@@ -89,10 +90,6 @@ class ReportsController < ApplicationController
     @bras = params[:bras]
 
 
-    if @type.include? "android"
-      @agent_type = ["fixed", "mobile"]
-    end
-
     if @type.include? "all"
       @type = ["android", "linux"]
       @agent_type = ["fixed", "mobile"]
@@ -164,7 +161,8 @@ class ReportsController < ApplicationController
             where(:state => @states).
             where(:areacode => @cn).
             where(:type => @type).
-            where(:anatel => @goal_filter)
+            where(:anatel => @goal_filter).
+            by_conn_type(@agent_type)
       else
         if @pop.include? 'all'
           fixed_probes = Probe.
@@ -188,7 +186,8 @@ class ReportsController < ApplicationController
               where(:areacode => @cn).
               where(:type => @type).
               where(:anatel => @goal_filter).
-              where(:bras => @bras)
+              where(:bras => @bras).
+              by_conn_type(@agent_type)
 
         else
           if @bras.include? 'all'
@@ -213,7 +212,8 @@ class ReportsController < ApplicationController
                 where(:areacode => @cn).
                 where(:type => @type).
                 where(:anatel => @goal_filter).
-                where(:pop => @pop)
+                where(:pop => @pop).
+                by_conn_type(@agent_type)
           end
         end
       end
@@ -228,6 +228,8 @@ class ReportsController < ApplicationController
 
     all_schedules = Schedule.
         where(:destination_id => all_probes)
+
+    binding.pry
 
     @report_results = {}
     #

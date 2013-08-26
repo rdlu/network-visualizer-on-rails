@@ -69,6 +69,9 @@ class Probe < ActiveRecord::Base
   scope :by_tech, lambda { |tech|
     joins(:connection_profile).where('connection_profiles.name_id' => tech) unless tech == '' or tech[0] == ''
   }
+  scope :by_conn_type, lambda { |ctype|
+    joins(:connection_profile).where('connection_profiles.conn_type' => ctype) unless ctype == '' or ctype[0] == ''
+  }
 
   def pretty_name
     "#{self.name} (#{self.ipaddress})"
