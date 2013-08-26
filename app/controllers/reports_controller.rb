@@ -2337,7 +2337,9 @@ class ReportsController < ApplicationController
       report = Nokogiri::XML(params[:report])
 
       user = report.xpath("report/user").children.to_s
-      schedule_uuid = report.xpath("report/uuid").children.to_s
+      #schedule_uuid = report.xpath("report/uuid").children.to_s
+      #enquanto o william nao atualiza os agentes
+      schedule_uuid = Schedule.where(destination_id: Probe.where(ipaddress: user)).first.uuid
       uuid = report.xpath("report/meas_uuid").children.to_s
       timestamp = report.xpath("report/timestamp").children.to_s
       agent_type = report.xpath("report/agent_type").children.to_s
