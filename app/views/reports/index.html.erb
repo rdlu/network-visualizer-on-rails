@@ -1,36 +1,40 @@
 <h2>Relatórios</h2>
+<div style="position:absolute;right: 0; bottom: 0; left: 0; overflow: hidden;height:100%;">
+    <div id="frame" style="margin-top:120px;height:100%;top: 0; bottom: 0; left: 0;width: 200%;">
 
-<div id="ops" class="accordion">
-  <div class="accordion-group">
-    <div class="accordion-heading">
-      <h4 id="acc_name" name="open" style="margin-left: 5px; padding: 0" class="accordion-toggle" data-toggle="collapse" data-parent="#ops" href="#accordion_forms">
-        Opções &#10548;
-      </h4>
-    </div>
-    <div id="accordion_forms" class="accordion-body collapse in">
-      <div class="accordion-inner">
-        <div class="tabbable">
-          <ul class="nav nav-tabs ">
-            <li class="active"><a href="#form_1" data-toggle="tab">Formato 1</a></li>
-            <li><a href="#form_2" data-toggle="tab">Formato 2</a></li>
-            <li><a href="#form_3" data-toggle="tab">Performance</a></li>
-          </ul>
-          <div class="tab-content tab-content-border" style="min-height: 50px !important">
-            <div class="tab-pane active" id="form_1">
-              <%= render 'form1' %>
+      <div id="accordion_forms" class="collapse width in" style="background: #ffffff;height: auto !important;width: auto;float:left;">
+          <div class="accordion-inner" style="width: 450px; float: left;height: 100%; overflow-y:auto;">
+            <div class="tabbable" style="position:relative;">
+              <ul class="nav nav-tabs ">
+                <li class="active"><a href="#form_1" data-toggle="tab" style="font-size:12px">Formato 1</a></li>
+                <li><a href="#form_2" data-toggle="tab" style="font-size:12px">Formato 2</a></li>
+                <li><a href="#form_3" data-toggle="tab" style="font-size:12px">Performance</a></li>
+              </ul>
+              <div class="tab-content tab-content-border" style="min-height: 50px !important">
+                <div class="tab-pane active" id="form_1">
+                  <%= render 'form1' %>
+                </div>
+                <div class="tab-pane"  id="form_2"> <%= render 'form2' %> </div>
+                <div class="tab-pane"  id="form_3"> <%= render 'form3' %></div>
+              </div>
             </div>
-            <div class="tab-pane" id="form_2"> <%= render 'form2' %> </div>
-            <div class="tab-pane" id="form_3"> <%= render 'form3' %></div>
           </div>
         </div>
 
+
+      <div id="view" style="position:relative;width: 50%; height: 100%; overflow-y:auto; overflow-x: hidden;z-index: 1">
+        <div class="navbar" style="height:20px;position:fixed;width:100%;z-index:1000;">
+          <div class="navbar-inner" style="border-radius:0;padding-left:5px;height:20px;width:100%;">
+
+            <h4 id="acc_name" name="open" style="color:white;margin-left: 5px;margin-top: 12px;" class="accordion-toggle" data-toggle="collapse" data-parent="#menu" href="#accordion_forms">
+              Opções &nbsp;&nbsp;&nbsp;&nbsp;&#8592;
+            </h4>
+            </div>
+          </div>
+        <div id="graphs-area" style="margin-top: 50px;padding-bottom:160px">
+          </div>
       </div>
     </div>
-  </div>
-</div>
-
-
-<div id="graphs-area">
 </div>
 
 
@@ -40,10 +44,10 @@
         $('#acc_name').click(function () {
             var text = document.getElementById('acc_name').getAttribute('name');
             if (text == 'open') {
-                $("#acc_name").html('Opções &#10549;');
+                $("#acc_name").html('Opções &#8594;');
                 $("#acc_name").attr('name', 'closed');
             } else {
-                $("#acc_name").html('Opções &#10548;');
+                $("#acc_name").html('Opções &nbsp;&nbsp;&nbsp;&nbsp;&#8592;');
                 $("#acc_name").attr('name', 'open');
             }
         });

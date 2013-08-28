@@ -1,15 +1,16 @@
 <%= form_tag(eaq2_table_reports_path, :class => 'form-horizontal', :id => 'report-form2') do %>
-    <div class="container-fluid">
      <div class="row-fluid">
-      <div class="span4">
+      <div>
         <div class="control-group">
-          <label class="control-label"  for="type">Agente: </label>
+          <label class="control-label" for="type">Agente: </label>
           <div class="controls">
             <!-- select :agent,'', Probe.types,{}, :onchange => 'displayTypes(this.value)', :id=>"agent"  -->
-            <select  name = "agent[]"  id="probe-agent" onchange="displayTypes(this.value)" >
+            <select name = "agent[]"  id="probe-agent" onchange="displayTypes(this.value)"style="font-size:small; width: 155px" >
+              <optgroup>
               <option name="agent[]" value="android">Android</option>
               <option name="agent[]" value="linux">Linux</option>
               <option name="agent[]" value="all">Todos</option>
+              </optgroup>
             </select>
           </div>
         </div>
@@ -23,41 +24,46 @@
         <div class="control-group">
             <label for="probe-type" class="control-label">UF:</label>
           <div class="controls">
-            <select multiple="true"  name = "state[]"  id="probe-state" onchange="filterUFs()" >
-              <option name="state" value="">Todas</option>
+            <select multiple="true"  name = "state[]"  id="probe-state" onchange="filterUFs()"style="height:50px" >
+              <optgroup>
+              <option name="state" value="">Todos</option>
               <% Probe.states.each do |state| %>
                   <option name="state" value="<%= state.at(1) %>" <%= params[:by_state].to_s == state.at(1).to_s ? "selected=\"selected\"".html_safe : "" %>><%= state.at(1).upcase %></option>
               <% end %>
+              </optgroup>
             </select>
             </div>
         </div>
         <div class="control-group">
           <label  for="probe-cn" class="control-label">CN(Cód. Área):</label>
           <div id="op_cn" class="controls">
-            <select multiple="true"  name="cn[]" id="probe-cn" onchange="setAllOpt(this.value,'probe-cn')"  >
+            <select multiple="true" name="cn[]" id="probe-cn" onchange="setAllOpt(this.value,'probe-cn')" style="height:50px" >
+              <optgroup>
               <option value="1">Todas</option>
               <option value="0">Sem DDD</option>
               <% Probe.cod_area.each do |cn|
                   if search_field :probe,:state == cn.at(0).to_s  %>
                    <option value="<%= cn.at(1) %>" ><%= cn.at(1)%></option>
               <% end end %>
+                </optgroup>
             </select>
           </div>
         </div>
       </div>
 
-      <div class="span3_5">
+      <div>
         <div id="ag_types" class="control-group" >
           <label class="control-label" for="agent_type">Tipo: </label>
           <div class="controls">
-            <div> <%= check_box_tag  "agent_type[]","mobile",{},:id =>"type_m" %> Móvel </div>
-            <div> <%= check_box_tag  "agent_type[]","fixed",{},:id=>"type_f", :onclick=>'displayBRAS(this.checked)' %> Fixo </div>
+            <div class="span4"> <%= check_box_tag  "agent_type[]","mobile",{},:id =>"type_m" %> Móvel </div>
+            <div class="span4"> <%= check_box_tag  "agent_type[]","fixed",{},:id=>"type_f", :onclick=>'displayBRAS(this.checked)' %> Fixo </div>
           </div>
         </div>
         <div  class="control-group">
           <label class="control-label " for="bras">BRAS: </label>
           <div class="controls">
-            <select multiple="true"  name="bras[]" id="bras" onchange="setAllOpt(this.value,'bras')" style="width: 155px">
+            <select multiple="true"  name="bras[]" id="bras" onchange="setAllOpt(this.value,'bras')" style="height:50px">
+              <optgroup>
               <option value="all">Todas</option>
               <% probeUniq = Array.new
                  probeUniq = Probe.all.uniq{|x| x.bras}
@@ -67,36 +73,39 @@
                       <option value="<%= p.bras %>"><%= p.bras %></option>
               <% end
                  end %>
+                </optgroup>
             </select>
           </div>
         </div>
         <div class="control-group">
           <label class="control-label" for="pop">POP: </label>
           <div class="controls"  >
-            <select multiple="true"  name="pop[]" id="pop" onchange="setAllOpt(this.value,'pop')" style="width: 155px">
+            <select multiple="true"  name="pop[]" id="pop" onchange="setAllOpt(this.value,'pop')" style="height:40px">
+              <optgroup>
               <option value="all">Todas</option>
               <%  Probe.pops.each do |p|  %>
                   <option  value="<%= p %>"><%= p %></option>
               <% end %>
+                </optgroup>
             </select>
           </div>
         </div>
       </div>
 
 
-      <div id="op_col2"  class="span4" >
+      <div id="op_col2">
         <div class="control-group">
           <%= label :date, :start2, "Início: ", :class => 'control-label' %>
           <div class="controls">
             <div class="input-prepend">
-              <label for="date_start2" style="display: inline"><span id="icon2" class="add-on" style="margin-top: 1px;"><i class="icon-calendar"></i></span></label>
-              <%= text_field :date, :start, :class => 'input-small datepicker', :"data-date-format".to_sym => "dd/mm/yyyy", :id => 'date_start2',:value=> DateTime.current.strftime('%d/%m/%Y')  %>
+              <label for="date_start2" style="display: inline;font-size:small;"><span id="icon2" class="add-on" style="margin-top: 1px;"><i class="icon-calendar"></i></span></label>
+              <%= text_field :date, :start, :style=>'font-size:small;', :class => 'input-small datepicker', :"data-date-format".to_sym => "dd/mm/yyyy", :id => 'date_start2',:value=> DateTime.current.strftime('%d/%m/%Y')  %>
             </div>
             <div class="input-prepend">
               <span class="add-on"><i class="icon-time"></i></span>
-              <%= text_field :time, :start, :class => 'input-mini bootstrap-timepicker', :value => Time.current.strftime('%H:%M'),:id => 'time_start2' %>
+              <%= text_field :time, :start, :style=>'font-size:small;', :class => 'input-mini bootstrap-timepicker', :value => Time.current.strftime('%H:%M'),:id => 'time_start2' %>
             </div> <br/>
-            <div id="error_Ini2" style = "display: none" class="alert alert-error">
+            <div id="error_Ini2" style = "display: none;font-size:small;" class="alert alert-error">
               Data de início maior que a de fim.
             </div>
           </div>
@@ -105,27 +114,26 @@
           <%= label :date, :end2, "Fim: ", :class => 'control-label' %>
           <div class="controls">
             <div class="input-prepend">
-              <label for="date_end2" style="display: inline"><span id="icon3" class="add-on" style="margin-top: 1px;"><i class="icon-calendar"></i></span></label>
-              <%= text_field :date, :end, :class => 'input-small datepicker', :"data-date-format".to_sym => "dd/mm/yyyy", :id => 'date_end2',:value=> DateTime.current.strftime('%d/%m/%Y') %>
+              <label for="date_end2" style="display: inline"><span id="icon3" class="add-on"><i class="icon-calendar"></i></span></label>
+              <%= text_field :date, :end, :style=>'font-size:small;', :class => 'input-small datepicker', :"data-date-format".to_sym => "dd/mm/yyyy", :id => 'date_end2',:value=> DateTime.current.strftime('%d/%m/%Y') %>
             </div>
             <div class="input-prepend">
               <span class="add-on"><i class="icon-time"></i></span>
-              <%= text_field :time, :end, :class => 'input-mini bootstrap-timepicker', :value => Time.current.strftime('%H:%M'), :id => 'time_end2' %>
-            </div> <br/>
-            <div id="error_Fim2" style = "display: none"  class="alert alert-error ">
+              <%= text_field :time, :end, :style=>'font-size:small;', :class => 'input-mini bootstrap-timepicker', :value => Time.current.strftime('%H:%M'), :id => 'time_end2' %>
+            </div>
+            <div id="error_Fim2" style = "display: none; font-size:small;"  class="alert alert-error ">
               Data de fim menor que a de início.
             </div>
           </div>
         </div>
         <div class="control-group">
           <div class="controls">
-            <input class="btn btn-primary span8" type="submit" name="add" id="report2-add" value="Adicionar"  data-toggle="collapse" data-target="#accordion_forms"/>
+            <input class="btn btn-primary btn-block" type="submit" name="add" id="report-add2" value="Adicionar"  data-toggle="collapse" data-target="#accordion_forms"/>
           </div>
         </div>
       </div>
 
      </div>
-    </div>
 <% end %>
 
 <script>
@@ -196,7 +204,12 @@
       });
 
   }
+  $('#report-add2').click(function () {
+      var text = document.getElementById('acc_name').getAttribute('name');
+      $("#acc_name").html('Opções &#8594;');
+      $("#acc_name").attr('name', 'closed');
 
+  });
 
   $(document).ready(function (){
       $('#date_start2')
