@@ -2,8 +2,11 @@
 // They will automatically be included in application.css.scss.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 @import 'bootstrap/mixins';
-
-
+#nav.affix{
+  position: fixed;
+  top: 52px;
+  width: 97%;
+}
 .tab-content-border{
   border-radius: 0 0 10px 10px;
   min-height: 450px;
