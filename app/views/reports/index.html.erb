@@ -1,10 +1,19 @@
 <h2>Relatórios</h2>
-<div style="position:absolute;right: 0; bottom: 0; left: 0; overflow: hidden;height:100%;">
-    <div id="frame" style="margin-top:120px;height:100%;top: 0; bottom: 0; left: 0;width: 200%;">
+<div style="right: 0; bottom: 0; left: 0; overflow: hidden;height:100%;">
+  <div id="nav" class="navbar" style="height:20px;width:100%;z-index:1000;">
+    <div class="navbar-inner" style="border-radius:0;padding-left:5px;height:20px;width:100%;">
 
-      <div id="accordion_forms" class="collapse width in" style="background: #ffffff;height: auto !important;width: auto;float:left;">
-          <div class="accordion-inner" style="width: 450px; float: left;height: 100%; overflow-y:auto;">
-            <div class="tabbable" style="position:relative;">
+      <h4 id="acc_name" name="open" style="color:white;margin-left: 5px;margin-top: 12px;" class="accordion-toggle" data-toggle="collapse" data-parent="#menu" href="#accordion_forms">
+        Opções &nbsp;&nbsp;&nbsp;&nbsp;&#8592;
+      </h4>
+    </div>
+  </div>
+
+    <div id="frame" style="height:100%;top: 0; bottom: 0; left: 0;width: 200%;">
+
+      <div id="accordion_forms" class="collapse width in" style="position:fixed;margin-top: 1%;background: #ffffff;height: auto !important;width: auto;float:left;z-index: 1000">
+          <div class="accordion-inner" style="width: 450px; float: left;height: 400px; overflow-y:auto;">
+            <div class="tabbable" >
               <ul class="nav nav-tabs ">
                 <li class="active"><a href="#form_1" data-toggle="tab" style="font-size:12px">Formato 1</a></li>
                 <li><a href="#form_2" data-toggle="tab" style="font-size:12px">Formato 2</a></li>
@@ -23,15 +32,8 @@
 
 
       <div id="view" style="position:relative;width: 50%; height: 100%; overflow-y:auto; overflow-x: hidden;z-index: 1">
-        <div class="navbar" style="height:20px;position:fixed;width:100%;z-index:1000;">
-          <div class="navbar-inner" style="border-radius:0;padding-left:5px;height:20px;width:100%;">
 
-            <h4 id="acc_name" name="open" style="color:white;margin-left: 5px;margin-top: 12px;" class="accordion-toggle" data-toggle="collapse" data-parent="#menu" href="#accordion_forms">
-              Opções &nbsp;&nbsp;&nbsp;&nbsp;&#8592;
-            </h4>
-            </div>
-          </div>
-        <div id="graphs-area" style="margin-top: 50px;padding-bottom:160px">
+        <div id="graphs-area" style="margin-top: 50px;">
           </div>
       </div>
     </div>
@@ -877,7 +879,14 @@
 
         $('#nav').affix({
             offset:{
-                top: 51
+                top: 0
+
+            }
+        });
+
+        $('#accordion_forms').affix({
+            offset:{
+                top: 0
             }
         });
 

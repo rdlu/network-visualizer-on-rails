@@ -4,9 +4,27 @@
 @import 'bootstrap/mixins';
 #nav.affix{
   position: fixed;
-  top: 52px;
+  top: 8%;
   width: 97%;
 }
+#accordion_forms.affix{
+  position: fixed;
+  top: 15%;
+
+}
+/* When the window is less than 900px, the new css rules will be applied */
+@media (max-width: 900px){
+  #nav.affix{
+    position: fixed;
+    top: 0;
+  }
+  #accordion_forms.affix{
+    position: fixed;
+    top: 9%;
+
+  }
+}
+
 .tab-content-border{
   border-radius: 0 0 10px 10px;
   min-height: 450px;
