@@ -1,3 +1,58 @@
-// Place all the styles related to the reports controller here.
-// They will automatically be included in application.css.scss.
-// You can use Sass (SCSS) here: http://sass-lang.com/
+.collapse.height {
+  position: relative;
+  height: 0;
+  overflow: hidden;
+  -webkit-transition: height 0.35s ease;
+  -moz-transition: height 0.35s ease;
+  -o-transition: height 0.35s ease;
+  transition: height 0.35s ease;
+}
+
+.collapse.width {
+  position: relative;
+  width: 0;
+  overflow: hidden;
+  -webkit-transition: width 0.35s ease;
+  -moz-transition: width 0.35s ease;
+  -o-transition: width 0.35s ease;
+  transition: width 0.35s ease;
+}
+
+.collapse.in.width {
+  width: auto;
+}
+
+.collapse.in.height {
+  height: auto;
+}
+
+.control-label{
+  font-size:small !important;
+}
+
+.input-block-level{
+  font-size:small !important;
+}
+
+optgroup { font-size:small;}
+.form-horizontal .control-group {
+  margin-bottom: 10px;
+  padding-left: 10px;
+}
+form {
+  margin:0 0 0 0;
+}
+.body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.accordion-inner {
+  border-top: 0px solid #E5E5E5;
+  border-right: 1px solid #E5E5E5;
+  border-bottom: 1px solid #E5E5E5;
+  padding: 9px 15px;
+}

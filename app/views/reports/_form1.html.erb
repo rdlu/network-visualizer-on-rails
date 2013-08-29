@@ -1,6 +1,6 @@
 <%= form_tag(graph_reports_path, :class => 'form-horizontal', :id => 'report-form') do %>
     <div class="row-fluid">
-      <div class="span7">
+      <div>
         <div class="control-group">
           <label class="control-label" for="destination_id">Sonda de Destino: </label>
 
@@ -28,7 +28,7 @@
           </div>
         </div>
         </div>
-        <div id="op_col2"  class="span5" style="display: none">
+        <div id="op_col2" style="display: none">
          <div class="control-group">
             <div id="sel_date" class="controls">
             </div>
@@ -36,13 +36,13 @@
         <div class="control-group">
           <%= label :date, :start, "Início: ", :class => 'control-label' %>
           <div class="controls">
-            <div class="input-prepend">
+            <div class="input-prepend" style="vertical-align: bottom">
               <label for="date_start" style="display: inline"><span class="add-on" style="margin-top: 1px;"><i class="icon-calendar"></i></span></label>
-              <%= text_field :date, :start, :class => 'input-small datepicker', :"data-date-format".to_sym => "dd/mm/yyyy"  %>
+              <%= text_field :date, :start, :style=>'font-size:small;', :class => 'input-small datepicker', :"data-date-format".to_sym => "dd/mm/yyyy"  %>
             </div>
             <div class="input-prepend">
               <span class="add-on"><i class="icon-time"></i></span>
-              <%= text_field :time, :start, :class => 'input-mini bootstrap-timepicker', :value => Time.current.strftime('%H:%M') %>
+              <%= text_field :time, :start,:style=>'font-size:small;', :class => 'input-mini bootstrap-timepicker', :value => Time.current.strftime('%H:%M') %>
             </div> <br/>
             <div id="error_Ini" style = "display: none" class="alert alert-error">
               Data de início maior que a de fim.
@@ -54,11 +54,11 @@
           <div class="controls">
             <div class="input-prepend">
               <label for="date_end" style="display: inline"><span class="add-on" style="margin-top: 1px;"><i class="icon-calendar"></i></span></label>
-              <%= text_field :date, :end, :class => 'input-small datepicker', :"data-date-format".to_sym => "dd/mm/yyyy" %>
+              <%= text_field :date, :end,:style=>'font-size:small;', :class => 'input-small datepicker', :"data-date-format".to_sym => "dd/mm/yyyy" %>
             </div>
             <div class="input-prepend">
               <span class="add-on"><i class="icon-time"></i></span>
-              <%= text_field :time, :end, :class => 'input-mini bootstrap-timepicker', :value => Time.current.strftime('%H:%M') %>
+              <%= text_field :time, :end,:style=>'font-size:small;', :class => 'input-mini bootstrap-timepicker', :value => Time.current.strftime('%H:%M') %>
             </div> <br/>
             <div id="error_Fim" style = "display: none"  class="alert alert-error ">
               Data de fim menor que a de início.
@@ -67,7 +67,7 @@
         </div>
         <div class="control-group">
           <div class="controls">
-            <input class="btn btn-primary span8" type="submit" name="add" id="report-add" value="Adicionar"  data-toggle="collapse" data-target="#accordion_forms"/>
+            <input class="btn btn-primary btn-block" type="submit" name="add" id="report-add" value="Adicionar"  data-toggle="collapse" data-target="#accordion_forms"/>
           </div>
         </div>
       </div>
@@ -76,6 +76,7 @@
 <% end %>
 
 <script>
+
     $(document).ready(function (){
 
         $('#date_start')
@@ -106,7 +107,12 @@
                     }
                });
     });
+        $('#report-add').click(function () {
+            var text = document.getElementById('acc_name').getAttribute('name');
+                $("#acc_name").html('Opções &#8594;');
+                $("#acc_name").attr('name', 'closed');
 
+        });
   function toggleOpDates(selected){
       $('#op_col2').attr('style','display:block');
       var sel= "";
