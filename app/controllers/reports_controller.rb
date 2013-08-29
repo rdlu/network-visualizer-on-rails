@@ -2027,6 +2027,8 @@ class ReportsController < ApplicationController
       @schedules = Schedule.joins(:evaluations).where(schedules: {:destination_id => @probes}, evaluations: {profile_id: profiles})
     end
 
+    @window_size = @schedules.max_by{|schedule| schedule.polling}.polling
+
     unless multiprobe
       schedule = @schedules.last
       @destination = schedule.destination
@@ -2062,15 +2064,24 @@ class ReportsController < ApplicationController
             format.html { render :layout => false, file: 'reports/dygraphs_dns' }
           end
         when 'dns_detail'
+          @raw_results = DnsDetail.
+              where(:schedule_uuid => schedule.uuid).
+              where(:timestamp => @from..@to).order('timestamp ASC').all
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/dygraphs_dns_detail' }
           end
         when 'webload'
+          @raw_results = WebLoadResult.
+              where(:schedule_uuid => schedule.uuid).
+              where(:timestamp => @from..@to).order('timestamp ASC').all
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/dygraphs_webload' }
           end
         else
           #tipo de metrica nao suportado
+          respond_to do |format|
+            format.html { render :layout => false, file: 'reports/dygraphs_notsupported' }
+          end
       end
     else #is multiprobe
 
@@ -2145,7 +2156,7 @@ class ReportsController < ApplicationController
 
     @choosenSeries = case @metric.plugin
                        when /rtt|loss/
-                         {dsavg: "dsdsadsa"}
+                         {dsavg: ""}
                        else
                          {sdavg: "Download (Avg)", dsavg: "Upload (Avg)"}
                      end
