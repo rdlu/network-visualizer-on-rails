@@ -104,6 +104,10 @@ class ReportsController < ApplicationController
       @goal_filter = false
     end
 
+    if @bras.nil?
+      @bras = 'all'
+    end
+
     # Garantir que não tenhamos nulos
     @cn.delete("")
     @states.delete("")
@@ -229,7 +233,6 @@ class ReportsController < ApplicationController
     all_schedules = Schedule.
         where(:destination_id => all_probes)
 
-    binding.pry
 
     @report_results = {}
     #
@@ -530,7 +533,8 @@ class ReportsController < ApplicationController
             where(:state => @states).
             where(:areacode => @cn).
             where(:type => @type).
-            where(:anatel => @goal_filter)
+            where(:anatel => @goal_filter).
+            by_conn_type(@agent_type)
       else
         if @pop.include? 'all'
           fixed_probes = Probe.
@@ -554,7 +558,8 @@ class ReportsController < ApplicationController
               where(:areacode => @cn).
               where(:type => @type).
               where(:anatel => @goal_filter).
-              where(:bras => @bras)
+              where(:bras => @bras).
+              by_conn_type(@agent_type)
 
         else
           if @bras.include? 'all'
@@ -579,7 +584,8 @@ class ReportsController < ApplicationController
                 where(:areacode => @cn).
                 where(:type => @type).
                 where(:anatel => @goal_filter).
-                where(:pop => @pop)
+                where(:pop => @pop).
+                by_conn_type(@agent_type)
           end
         end
       end
@@ -926,7 +932,8 @@ class ReportsController < ApplicationController
             where(:areacode => @cn).
             where(:type => @type).
             where(:anatel => @goal_filter).
-            where(:plan_id => Plan.where(:throughput_down => plan.throughput_down))
+            where(:plan_id => Plan.where(:throughput_down => plan.throughput_down)).
+            by_conn_type(@agent_type)
       else
         if @pop.include? 'all'
           fixed_probes = Probe.
@@ -953,7 +960,8 @@ class ReportsController < ApplicationController
               where(:type => @type).
               where(:anatel => @goal_filter).
               where(:bras => @bras).
-              where(:plan_id => Plan.where(:throughput_down => plan.throughput_down))
+              where(:plan_id => Plan.where(:throughput_down => plan.throughput_down)).
+              by_conn_type(@agent_type)
 
         else
           if @bras.include? 'all'
@@ -981,7 +989,8 @@ class ReportsController < ApplicationController
                 where(:type => @type).
                 where(:anatel => @goal_filter).
                 where(:pop => @pop).
-                where(:plan_id => Plan.where(:throughput_down => plan.throughput_down))
+                where(:plan_id => Plan.where(:throughput_down => plan.throughput_down)).
+                by_conn_type(@agent_type)
           end
         end
       end
@@ -1591,7 +1600,8 @@ class ReportsController < ApplicationController
           where(:type => @type).
           where(:anatel => @goal_filter).
           where(:pop => @pop).
-          where(:bras => @bras)
+          where(:bras => @bras).
+          by_conn_type(@agent_type)
 
     else
       if (@pop.include? 'all') && (@bras.include? 'all')
@@ -1599,7 +1609,8 @@ class ReportsController < ApplicationController
             where(:state => @states).
             where(:areacode => @cn).
             where(:type => @type).
-            where(:anatel => @goal_filter)
+            where(:anatel => @goal_filter).
+            by_conn_type(@agent_type)
       else
         if @pop.include? 'all'
           @probes = Probe.
@@ -1607,8 +1618,8 @@ class ReportsController < ApplicationController
               where(:areacode => @cn).
               where(:type => @type).
               where(:anatel => @goal_filter).
-              where(:bras => @bras)
-
+              where(:bras => @bras).
+              by_conn_type(@agent_type)
         else
           if @bras.include? 'all'
             @probes = Probe.
@@ -1616,7 +1627,8 @@ class ReportsController < ApplicationController
                 where(:areacode => @cn).
                 where(:type => @type).
                 where(:anatel => @goal_filter).
-                where(:pop => @pop)
+                where(:pop => @pop).
+                by_conn_type(@agent_type)
           end
         end
       end
