@@ -56,3 +56,26 @@ form {
   border-bottom: 1px solid #E5E5E5;
   padding: 9px 15px;
 }
+
+#nav.affix{
+  position: fixed;
+  top: 8%;
+  width: 97%;
+}
+#accordion_forms.affix{
+  position: fixed;
+  top: 15%;
+
+}
+/* When the window is less than 900px, the new css rules will be applied */
+@media (max-width: 900px){
+  #nav.affix{
+    position: fixed;
+    top: 0;
+  }
+  #accordion_forms.affix{
+    position: fixed;
+    top: 9%;
+
+  }
+}
