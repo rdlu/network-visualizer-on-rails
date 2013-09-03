@@ -1,6 +1,6 @@
 <%= form_tag(eaq2_table_reports_path, :class => 'form-horizontal', :id => 'report-form2') do %>
      <div class="row-fluid">
-      <div>
+      <div class="span5">
         <div class="control-group">
           <label class="control-label" for="type">Agente: </label>
           <div class="controls">
@@ -24,46 +24,41 @@
         <div class="control-group">
             <label for="probe-type" class="control-label">UF:</label>
           <div class="controls">
-            <select multiple="true"  name = "state[]"  id="probe-state" onchange="filterUFs()"style="height:50px" >
-              <optgroup>
-              <option name="state" value="">Todos</option>
+            <select multiple="true"  name = "state[]"  id="probe-state" onchange="filterUFs()" >
+              <option name="state" value="">Todas</option>
               <% Probe.states.each do |state| %>
                   <option name="state" value="<%= state.at(1) %>" <%= params[:by_state].to_s == state.at(1).to_s ? "selected=\"selected\"".html_safe : "" %>><%= state.at(1).upcase %></option>
               <% end %>
-              </optgroup>
             </select>
             </div>
         </div>
         <div class="control-group">
           <label  for="probe-cn" class="control-label">CN(Cód. Área):</label>
           <div id="op_cn" class="controls">
-            <select multiple="true" name="cn[]" id="probe-cn" onchange="setAllOpt(this.value,'probe-cn')" style="height:50px" >
-              <optgroup>
+            <select multiple="true"  name="cn[]" id="probe-cn" onchange="setAllOpt(this.value,'probe-cn')"  >
               <option value="1">Todas</option>
               <option value="0">Sem DDD</option>
               <% Probe.cod_area.each do |cn|
                   if search_field :probe,:state == cn.at(0).to_s  %>
                    <option value="<%= cn.at(1) %>" ><%= cn.at(1)%></option>
               <% end end %>
-                </optgroup>
             </select>
           </div>
         </div>
       </div>
 
-      <div>
+      <div class="span5">
         <div id="ag_types" class="control-group" >
           <label class="control-label" for="agent_type">Tipo: </label>
           <div class="controls">
-            <div class="span4"> <%= check_box_tag  "agent_type[]","mobile",{},:id =>"type_m" %> Móvel </div>
-            <div class="span4"> <%= check_box_tag  "agent_type[]","fixed",{},:id=>"type_f", :onclick=>'displayBRAS(this.checked)' %> Fixo </div>
+            <div> <%= check_box_tag  "agent_type[]","mobile",{},:id =>"type_m" %> Móvel </div>
+            <div> <%= check_box_tag  "agent_type[]","fixed",{},:id=>"type_f", :onclick=>'displayBRAS(this.checked)' %> Fixo </div>
           </div>
         </div>
         <div  class="control-group">
           <label class="control-label " for="bras">BRAS: </label>
           <div class="controls">
-            <select multiple="true"  name="bras[]" id="bras" onchange="setAllOpt(this.value,'bras')" style="height:50px">
-              <optgroup>
+            <select multiple="true"  name="bras[]" id="bras" onchange="setAllOpt(this.value,'bras')" style="width: 155px">
               <option value="all">Todas</option>
               <% probeUniq = Array.new
                  probeUniq = Probe.all.uniq{|x| x.bras}
@@ -73,27 +68,25 @@
                       <option value="<%= p.bras %>"><%= p.bras %></option>
               <% end
                  end %>
-                </optgroup>
             </select>
           </div>
         </div>
         <div class="control-group">
           <label class="control-label" for="pop">POP: </label>
           <div class="controls"  >
-            <select multiple="true"  name="pop[]" id="pop" onchange="setAllOpt(this.value,'pop')" style="height:40px">
-              <optgroup>
+            <select multiple="true"  name="pop[]" id="pop" onchange="setAllOpt(this.value,'pop')" style="width: 155px">
               <option value="all">Todas</option>
               <%  Probe.pops.each do |p|  %>
                   <option  value="<%= p %>"><%= p %></option>
               <% end %>
-                </optgroup>
             </select>
           </div>
         </div>
       </div>
+     </div>
 
-
-      <div id="op_col2">
+    <div class="row-fluid">
+      <div id="op_col2"  class="span7 " >
         <div class="control-group">
           <%= label :date, :start2, "Início: ", :class => 'control-label' %>
           <div class="controls">
@@ -128,7 +121,7 @@
         </div>
         <div class="control-group">
           <div class="controls">
-            <input class="btn btn-primary btn-block" type="submit" name="add" id="report-add2" value="Adicionar"  data-toggle="collapse" data-target="#accordion_forms"/>
+            <input class="btn btn-primary span8" type="submit" name="add" id="report2-add" value="Adicionar"  data-toggle="collapse" data-target="#accordion_forms"/>
           </div>
         </div>
       </div>
