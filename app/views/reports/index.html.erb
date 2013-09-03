@@ -1,23 +1,22 @@
 <h2>Relatórios</h2>
-<div style="right: 0; bottom: 0; left: 0; overflow: hidden;height:100%;">
-  <div id="nav" class="navbar" style="height:20px;width:100%;z-index:1000;">
-    <div class="navbar-inner" style="border-radius:0;padding-left:5px;height:20px;width:96%;">
+  <div id="nav" class="navbar rotate" style="position: absolute;display: block; margin-left: -30px; margin-top: 50px;height: 176px;width: 246px;">
+    <div class="navbar-inner">
 
       <h4 id="acc_name" name="open" style="color:white;margin-left: 5px;margin-top: 12px;" class="accordion-toggle" data-toggle="collapse" data-parent="#menu" href="#accordion_forms">
         Opções &nbsp;&nbsp;&nbsp;&nbsp;&#8592;
       </h4>
     </div>
   </div>
+    <div style="margin-left:62px;position: absolute">
 
-    <div id="frame" style="height:100%;top: 0; bottom: 0; left: 0;width: 200%;">
-
-      <div id="accordion_forms" class="collapse width in" style="position:fixed;margin-top: 1%;background: #ffffff;height: auto !important;width: auto;float:left;z-index: 1000">
-          <div class="accordion-inner" style="width: 450px; float: left;height: 400px; overflow-y:auto;">
+      <div id="accordion_forms" class="collapse width in" style="margin-top: 1%;background: #ffffff;height: auto !important;width: auto;float:left;z-index: 1000">
+          <div class="accordion-inner" style="width: 900px">
             <div class="tabbable" >
               <ul class="nav nav-tabs ">
                 <li class="active"><a href="#form_1" data-toggle="tab" style="font-size:12px">Formato 1</a></li>
                 <li><a href="#form_2" data-toggle="tab" style="font-size:12px">Formato 2</a></li>
                 <li><a href="#form_3" data-toggle="tab" style="font-size:12px">Performance</a></li>
+                <li><a href="#form_4" data-toggle="tab" style="font-size:12px">Pac-Man</a></li>
               </ul>
               <div class="tab-content tab-content-border" style="min-height: 50px !important">
                 <div class="tab-pane active" id="form_1">
@@ -25,20 +24,19 @@
                 </div>
                 <div class="tab-pane"  id="form_2"> <%= render 'form2' %> </div>
                 <div class="tab-pane"  id="form_3"> <%= render 'form3' %></div>
+                <div class="tab-pane"  id="form_4"> </div>
               </div>
             </div>
           </div>
-        </div>
-
-
-      <div id="view" style="position:relative;width: 50%; height: 100%; overflow-y:auto; overflow-x: hidden;z-index: 1">
-
-        <div id="graphs-area" style="margin-top: 50px;">
-          </div>
       </div>
     </div>
-</div>
 
+
+<div id="view" style="margin-left: 62px">
+  <div id="graphs-area">
+  </div>
+</div>
+</div>
 
 <script type="text/javascript">
     var graphs = {};
@@ -876,8 +874,7 @@
             };
         }
 
-
-        $('#nav').affix({
+    /*    $('#nav').affix({
             offset:{
                 top: 50
 
