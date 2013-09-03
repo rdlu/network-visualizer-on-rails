@@ -2050,7 +2050,6 @@ class ReportsController < ApplicationController
       @exportFileName = @destination.name + '-' + @metric.plugin + '-' + @from.strftime("%Y%m%d_%H%M%S") + '-' +@to.strftime("%Y%m%d_%H%M%S")
       @exportParams = "source=#{@source.id}&destination=#{@destination.id}&metric=#{@metric.id}&from=#{@from.iso8601}&to=#{@to.iso8601}"
 
-
       case @metric.metric_type
         when 'active'
           @raw_results = Results.
@@ -2066,6 +2065,10 @@ class ReportsController < ApplicationController
               @raw_results = DnsDetail.
                   where(:schedule_uuid => schedule.uuid).
                   where(:timestamp => @from..@to).order('timestamp ASC').all
+              @results = []
+              @from.all_window_times_until(@to,@window_size.minutes).each do |window|
+                @results << [window,window+@window_size.minutes,]
+              end
             else
               @raw_results = DnsResult.
                   where(:schedule_uuid => schedule.uuid).
@@ -2522,7 +2525,8 @@ class ReportsController < ApplicationController
               when "web_load"
                 url = time = size = throughput = time_main_domain = size_main_domain = throughput_main_domain = time_other_domain = size_other_domain = throughput_other_domain = nil
                 @web_load_results = []
-                report.xpath("report/results/web_load/test").each do |c|
+                webtests = report.xpath("report/results/web_load/test")
+                webtests.each do |c|
                   url = c.children.search("url").inner_text
                   time = c.children.search("time").inner_text.to_f
                   size = c.children.search("size").inner_text.to_i
@@ -2551,7 +2555,8 @@ class ReportsController < ApplicationController
                 server = url = delay = nil
                 efic = average = timeout_errors = server_failure_errors = nil
                 @dns_results = []
-                report.xpath("report/results/dns/test").each do |c|
+                dnstests =report.xpath("report/results/dns/test")
+                dnstests.each do |c|
                   server = c.children.search("server").inner_text
                   url = c.children.search("url").inner_text
                   delay = c.children.search("delay").inner_text.to_i
@@ -2572,6 +2577,7 @@ class ReportsController < ApplicationController
                                                average: average,
                                                timeout_errors: timeout_errors,
                                                server_failure_errors: server_failure_errors,
+                                               total: dnstests.length,
                                                schedule_uuid: schedule_uuid,
                                                uuid: uuid)
               when "throughput_http"
