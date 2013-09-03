@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130822184409) do
+ActiveRecord::Schema.define(:version => 20130902204135) do
 
   create_table "compliances", :force => true do |t|
     t.integer   "schedule_id"
@@ -68,6 +68,7 @@ ActiveRecord::Schema.define(:version => 20130822184409) do
     t.datetime "created_at",                           :null => false
     t.datetime "updated_at",                           :null => false
     t.string   "schedule_uuid",         :limit => nil
+    t.integer  "total"
   end
 
   add_index "dns_details", ["schedule_uuid"], :name => "index_dns_details_on_schedule_uuid"
@@ -88,11 +89,11 @@ ActiveRecord::Schema.define(:version => 20130822184409) do
     t.string   "server"
     t.string   "url"
     t.integer  "delay"
-    t.string   "uuid",          :limit => nil
+    t.string   "schedule_uuid", :limit => nil
     t.datetime "created_at",                   :null => false
     t.datetime "updated_at",                   :null => false
     t.string   "status"
-    t.string   "schedule_uuid", :limit => nil
+    t.string   "uuid",          :limit => nil
     t.datetime "timestamp"
   end
 
