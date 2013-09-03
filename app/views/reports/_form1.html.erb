@@ -108,9 +108,11 @@
                });
     });
         $('#report-add').click(function () {
-            var text = document.getElementById('acc_name').getAttribute('name');
-                $("#acc_name").html('Opções &nbsp; &#8595;');
-                $("#acc_name").attr('name', 'closed');
+            $("html, body").animate({ scrollTop: 0 }, "slow");
+            var text = document.getElementById('optbtn').getAttribute('src');
+            var text = document.getElementById('optbtn').getAttribute('name');
+            $("#optbtn").attr('src', '/assets/opt_btn-right.png');
+            $("#optbtn").attr('name', 'closed');
 
         });
   function toggleOpDates(selected){

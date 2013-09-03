@@ -1,22 +1,18 @@
-<h2>Relatórios</h2>
-  <div id="nav" class="navbar rotate" style="position: absolute;display: block; margin-top: 5px;height: 176px;width: 150px;z-index:1000;">
-    <div class="navbar-inner">
+<div id="header">
+    <h2>Relatórios</h2>
 
-      <h4 id="acc_name" name="open" style="color:white;margin-left: 5px;margin-top: 12px;" class="accordion-toggle" data-toggle="collapse" data-parent="#menu" href="#accordion_forms">
-        Opções &nbsp; &#8593;
-      </h4>
-    </div>
-  </div>
+    <input type="image" name="open" id="optbtn" src='/assets/opt_btn-left.png' data-toggle="collapse" href="#accordion_forms">
+</div>
     <div style="margin-left:40px;position: absolute;z-index: 100;">
 
-      <div id="accordion_forms" class="collapse width in" style="height: auto !important;width: auto;float:left;">
-          <div class="accordion-inner" style="width: 900px; background: white">
+      <div id="accordion_forms" class="collapse width in">
+          <div id="tabs">
             <div class="tabbable" >
               <ul class="nav nav-tabs ">
-                <li class="active"><a href="#form_1" data-toggle="tab" style="font-size:12px">Formato 1</a></li>
-                <li><a href="#form_2" data-toggle="tab" style="font-size:12px">Formato 2</a></li>
-                <li><a href="#form_3" data-toggle="tab" style="font-size:12px">Performance</a></li>
-                <li><a href="#form_4" data-toggle="tab" style="font-size:12px">Pac-Man</a></li>
+                <li class="active"><a href="#form_1" data-toggle="tab">Formato 1</a></li>
+                <li><a href="#form_2" data-toggle="tab">Formato 2</a></li>
+                <li><a href="#form_3" data-toggle="tab">Performance</a></li>
+                <li><a href="#form_4" data-toggle="tab">Pac-Man</a></li>
               </ul>
               <div class="tab-content tab-content-border" style="min-height: 50px !important">
                 <div class="tab-pane active" id="form_1">
@@ -32,7 +28,7 @@
     </div>
 
 
-<div id="view" style="margin-left: 40px;">
+<div id="view">
   <div id="graphs-area">
   </div>
 </div>
@@ -41,14 +37,15 @@
 <script type="text/javascript">
     var graphs = {};
     $(function () {
-        $('#acc_name').click(function () {
-            var text = document.getElementById('acc_name').getAttribute('name');
+        $('#optbtn').click(function () {
+            var text = document.getElementById('optbtn').getAttribute('name');
+            var text = document.getElementById('optbtn').getAttribute('name');
             if (text == 'open') {
-                $("#acc_name").html('Opções &nbsp; &#8595;');
-                $("#acc_name").attr('name', 'closed');
+                $("#optbtn").attr('src', '/assets/opt_btn-right.png');
+                $("#optbtn").attr('name', 'closed');
             } else {
-                $("#acc_name").html('Opções &nbsp; &#8593;');
-                $("#acc_name").attr('name', 'open');
+                $("#optbtn").attr('src', '/assets/opt_btn-left.png');
+                $("#optbtn").attr('name', 'open');
             }
         });
 
@@ -872,6 +869,7 @@
                     }
                 });
             };
+
         }
 
     /*    $('#nav').affix({
@@ -909,6 +907,7 @@
 
 
          }   */
+
     });
 </script>
 

@@ -198,9 +198,10 @@
     );
 
     $('#report-add3').click(function () {
-        var text = document.getElementById('acc_name').getAttribute('name');
-        $("#acc_name").html('Opções &nbsp; &#8595;');
-        $("#acc_name").attr('name', 'closed');
+        var text = document.getElementById('optbtn').getAttribute('src');
+        var text = document.getElementById('optbtn').getAttribute('name');
+        $("#optbtn").attr('src', '/assets/opt_btn-right.png');
+        $("#optbtn").attr('name', 'closed');
 
     });
 
@@ -302,7 +303,7 @@
             $('#accordion_forms').attr("class","collapse width in");
             $('#accordion_forms').attr("style","width: auto");
         }else{
-
+            $("html, body").animate({ scrollTop: 0 }, "slow");
             $('#accordion_forms').attr("class","collapse width");
             $('#accordion_forms').attr("style","width: 0px");
 
