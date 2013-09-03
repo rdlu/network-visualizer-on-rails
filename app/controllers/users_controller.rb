@@ -1,9 +1,9 @@
 # coding: utf-8
 class UsersController < ApplicationController
   before_filter :authenticate_user!
-  before_filter :get_user, :only => [:index,:new,:edit]
+  before_filter :get_user, :only => [:index, :new, :edit]
   before_filter :accessible_roles, :only => [:new, :edit, :show, :update, :create]
-  load_and_authorize_resource :only => [:show,:new,:destroy,:update]
+  load_and_authorize_resource :only => [:show, :new, :destroy, :update]
   helper_method :accessible_roles
   skip_load_and_authorize_resource :only => [:edit, :update_password]
 
@@ -16,7 +16,7 @@ class UsersController < ApplicationController
     authorize! :manage, self
     respond_to do |format|
       format.json { render :json => @user }
-      format.xml  { render :xml => @user }
+      format.xml { render :xml => @user }
       format.html
     end
   end
@@ -25,7 +25,7 @@ class UsersController < ApplicationController
     authorize! :read, self
     respond_to do |format|
       format.json { render :json => @user }
-      format.xml  { render :xml => @user }
+      format.xml { render :xml => @user }
       format.html
     end
 
@@ -40,7 +40,7 @@ class UsersController < ApplicationController
     end
     respond_to do |format|
       format.json { render :json => @user }
-      format.xml  { render :xml => @user }
+      format.xml { render :xml => @user }
       format.html
     end
 
@@ -58,7 +58,6 @@ class UsersController < ApplicationController
       redirect_to root_path
     else
       render "edit"
-      #dzdz
     end
   end
 
@@ -67,21 +66,21 @@ class UsersController < ApplicationController
     @user.destroy
 
     if @user != @current_user
-    respond_to do |format|
-      format.json { render :json => @user.to_json, :status => 200 }
-      format.xml  { head :ok }
-      format.html { redirect_to  users_path ,:method => :get, :notice => "Conta excluida com sucesso!" }
+      respond_to do |format|
+        format.json { render :json => @user.to_json, :status => 200 }
+        format.xml { head :ok }
+        format.html { redirect_to users_path, :method => :get, :notice => "Conta excluida com sucesso!" }
       end
     else
       respond_to do |format|
         format.json { render :json => @user.to_json, :status => 200 }
-        format.xml  { head :ok }
-        format.html { redirect_to  users_sign_in_path ,:method => :get }
+        format.xml { head :ok }
+        format.html { redirect_to users_sign_in_path, :method => :get }
       end
     end
 
-    rescue ActiveRecord::RecordNotFound
-      respond_to_not_found(:json, :xml, :html)
+  rescue ActiveRecord::RecordNotFound
+    respond_to_not_found(:json, :xml, :html)
   end
 
   def create
@@ -100,13 +99,13 @@ class UsersController < ApplicationController
     if @user.save
       respond_to do |format|
         format.json { render :json => @user.to_json, :status => 200 }
-        format.xml  { head :ok }
-        format.html { redirect_to welcome_index_path, :notice =>"Cadastro feito com sucesso. Um e-mail foi enviado para #{@user.email}" }
+        format.xml { head :ok }
+        format.html { redirect_to welcome_index_path, :notice => "Cadastro feito com sucesso. Um e-mail foi enviado para #{@user.email}" }
       end
     else
       respond_to do |format|
         format.json { render :text => "Usuário não pode ser criado.", :status => :unprocessable_entity } # placeholder
-        format.xml  { head :ok }
+        format.xml { head :ok }
         format.html { render :action => :new, :status => :unprocessable_entity }
       end
     end
@@ -119,12 +118,12 @@ class UsersController < ApplicationController
     if @user != @current_user
       go_to = users_path
       if params[:roles].blank?
-         #se nenhuma opcao foi marcada o papel continua o mesmo
-         @roles = Role.find(@user.roles.map{|i| i.id})
-         @user.roles = @roles
+        #se nenhuma opcao foi marcada o papel continua o mesmo
+        @roles = Role.find(@user.roles.map { |i| i.id })
+        @user.roles = @roles
       else
-         @roles = Role.find(params[:roles])
-         @user.roles = @roles
+        @roles = Role.find(params[:roles])
+        @user.roles = @roles
       end
     else
       # TODO: verificar isto
@@ -138,11 +137,11 @@ class UsersController < ApplicationController
       if @user.update_attributes(params[:user])
         #flash[:notice] = "Your account has been updated"
         format.json { render :json => @user.to_json, :status => 200 }
-        format.xml  { head :ok }
-        format.html {  redirect_to go_to, :notice =>"Conta alterada com sucesso." }
+        format.xml { head :ok }
+        format.html { redirect_to go_to, :notice => "Conta alterada com sucesso." }
       else
         format.json { render :text => "Usuário não pode ser alterado", :status => :unprocessable_entity } #placeholder
-        format.xml  { render :xml => @user.errors, :status => :unprocessable_entity }
+        format.xml { render :xml => @user.errors, :status => :unprocessable_entity }
         format.html { render :action => :edit, :status => :unprocessable_entity }
       end
     end
@@ -151,9 +150,9 @@ class UsersController < ApplicationController
 
   def index
     authorize! :read, self
-    @users = User.paginate(:page       => params[:page],
-                           :per_page   => 15,
-                           :order      => 'created_at DESC')
+    @users = User.paginate(:page => params[:page],
+                           :per_page => 15,
+                           :order => 'created_at DESC')
   end
 
   def active
@@ -175,8 +174,8 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       format.json { render :json => @user.to_json, :status => 200 }
-      format.xml  { head :ok }
-      format.html { redirect_to  users_path , :method => :get, :notice => "Alteração feita com sucesso!" }
+      format.xml { head :ok }
+      format.html { redirect_to users_path, :method => :get, :notice => "Alteração feita com sucesso!" }
     end
   end
 
