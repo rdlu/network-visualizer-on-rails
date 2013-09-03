@@ -64,7 +64,7 @@ planospeedy.save!
 
 #limiares anatel
 Threshold.create([
-     { name: "SCM4/SMP10", description: "Taxa de Transmissão Instantanea", compliance_level: "0.95", compliance_period: "monthly", compliance_method: "quotient", goal_level: "0.2", goal_method: "median", goal_period: "daily-rush", metric_id: "3", base_year: '2013' },
+     { name: "SCM4/SMP10", description: "Taxa de Transmissão Instantânea", compliance_level: "0.95", compliance_period: "monthly", compliance_method: "quotient", goal_level: "0.2", goal_method: "median", goal_period: "daily-rush", metric_id: "3", base_year: '2013' },
      { name: "SCM5/SMP11", description: "Taxa de Transmissão Média", compliance_level: "0.6", compliance_period: "monthly", compliance_method: "mean", goal_level: "0.6", goal_method: "median", goal_period: "daily-rush", metric_id: "3", base_year: '2013' },
      { name: "SCM6", description: "Latência Bidirecional", compliance_level: "0.85", compliance_period: "monthly", compliance_method: "quotient", goal_level: "80.0", goal_method: "median", goal_period: "daily-rush", metric_id: "4", base_year: '2013' },
      { name: "SCM7", description: "Variação de Latência", compliance_level: "0.85", compliance_period: "monthly", compliance_method: "quotient", goal_level: "50.0", goal_method: "median", goal_period: "daily-rush", metric_id: "6", base_year: '2013' },

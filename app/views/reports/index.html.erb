@@ -1,16 +1,16 @@
 <h2>Relatórios</h2>
-  <div id="nav" class="navbar rotate" style="position: absolute;display: block; margin-left: -30px; margin-top: 50px;height: 176px;width: 246px;">
+  <div id="nav" class="navbar rotate" style="position: absolute;display: block; margin-top: 5px;height: 176px;width: 150px;z-index:1000;">
     <div class="navbar-inner">
 
       <h4 id="acc_name" name="open" style="color:white;margin-left: 5px;margin-top: 12px;" class="accordion-toggle" data-toggle="collapse" data-parent="#menu" href="#accordion_forms">
-        Opções &nbsp;&nbsp;&nbsp;&nbsp;&#8592;
+        Opções &nbsp; &#8593;
       </h4>
     </div>
   </div>
-    <div style="margin-left:62px;position: absolute">
+    <div style="margin-left:40px;position: absolute;z-index: 100;">
 
-      <div id="accordion_forms" class="collapse width in" style="margin-top: 1%;background: #ffffff;height: auto !important;width: auto;float:left;z-index: 1000">
-          <div class="accordion-inner" style="width: 900px">
+      <div id="accordion_forms" class="collapse width in" style="height: auto !important;width: auto;float:left;">
+          <div class="accordion-inner" style="width: 900px; background: white">
             <div class="tabbable" >
               <ul class="nav nav-tabs ">
                 <li class="active"><a href="#form_1" data-toggle="tab" style="font-size:12px">Formato 1</a></li>
@@ -32,11 +32,11 @@
     </div>
 
 
-<div id="view" style="margin-left: 62px">
+<div id="view" style="margin-left: 40px;">
   <div id="graphs-area">
   </div>
 </div>
-</div>
+
 
 <script type="text/javascript">
     var graphs = {};
@@ -44,10 +44,10 @@
         $('#acc_name').click(function () {
             var text = document.getElementById('acc_name').getAttribute('name');
             if (text == 'open') {
-                $("#acc_name").html('Opções &#8594;');
+                $("#acc_name").html('Opções &nbsp; &#8595;');
                 $("#acc_name").attr('name', 'closed');
             } else {
-                $("#acc_name").html('Opções &nbsp;&nbsp;&nbsp;&nbsp;&#8592;');
+                $("#acc_name").html('Opções &nbsp; &#8593;');
                 $("#acc_name").attr('name', 'open');
             }
         });

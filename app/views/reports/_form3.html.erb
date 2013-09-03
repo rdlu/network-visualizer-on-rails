@@ -199,7 +199,7 @@
 
     $('#report-add3').click(function () {
         var text = document.getElementById('acc_name').getAttribute('name');
-        $("#acc_name").html('Opções &#8594;');
+        $("#acc_name").html('Opções &nbsp; &#8595;');
         $("#acc_name").attr('name', 'closed');
 
     });
@@ -299,12 +299,12 @@
 
         if (dest == "not"){
             $('#alert_dest').attr('style','display:block');
-            $('#accordion_forms').attr("class","accordion-body collapse in");
-            $('#accordion_forms').attr("style","height: auto");
+            $('#accordion_forms').attr("class","collapse width in");
+            $('#accordion_forms').attr("style","width: auto");
         }else{
 
-            $('#accordion_forms').attr("class","accordion-body collapse");
-            $('#accordion_forms').attr("style","height: 0px");
+            $('#accordion_forms').attr("class","collapse width");
+            $('#accordion_forms').attr("style","width: 0px");
 
             jQuery.ajax("<%= performance_reports_url %>/", {
               data: $(this).serialize(),
