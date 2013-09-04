@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130904173827) do
+ActiveRecord::Schema.define(:version => 20130904185640) do
 
   create_table "compliances", :force => true do |t|
     t.integer   "schedule_id"
@@ -90,11 +90,11 @@ ActiveRecord::Schema.define(:version => 20130904173827) do
     t.string   "server"
     t.string   "url"
     t.integer  "delay"
-    t.string   "schedule_uuid", :limit => nil
+    t.string   "uuid",          :limit => nil
     t.datetime "created_at",                   :null => false
     t.datetime "updated_at",                   :null => false
     t.string   "status"
-    t.string   "uuid",          :limit => nil
+    t.string   "schedule_uuid", :limit => nil
     t.datetime "timestamp"
   end
 
@@ -213,6 +213,7 @@ ActiveRecord::Schema.define(:version => 20130904173827) do
     t.boolean   "internal"
     t.timestamp "created_at", :limit => 6, :null => false
     t.timestamp "updated_at", :limit => 6, :null => false
+    t.string    "type"
   end
 
   create_table "plans", :force => true do |t|
