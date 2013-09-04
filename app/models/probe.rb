@@ -229,7 +229,7 @@ class Probe < ActiveRecord::Base
     ]
   end
 
-  def self.cod_area
+  def self.cns
     [
         ['AC',68],
         ['AL',82],

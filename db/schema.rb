@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130903195333) do
+ActiveRecord::Schema.define(:version => 20130904135527) do
 
   create_table "compliances", :force => true do |t|
     t.integer   "schedule_id"
@@ -258,6 +258,7 @@ ActiveRecord::Schema.define(:version => 20130903195333) do
     t.string    "bras"
     t.string    "osversion"
     t.string    "modem"
+    t.integer   "cn"
   end
 
   add_index "probes", ["connection_profile_id"], :name => "index_probes_on_connection_profile_id"

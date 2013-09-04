@@ -38,7 +38,7 @@
             <select multiple="true"  name="cn[]" id="probe-cn" onchange="setAllOpt(this.value,'probe-cn')"  >
               <option value="1">Todas</option>
               <option value="0">Sem DDD</option>
-              <% Probe.cod_area.each do |cn|
+              <% Probe.cns.each do |cn|
                   if search_field :probe,:state == cn.at(0).to_s  %>
                    <option value="<%= cn.at(1) %>" ><%= cn.at(1)%></option>
               <% end end %>

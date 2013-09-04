@@ -170,7 +170,7 @@ class ProbesController < ApplicationController
 
     cods = Array.new
     cod_uf.each do |ufs|
-      Probe.cod_area.each do |cod_n|
+      Probe.cns.each do |cod_n|
           if ufs == cod_n.at(0).downcase
             cods << cod_n.at(1)
           end
