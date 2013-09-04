@@ -29,7 +29,7 @@
     <div class="control-group">
       <span class="control-label etooltip" data-title="Métricas que são medidas por esse perfil. Superposição por perfil não é permitida!">Métricas relacionadas</span>
       <div class="controls">
-        <% Metric.all.each do |metric| %>
+        <% Metric.where(metric_type: %w(dns dns_detail)).all.each do |metric| %>
             <label class="checkbox inline etooltip" data-title="<%= metric.description %>">
               <%= check_box_tag "profile[metric_ids][]", metric.id, @profile.metrics.include?(metric) %>
               <%= metric.name %>
