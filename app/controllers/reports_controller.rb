@@ -2038,6 +2038,7 @@ class ReportsController < ApplicationController
     else
       @schedules = Schedule.joins(:evaluations).where(schedules: {:destination_id => @probes}, evaluations: {profile_id: profiles})
     end
+    binding.pry
 
     @window_size = @schedules.max_by{|schedule| schedule.polling}.polling
 
@@ -2064,10 +2065,18 @@ class ReportsController < ApplicationController
             when 'dns-efficiency'
               @raw_results = DnsDetail.
                   where(:schedule_uuid => schedule.uuid).
-                  where(:timestamp => @from..@to).order('timestamp ASC').all
+                  where(:timestamp => @from..@to).order('timestamp ASC').all.to_enum
               @results = []
               @from.all_window_times_until(@to,@window_size.minutes).each do |window|
-                @results << [window,window+@window_size.minutes,]
+                eficiencies = []
+                begin
+                  while @raw_results.peek.timestamp < window+@window_size.minutes
+                    eficiencies << @raw_results.next.efic
+                  end
+                rescue StopIteration
+                  #nothing to do
+                end
+                @results << [window,window+@window_size.minutes,eficiencies.reduce(:+)/eficiencies.count]
               end
             else
               @raw_results = DnsResult.
