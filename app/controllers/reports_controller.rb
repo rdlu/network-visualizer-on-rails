@@ -2620,4 +2620,7 @@ class ReportsController < ApplicationController
       end
   end
 
+  def pacman
+     respond_to
+  end
 end

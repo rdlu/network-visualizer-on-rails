@@ -1,0 +1,56 @@
+<%= form_tag(pacman_reports_path, :class => 'form-horizontal', :id => 'report-form4') do %>
+
+    <div class="row-fluid">
+
+      <div class="control-group">
+        <label class="control-label" for="type">Posição dos servidores: </label>
+        <div class="controls">
+          <!-- select :agent,'', Probe.types,{}, :onchange => 'displayTypes(this.value)', :id=>"agent"  -->
+          <select name="servers[]"  id="servers-position" onchange="showNetworkTypes(this.value)"style="font-size:small; width: 155px" >
+              <option name="servers[]" value="internos">Internos</option>
+              <option name="servers[]" value="externos">Externos</option>
+          </select>
+        </div>
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="type">Tipo de Rede: </label>
+        <div class="controls">
+          <!-- select :agent,'', Probe.types,{}, :onchange => 'displayTypes(this.value)', :id=>"agent"  -->
+          <select id="networktype" name="networks[]" id="network-type" style="font-size:small; width: 155px" >
+              <option name="networks[]" value="fixa">Fixa</option>
+              <option name="networks[]" value="movel">Móvel</option>
+          </select>
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="controls">
+          <input class="btn btn-primary span4" type="submit" name="add" id="report-add4" value="Adicionar"  data-toggle="collapse" data-target="#accordion_forms"/>
+        </div>
+      </div>
+    </div>
+
+
+
+<% end %>
+
+<script>
+    function showNetworkTypes(selected){
+        if(selected == "internos")
+            $('#networktype').attr('disabled',false);
+        else
+        {
+            $('#networktype').attr('disabled',true);
+            $('#networktype').val("fixa");
+        }
+    }
+
+
+    $('#report-add4').click(function () {
+        $("html, body").animate({ scrollTop: 0 }, "slow");
+        var text = document.getElementById('optbtn').getAttribute('src');
+        var text = document.getElementById('optbtn').getAttribute('name');
+        $("#optbtn").attr('src', '/assets/opt_btn-right.png');
+        $("#optbtn").attr('name', 'closed');
+
+    });
+</script>
