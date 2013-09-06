@@ -2019,8 +2019,8 @@ class ReportsController < ApplicationController
     @from = params[:horario].first.to_i.hours.ago
     @to = Time.now
 
-    @from = '2013-08-08 00:00:00 -0300'.to_datetime
-    @to = '2013-08-08 23:59:59 -0300'.to_datetime
+    @from = '2013-08-22 00:00:00 -0300'.to_datetime
+    @to = '2013-08-24 23:59:59 -0300'.to_datetime
 
     @metric = Metric.find params[:metrics].first.partition(',').first
     profiles = @metric.profiles
@@ -2038,9 +2038,10 @@ class ReportsController < ApplicationController
     else
       @schedules = Schedule.joins(:evaluations).where(schedules: {:destination_id => @probes}, evaluations: {profile_id: profiles})
     end
-    binding.pry
 
     @window_size = @schedules.max_by{|schedule| schedule.polling}.polling
+
+    binding.pry
 
     unless multiprobe
       schedule = @schedules.last
@@ -2067,6 +2068,7 @@ class ReportsController < ApplicationController
                   where(:schedule_uuid => schedule.uuid).
                   where(:timestamp => @from..@to).order('timestamp ASC').all.to_enum
               @results = []
+              binding.pry
               @from.all_window_times_until(@to,@window_size.minutes).each do |window|
                 eficiencies = []
                 begin

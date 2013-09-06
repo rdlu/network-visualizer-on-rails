@@ -253,7 +253,7 @@
                     $('#origem').html("<option value=''>Todas</option>");
                     html = html + "<option value=''>Todas</option>";
                     for (p in data){
-                        html = html + "<option value='"+data[p]["id"]+"'>"+data[p]["name"]+"</option>";
+                        html = html + "<option value='"+data[p]["id"]+"'>"+data[p]["name"]+" ("+data[p]["ipaddress"]+")</option>";
                     }
                 }
                 $('#destino').html(html);
