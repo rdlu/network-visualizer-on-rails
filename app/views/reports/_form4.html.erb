@@ -44,13 +44,22 @@
         }
     }
 
-
-    $('#report-add4').click(function () {
+    jQuery('#report-form4').submit(function (event) {
         $("html, body").animate({ scrollTop: 0 }, "slow");
-        var text = document.getElementById('optbtn').getAttribute('src');
-        var text = document.getElementById('optbtn').getAttribute('name');
         $("#optbtn").attr('src', '/assets/opt_btn-right.png');
         $("#optbtn").attr('name', 'closed');
+        event.preventDefault();
+            jQuery.ajax("<%= pacman_reports_url %>/", {
+                data: $(this).serialize(),
+                type: 'POST',
+                success: function(result){
+                    jQuery('#graphs-area').prepend(result);
+                },
+                headers: {
+                    'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
 
     });
 </script>
