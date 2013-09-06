@@ -20,7 +20,7 @@
                 </div>
                 <div class="tab-pane"  id="form_2"> <%= render 'form2' %> </div>
                 <div class="tab-pane"  id="form_3"> <%= render 'form3' %></div>
-                <div class="tab-pane"  id="form_4"> </div>
+                <div class="tab-pane"  id="form_4">  <%= render 'form4' %></div>
               </div>
             </div>
           </div>
@@ -38,7 +38,6 @@
     var graphs = {};
     $(function () {
         $('#optbtn').click(function () {
-            var text = document.getElementById('optbtn').getAttribute('name');
             var text = document.getElementById('optbtn').getAttribute('name');
             if (text == 'open') {
                 $("#optbtn").attr('src', '/assets/opt_btn-right.png');

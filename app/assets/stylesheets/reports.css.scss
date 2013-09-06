@@ -46,13 +46,20 @@ form {
 }
 /* When the window is less than 979px, the new css rules will be applied */
 @media (max-width: 979px){
+  #optbtn{
+    position: relative;
+  }
   #accordion_forms{
-    margin-top:10px;
+    margin-top:-150px;
+    position: relative;
   }
   #header{
     margin-top:-70px;
   }
   #tabs{
     width:auto;
+  }
+  #graphs-area{
+    margin-top:-150px;
   }
 }
