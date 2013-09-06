@@ -10,6 +10,8 @@ class ReportsController < ApplicationController
   has_scope :by_modem, :type => :array_or_string
   has_scope :by_tech, :type => :array_or_string
   has_scope :by_conn_type, :type => :array_or_string
+  has_scope :by_sites, :type => :array_or_string
+  has_scope :by_dns, :type => :array_or_string
 
   def index
     @report_types = [
@@ -2041,8 +2043,6 @@ class ReportsController < ApplicationController
 
     @window_size = @schedules.max_by{|schedule| schedule.polling}.polling
 
-    binding.pry
-
     unless multiprobe
       schedule = @schedules.last
       @destination = schedule.destination
@@ -2081,7 +2081,7 @@ class ReportsController < ApplicationController
                 @results << [window,window+@window_size.minutes,eficiencies.reduce(:+)/eficiencies.count]
               end
             else
-              @raw_results = DnsResult.
+              @raw_results = apply_scope(DnsResult).
                   where(:schedule_uuid => schedule.uuid).
                   where(:timestamp => @from..@to).order('timestamp ASC').all
           end

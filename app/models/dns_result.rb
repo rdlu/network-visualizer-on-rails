@@ -13,5 +13,17 @@
 #
 
 class DnsResult < ActiveRecord::Base
-  attr_accessible :delay, :server, :url, :uuid, :status, :schedule_uuid
+  attr_accessible :delay, :server, :url, :uuid, :status, :schedule_uuid, :timestamp
+
+  scope :by_sites, lambda { |sites|
+    where(url: sites) unless sites == '' or sites[0] == ''
+  }
+
+  scope :by_dns, lambda { |dns|
+    where(server: dns) unless dns == '' or dns[0] == ''
+  }
+
+  scope :by_server, lambda { |dns|
+    where(server: dns) unless dns == '' or dns[0] == ''
+  }
 end

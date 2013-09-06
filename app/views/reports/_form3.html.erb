@@ -111,7 +111,7 @@
           <div id="sites" class="control-group" style="display: none">
             <span class="control-label" >Sites:</span>
             <div class="controls">
-              <select multiple="true" name="sites[]">
+              <select multiple="true" name="by_sites[]">
                 <option value="" selected>Todos</option>
                 <% Site.all.each do |site| %>
                     <option value="<%= site.id %>"><%= site.url %></option>
@@ -122,7 +122,7 @@
           <div id="dns" class="control-group" style="display: none">
             <span class="control-label" >Servidor DNS:</span>
             <div class="controls">
-              <select multiple="true" name="dns[]">
+              <select multiple="true" name="by_dns[]">
                 <option value="" selected>Todos</option>
                 <% Nameserver.all.each do |dns| %>
                     <option value="<%= dns.id %>"><%= dns.name %></option>
