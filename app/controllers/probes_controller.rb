@@ -39,7 +39,7 @@ class ProbesController < ApplicationController
 
     respond_to do |format|
       format.json { render :json => @probe }
-      format.xml  { render :xml => @probe }
+      format.xml { render :xml => @probe }
       format.html
     end
   end
@@ -77,13 +77,13 @@ class ProbesController < ApplicationController
       Probe.add_bras @probe.bras unless @probe.bras.nil?
       respond_to do |format|
         format.json { render :json => @probe.to_json, :status => 200 }
-        format.xml  { head :ok }
+        format.xml { head :ok }
         format.html
       end
     else
       respond_to do |format|
         format.json { render :text => "Sonda não pode ser criado.", :status => :unprocessable_entity } # placeholder
-        format.xml  { head :ok }
+        format.xml { head :ok }
         format.html { render :action => :new, :status => :unprocessable_entity }
       end
     end
@@ -159,7 +159,7 @@ class ProbesController < ApplicationController
 
   def filter_uf
     uf = params[:uf]
-    cod_uf =  Array.new
+    cod_uf = Array.new
     Probe.states.each do |state|
       uf.each do |uf|
         if state.at(1) == uf
@@ -171,9 +171,9 @@ class ProbesController < ApplicationController
     cods = Array.new
     cod_uf.each do |ufs|
       Probe.cns.each do |cod_n|
-          if ufs == cod_n.at(0).downcase
-            cods << cod_n.at(1)
-          end
+        if ufs == cod_n.at(0).downcase
+          cods << cod_n.at(1)
+        end
       end
     end
 
@@ -184,7 +184,7 @@ class ProbesController < ApplicationController
 
   def filter_destination
     uf = params[:uf]
-    dest_uf =  Array.new
+    dest_uf = Array.new
     Probe.states.each do |state|
       uf.each do |uf|
         if state.at(1) == uf
@@ -213,4 +213,10 @@ class ProbesController < ApplicationController
     end
   end
 
+  def find_cns_by_state
+    respond_to do |format|
+      format.json { render :json => Probe.find_cns_by_state(params[:state]) }
+    end
   end
+
+end
