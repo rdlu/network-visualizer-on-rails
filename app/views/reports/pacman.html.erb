@@ -1,0 +1,238 @@
+<div id="box-pacman" class="row-fluid">
+  <div class="span12">
+    <div class="row-fluid">
+      <div class="span12">
+        <div class='span5' style="height:auto;">
+          <div class="row-fluid pagination-centered">
+            <h3>DNS</h3>
+            <ul class="breadcrumb">
+              <li><span class="label" style="background-color:#00E603; font-size: medium; line-height:20px">&nbsp;&nbsp;OK&nbsp;&nbsp;</span> <span class="divider">/</span></li>
+              <li><span class="label" style="background-color:#1540EB; font-size: medium; line-height:20px">&nbsp;TimeOut&nbsp;</span> <span class="divider">/</span></li>
+              <li><span class="label" style="background-color:#D60000; font-size: medium; line-height:20px">&nbsp;ServerFail&nbsp;</span></li>
+            </ul>
+          </div>
+          <div class="row-fluid">
+              <div class="span6" id="chart-pacman1" style="height:200px;"></div>
+              <div class="span6" id="chart-pacman2" style="height:200px;"></div>
+          </div>
+          <div class="row-fluid">
+              <div class="span6" id="chart-pacman3" style="height:200px;"></div>
+              <div class="span6" id="chart-pacman4" style="height:200px;"></div>
+          </div>
+        </div>
+        <div class='span7' style="height:auto;">
+          <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                  <th>Piores URL's</th>
+                  <th>%OK</th>
+                  <th>TimeOut</th>
+                  <th>ServerFail</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+            </tbody>
+          </table>
+          <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+              <th>Piores Sondas</th>
+              <th>%OK</th>
+              <th>TimeOut</th>
+              <th>ServerFail</th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="row-fluid">
+      <div class="span12">
+        <div class="chart-bottom" style="padding-top: 10px;">
+          <div class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="jQuery('#box-pacman').remove();">Remover</div>
+
+          <div id="legend-pacman" style="float:right; margin-right: 5px ;margin-bottom: 20px">Pac-Man</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+    Highcharts.setOptions({
+        colors: ['#00E603', '#1540EB', '#D60000']
+    });
+    var hchart1 = new Highcharts.Chart({
+        chart: {
+            renderTo: 'chart-pacman1',
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false
+        },
+        title: {
+            text: '8.8.8.8'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: false
+                },
+                showInLegend: false,
+                startAngle:90
+            }
+        },
+        series: [{
+            type: 'pie',
+            name: 'Browser share',
+            data: [
+                ['OK',   330.0],
+                ['TO',       10.0],
+                ['SF',    5.0]
+            ]
+        }]
+    });
+    var hchart2 = new Highcharts.Chart({
+        chart: {
+            renderTo: 'chart-pacman2',
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false
+        },
+        title: {
+           text: '8.8.4.4'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: false
+                },
+                showInLegend: false,
+                startAngle:90
+            }
+        },
+        series: [{
+            type: 'pie',
+            name: 'Browser share',
+            data: [
+                ['OK',   330.0],
+                ['TO',       10.0],
+                ['SF',    5.0]
+            ]
+        }]
+    });
+    var hchart3 = new Highcharts.Chart({
+        chart: {
+            renderTo: 'chart-pacman3',
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false
+        },
+        title: {
+            text: '200.184.63.19'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: false
+                },
+                showInLegend: false,
+                startAngle:90
+            }
+        },
+        series: [{
+            type: 'pie',
+            name: 'Browser share',
+            data: [
+                ['OK',   330.0],
+                ['TO',       10.0],
+                ['SF',    5.0]
+            ]
+        }]
+    });
+    var hchart4 = new Highcharts.Chart({
+        chart: {
+            renderTo: 'chart-pacman4',
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false
+        },
+        title: {
+            text: '200.184.63.20'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: false
+                },
+                showInLegend: false,
+                startAngle:90
+            }
+        },
+        series: [{
+            type: 'pie',
+            name: 'Browser share',
+            data: [
+                ['OK',   330.0],
+                ['TO',       10.0],
+                ['SF',    5.0]
+            ]
+        }]
+    });
+</script>

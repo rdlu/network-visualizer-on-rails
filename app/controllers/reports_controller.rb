@@ -2653,6 +2653,8 @@ class ReportsController < ApplicationController
   end
 
   def pacman
-     respond_to
+    respond_to do |format|
+      format.html { render :layout => false }
+    end
   end
 end
