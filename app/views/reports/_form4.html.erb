@@ -24,7 +24,7 @@
       </div>
       <div class="control-group">
         <div class="controls">
-          <input class="btn btn-primary span4" type="submit" name="add" id="report-add4" value="Adicionar"  data-toggle="collapse" data-target="#accordion_forms"/>
+          <input class="btn btn-primary" type="submit" name="add" id="report-add4" value="Adicionar"  data-toggle="collapse" data-target="#accordion_forms"/>
         </div>
       </div>
     </div>
@@ -36,11 +36,14 @@
 <script>
     function showNetworkTypes(selected){
         if(selected == "internos")
+        {
             $('#networktype').attr('disabled',false);
+            $('#networktype').val("fixa");
+        }
         else
         {
             $('#networktype').attr('disabled',true);
-            $('#networktype').val("fixa");
+            $('#networktype').val("");
         }
     }
 
@@ -48,17 +51,7 @@
         $("html, body").animate({ scrollTop: 0 }, "slow");
         $("#optbtn").attr('src', '/assets/opt_btn-right.png');
         $("#optbtn").attr('name', 'closed');
-        event.preventDefault();
-            jQuery.ajax("<%= pacman_reports_url %>/", {
-                data: $(this).serialize(),
-                type: 'POST',
-                success: function(result){
-                    jQuery('#graphs-area').prepend(result);
-                },
-                headers: {
-                    'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
+
 
 
     });
