@@ -114,7 +114,7 @@
               <select multiple="true" name="by_sites[]">
                 <option value="" selected>Todos</option>
                 <% Site.all.each do |site| %>
-                    <option value="<%= site.id %>"><%= site.url %></option>
+                    <option value="<%= site.url %>"><%= site.url %></option>
                 <% end %>
               </select>
             </div>
@@ -125,7 +125,7 @@
               <select multiple="true" name="by_dns[]">
                 <option value="" selected>Todos</option>
                 <% Nameserver.all.each do |dns| %>
-                    <option value="<%= dns.id %>"><%= dns.name %></option>
+                    <option value="<%= dns.address %>"><%= dns.name %> (<%= dns.address %>)</option>
                 <% end %>
               </select>
             </div>
