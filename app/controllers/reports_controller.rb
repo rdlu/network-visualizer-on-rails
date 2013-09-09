@@ -10,8 +10,6 @@ class ReportsController < ApplicationController
   has_scope :by_modem, :type => :array_or_string
   has_scope :by_tech, :type => :array_or_string
   has_scope :by_conn_type, :type => :array_or_string
-  has_scope :by_sites, :type => :array_or_string
-  has_scope :by_dns, :type => :array_or_string
 
   def index
     @report_types = [
@@ -2021,9 +2019,6 @@ class ReportsController < ApplicationController
     @from = params[:horario].first.to_i.hours.ago
     @to = Time.now
 
-    @from = '2013-08-22 00:00:00 -0300'.to_datetime
-    @to = '2013-08-24 23:59:59 -0300'.to_datetime
-
     @metric = Metric.find params[:metrics].first.partition(',').first
     profiles = @metric.profiles
     multiprobe = false
@@ -2068,7 +2063,6 @@ class ReportsController < ApplicationController
                   where(:schedule_uuid => schedule.uuid).
                   where(:timestamp => @from..@to).order('timestamp ASC').all.to_enum
               @results = []
-              binding.pry
               @from.all_window_times_until(@to,@window_size.minutes).each do |window|
                 eficiencies = []
                 begin
@@ -2081,9 +2075,15 @@ class ReportsController < ApplicationController
                 @results << [window,window+@window_size.minutes,eficiencies.reduce(:+)/eficiencies.count]
               end
             else
-              @raw_results = apply_scope(DnsResult).
-                  where(:schedule_uuid => schedule.uuid).
-                  where(:timestamp => @from..@to).order('timestamp ASC').all
+              filters = {schedule_uuid: schedule.uuid, timestamp: @from..@to}
+              filters.merge!({server: params[:by_dns]}) unless params[:by_dns].nil?
+              filters.merge!({url: params[:by_sites]}) unless params[:by_sites].nil?
+              @raw_results = DnsResult.
+                  where(filters)
+                  .order('timestamp ASC')
+
+              binding.pry
+              
           end
 
           respond_to do |format|
@@ -2426,6 +2426,7 @@ class ReportsController < ApplicationController
                             conn_tech: conn_tech,
                             conn_type: conn_type,
                             error_rate: error_rate,
+                            timestamp: timestamp,
                             lac: lac,
                             mtu: mtu)
 
@@ -2590,6 +2591,7 @@ class ReportsController < ApplicationController
                                                server_failure_errors: server_failure_errors,
                                                total: dnstests.length,
                                                schedule_uuid: schedule_uuid,
+                                               timestamp: timestamp,
                                                uuid: uuid)
               when "throughput_http"
                 throughput_http_down = report.xpath("report/results/throughput_http/down").to_s.to_f
