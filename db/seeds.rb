@@ -39,11 +39,8 @@ metrics = [
       { name: "POM", description: "Pacotes fora de ordem", order:8, plugin: "pom", reverse: true, view_unit: '%', db_unit: '%', metric_type: 'active' },
       { name: "Disponibilidade", description: "Disponibilidade total da sonda", order:9, plugin: "availability", reverse: false, view_unit: '%', db_unit: '%', metric_type: 'active' },
       { name: "DNS - Tempo de Resposta", description: "Tempo de Resposta para uma query DNS", order:10, plugin: "dns-response-time", reverse: true, view_unit: 'ms', db_unit: 's', metric_type: 'dns' },
-      { name: "DNS - Eficiência", description: "Porcentagem de Respostas positivas do servidor DNS", order:11, plugin: "dns-efficiency", reverse: true, view_unit: '%', db_unit: '%', metric_type: 'dns_detail' },
-      { name: "DNS - Falha do Servidor", description: "Percentual de erros por falha geral no servidor", order:12, plugin: "dns-serverfailure", reverse: true, view_unit: '%', db_unit: '%', metric_type: 'dns_detail' },
-      { name: "DNS - Format Errors", description: "Percentual de erros de interpretação de nome", order:13, plugin: "dns-formaterrors", reverse: true, view_unit: '%', db_unit: '%', metric_type: 'dns_detail' },
-      { name: "DNS - Name Errors", description: "Porcentagem de respostas em que o nome não foi encontrado pelo servidor DNS", order:14, plugin: "dns-nxdomain", reverse: true, view_unit: '%', db_unit: '%', metric_type: 'dns_detail' },
-      { name: "DNS - Refused Errors", description: "Porcentagem de respostas ativamente negadas pelo servidor DNS", order:15, plugin: "dns-refused", reverse: true, view_unit: '%', db_unit: '%', metric_type: 'dns_detail' },
+      { name: "DNS - Eficiência", description: "Porcentagem de Respostas positivas do servidor DNS", order:11, plugin: "dns-efficiency", reverse: true, view_unit: '%', db_unit: '%', metric_type: 'dns_eficiency' },
+      { name: "DNS - Detalhes", description: "Detalhes das falhas de DNS por categorias definidas na RFC1035", order:12, plugin: "dns-details", reverse: true, view_unit: '%', db_unit: '%', metric_type: 'dns_detail' },
 ]
 
 metrics.each do |metric|

@@ -15,6 +15,8 @@
 class DnsResult < ActiveRecord::Base
   attr_accessible :delay, :server, :url, :uuid, :status, :schedule_uuid, :timestamp
 
+  validates :status, presence: true, format: {with: %r{^[A-Z0-9]+$}}
+
   scope :by_sites, lambda { |sites|
     where(url: sites) unless sites == '' or sites[0] == ''
   }

@@ -2081,8 +2081,6 @@ class ReportsController < ApplicationController
               @raw_results = DnsResult.
                   where(filters)
                   .order('timestamp ASC')
-
-              binding.pry
               
           end
 
@@ -2090,9 +2088,30 @@ class ReportsController < ApplicationController
             format.html { render :layout => false, file: 'reports/dygraphs_dns' }
           end
         when 'dns_detail'
-          @raw_results = DnsDetail.
-              where(:schedule_uuid => schedule.uuid).
-              where(:timestamp => @from..@to).order('timestamp ASC').all
+          filters = {schedule_uuid: schedule.uuid, timestamp: @from..@to}
+          filters.merge!({server: params[:by_dns]}) unless params[:by_dns].nil?
+          filters.merge!({url: params[:by_sites]}) unless params[:by_sites].nil?
+          @raw_results = DnsResult.
+            where(filters).
+            order('timestamp ASC')
+          @results = []  
+          @from.all_window_times_until(@to,@window_size.minutes).each do |window|
+            total = 0
+            successes = []
+            nxdomains = []
+            timeouts = []
+            format_errors = []
+            server_failures = []
+            refuseds = []
+            begin
+              while @raw_results.peek.timestamp < window+@window_size.minutes
+                eficiencies << @raw_results.next.efic
+              end
+            rescue StopIteration
+            #nothing to do
+            end
+            @results << [window,window+@window_size.minutes,eficiencies.reduce(:+)/eficiencies.count]
+          end
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/dygraphs_dns_detail' }
           end
