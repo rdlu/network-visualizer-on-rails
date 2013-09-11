@@ -2627,13 +2627,28 @@ class ReportsController < ApplicationController
   end
 
   def smartrate
-
       respond_to do |format|
           format.xml
       end
   end
 
   def pacman
+      hash1 = { :address => "8.8.8.8", :ok => 92, :timeout => 5, :serverfail => 3 }
+      hash2 = { :address => "8.8.4.4", :ok => 95, :timeout => 3, :serverfail => 2 }
+      hash3 = { :address => "8.8.2.2", :ok => 94, :timeout => 5, :serverfail => 1 }
+      @dnsServers = []
+      @dnsServers.push(hash1, hash2, hash3)
+      hash4 = { :address => "http://www.google.com", :ok => 92, :timeout => 5, :serverfail => 3 }
+      hash5 = { :address => "http://www.google.com.de", :ok => 95, :timeout => 3, :serverfail => 2 }
+      hash6 = { :address => "http://www.google.com.br", :ok => 94, :timeout => 5, :serverfail => 1 }
+      @worstURLs = []
+      @worstURLs.push(hash4, hash5, hash6)
+      hash7 = { :name => "sonda1", :type => "android", :ok => 92, :timeout => 5, :serverfail => 3 }
+      hash8 = { :name => "sonda2", :type => "linux", :ok => 95, :timeout => 3, :serverfail => 2 }
+      hash9 = { :name => "sonda3", :type => "android", :ok => 94, :timeout => 5, :serverfail => 1 }
+      @worstProbes = []
+      @worstProbes.push(hash7, hash8, hash9)
+
     respond_to do |format|
       format.html { render :layout => false }
     end

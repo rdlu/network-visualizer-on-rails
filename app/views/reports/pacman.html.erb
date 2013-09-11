@@ -10,14 +10,14 @@
               <li><span class="label" style="background-color:#1540EB; font-size: medium; line-height:20px">&nbsp;TimeOut&nbsp;</span> <span class="divider">/</span></li>
               <li><span class="label" style="background-color:#D60000; font-size: medium; line-height:20px">&nbsp;ServerFail&nbsp;</span></li>
             </ul>
-          </div>
-          <div class="row-fluid">
-              <div class="span6" id="chart-pacman1" style="height:200px;"></div>
-              <div class="span6" id="chart-pacman2" style="height:200px;"></div>
-          </div>
-          <div class="row-fluid">
-              <div class="span6" id="chart-pacman3" style="height:200px;"></div>
-              <div class="span6" id="chart-pacman4" style="height:200px;"></div>
+            <div class="row-fluid">
+
+              <% @dnsServers.each do |server| %>
+                  <a href="#index.html">
+                  <div id="chart-pacman-<%= server[:address]%>" style="height:200px;width:50%;float:left"></div>
+                      </a>
+            <% end %>
+            </div>
           </div>
         </div>
         <div class='span7' style="height:auto;">
@@ -31,24 +31,15 @@
                 </tr>
             </thead>
             <tbody>
+
+            <% @worstURLs.each do |url| %>
                 <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
+                  <td><%= url[:address] %></td>
+                  <td><%= url[:ok] %></td>
+                  <td><%= url[:timeout] %> </td>
+                  <td><%= url[:serverfail] %></td>
                 </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
+            <% end %>
             </tbody>
           </table>
           <table class="table table-bordered table-hover">
@@ -61,24 +52,18 @@
             </tr>
             </thead>
             <tbody>
+
+            <% @worstProbes.each do |probe| %>
                 <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
+                  <td>
+                    <%= image_tag "icons/"+probe[:type]+"16.png" %>
+                    <%= link_to probe[:name], probe %>
+                  </td>
+                  <td><%= probe[:ok] %></td>
+                  <td><%= probe[:timeout] %> </td>
+                  <td><%= probe[:serverfail] %></td>
                 </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
+            <% end %>
             </tbody>
           </table>
         </div>
@@ -89,7 +74,6 @@
         <div class="chart-bottom" style="padding-top: 10px;">
           <div class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="jQuery('#box-pacman').remove();">Remover</div>
 
-          <div id="legend-pacman" style="float:right; margin-right: 5px ;margin-bottom: 20px">Pac-Man</div>
         </div>
       </div>
     </div>
@@ -99,15 +83,28 @@
     Highcharts.setOptions({
         colors: ['#00E603', '#1540EB', '#D60000']
     });
+    var servers = [<% @dnsServers.each do |server| %>{
+        address: "<%= server[:address] %>",
+        ok : <%= server[:ok] %>,
+        timeout : <%= server[:timeout] %>,
+        serverfail : <%= server[:serverfail] %>
+    },<% end %>];
+    console.log(servers);
+
+    for(var i in servers)  {
+        DrawGraph(servers[i].address, servers[i].ok, servers[i].timeout, servers[i].serverfail);
+    }
+
+    function DrawGraph(address, ok, timeout, serverfail){
     var hchart1 = new Highcharts.Chart({
         chart: {
-            renderTo: 'chart-pacman1',
+            renderTo: 'chart-pacman-' + address,
             plotBackgroundColor: null,
             plotBorderWidth: null,
             plotShadow: false
         },
         title: {
-            text: '8.8.8.8'
+            text: address
         },
         tooltip: {
             pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -127,112 +124,11 @@
             type: 'pie',
             name: 'Browser share',
             data: [
-                ['OK',   330.0],
-                ['TO',       10.0],
-                ['SF',    5.0]
+                ['OK',   ok],
+                ['TO',   timeout],
+                ['SF',   serverfail]
             ]
         }]
     });
-    var hchart2 = new Highcharts.Chart({
-        chart: {
-            renderTo: 'chart-pacman2',
-            plotBackgroundColor: null,
-            plotBorderWidth: null,
-            plotShadow: false
-        },
-        title: {
-           text: '8.8.4.4'
-        },
-        tooltip: {
-            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-        },
-        plotOptions: {
-            pie: {
-                allowPointSelect: true,
-                cursor: 'pointer',
-                dataLabels: {
-                    enabled: false
-                },
-                showInLegend: false,
-                startAngle:90
-            }
-        },
-        series: [{
-            type: 'pie',
-            name: 'Browser share',
-            data: [
-                ['OK',   330.0],
-                ['TO',       10.0],
-                ['SF',    5.0]
-            ]
-        }]
-    });
-    var hchart3 = new Highcharts.Chart({
-        chart: {
-            renderTo: 'chart-pacman3',
-            plotBackgroundColor: null,
-            plotBorderWidth: null,
-            plotShadow: false
-        },
-        title: {
-            text: '200.184.63.19'
-        },
-        tooltip: {
-            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-        },
-        plotOptions: {
-            pie: {
-                allowPointSelect: true,
-                cursor: 'pointer',
-                dataLabels: {
-                    enabled: false
-                },
-                showInLegend: false,
-                startAngle:90
-            }
-        },
-        series: [{
-            type: 'pie',
-            name: 'Browser share',
-            data: [
-                ['OK',   330.0],
-                ['TO',       10.0],
-                ['SF',    5.0]
-            ]
-        }]
-    });
-    var hchart4 = new Highcharts.Chart({
-        chart: {
-            renderTo: 'chart-pacman4',
-            plotBackgroundColor: null,
-            plotBorderWidth: null,
-            plotShadow: false
-        },
-        title: {
-            text: '200.184.63.20'
-        },
-        tooltip: {
-            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-        },
-        plotOptions: {
-            pie: {
-                allowPointSelect: true,
-                cursor: 'pointer',
-                dataLabels: {
-                    enabled: false
-                },
-                showInLegend: false,
-                startAngle:90
-            }
-        },
-        series: [{
-            type: 'pie',
-            name: 'Browser share',
-            data: [
-                ['OK',   330.0],
-                ['TO',       10.0],
-                ['SF',    5.0]
-            ]
-        }]
-    });
+    };
 </script>
