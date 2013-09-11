@@ -43,7 +43,7 @@
                   <select  name="by_modem[]" id="by_modem"  >
                     <option value="">Todos</option>
                     <%  Probe.modems.each do |p|  %>
-                        <option  value="<%= p %>"><%= p %></option>
+                        <option value="<%= p %>"><%= p %></option>
                     <% end %>
                   </select>
                 </div>
@@ -160,7 +160,7 @@
             $('#sites').attr('style','display:block');
             $('#dns').attr('style','display:none');
             $('#variation').attr('style','display:none');
-        } else if (type == "dns" || type =="dns_error"){
+        } else if (type == "dns" || type =="dns_detail"){
             $('#sites').attr('style','display:block');
             $('#dns').attr('style','display:block');
             $('#variation').attr('style','display:none');

@@ -131,7 +131,7 @@ class ProbesController < ApplicationController
     source = Probe.find(params[:source_id])
     destination = Probe.find(params[:id])
 
-    metrics = destination.metrics(source)
+    metrics = destination.metrics(source).select {|metric| metric.metric_type == 'active'}
 
     respond_to do |format|
       format.json { render :json => metrics, :status => 200 }

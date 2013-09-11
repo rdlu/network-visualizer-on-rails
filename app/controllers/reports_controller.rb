@@ -2019,6 +2019,9 @@ class ReportsController < ApplicationController
     @from = params[:horario].first.to_i.hours.ago
     @to = Time.now
 
+    @from = '2013-08-21'.to_time
+    @to = '2013-08-26'.to_time
+
     @metric = Metric.find params[:metrics].first.partition(',').first
     profiles = @metric.profiles
     multiprobe = false
@@ -2081,8 +2084,6 @@ class ReportsController < ApplicationController
               @raw_results = DnsResult.
                   where(filters)
                   .order('timestamp ASC')
-
-              binding.pry
               
           end
 
@@ -2090,9 +2091,38 @@ class ReportsController < ApplicationController
             format.html { render :layout => false, file: 'reports/dygraphs_dns' }
           end
         when 'dns_detail'
-          @raw_results = DnsDetail.
-              where(:schedule_uuid => schedule.uuid).
-              where(:timestamp => @from..@to).order('timestamp ASC').all
+          filters = {schedule_uuid: schedule.uuid, timestamp: @from..@to}
+          filters.merge!({server: params[:by_dns]}) unless params[:by_dns].nil?
+          filters.merge!({url: params[:by_sites]}) unless params[:by_sites].nil?
+          @raw_results = DnsResult.
+            where(filters).
+            order('timestamp ASC').all.to_enum
+          @results = []
+          structcount = {total: 0}
+          DnsResult.possible_status.each do |status|
+            structcount.merge!({status.to_sym => 0})
+          end
+          @from.all_window_times_until(@to,@window_size.minutes).each do |window|
+            count = structcount.clone
+            begin
+              uuid = @raw_results.peek.uuid
+              while @raw_results.peek.timestamp < window+@window_size.minutes
+                count[:total]+=1
+                DnsResult.possible_status.each do |status|
+                  count[status.to_sym]+=1 if @raw_results.next.status == status
+                end
+              end
+            rescue StopIteration
+            #nothing to do
+            end
+            unless count[:total] == 0
+              newline = [window,window+@window_size.minutes,uuid]
+              DnsResult.possible_status.each do |status|
+                newline << [count[status.to_sym],count[:total]]
+              end
+              @results << newline
+            end
+          end
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/dygraphs_dns_detail' }
           end

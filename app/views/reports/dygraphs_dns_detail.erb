@@ -26,17 +26,14 @@
 <script type="text/javascript">
     graphs["<%=@idName%>"] = new Dygraph(
             document.getElementById("chart-<%=@idName%>"),
-            <% case @metric.plugin  %>
-            <% when "dns-efficiency" %>
-            [
-                <% @raw_results.each do |res| %>
-                [new Date("<%=res.timestamp.strftime("%b %d, %Y %H:%M:%S %z")%>"), "<%=res.uuid %>", <%=res.efic %>]<%=(res!=@raw_results.last)?",":""%>
+             [
+                <% @results.each do |res| %>
+                [new Date("<%=res[0].strftime("%b %d, %Y %H:%M:%S %z")%>"), "<%=res[2] %>", <%=res.drop(4).join(', ').chomp(', ') %>]<%=(res!=@results.last)?",":""%>
                 <% end %>
             ],
             {
-                labels: ["Data", "uuid", "Eficiência"],
-                visibility: [false, true],
-                labelsKMB: false,
+                labels: ["Data", "uuid", <%= DnsResult.possible_status.drop(1).map{|x| "\"#{x}\""}.join(', ').html_safe %>],
+                visibility: [false, <%= ("true, "*DnsResult.possible_status.drop(1).count).chomp(', ') %> ],
                 labelsDiv: document.getElementById('legend-<%=@idName%>'),
                 ylabel: "<%=@metric.name%> (<%=@metric.view_unit%>)",
                 dateWindow: [Date.parse("<%=@from.strftime("%b %d, %Y %H:%M:%S %z")%>"),Date.parse("<%=@to.strftime("%b %d, %Y %H:%M:%S %z")%>")],
@@ -83,62 +80,6 @@
                 }
 
             }
-                    <% else %>
-                    [
-                    <% @raw_results.each do |res| %>
-                    [new Date("<%=res.timestamp.strftime("%b %d, %Y %H:%M:%S %z")%>"), "<%=res.uuid %>", <%=res.delay%>]<%=(res!=@raw_results.last)?",":""%>
-                    <% end %>
-                    ],
-            {
-                labels: ["Data", "uuid", "Tempo de resposta"],
-                visibility: [false, true],
-                labelsDiv: document.getElementById('legend-<%=@idName%>'),
-                labelsKMG2: true,
-                ylabel: "<%=@metric.name%> (<%=@metric.db_unit%>)",
-                dateWindow: [Date.parse("<%=@from.strftime("%b %d, %Y %H:%M:%S %z")%>"),Date.parse("<%=@to.strftime("%b %d, %Y %H:%M:%S %z")%>")],
-                clickCallback: function (e, x, pts) {
-                    jQuery.ajax({
-                        url: "<%=show_kpi_url%>",
-                        type: 'post',
-                        dataType: 'json',
-                        data: {
-                            uuid: graphs["<%=@idName%>"].file_[pts[0].idx][1]
-                        },
-                        success: function (kpi) {
-                            if(!jQuery.isEmptyObject(kpi)) {
-                                var extras = '';
-                                extras += '<b>Timestamp: </b>' + moment(kpi.timestamp).format('YYYY-MM-DD HH:mm:ss Z') + '<br />';
-                                extras += '<b>LAC: </b>' + kpi.lac + '<br />' + '<b>CELLID: </b>' + kpi.cell_id + '<br />';
-                                extras += '<b>Marca: </b>' + kpi.brand + '<br />' + '<b>Modelo: </b>' + kpi.model + '<br />';
-                                extras += '<b>Tec. Conex.: </b>' + kpi.conn_tech + '<br />' + '<b>Sinal: </b>' + kpi.signal + 'dB<br />';
-                                extras += '<b>Atraso DNS: </b>' + kpi.dns_latency + 'ms<br />';
-                                jQuery.pnotify({
-                                    title: "KPI Info",
-                                    text: extras,
-                                    type: 'success'
-                                });
-                            } else {
-                                jQuery.pnotify({
-                                    title: "KPI Info",
-                                    text: "Este ponto não possui informação KPI disponíveis"
-                                });
-                            }
-
-                        },
-                        error: function (status, msg, error) {
-                            jQuery.pnotify({
-                                title: "KPI Info",
-                                text: "Algum erro ocorreu na hora de consultar os KPIs: "+msg,
-                                type: 'error'
-                            });
-                        },
-                        headers: {
-                            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-                        }
-                    });
-                }
-            }
-            <% end %>
     );
 
 </script>
