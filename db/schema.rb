@@ -88,11 +88,11 @@ ActiveRecord::Schema.define(:version => 20130822184409) do
     t.string   "server"
     t.string   "url"
     t.integer  "delay"
-    t.string   "uuid",          :limit => nil
+    t.string   "schedule_uuid", :limit => nil
     t.datetime "created_at",                   :null => false
     t.datetime "updated_at",                   :null => false
     t.string   "status"
-    t.string   "schedule_uuid", :limit => nil
+    t.string   "uuid",          :limit => nil
     t.datetime "timestamp"
   end
 

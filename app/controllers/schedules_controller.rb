@@ -125,4 +125,21 @@ class SchedulesController < ApplicationController
           format.xml
       end
   end
+
+  # Android / Linux Schedules
+  def private_agt_index
+      ipaddress = params[:ipaddress]
+      @probe = Probe.where(ipaddress: ipaddress).first;
+      if @probe.nil?
+	@probe_id = -1
+      else
+        @probe_id = @probe.id
+      end
+#     @schedules = Schedule.where(destination_id: @probe.id).all
+
+      respond_to do |format|
+          format.xml
+      end
+  end
+
 end
