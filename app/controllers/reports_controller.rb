@@ -2146,6 +2146,68 @@ class ReportsController < ApplicationController
 
 
   #########################
+
+  #RELATORIO PACMAN
+  def pacman
+    type = params[:networks]
+    position = params[:servers]
+    #activity = params[:activity]
+    #status = params[:status]
+    @nameserver = Nameserver.where(:type => nil)
+    #SELECT status,count (*) from dns_results where server = '8.8.8.8' and updated_at >= '2013-09-09 14:02' GROUP BY status;
+    @dnsresul = DnsResult.where(:server => @nameserver.pluck(:address)).where(:updated_at => Time.now - 30.minutes)
+
+
+    @hash_result = {}
+    count = 0
+    ok = 0
+    out = 0
+    fail = 0
+    other = 0
+    @dnsresul.each do |dns|
+      @hash_result[dns.server.to_sym] = {}
+      count += 1
+      @hash_result[dns.server.to_sym][:total] = count
+      @hash_result[dns.server.to_sym][:primary] = Nameserver.where(:address => dns.server).pluck(:primary) if  @hash_result[dns.server.to_sym][:primary].nil?
+      @hash_result[dns.server.to_sym][:vip] =  Nameserver.where(:address => dns.server).pluck(:vip) if  @hash_result[dns.server.to_sym][:vip].nil?
+      @hash_result[dns.server.to_sym][:internal] =  Nameserver.where(:address => dns.server).pluck(:internal) if  @hash_result[dns.server.to_sym][:internal].nil?
+      case dns.status
+        when 'OK' then
+          ok += 1
+          @hash_result[dns.server.to_sym][:ok] = ok
+        when 'TIMEOUT' then
+          out += 1
+          @hash_result[dns.server.to_sym][:timeout] = out
+        when 'SERVERFAIL'then
+          fail += 1
+          @hash_result[dns.server.to_sym][:serverfail] = fail
+        else
+          other += 1
+          @hash_result[dns.server.to_sym][:outro] = other
+      end
+
+    end
+
+    respond_to do |format|
+      format.html { render :layout => false }
+    end
+  end
+
+  def detail_pacman
+=begin
+    SELECT dns_results.updated_at, probes.name, dns_results.url, dns_results.delay, dns_results.status
+    from probes, dns_results, schedules
+    where server = '8.8.8.8' and dns_results.schedule_uuid = schedules.uuid
+    and schedules.destination_id = probes.id and dns_results.updated_at >= '2013-09-09 14:02'
+    order by  updated_at desc limit 20;
+=end
+    respond_to do |format|
+      format.html { render :layout => false }
+    end
+  end
+  #########################
+
+
   def csv_bruto
     source = Probe.find(params[:source])
     destination = Probe.find(params[:destination])
@@ -2657,6 +2719,7 @@ class ReportsController < ApplicationController
   end
 
   def smartrate
+
       respond_to do |format|
           format.xml
       end
