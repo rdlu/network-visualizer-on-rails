@@ -28,6 +28,12 @@
           </div>
         </div>
         <div class="control-group">
+          <%= f.label :cn, "Código de Área", :class => "control-label" %>
+          <div class="controls">
+            <%= f.select :cn, Probe.find_cns_by_state(@probe.state) %>
+          </div>
+        </div>
+        <div class="control-group">
           <%= f.label :connection_profile_id, "Conexão / Plano", :class => "control-label" %>
           <div class="controls">
             <%= f.collection_select :connection_profile_id, ConnectionProfile.all, :id, :name %>
@@ -36,6 +42,7 @@
         </div>
       </div>
       <h4>Dados extras</h4>
+
       <div class="span12">
         <div class="control-group">
           <%= f.label :bras, "BRAS", :class => "control-label" %>
@@ -109,8 +116,8 @@
     }
 
     $("#probe_pre_address").typeahead({
-        source:function (query, process) {
-            service.getPlacePredictions({ input:query }, function (predictions, status) {
+        source: function (query, process) {
+            service.getPlacePredictions({ input: query }, function (predictions, status) {
                 if (status == google.maps.places.PlacesServiceStatus.OK) {
                     process($.map(predictions, function (prediction) {
                         return prediction.description;
@@ -118,8 +125,8 @@
                 }
             });
         },
-        updater:function (item) {
-            geocoder.geocode({ address:item }, function (results, status) {
+        updater: function (item) {
+            geocoder.geocode({ address: item }, function (results, status) {
                 if (status != google.maps.GeocoderStatus.OK) {
                     alert('Endereço não pode ser obtido, Google Maps emitiu erro');
                     return;
@@ -128,6 +135,7 @@
                 $("#probe_longitude").val(results[0].geometry.location.lng());
                 $("#probe_city").val(mapsComponentByType(results, "locality"));
                 $("#probe_state").val(mapsComponentByType(results, "administrative_area_level_1", true).toLowerCase());
+                $("#probe_state").trigger('change');
                 var editedAddress = jQuery.trim(mapsComponentByType(results, "route") + mapsComponentByType(results, "street_number", false, ", ") + mapsComponentByType(results, "sublocality", false, ", "));
                 editedAddress = jQuery.trim(editedAddress.replace(/^,|,$/g, ''));
                 $("#probe_address").val(editedAddress);
@@ -138,16 +146,16 @@
             });
             return item;
         },
-        minLength:4
+        minLength: 4
     });
 
     $("#probe_connection_profile_id").change(function (evt) {
         var connProfileID = evt.currentTarget.value;
-        jQuery.ajax("<%=request.protocol+request.host_with_port+(url_for ConnectionProfile) %>/"+connProfileID+"/plans",{
-            success: function (data,status) {
+        jQuery.ajax("<%=request.protocol+request.host_with_port+(url_for ConnectionProfile) %>/" + connProfileID + "/plans", {
+            success: function (data, status) {
                 $("#probe_plan_id").html("");
-                jQuery.each(data, function(i,plan) {
-                    $("#probe_plan_id").append('<option value=\"'+plan.id+"\">"+plan.name+" ("+plan.throughputDown+"/"+plan.throughputUp+")</option>")
+                jQuery.each(data, function (i, plan) {
+                    $("#probe_plan_id").append('<option value=\"' + plan.id + "\">" + plan.name + " (" + plan.throughputDown + "/" + plan.throughputUp + ")</option>")
                 });
             },
             dataType: 'json',
@@ -166,4 +174,23 @@
     });
 
     $('.etooltip').tooltip();
+
+    $('#probe_state').change(function (evt) {
+        var estado = jQuery(evt.currentTarget).val();
+
+        jQuery.post('<%=probes_find_cns_by_state_url%>', { state: estado }).done(function (dataReturned) {
+
+            $('#probe_cn').attr('disabled', false);
+            $('#probe_cn').children('option').remove();
+
+            var strOptionscn = "";
+            $.each(dataReturned, function (i, data) {
+                strOptionscn += "<option value=\"" + data[0] + "\">" + data[1] + "</option>";
+            });
+
+            $('#probe_cn').append(strOptionscn);
+
+        });
+    });
+
 </script>

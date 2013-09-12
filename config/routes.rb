@@ -10,16 +10,16 @@ MomRails::Application.routes.draw do
   match 'reports' => 'reports#index', :as => 'reports'
   get 'reports/index', :as => 'index_reports'
   match 'reports/graph/:source_id/:destination_id/:metric_id' => 'reports#graph', :via => [:get]
-  post 'reports/graph', :as =>'graph_reports'
-  post 'reports/dygraphs_bruto', :as =>'dygraphs_bruto_reports'
-  post 'reports/highcharts_bruto', :as =>'highcharts_bruto_reports'
-  post 'reports/eaq_graph', :as =>'eaq_graph_reports'
-  post 'reports/eaq_compliance_graph', :as =>'eaq_compliance_graph_reports'
-  post 'reports/eaq_table', :as =>'eaq_table_reports'
-  post 'reports/detail_eaq_table', :as =>'detail_eaq_table_reports'
+  post 'reports/graph', :as => 'graph_reports'
+  post 'reports/dygraphs_bruto', :as => 'dygraphs_bruto_reports'
+  post 'reports/highcharts_bruto', :as => 'highcharts_bruto_reports'
+  post 'reports/eaq_graph', :as => 'eaq_graph_reports'
+  post 'reports/eaq_compliance_graph', :as => 'eaq_compliance_graph_reports'
+  post 'reports/eaq_table', :as => 'eaq_table_reports'
+  post 'reports/detail_eaq_table', :as => 'detail_eaq_table_reports'
   post 'reports/eaq2_table', :as => 'eaq2_table_reports'
   #get 'reports/eaq2_table', :as => 'eaq2_table_reports'
-  post 'reports/detail_eaq2_table', :as=> 'detail_eaq2_table_reports'
+  post 'reports/detail_eaq2_table', :as => 'detail_eaq2_table_reports'
   post 'reports/detail_speed_type_eaq2_table', :as => 'detail_speed_type_eaq2_table_reports'
   post 'reports/detail_probe_eaq2_table', :as => 'detail_probe_eaq2_table_reports'
   post 'kpi/show' => 'kpi#show', :as => 'show_kpi'
@@ -30,16 +30,16 @@ MomRails::Application.routes.draw do
   match 'reports/xls_diario/:filename' => 'reports#xls_diario', :as => 'reports_xls_diario', :via => [:get]
   match 'reports/xls_mensal/:filename' => 'reports#xls_mensal', :as => 'reports_xls_mensal', :via => [:get]
   post 'reports/send' => 'reports#send_report', :as => 'send_reports'
-  post 'reports/performance', :as =>'performance_reports'
-  post 'reports/smartrate', :as =>'smartrate_reports'
-  post 'reports/pacman', :as =>'pacman_reports'
-  post 'reports/detail_pacman', :as =>'detail_pacman_reports'
+  post 'reports/performance', :as => 'performance_reports'
+  post 'reports/smartrate', :as => 'smartrate_reports'
+  post 'reports/pacman', :as => 'pacman_reports'
+  post 'reports/detail_pacman', :as => 'detail_pacman_reports'
   resources :metrics
   resources :tests
   resources :schedules
   get 'schedules/win/schedule' => 'schedules#win', :as => 'windows_schedules'
   post 'schedules/private_schedule' => 'schedules#private_schedule', :as => 'private_schedules'
- 
+
   resources :probes do
     member do
       get 'destinations'
@@ -48,9 +48,10 @@ MomRails::Application.routes.draw do
     end
   end
 
-  post 'probes/load_location',:as=> 'probes_load_location'
+  post 'probes/load_location', :as => 'probes_load_location'
   post 'probes/filter_uf', :as => 'probes_filter_uf'
   post 'probes/filter_destination', :as => 'probes_filter_destination'
+  post 'probes/find_cns_by_state', :as => 'probes_find_cns_by_state'
 
   match 'probes/:id/metrics/:source_id' => 'probes#metrics', :via => [:get]
   match 'probes/:id/thresholds/:source_id' => 'probes#thresholds', :via => [:get]
@@ -96,16 +97,16 @@ MomRails::Application.routes.draw do
   match 'collect/id/:destination_id/:metric_name/:dsmax/:dsmin/:dsavg/:sdmax/:sdmin/:sdavg/:timestamp/:uuid' => 'results#create',
         :via => [:get],
         :as => 'results_create',
-        :constraints => { :destination_id => /\d+/,
-                          :metric_name => /[a-z_]+/,
-                          :dsmax => /[-]*[0-9]+[.]*[0-9]+/,
-                          :dsmin => /[-]*[0-9]+[.]*[0-9]+/,
-                          :dsavg => /[-]*[0-9]+[.]*[0-9]+/,
-                          :sdmax => /[-]*[0-9]+[.]*[0-9]+/,
-                          :sdmin => /[-]*[0-9]+[.]*[0-9]+/,
-                          :sdavg => /[-]*[0-9]+[.]*[0-9]+/,
-                          :timestamp => /\d+/,
-                          :uuid => /[0-9A-Fa-f]+-[0-9A-Fa-f]+-[0-9A-Fa-f]+-[0-9A-Fa-f]+-[0-9A-Fa-f]+/
+        :constraints => {:destination_id => /\d+/,
+                         :metric_name => /[a-z_]+/,
+                         :dsmax => /[-]*[0-9]+[.]*[0-9]+/,
+                         :dsmin => /[-]*[0-9]+[.]*[0-9]+/,
+                         :dsavg => /[-]*[0-9]+[.]*[0-9]+/,
+                         :sdmax => /[-]*[0-9]+[.]*[0-9]+/,
+                         :sdmin => /[-]*[0-9]+[.]*[0-9]+/,
+                         :sdavg => /[-]*[0-9]+[.]*[0-9]+/,
+                         :timestamp => /\d+/,
+                         :uuid => /[0-9A-Fa-f]+-[0-9A-Fa-f]+-[0-9A-Fa-f]+-[0-9A-Fa-f]+-[0-9A-Fa-f]+/
         }
 
   #/collect/id/2/kpis/3567/SonyEricsson/R800i/-/-/-101/-/-/-/0/4/1551/1361215988/db14c4a2-1629-4f2e-9fc5-361d3fec4b74
@@ -114,21 +115,21 @@ MomRails::Application.routes.draw do
   match 'collect/id/:destination_id/kpis/:cell_id/:brand/:model/:conn_type/:conn_tech/:signal/:error_rate/:change_of_ips/:route/:mtu/:dns_latency/:lac/:timestamp/:uuid' => 'kpi#create',
         :via => [:get],
         :as => 'kpi_create',
-        :constraints => { :destination_id => /\d+/,
-                          :cell_id => /[0-9\-]+/,
-                          :brand => /.+/,
-                          :model => /.+/,
-                          :conn_type => /[A-Za-z+\-]+/,
-                          :conn_tech => /[A-Za-z+\-]+/,
-                          :signal => /[>|<|%3C|%3E]*[0-9.\- ]+|Desconhecido|unknown/,
-                          :error_rate => /[>|<|%3C|%3E]*[0-9.\- ]+|Desconhecido|unknown'/,
-                          :change_of_ips => /[0-9\-]+/,
-                          :route => /.+/,
-                          :mtu => /[0-9\-]+|Desconhecido/,
-                          :dns_latency => /[%3C]*[0-9.\- ><]+|Desconhecido/,
-                          :lac => /[0-9\-]+/,
-                          :timestamp => /\d+/,
-                          :uuid => /[0-9A-Fa-f]+-[0-9A-Fa-f]+-[0-9A-Fa-f]+-[0-9A-Fa-f]+-[0-9A-Fa-f]+/
+        :constraints => {:destination_id => /\d+/,
+                         :cell_id => /[0-9\-]+/,
+                         :brand => /.+/,
+                         :model => /.+/,
+                         :conn_type => /[A-Za-z+\-]+/,
+                         :conn_tech => /[A-Za-z+\-]+/,
+                         :signal => /[>|<|%3C|%3E]*[0-9.\- ]+|Desconhecido|unknown/,
+                         :error_rate => /[>|<|%3C|%3E]*[0-9.\- ]+|Desconhecido|unknown'/,
+                         :change_of_ips => /[0-9\-]+/,
+                         :route => /.+/,
+                         :mtu => /[0-9\-]+|Desconhecido/,
+                         :dns_latency => /[%3C]*[0-9.\- ><]+|Desconhecido/,
+                         :lac => /[0-9\-]+/,
+                         :timestamp => /\d+/,
+                         :uuid => /[0-9A-Fa-f]+-[0-9A-Fa-f]+-[0-9A-Fa-f]+-[0-9A-Fa-f]+-[0-9A-Fa-f]+/
         }
 
   match 'schedules/unused_profiles_form/:source_id/:destination_id' => 'schedules#unused_profiles_form',

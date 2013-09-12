@@ -78,7 +78,7 @@ class ProbesController < ApplicationController
       respond_to do |format|
         format.json { render :json => @probe.to_json, :status => 200 }
         format.xml { head :ok }
-        format.html
+        format.html { redirect_to @probe, notice: 'Suas alterações foram salvas com sucesso.' }
       end
     else
       respond_to do |format|
@@ -131,7 +131,7 @@ class ProbesController < ApplicationController
     source = Probe.find(params[:source_id])
     destination = Probe.find(params[:id])
 
-    metrics = destination.metrics(source).select {|metric| metric.metric_type == 'active'}
+    metrics = destination.metrics(source).select { |metric| metric.metric_type == 'active' }
 
     respond_to do |format|
       format.json { render :json => metrics, :status => 200 }

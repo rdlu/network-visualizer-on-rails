@@ -42,6 +42,7 @@ class Probe < ActiveRecord::Base
   validates :longitude, :format => {:with => %r{^([-]?[0-9]{1,2}[.][0-9]+)|([-]?[0-9]{1,2})$}}
   validates :city, :presence => true
   validates :state, :presence => true
+  #validates :cn, :format => {:with => %r{^([1-9][1-9])$}}
 
   @inheritance_column = 'type2'
 
@@ -105,6 +106,10 @@ class Probe < ActiveRecord::Base
 
   def pretty_name_with_location
     "#{self.name} (#{self.ipaddress}) - #{self.city}/#{self.state.upcase}"
+  end
+
+  def pretty_cns
+    "#{self.cn}"
   end
 
   def real_ipaddress
@@ -306,7 +311,7 @@ class Probe < ActiveRecord::Base
     filtered_cns = self.cns.select { |cns| cns[0].downcase == state.downcase }
     results = []
     filtered_cns.each do |cn|
-      results << cn
+      results << [cn[1], cn[1]]
     end
     results
   end

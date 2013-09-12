@@ -186,8 +186,8 @@
             $('#probe_cn').children('option').remove();
 
             var strOptionscn = "";
-            $.each(dataReturned, function (i, l) {
-                strOptionscn += "<option value=\"" + i + "\">" + l[1] + "</option>";
+            $.each(dataReturned, function (i, data) {
+                strOptionscn += "<option value=\"" + data[0] + "\">" + data[1] + "</option>";
             });
 
             $('#probe_cn').append(strOptionscn);
