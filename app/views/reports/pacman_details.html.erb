@@ -1,0 +1,96 @@
+<div class='row-fluid'>
+  <div class="span5" style="height:300px;">
+  <ul>
+    <li>Sonda (Últimos 15 minutos)</li>
+  <li>Atualizado às</li>
+  <li>Total de Requisições:</li>
+  <li>Total OK</li>
+  <li>Time Out:</li>
+  <li>Server Fail:</li>
+  <li>Últimas Requisições:</li>
+</ul>
+  </div>
+  <div id="chart" class="span5"  style="height:300px;">
+
+  </div>
+
+</div>
+
+<div class="row-fluid">
+<table class="table table-bordered table-hover">
+  <thead>
+  <tr>
+    <th>Data</th>
+    <th>Sonda</th>
+    <th>URL</th>
+    <th>Tempo de Resposta</th>
+    <th>Resposta do Servicor</th>
+  </tr>
+  </thead>
+  <tbody>
+  <% @dnsDetails.each do |details| %>
+      <tr>
+        <td>
+          <%= details[:date] %>
+        </td>
+        <td><%= details[:probe] %></td>
+        <td><%= details[:url] %> </td>
+        <td><%= details[:responseTime] %></td>
+        <td><%= details[:serverResponse] %></td>
+      </tr>
+  <% end %>
+  </tbody>
+</table>
+</div>
+<script>
+    var hchart1 = new Highcharts.Chart({
+        chart: {
+            renderTo: 'chart',
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false
+        },
+        title: {
+            text: 'pie'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: false,
+                    formatter: function() {
+                        return this.percentage.toFixed(2) + '%';
+                    }
+                },
+                showInLegend: true,
+                startAngle:90
+            }
+        },
+        legend: {
+            margin: -30,
+            layout: 'vertical',
+            align: 'left',
+            verticalAlign: 'top',
+            borderWidth: 0,
+            useHTML: true,
+            labelFormatter: function() {
+                return '<div style="width:70px"><span style="float:left">' + this.name + '</span><span style="float:right">' + this.y + '%</span></div>';
+            }
+
+        },
+        series: [{
+            type: 'pie',
+            name: 'Browser share',
+            data: [
+                ['OK',   95],
+                ['TO',   2],
+                ['SF',   1]
+            ]
+        }]
+    });
+
+</script>

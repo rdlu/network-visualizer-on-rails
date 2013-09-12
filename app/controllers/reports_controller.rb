@@ -2155,7 +2155,7 @@ class ReportsController < ApplicationController
     #status = params[:status]
     @nameserver = Nameserver.where(:type => nil)
     #SELECT status,count (*) from dns_results where server = '8.8.8.8' and updated_at >= '2013-09-09 14:02' GROUP BY status;
-    @dnsresul = DnsResult.where(:server => @nameserver.pluck(:address)).where(:updated_at => Time.now - 30.minutes)
+    @dnsresul = DnsResult.where(:server => @nameserver.pluck(:address)).limit(1000)
 
 
     @hash_result = {}
@@ -2183,7 +2183,7 @@ class ReportsController < ApplicationController
           @hash_result[dns.server.to_sym][:serverfail] = fail
         else
           other += 1
-          @hash_result[dns.server.to_sym][:outro] = other
+          @hash_result[dns.server.to_sym][:other] = other
       end
 
     end
@@ -2725,23 +2725,10 @@ class ReportsController < ApplicationController
       end
   end
 
-  def pacman
-      hash1 = { :address => "8.8.8.8", :ok => 92, :timeout => 5, :serverfail => 3 }
-      hash2 = { :address => "8.8.4.4", :ok => 95, :timeout => 3, :serverfail => 2 }
-      hash3 = { :address => "8.8.2.2", :ok => 94, :timeout => 5, :serverfail => 1 }
-      @dnsServers = []
-      @dnsServers.push(hash1, hash2, hash3)
-      hash4 = { :address => "http://www.google.com", :ok => 92, :timeout => 5, :serverfail => 3 }
-      hash5 = { :address => "http://www.google.com.de", :ok => 95, :timeout => 3, :serverfail => 2 }
-      hash6 = { :address => "http://www.google.com.br", :ok => 94, :timeout => 5, :serverfail => 1 }
-      @worstURLs = []
-      @worstURLs.push(hash4, hash5, hash6)
-      hash7 = { :name => "sonda1", :type => "android", :ok => 92, :timeout => 5, :serverfail => 3 }
-      hash8 = { :name => "sonda2", :type => "linux", :ok => 95, :timeout => 3, :serverfail => 2 }
-      hash9 = { :name => "sonda3", :type => "android", :ok => 94, :timeout => 5, :serverfail => 1 }
-      @worstProbes = []
-      @worstProbes.push(hash7, hash8, hash9)
-
+  def pacman_details
+    hash1 = { :date => "11/09/2001", :probe => "SPO.PF.1", :url => "http://www.google.com", :responseTime => 10000, :serverResponse => "TimeOut" }
+    @dnsDetails = []
+    @dnsDetails.push(hash1, hash1, hash1, hash1, hash1, hash1, hash1, hash1, hash1, hash1, hash1, hash1, hash1)
     respond_to do |format|
       format.html { render :layout => false }
     end

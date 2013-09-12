@@ -30,10 +30,10 @@ MomRails::Application.routes.draw do
   match 'reports/xls_diario/:filename' => 'reports#xls_diario', :as => 'reports_xls_diario', :via => [:get]
   match 'reports/xls_mensal/:filename' => 'reports#xls_mensal', :as => 'reports_xls_mensal', :via => [:get]
   post 'reports/send' => 'reports#send_report', :as => 'send_reports'
-  post 'reports/performance', :as =>'performance_reports'
-  post 'reports/smartrate', :as =>'smartrate_reports'
-  post 'reports/pacman', :as =>'pacman_reports'
-  post 'reports/detail_pacman', :as =>'detail_pacman_reports'
+  post 'reports/performance', :as => 'performance_reports'
+  post 'reports/smartrate', :as => 'smartrate_reports'
+  post 'reports/pacman', :as => 'pacman_reports'
+  post 'reports/pacman_details', :as => 'pacman_details_reports'
   resources :metrics
   resources :tests
   resources :schedules
@@ -51,6 +51,7 @@ MomRails::Application.routes.draw do
   post 'probes/load_location',:as=> 'probes_load_location'
   post 'probes/filter_uf', :as => 'probes_filter_uf'
   post 'probes/filter_destination', :as => 'probes_filter_destination'
+  post 'probes/find_cns_by_state', :as => 'probes_find_cns_by_state'
 
   match 'probes/:id/metrics/:source_id' => 'probes#metrics', :via => [:get]
   match 'probes/:id/thresholds/:source_id' => 'probes#thresholds', :via => [:get]
