@@ -11,7 +11,15 @@
       <%= f.text_field :name, :class => 'text_field' %>
     </div>
   </div>
-    <div class="control-group" >
+
+  <div id="ag_types" class="control-group" >
+    <label class="control-label" for="type">Tipo: </label>
+    <div class="controls">
+       <%= select :type,'',[['Móvel','mobile'],["Fixo","fixed"]]%>
+    </div>
+  </div>
+
+  <div class="control-group" >
       <%= f.label "Vip:", :class => 'control-label' %>
       <div class="controls" >
         <%= f.check_box :vip, {:class => 'check_box'}%>
@@ -30,6 +38,7 @@
       <%= f.check_box :internal, :class => 'check_box' %>
     </div>
   </div>
+
 
   <div class="control-group">
     <div class="controls">

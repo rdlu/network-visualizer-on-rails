@@ -44,6 +44,9 @@ form {
 #view{
   margin-left: 40px;
 }
+#details-table{
+  margin-left: -42%;width: 85%;
+}
 /* When the window is less than 979px, the new css rules will be applied */
 @media (max-width: 979px){
   #optbtn{
@@ -62,4 +65,12 @@ form {
   #graphs-area{
     margin-top:-150px;
   }
+  #details-table{
+    margin-left: 0;width: auto;
+  }
+}
+
+#table-div
+{
+  margin-left:0;
 }
