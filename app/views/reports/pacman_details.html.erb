@@ -1,16 +1,23 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
+  <h3>Detalhamento para Sonda</h3>
+</div>
+
+<div class="modal-body" style="max-height: 500px;">
+
 <div class='row-fluid'>
-  <div class="span5" style="height:300px;">
+  <div class="span5" style="height:200px;">
   <ul>
     <li>Sonda (Últimos 15 minutos)</li>
   <li>Atualizado às</li>
   <li>Total de Requisições:</li>
-  <li>Total OK</li>
+  <li>Total OK:</li>
   <li>Time Out:</li>
   <li>Server Fail:</li>
   <li>Últimas Requisições:</li>
 </ul>
   </div>
-  <div id="chart" class="span5"  style="height:300px;">
+  <div id="chart" class="span5"  style="height:200px;">
 
   </div>
 
@@ -24,7 +31,7 @@
     <th>Sonda</th>
     <th>URL</th>
     <th>Tempo de Resposta</th>
-    <th>Resposta do Servicor</th>
+    <th>Resposta do Servidor</th>
   </tr>
   </thead>
   <tbody>
@@ -42,6 +49,7 @@
   </tbody>
 </table>
 </div>
+</div>
 <script>
     var hchart1 = new Highcharts.Chart({
         chart: {
@@ -54,14 +62,14 @@
             text: 'pie'
         },
         tooltip: {
-            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            pointFormat: '{series.name}:<b>{point.percentage:.1f}%</b>'
         },
         plotOptions: {
             pie: {
                 allowPointSelect: true,
                 cursor: 'pointer',
                 dataLabels: {
-                    enabled: false,
+                    enabled: true,
                     formatter: function() {
                         return this.percentage.toFixed(2) + '%';
                     }

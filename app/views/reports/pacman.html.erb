@@ -16,7 +16,7 @@
             </ul>
             <div class="row-fluid">
             <% @nameserver.each do |server| %>
-                  <a id='clicou' href="javascript:clicou()">
+                  <a id='clicou' href="javascript:popupTable()">
                   <div id="chart-pacman-<%= server.name%>" style="height:200px;width:50%;float:left"></div>
                       </a>
             <% end %>
@@ -31,6 +31,7 @@
                   <th>%OK</th>
                   <th>TimeOut</th>
                   <th>ServerFail</th>
+                  <th>Outro</th>
                 </tr>
             </thead>
             <tbody>
@@ -52,6 +53,7 @@
               <th>%OK</th>
               <th>TimeOut</th>
               <th>ServerFail</th>
+              <th>Outro</th>
             </tr>
             </thead>
             <tbody>
@@ -80,7 +82,7 @@
         </div>
       </div>
     </div>
-  <div id="details-table"></div>
+  <div id="details-table" class="modal hide fade"></div>
 </div>
 
 <script type="text/javascript">
@@ -100,7 +102,35 @@
     for(var i in servers)  {
         DrawGraph(servers[i].address, servers[i].name, servers[i].ok, servers[i].timeout, servers[i].serverfail, servers[i].other);
     }
+    function popupTable()
+    {
 
+
+        var e = document.getElementById('details-table');
+
+        if (e.style.display == 'block'){
+            e.style.display = 'none';
+            document.getElementById('details-table').style.display = 'none';
+
+        }else{
+            if($('#details-table').is(':empty')){
+                $.ajax({
+                    dataType: '',
+                    type: 'POST',
+                    url: "<%= pacman_details_reports_url %>",
+                    success: function(data){
+                        $('#details-table').html(data).modal({show:true});
+                    },
+                    headers: {
+                        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+            }
+        }
+        e.style.display = 'block';
+        jQuery('#details-table').modal({show:true});
+
+    }
     function DrawGraph(address, name, ok, timeout, serverfail, other){
     var hchart1 = new Highcharts.Chart({
         chart: {
@@ -142,37 +172,6 @@
     });
     };
 
-    function clicou(){
-        $('html,body').animate({
-                    scrollTop: $("#details-table").offset().top - 50},
-                'slow');
-        jQuery.ajax("<%= pacman_details_reports_url %>/", {
-            beforeSend: function () {
-                jQuery('#graphs-area').prepend('<div id=\"row-loading\" class="row-fluid"><div   class=\"span12\"><div id=\"box-loading\" style="height:100px;"><%=image_tag 'ajax-loader.gif' %> <strong>Requisitando o relatório selecionado, aguarde...</strong></div></div></div>');
-            },
-            complete: function (obj, status) {
-                jQuery('#row-loading').remove();
-            },
-            error: function (obj, status) {
-                console.log(obj);
-                console.log("Query Error " + status);
-            },
-            success: function (result, status) {
-                if (!jQuery("#details-table").is(':empty')) {
-                    jQuery("#details-table").remove();
-                }
-
-                jQuery('#details-table').prepend(result);
-
-            },
-            //dataType: 'json',
-            data: $(this).serialize(),
-            method: 'post',
-            headers: {
-                'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-    };
 
 
 </script>
