@@ -28,7 +28,7 @@
             <div class="control-group">
                 <label class="control-label"  for="by_type">Tipo de Destino: </label>
                 <div class="controls">
-                  <%= select :by_type,'', Probe.types, :onchange => 'displayTypes(this.value)', :id=>"by_type"  %>
+                  <%= select :by_type,'', (Probe.types<<['Todos','\\']).rotate(-1), :onchange => 'displayTypes(this.value)', :id=>"by_type"  %>
                 </div>
             </div>
             <div id="ag_types" class="control-group" >
