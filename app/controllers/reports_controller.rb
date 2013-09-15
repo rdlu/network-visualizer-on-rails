@@ -2337,6 +2337,7 @@ class ReportsController < ApplicationController
       report = Nokogiri::XML(params[:report])
 
       user = report.xpath("report/user").children.to_s
+      user = user.gsub("_", "-")
       #schedule_uuid = report.xpath("report/uuid").children.to_s
       #enquanto o william nao atualiza os agentes
       schedule_uuid = Schedule.where(destination_id: Probe.where(ipaddress: user)).first.uuid
@@ -2551,11 +2552,44 @@ class ReportsController < ApplicationController
                                                server_failure_errors: server_failure_errors,
                                                schedule_uuid: schedule_uuid,
                                                uuid: uuid)
-              when "throughput_http"
-                throughput_http_down = report.xpath("report/results/throughput_http/down").to_s.to_f
-                throughput_http_up = report.xpath("report/results/throughput_http/up").to_s.to_f
+	      when "ativas"
+		ativas=["loss", "jitter", "owd", "pom", "rtt", "throughput", "throughput_tcp" ]
+		@ativas_results = []
+		ativas.each do |a|
+			c = report.xpath("report/results/ativas/" + a)
+			unless (c.nil? || c.empty?)
+				dsmax = c.children.search("upmax").inner_text.to_f
+				dsmin = c.children.search("upmin").inner_text.to_f
+				dsavg = c.children.search("upavg").inner_text.to_f
 
-                metric = Metric.where(plugin: "throughput_http")
+				sdmax = c.children.search("downmax").inner_text.to_f
+				sdmin = c.children.search("downmin").inner_text.to_f
+				sdavg = c.children.search("downavg").inner_text.to_f
+				
+				metric = Metric.where(plugin: a).first.id
+                		probe = Probe.where(ipaddress: user).first
+       			        schedule = probe.schedules_as_destination.last
+			
+				@ativas_results = Results.create(schedule_id: schedule.id,
+								 metric_id: metric,
+								 schedule_uuid: schedule_uuid,
+								 uuid: uuid,
+								 metric_name: a,
+								 timestamp: timestamp,
+								 dsmax: dsmax,
+								 dsmin: dsmin,
+								 dsavg: dsavg,
+								 sdmax: sdmax,
+								 sdmin: sdmin,
+								 sdavg: sdavg)
+			end
+		end
+
+              when "throughput_http"
+                throughput_http_down = report.xpath("report/results/throughput_http/down").inner_text.to_f
+                throughput_http_up = report.xpath("report/results/throughput_http/up").inner_text.to_f
+
+                metric = Metric.where(plugin: "throughput_http").first.id
                 probe = Probe.where(ipaddress: user).first
                 schedule = probe.schedules_as_destination.last
 
