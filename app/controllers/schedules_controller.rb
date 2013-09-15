@@ -101,7 +101,10 @@ class SchedulesController < ApplicationController
       @used_profiles += schedule.profiles
     end
     @used_profiles = @used_profiles.uniq
-    @profiles = Profile.where(connection_profile_id: [@connection_profile.id,nil,""]).all
+    #WIRLAU - alterado provisoriamente para pegar todos os profiles
+ #  @profiles = Profile.where(connection_profile_id: [@connection_profile.id,nil,""]).all
+    @profiles = Profile.all;
+    
     @unused_profiles = @profiles - @used_profiles
 
     render :layout => false

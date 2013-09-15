@@ -37,14 +37,14 @@ class Schedule < ActiveRecord::Base
   def setup
     Yell.new(:gelf, :facility => 'netmetric').info 'Envio de parametros iniciado!',
                                                    '_schedule_id' => self.id
-    self.profiles.each do |profile|
-      require profile.config_method+'_job'
-      Kernel.const_get((profile.config_method+'_job').camelize.to_sym).profile_setup(profile, self)
-    end
+#W    self.profiles.each do |profile|
+#W      require profile.config_method+'_job'
+#W      Kernel.const_get((profile.config_method+'_job').camelize.to_sym).profile_setup(profile, self)
+#W    end
 
     #TODO: tornar o carregamento da agenttable e managertable dinamico, quando tivermos a especificacao
-    SnmpLegacyJob::agent_setup profiles, self
-    SnmpLegacyJob::manager_setup profiles, self
+#W    SnmpLegacyJob::agent_setup profiles, self
+#W    SnmpLegacyJob::manager_setup profiles, self
 
     self.status = 'active'
     self.save
@@ -82,7 +82,8 @@ class Schedule < ActiveRecord::Base
   end
 
   def default_values
-    self.status ||= 'config'
+#W  self.status ||= 'config'
+    self.status ||= 'active'
     self.start ||= DateTime.now
     self.end ||= DateTime.now.advance(:years => +2).at_midnight
     self.uuid ||= SecureRandom.uuid.tr('-', '')
