@@ -46,7 +46,7 @@ class DnsResult < ActiveRecord::Base
   end
 
   def self.possible_status
-    %w(OK NXDOMAIN TIMEOUT REFUSED FAIL FORMAT)
+    %w(OK NXDOMAIN FORMERR SERVFAIL TIMEOUT REFUSED OTHERS)
   end
 
 end

@@ -197,8 +197,7 @@ class Probe < ActiveRecord::Base
   end
 
   def self.types
-    [%w(Todos \ ),
-     %w(Android android),
+    [%w(Android android),
      %w(Linux linux)]
   end
 
