@@ -1,50 +1,50 @@
-<h2>Relatórios</h2>
+<div id="header">
+    <h2>Relatórios</h2>
 
-<div id="ops" class="accordion">
-  <div class="accordion-group">
-    <div class="accordion-heading">
-      <h4 id="acc_name" name="open" style="margin-left: 5px; padding: 0" class="accordion-toggle" data-toggle="collapse" data-parent="#ops" href="#accordion_forms">
-        Opções &#10548;
-      </h4>
-    </div>
-    <div id="accordion_forms" class="accordion-body collapse in">
-      <div class="accordion-inner">
-        <div class="tabbable">
-          <ul class="nav nav-tabs ">
-            <li class="active"><a href="#form_1" data-toggle="tab">Formato 1</a></li>
-            <li><a href="#form_2" data-toggle="tab">Formato 2</a></li>
-            <li><a href="#form_3" data-toggle="tab">Performance</a></li>
-          </ul>
-          <div class="tab-content tab-content-border" style="min-height: 50px !important">
-            <div class="tab-pane active" id="form_1">
-              <%= render 'form1' %>
+    <input type="image" name="open" id="optbtn" src='/assets/opt_btn-left.png' data-toggle="collapse" href="#accordion_forms">
+</div>
+    <div style="margin-left:40px;position: absolute;z-index: 100;">
+
+      <div id="accordion_forms" class="collapse width in">
+          <div id="tabs">
+            <div class="tabbable" >
+              <ul class="nav nav-tabs ">
+                <li class="active"><a href="#form_1" data-toggle="tab">Formato 1</a></li>
+                <li><a href="#form_2" data-toggle="tab">Formato 2</a></li>
+                <li><a href="#form_3" data-toggle="tab">Performance</a></li>
+                <li><a href="#form_4" data-toggle="tab">Pac-Man</a></li>
+              </ul>
+              <div class="tab-content tab-content-border" style="min-height: 50px !important">
+                <div class="tab-pane active" id="form_1">
+                  <%= render 'form1' %>
+                </div>
+                <div class="tab-pane"  id="form_2"> <%= render 'form2' %> </div>
+                <div class="tab-pane"  id="form_3"> <%= render 'form3' %></div>
+                <div class="tab-pane"  id="form_4">  <%= render 'form4' %></div>
+              </div>
             </div>
-            <div class="tab-pane" id="form_2"> <%= render 'form2' %> </div>
-            <div class="tab-pane" id="form_3"> <%= render 'form3' %></div>
           </div>
-        </div>
-
       </div>
     </div>
+
+
+<div id="view">
+  <div id="graphs-area">
   </div>
-</div>
-
-
-<div id="graphs-area">
 </div>
 
 
 <script type="text/javascript">
     var graphs = {};
     $(function () {
-        $('#acc_name').click(function () {
-            var text = document.getElementById('acc_name').getAttribute('name');
+        $('#optbtn').click(function () {
+            var text = document.getElementById('optbtn').getAttribute('name');
             if (text == 'open') {
-                $("#acc_name").html('Opções &#10549;');
-                $("#acc_name").attr('name', 'closed');
+                $("#optbtn").attr('src', '/assets/opt_btn-right.png');
+                $("#optbtn").attr('name', 'closed');
             } else {
-                $("#acc_name").html('Opções &#10548;');
-                $("#acc_name").attr('name', 'open');
+                $("#optbtn").attr('src', '/assets/opt_btn-left.png');
+                $("#optbtn").attr('name', 'open');
             }
         });
 
@@ -271,6 +271,37 @@
             }
         });
 
+        jQuery('#report-form4').submit(function (event) {
+            event.preventDefault();
+
+            jQuery.ajax("<%= pacman_reports_url %>/", {
+                    beforeSend: function () {
+                        jQuery('#graphs-area').prepend('<div id=\"row-loading\" class="row-fluid"><div   class=\"span12\"><div id=\"box-loading\" style="height:100px;"><%=image_tag 'ajax-loader.gif' %> <strong>Requisitando o relatório selecionado, aguarde...</strong></div></div></div>');
+                    },
+                    complete: function (obj, status) {
+                        jQuery('#row-loading').remove();
+                    },
+                    error: function (obj, status) {
+                        console.log(obj);
+                        console.log("Query Error " + status);
+                    },
+                    success: function (result, status) {
+                    if (!jQuery("#box-pacman").is(':empty')) {
+                        jQuery("#box-pacman").remove();
+                    }
+
+                    jQuery('#graphs-area').prepend(result);
+
+                    },
+                    //dataType: 'json',
+                    data: $(this).serialize(),
+                    method: 'post',
+                    headers: {
+                        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+        });
+
         jQuery('#report-form2').submit(function (event) {
             event.preventDefault();
             var from = jQuery('#date_start2').val();
@@ -353,7 +384,6 @@
                 jQuery('#report2-add').prop('disabled', true);
             }
         });
-
 
         function EAQGraph(source, destination, threshold, metric, range, results, goal_lines) {
             var self = this;
@@ -868,7 +898,21 @@
                     }
                 });
             };
+
         }
+
+    /*    $('#nav').affix({
+            offset:{
+                top: 50
+
+            }
+        });
+
+        $('#accordion_forms').affix({
+            offset:{
+                top: 50
+            }
+        });
 
         /* function exportCSV(graphIdName){
          var graph = graphs[graphIdName];
@@ -892,6 +936,7 @@
 
 
          }   */
+
     });
 </script>
 

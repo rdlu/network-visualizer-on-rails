@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130822184409) do
+ActiveRecord::Schema.define(:version => 20130904185640) do
 
   create_table "compliances", :force => true do |t|
     t.integer   "schedule_id"
@@ -68,6 +68,8 @@ ActiveRecord::Schema.define(:version => 20130822184409) do
     t.datetime "created_at",                           :null => false
     t.datetime "updated_at",                           :null => false
     t.string   "schedule_uuid",         :limit => nil
+    t.integer  "total"
+    t.datetime "timestamp"
   end
 
   add_index "dns_details", ["schedule_uuid"], :name => "index_dns_details_on_schedule_uuid"
@@ -211,6 +213,7 @@ ActiveRecord::Schema.define(:version => 20130822184409) do
     t.boolean   "internal"
     t.timestamp "created_at", :limit => 6, :null => false
     t.timestamp "updated_at", :limit => 6, :null => false
+    t.string    "type"
   end
 
   create_table "plans", :force => true do |t|
@@ -256,6 +259,7 @@ ActiveRecord::Schema.define(:version => 20130822184409) do
     t.string    "bras"
     t.string    "osversion"
     t.string    "modem"
+    t.integer   "cn"
   end
 
   add_index "probes", ["connection_profile_id"], :name => "index_probes_on_connection_profile_id"

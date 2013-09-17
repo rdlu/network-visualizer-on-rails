@@ -14,7 +14,7 @@
 #
 
 class Nameserver < ActiveRecord::Base
-  attr_accessible :address, :internal, :name, :primary, :vip
+  attr_accessible :address, :internal, :name, :primary, :vip, :type
 
   validates :address, :presence => true, :length => {:maximum => 255, :minimum => 3}
   validate  :validate_address

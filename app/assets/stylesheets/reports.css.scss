@@ -1,3 +1,76 @@
-// Place all the styles related to the reports controller here.
-// They will automatically be included in application.css.scss.
-// You can use Sass (SCSS) here: http://sass-lang.com/
+.collapse.width {
+  position: relative;
+  width: 0;
+  overflow: hidden;
+  -webkit-transition: width 0.35s ease;
+  -moz-transition: width 0.35s ease;
+  -o-transition: width 0.35s ease;
+  transition: width 0.35s ease;
+}
+
+.collapse.in.width {
+  width: auto;
+}
+
+.control-label{
+  font-size:small !important;
+}
+
+.input-block-level{
+  font-size:small !important;
+}
+
+.form-horizontal .control-group {
+  margin-bottom: 10px;
+  padding-left: 10px;
+}
+form {
+  margin:0 0 0 0;
+}
+
+#tabs {
+  border: 1px solid #E5E5E5;
+  padding:0;
+  width: 900px; background: white
+}
+#optbtn{
+  position: fixed;display: block; margin-top: 5px;margin-left:-15px;z-index:1000;
+}
+#accordion_forms{
+  height: auto !important;width: auto;float:left;position: fixed;
+}
+
+
+#view{
+  margin-left: 40px;
+}
+#details-table{
+  margin-left: -42%;width: 85%;
+}
+/* When the window is less than 979px, the new css rules will be applied */
+@media (max-width: 979px){
+  #optbtn{
+    position: relative;
+  }
+  #accordion_forms{
+    margin-top:-150px;
+    position: relative;
+  }
+  #header{
+    margin-top:-70px;
+  }
+  #tabs{
+    width:auto;
+  }
+  #graphs-area{
+    margin-top:-150px;
+  }
+  #details-table{
+    margin-left: 0;width: auto;
+  }
+}
+
+#table-div
+{
+  margin-left:0;
+}
