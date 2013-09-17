@@ -2216,7 +2216,7 @@ class ReportsController < ApplicationController
                     count[status.to_sym]+=1
                     break
                   else
-                    count["OTHERS".to_sym]+=1
+                    count["OTHER".to_sym]+=1
                   end                  
                 end
               end
@@ -2588,7 +2588,7 @@ class ReportsController < ApplicationController
       #enquanto o william nao atualiza os agentes
       schedule_uuid = Schedule.where(destination_id: Probe.where(ipaddress: user)).first.uuid
       uuid = report.xpath("report/meas_uuid").children.to_s
-      timestamp = report.xpath("report/timestamp").children.to_s
+      timestamp = report.xpath("report/timestamp").inner_text
       agent_type = report.xpath("report/agent_type").children.to_s
 
       #fallback para versoes antigas
@@ -2782,7 +2782,7 @@ class ReportsController < ApplicationController
                   server = c.children.search("server").inner_text
                   url = c.children.search("url").inner_text
                   delay = c.children.search("delay").inner_text.to_i
-                  dns_status = c.children.search("status").inner_text.to_f
+                  dns_status = c.children.search("status").inner_text
                   @dns_results << DnsResult.create(url: url,
                                                    server: server,
                                                    delay: delay,
