@@ -2,8 +2,13 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
   helper_method :get_user
 
-
   protected
+
+  def authorize
+    if @current_user.has_role? :admin && Rails.env.development?
+      Rack::MiniProfiler.authorize_request
+    end
+  end
 
   def accessible_roles
     @accessible_roles = Role.accessible_by(current_ability,:read)
