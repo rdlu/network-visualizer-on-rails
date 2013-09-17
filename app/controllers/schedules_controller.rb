@@ -52,8 +52,8 @@ class SchedulesController < ApplicationController
     respond_to do |format|
       if @schedule.save
         Yell.new(:gelf, :facility=>'netmetric').info 'Nova agenda configurada com sucesso.',
-                             '_schedule_id' => @schedule.id, '_destination_name' => @schedule.destination.name,
-                             '_source_name' => @schedule.source.name
+          '_schedule_id' => @schedule.id, '_destination_name' => @schedule.destination.name,
+          '_source_name' => @schedule.source.name
         format.html { redirect_to @schedule, notice: 'Agenda programada com sucesso.' }
         format.json { render json: @schedule, status: :created, location: @schedule }
       else
@@ -112,21 +112,21 @@ class SchedulesController < ApplicationController
 
   # Windows Schedules
   def win
-	  respond_to do |format|
-		  format.xml
-	  end
+    respond_to do |format|
+      format.xml
+    end
   end
 
   # Android / Linux Schedules
   def private_schedule
-      ipaddress = params[:ipaddress]
-      @probe = Probe.where(ipaddress: ipaddress).first
+    ipaddress = params[:ipaddress]
+    @probe = Probe.where(ipaddress: ipaddress).first
 
-      @schedules = Schedule.where(destination_id: @probe.id).all
+    @schedules = Schedule.where(destination_id: @probe.id).all
 
-      respond_to do |format|
-          format.xml
-      end
+    respond_to do |format|
+      format.xml
+    end
   end
 
   # Android / Linux Schedules

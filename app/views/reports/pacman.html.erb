@@ -1,0 +1,177 @@
+<div id="box-pacman" class="row-fluid">
+    <div class="row-fluid">
+      <div class="span12">
+        <div class='span5' style="height:auto;">
+          <div class="row-fluid pagination-centered">
+            <h3>DNS</h3>
+            <ul class="breadcrumb">
+              <li><span class="label" style="background-color:#00E603; font-size: medium; line-height:20px">&nbsp;&nbsp;OK&nbsp;&nbsp;</span>
+                <span class="divider">/</span></li>
+              <li><span class="label" style="background-color:#1540EB; font-size: medium; line-height:20px">&nbsp;TimeOut&nbsp;</span>
+                <span class="divider">/</span></li>
+              <li><span class="label" style="background-color:#D60000; font-size: medium; line-height:20px">&nbsp;ServerFail&nbsp;</span>
+              <span class="divider">/</span></li>
+              <li><span class="label" style="background-color:#000000; font-size: medium; line-height:20px">&nbsp;Outro&nbsp;</span></li>
+
+            </ul>
+            <div class="row-fluid">
+            <% @nameserver.each do |server| %>
+                  <a id='clicou' href="javascript:popupTable()">
+                  <div id="chart-pacman-<%= server.name%>" style="height:200px;width:50%;float:left"></div>
+                      </a>
+            <% end %>
+            </div>
+          </div>
+        </div>
+        <div id="table-div" class='span7' >
+          <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                  <th>Piores URL's</th>
+                  <th>%OK</th>
+                  <th>TimeOut</th>
+                  <th>ServerFail</th>
+                  <th>Outro</th>
+                </tr>
+            </thead>
+            <tbody>
+                  <!--
+            <%# @worstURLs.each do |url| %>
+                <tr>
+                  <td><%#= url[:address] %></td>
+                  <td><%#= url[:ok] %></td>
+                  <td><%#= url[:timeout] %> </td>
+                  <td><%#= url[:serverfail] %></td>
+                </tr>
+            <%# end %>     -->
+            </tbody>
+          </table>
+          <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+              <th>Piores Sondas</th>
+              <th>%OK</th>
+              <th>TimeOut</th>
+              <th>ServerFail</th>
+              <th>Outro</th>
+            </tr>
+            </thead>
+            <tbody>
+                 <!--
+            <%# @worstProbes.each do |probe| %>
+                <tr>
+                  <td>
+                    <%#= image_tag "icons/"+probe[:type]+"16.png" %>
+                    <%#= link_to probe[:name], probe %>
+                  </td>
+                  <td><%#= probe[:ok] %></td>
+                  <td><%#= probe[:timeout] %> </td>
+                  <td><%#= probe[:serverfail] %></td>
+                </tr>
+            <%# end %>    -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="row-fluid">
+      <div class="span12">
+        <div class="chart-bottom" style="padding-top: 10px;">
+          <div class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="jQuery('#box-pacman').remove();">Remover</div>
+
+        </div>
+      </div>
+    </div>
+  <div id="details-table" class="modal hide fade"></div>
+</div>
+
+<script type="text/javascript">
+    Highcharts.setOptions({
+        colors: ['#00E603', '#1540EB', '#D60000','#000000' ]
+    });
+
+    var servers = [<% @nameserver.each do |server| %> {
+        address: "<%= server.address %>",
+        name: "<%= server.name %>",
+        ok : <%= @hash_result[server.address.to_sym].has_key?(:ok) ? @hash_result[server.address.to_sym][:ok] : 0 %>,
+        timeout : <%= @hash_result[server.address.to_sym].has_key?(:timeout) ? @hash_result[server.address.to_sym][:timeout] : 0 %>,
+        serverfail :<%= @hash_result[server.address.to_sym].has_key?(:serverfail) ? @hash_result[server.address.to_sym][:serverfail] : 0 %>,
+        other:<%= @hash_result[server.address.to_sym].has_key?(:other) ? @hash_result[server.address.to_sym][:other] : 0 %>
+    },<% end %>];
+
+    for(var i in servers)  {
+        DrawGraph(servers[i].address, servers[i].name, servers[i].ok, servers[i].timeout, servers[i].serverfail, servers[i].other);
+    }
+    function popupTable()
+    {
+
+
+        var e = document.getElementById('details-table');
+
+        if (e.style.display == 'block'){
+            e.style.display = 'none';
+            document.getElementById('details-table').style.display = 'none';
+
+        }else{
+            if($('#details-table').is(':empty')){
+                $.ajax({
+                    dataType: '',
+                    type: 'POST',
+                    url: "<%= pacman_details_reports_url %>",
+                    success: function(data){
+                        $('#details-table').html(data).modal({show:true});
+                    },
+                    headers: {
+                        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+            }
+        }
+        e.style.display = 'block';
+        jQuery('#details-table').modal({show:true});
+
+    }
+    function DrawGraph(address, name, ok, timeout, serverfail, other){
+    var hchart1 = new Highcharts.Chart({
+        chart: {
+            renderTo: 'chart-pacman-' + name,
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false
+        },
+        title: {
+            text: name
+        },
+        subtitle: {
+            text: address
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: false
+                },
+                showInLegend: false,
+                startAngle:90
+            }
+        },
+        series: [{
+            type: 'pie',
+            name: 'Browser share',
+            data: [
+                ['OK',   ok],
+                ['TO',   timeout],
+                ['SF',   serverfail],
+                ['Outro', other]
+            ]
+        }]
+    });
+    };
+
+
+
+</script>
