@@ -53,6 +53,7 @@ class Metric < ActiveRecord::Base
         ['Métricas ativas','active'],
         ['DNS','dns'],
         ['DNS Errors','dns_detail'],
+        ['Eficiencia DNS','dns_efficiency'],
         ['Carga Web','web_load'],
         ['KPI','kpi'],
         ['Outra','']
