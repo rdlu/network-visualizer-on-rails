@@ -67,6 +67,7 @@ group :development do
   gem 'lol_dba'
   gem 'bullet'
   gem 'annotate'
+  gem 'rack-mini-profiler'
 
   # Debugging
   unless ENV["RM_INFO"]

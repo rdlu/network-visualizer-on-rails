@@ -2038,7 +2038,6 @@ class ReportsController < ApplicationController
     else
       @schedules = Schedule.joins(:evaluations).where(schedules: {:destination_id => @probes}, evaluations: {profile_id: profiles})
     end
-    binding.pry
 
     @window_size = @schedules.max_by{|schedule| schedule.polling}.polling
 
@@ -2114,7 +2113,7 @@ class ReportsController < ApplicationController
                     count[status.to_sym]+=1
                     break
                   else
-                    count["OTHERS".to_sym]+=1
+                    count["OTHER".to_sym]+=1
                   end                  
                 end
               end
@@ -2152,6 +2151,50 @@ class ReportsController < ApplicationController
       
       case @metric.metric_type
         when 'active'
+          @variations = params[:variation]
+          query = Results.
+              where(:schedule_id => @schedules).
+              where(:metric_id => @metric.id).
+              where(:timestamp => @from..@to).order('timestamp ASC')
+          @raw_results = query.all.to_enum
+          @results = []
+          @from.all_window_times_until(@to,@window_size.minutes).each do |window|
+            newres = {total: 0}
+            @variations.each do |variation|
+              newres.merge!({("sd"+variation).to_sym => []})
+              newres.merge!({("ds"+variation).to_sym => []})
+            end
+            begin
+              while @raw_results.peek.timestamp < window+@window_size.minutes
+                this_result = @raw_results.next
+                newres[:total] += 1
+                @variations.each do |variation|
+                  newres[("sd"+variation).to_sym] << this_result[("sd"+variation).to_sym]
+                  newres[("ds"+variation).to_sym] << this_result[("ds"+variation).to_sym]
+                end
+              end
+            rescue StopIteration
+            #nothing to do
+            end
+            unless newres[:total] == 0
+              newline = [window]
+              @variations.each do |variation|
+                  newline << newres[("sd"+variation).to_sym].reduce(:+)/newres[:total]
+                  newline << newres[("ds"+variation).to_sym].reduce(:+)/newres[:total]
+              end
+              @results << newline
+            else
+              newline = [window]
+              @variations.each do |variation|
+                newline << nil
+                newline << nil
+              end
+              @results << newline
+            end
+          end
+          respond_to do |format|
+            format.html { render :layout => false, file: 'reports/dygraphs_active' }
+          end
         when 'dns_detail'
           filters = {schedule_uuid: @schedules.pluck(:uuid), timestamp: @from..@to}
           filters.merge!({server: params[:by_dns]}) unless params[:by_dns].nil? || params[:by_dns][0] == ''

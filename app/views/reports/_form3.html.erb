@@ -28,7 +28,7 @@
             <div class="control-group">
                 <label class="control-label"  for="by_type">Tipo de Destino: </label>
                 <div class="controls">
-                  <%= select :by_type,'', (Probe.types<<['Todos','\\']).rotate(-1), :onchange => 'displayTypes(this.value)', :id=>"by_type"  %>
+                  <%= select :by_type,'', Probe.types, :onchange => 'displayTypes(this.value)', :id=>"by_type", :include_blank => "Todos"  %>
                 </div>
             </div>
             <div id="ag_types" class="control-group" >
@@ -164,7 +164,7 @@
             $('#sites').attr('style','display:block');
             $('#dns').attr('style','display:block');
             $('#variation').attr('style','display:none');
-        }else  if (type == "active"){
+        } else  if (type == "active"){
              $('#sites').attr('style','display:none');
              $('#dns').attr('style','display:none');
              $('#variation').attr('style','display:block');
