@@ -8,7 +8,13 @@
         <% else %>
         <h5 style="text-align: center">Gráfico Multiprobe |
           Data: <%= @from.strftime('%Y-%m-%d %H:%M:%S %Z') %> à <%= @to.strftime('%Y-%m-%d %H:%M:%S %Z') %></h5>
-        <h6 style="text-align: center"><small><strong>Filtros:</strong> UFs: <%=(defined? params[:by_state])? params[:by_state].join(',') : "Todos"  %>; POPs: <%=params[:by_pop].join(',')%>; Tipos de Sonda: <%=params[:by_type].join(',')%></small></h6>
+        <h6 style="text-align: center">
+            <small><strong>Filtros:</strong> 
+                UFs: <%=(defined? params[:by_state])? params[:by_state].join(',') : "Todos"  %>; 
+                POPs: <%=params[:by_pop].join(',')%>; 
+                Tipos de Sonda: <%=params[:by_type].join(',')%>
+            </small>
+        </h6>
         <% end %>
 
         <div id="chart-<%= @idName %>" style="height:250px;"></div>
