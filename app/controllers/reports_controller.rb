@@ -2217,7 +2217,8 @@ class ReportsController < ApplicationController
     end
 
     #busca piores urls
-    @dnsresul = DnsResult.where(:server => @nameserver.pluck(:address)).where("url is not null").where(:timestamp => Time.now - 30.minutes).limit(20)
+    @dnsresul = DnsResult.where(:server => @nameserver.pluck(:address)).where("url is not null").where("updated_at >= ?", '2013-08-05 14:00:00').limit(20)
+    #'#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
 
 
     @hash_result = Hash.new(0)
@@ -2248,15 +2249,15 @@ class ReportsController < ApplicationController
     #busca piores sondas
     @dnsprobes = DnsResult.find_by_sql("SELECT  probes.name, dns_results.status, probes.type
                                     from probes, dns_results, schedules where dns_results.schedule_uuid = schedules.uuid
-                                    and schedules.destination_id = probes.id and dns_results.timestamp >= '#{Time.now - 30.minutes}'
-                                    order by timestamp desc limit 20")
+                                    and schedules.destination_id = probes.id and dns_results.created_at >= '2013-08-05 14:00:00'
+                                    order by timestamp desc limit 20")  #'#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
 
     @hash_result[:probes] = {}
-    @hash_result[:probes][:total] = 0
     @dnsprobes.each do |probe|
       @hash_result[:probes][probe.name] = {}
       @hash_result[:probes][probe.name][:type] = probe.type
-      @hash_result[:probes][:total] += 1
+      @hash_result[:probes][probe.name][:total] = 0 if  @hash_result[:probes][probe.name][:total].nil?
+      @hash_result[:probes][probe.name][:total] += 1
       DnsResult.possible_status.each do |p|
         @hash_result[:probes][probe.name][p.to_sym] = 0 if @hash_result[:probes][p.to_sym].nil?
         if probe.status == p
@@ -2271,12 +2272,15 @@ class ReportsController < ApplicationController
   end
 
   def detail_pacman
-=begin
-   @dnsprobes = DnsResult.find_by_sql("SELECT dns_results.timestamp, probes.name, dns_results.url, dns_results.delay, dns_results.status
-                                    from probes, dns_results, schedules where server = '#{@server}' dns_results.schedule_uuid = schedules.uuid
-                                    and schedules.destination_id = probes.id and dns_results.timestamp >= '#{Time.now - 30.minutes}'
+    server = params[:server]
+
+   @dnsprobe = DnsResult.find_by_sql("SELECT dns_results.timestamp, probes.name, dns_results.url, dns_results.delay, dns_results.status
+                                    from probes, dns_results, schedules where server = '#{server}' dns_results.schedule_uuid = schedules.uuid
+                                    and schedules.destination_id = probes.id and dns_results.created_at >= '#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
                                     order by timestamp desc limit 20")
-=end
+
+
+
     respond_to do |format|
       format.html { render :layout => false }
     end
