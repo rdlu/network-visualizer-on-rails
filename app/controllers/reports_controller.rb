@@ -2019,9 +2019,6 @@ class ReportsController < ApplicationController
     @from = params[:horario].first.to_i.hours.ago
     @to = Time.now
 
-    @from = '2013-08-21'.to_time
-    @to = '2013-08-26'.to_time
-
     @metric = Metric.find params[:metrics].first.partition(',').first
     profiles = @metric.profiles
     @multiprobe = false
