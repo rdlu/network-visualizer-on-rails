@@ -1,15 +1,15 @@
 <h2>Limiares e Metas Anatel/EAQ</h2>
 <div class="row-fluid">
   <div class="span12">
-        <div class="navbar">
-          <div class="navbar-inner">
-            <% if can? :create, Threshold%>
+    <div class="navbar">
+      <div class="navbar-inner">
+        <% if can? :create, Threshold %>
             <div class="span2 offset10">
               <%= link_to "Novo Limiar", new_threshold_path, :class => "btn btn-primary btn-block" %>
             </div>
-            <%end%>
-          </div>
-        </div>
+        <% end %>
+      </div>
+    </div>
   </div>
 </div>
 <div class="row-fluid">
@@ -20,7 +20,9 @@
         <th>Métrica</th>
         <th>Ano Base</th>
         <th><span class="etooltip" data-title="Número de casos em que a meta é alcançada">Compliance</span></th>
-        <th><span class="etooltip" data-title="Meta estabelecida, por caso. A unidade depende da métrica em questão.">Meta</span></th>
+        <th>
+          <span class="etooltip" data-title="Meta estabelecida, por caso. A unidade depende da métrica em questão.">Meta</span>
+        </th>
         <th>Ações</th>
       </tr>
 
@@ -35,6 +37,7 @@
           </tr>
       <% end %>
     </table>
+    <%= will_paginate @thresholds, :style => 'color:#2C719B' %>
   </div>
 </div>
 

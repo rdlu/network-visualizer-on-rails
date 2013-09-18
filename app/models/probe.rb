@@ -42,7 +42,7 @@ class Probe < ActiveRecord::Base
   validates :longitude, :format => {:with => %r{^([-]?[0-9]{1,2}[.][0-9]+)|([-]?[0-9]{1,2})$}}
   validates :city, :presence => true
   validates :state, :presence => true
-  #validates :cn, :format => {:with => %r{^([1-9][1-9])$}}
+  validates :cn, :format => {:with => %r{^([1-9][1-9])$}}
 
   @inheritance_column = 'type2'
 

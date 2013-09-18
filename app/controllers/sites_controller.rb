@@ -2,7 +2,14 @@ class SitesController < ApplicationController
   # GET /sites
   # GET /sites.json
   def index
-    @sites = Site.all
+
+    if request.format == 'html'
+      @sites = Site.paginate(:page => params[:page],
+                             :per_page => 15,
+                             :order => 'vip DESC, id ASC')
+    else
+      @sites = Site.order(:vip).all
+    end
 
     respond_to do |format|
       format.html # index.html.erb

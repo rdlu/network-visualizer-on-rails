@@ -4,7 +4,14 @@ class SchedulesController < ApplicationController
   # GET /schedules.json
   def index
     authorize! :read, self
-    @schedules = Schedule.all
+
+    if request.format == 'html'
+      @schedules = Schedule.paginate(:page => params[:page],
+                                     :per_page => 15,
+                                     :order => 'status')
+    else
+      @schedules = Schedule.order(:status).all
+    end
 
     respond_to do |format|
       format.html # index.html.erb
@@ -51,9 +58,9 @@ class SchedulesController < ApplicationController
 
     respond_to do |format|
       if @schedule.save
-        Yell.new(:gelf, :facility=>'netmetric').info 'Nova agenda configurada com sucesso.',
-          '_schedule_id' => @schedule.id, '_destination_name' => @schedule.destination.name,
-          '_source_name' => @schedule.source.name
+        Yell.new(:gelf, :facility => 'netmetric').info 'Nova agenda configurada com sucesso.',
+                                                       '_schedule_id' => @schedule.id, '_destination_name' => @schedule.destination.name,
+                                                       '_source_name' => @schedule.source.name
         format.html { redirect_to @schedule, notice: 'Agenda programada com sucesso.' }
         format.json { render json: @schedule, status: :created, location: @schedule }
       else
@@ -101,7 +108,7 @@ class SchedulesController < ApplicationController
       @used_profiles += schedule.profiles
     end
     @used_profiles = @used_profiles.uniq
-    @profiles = Profile.where(connection_profile_id: [@connection_profile.id,nil,""]).all
+    @profiles = Profile.where(connection_profile_id: [@connection_profile.id, nil, ""]).all
     @unused_profiles = @profiles - @used_profiles
 
     render :layout => false

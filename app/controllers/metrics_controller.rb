@@ -4,7 +4,13 @@ class MetricsController < ApplicationController
 
   def index
     authorize! :read, self
-    @metrics = Metric.order('"order" ASC').all
+    if request.format == 'html'
+      @metrics = Metric.paginate(:page => params[:page],
+                                 :per_page => 15,
+                                 :order => '"order" ASC')
+    else
+      @metrics = Metric.order('"order" ASC').all
+    end
 
     respond_to do |format|
       format.html # index.html.erb

@@ -4,7 +4,14 @@ class NameserversController < ApplicationController
   # GET /nameservers.json
   def index
     authorize! :read, self
-    @nameservers = Nameserver.all
+
+    if request.format == 'html'
+      @nameservers = Nameserver.paginate(:page => params[:page],
+                                         :per_page => 15,
+                                         :order => 'vip DESC, internal DESC')
+    else
+      @nameservers = Nameserver.order(:vip).all
+    end
 
     respond_to do |format|
       format.html # index.html.erb

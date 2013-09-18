@@ -15,7 +15,14 @@ class ProbesController < ApplicationController
   def index
     authorize! :read, self
 
-    @probes = apply_scopes(Probe).order(:name).all
+    if request.format == 'html'
+      @probes = apply_scopes(Probe).paginate(:page => params[:page],
+                                             :per_page => 15,
+                                             :order => 'name')
+    else
+      @probes = apply_scopes(Probe).order(:name).all
+    end
+
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @probes }

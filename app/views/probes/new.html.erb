@@ -30,7 +30,7 @@
         <div class="control-group">
           <%= f.label :cn, "Código de Área", :class => "control-label" %>
           <div class="controls">
-            <%= f.select :cn, [['Digite o endereço antes', '']], {}, {disabled: 'true'} %>
+            <%= f.select :cn, [['Digite o endereço antes', ''], [params[:cn], params[:cn]]], {}, {disabled: 'true'} if params[:cn].nil? %>
           </div>
         </div>
         <div class="control-group">

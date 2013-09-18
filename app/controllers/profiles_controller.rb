@@ -4,7 +4,14 @@ class ProfilesController < ApplicationController
   # GET /profiles.json
   def index
     authorize! :read, self
-    @profiles = Profile.all
+
+    if request.format == 'html'
+      @profiles = Profile.paginate(:page => params[:page],
+                                   :per_page => 15,
+                                   :order => 'created_at DESC')
+    else
+      @profiles = Profile.order(:created_at).all
+    end
 
     respond_to do |format|
       format.html # index.html.erb
@@ -19,19 +26,19 @@ class ProfilesController < ApplicationController
     @profile = Profile.find(params[:id])
 
     case @profile.config_method
-    when "dns"
+      when "dns"
         redirect_to dns_profile_path(@profile)
         return
-    when "url"
+      when "url"
         redirect_to url_profile_path(@profile)
         return
-    when "raw_xml"
+      when "raw_xml"
         redirect_to raw_xml_profile_path(@profile)
         return
-    when "http"
+      when "http"
         redirect_to http_profile_path(@profile)
         return
-    else
+      else
         # do nothing
     end
 
@@ -60,19 +67,19 @@ class ProfilesController < ApplicationController
     @profile = Profile.find(params[:id])
 
     case @profile.config_method
-    when "dns"
+      when "dns"
         redirect_to edit_dns_profile_path(@profile)
         return
-    when "url"
+      when "url"
         redirect_to edit_url_profile_path(@profile)
         return
-    when "raw_xml"
+      when "raw_xml"
         redirect_to edit_raw_xml_profile_path(@profile)
         return
-    when "http"
+      when "http"
         redirect_to edit_http_profile_path(@profile)
         return
-    else
+      else
         # do nothing
     end
   end
@@ -103,19 +110,19 @@ class ProfilesController < ApplicationController
     @profile = Profile.find(params[:id])
 
     case @profile.config_method
-    when "dns"
+      when "dns"
         redirect_to dns_profile_path(@profile)
         return
-    when "url"
+      when "url"
         redirect_to url_profile_path(@profile)
         return
-    when "raw_xml"
+      when "raw_xml"
         redirect_to raw_xml_profile_path(@profile)
         return
-    when "http"
+      when "http"
         redirect_to http_profile_path(@profile)
         return
-    else
+      else
         # do nothing
     end
 

@@ -4,7 +4,14 @@ class ThresholdsController < ApplicationController
 
   def index
     authorize! :read, self
-    @thresholds = Threshold.all
+
+    if request.format == 'html'
+      @thresholds = Threshold.paginate(:page => params[:page],
+                                       :per_page => 15,
+                                       :order => 'name')
+    else
+      @thresholds = Threshold.order(:name).all
+    end
 
     respond_to do |format|
       format.html # index.html.erb

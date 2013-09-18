@@ -20,10 +20,15 @@
         <th><span class="etooltip" data-title="Valor usado internamente pelo netmetric">Plugin</span></th>
         <th>Descrição</th>
         <th><span class="etooltip" data-title="Unidade preferencial de visualização da medida">Unid. Prefer.</span></th>
-        <th><span class="etooltip" data-title="Unidade em que está efetivamente guardada no Banco de Dados">Unid. no BD</span></th>
-        <th><span class="etooltip" data-title="Usado pelo NetMetric para tratar os resultados recebidos e guardá-los">Tipo de Métrica</span></th>
+        <th>
+          <span class="etooltip" data-title="Unidade em que está efetivamente guardada no Banco de Dados">Unid. no BD</span>
+        </th>
+        <th><span class="etooltip" data-title="Usado pelo NetMetric para tratar os resultados recebidos e guardá-los">Tipo de Métrica</span>
+        </th>
         <th><span class="etooltip" data-title="Quanto menor, melhor o resultado">Métrica reversa</span></th>
-        <th><span class="etooltip" data-title="Ordem de preferência na apresentação de relatórios">Ordem de apresentação</span></th>
+        <th>
+          <span class="etooltip" data-title="Ordem de preferência na apresentação de relatórios">Ordem de apresentação</span>
+        </th>
         <th colspan="2"></th>
       </tr>
 
@@ -43,10 +48,10 @@
               <% end %></td>
 
 
-
           </tr>
       <% end %>
     </table>
+    <%= will_paginate @metrics, :style => 'color:#2C719B' %>
   </div>
 </div>
 

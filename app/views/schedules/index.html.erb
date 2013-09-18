@@ -34,16 +34,18 @@
       <% @schedules.each do |schedule| %>
           <tr>
             <td><%= schedule.destination.name %>(<%= schedule.destination.ipaddress %>)</td>
-            <td><% schedule.profiles.each do |test_profile| %>
+            <td>
+              <% schedule.profiles.each do |test_profile| %>
                   <span class="label label-info etooltip" data-title="<%= test_profile.name %>"><%= test_profile.name %></span>
               <% end %></td>
             <td><%= schedule.source.name %>(<%= schedule.source.ipaddress %>)</td>
             <td><%= schedule.polling %> min</td>
-            <td><%= schedule.status == 'active'? "Ativo": "Inativo" %></td>
-            <td><%= link_to 'Visualizar', schedule %> <%= link_to 'Editar', edit_schedule_path(schedule) if can? :edit, Schedule %> <%= link_to 'Excluir', schedule, method: :delete, data: {confirm: 'Você tem certeza que deseja excluir esta agenda?' } if can? :edit, Schedule %></td>
+            <td><%= schedule.status == 'active' ? "Ativo" : "Inativo" %></td>
+            <td><%= link_to 'Visualizar', schedule %> <%= link_to 'Editar', edit_schedule_path(schedule) if can? :edit, Schedule %> <%= link_to 'Excluir', schedule, method: :delete, data: {confirm: 'Você tem certeza que deseja excluir esta agenda?'} if can? :edit, Schedule %></td>
           </tr>
       <% end %>
       </tbody>
     </table>
+    <%= will_paginate @schedules, :style => 'color:#2C719B' %>
   </div>
 </div>
