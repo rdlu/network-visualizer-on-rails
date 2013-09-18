@@ -882,41 +882,21 @@ class ReportsController < ApplicationController
       end
     end
 
-   #Plan p/ throughput down
-    Plan.all.uniq{|x| x.throughput_down}.each do |plan|
+    #Plan p/ throughput down
+    Plan.all.uniq { |x| x.throughput_down }.each do |plan|
       fixed_probes = nil
       mobile_probes = nil
       all_probes = nil
 
       if !(@pop.include? 'all') && !(@bras.include? 'all')
-      fixed_probes = Probe.
-          where(:connection_profile_id => fixed_conn_profile).
-          where(:state => @states).
-          where(:areacode => @cn).
-          where(:type => @type).
-          where(:anatel => @goal_filter).
-          where(:pop => @pop).
-          where(:bras => @bras).
-          where(:plan_id => Plan.where(:throughput_down => plan.throughput_down))
-
-      mobile_probes = Probe.
-          where(:connection_profile_id => mobile_conn_profile).
-          where(:state => @states).
-          where(:areacode => @cn).
-          where(:type => @type).
-          where(:anatel => @goal_filter).
-          where(:pop => @pop).
-          where(:bras => @bras).
-          where(:plan_id => Plan.where(:throughput_down => plan.throughput_down))
-
-    else
-      if (@pop.include? 'all') && (@bras.include? 'all')
         fixed_probes = Probe.
             where(:connection_profile_id => fixed_conn_profile).
             where(:state => @states).
             where(:areacode => @cn).
             where(:type => @type).
             where(:anatel => @goal_filter).
+            where(:pop => @pop).
+            where(:bras => @bras).
             where(:plan_id => Plan.where(:throughput_down => plan.throughput_down))
 
         mobile_probes = Probe.
@@ -925,24 +905,18 @@ class ReportsController < ApplicationController
             where(:areacode => @cn).
             where(:type => @type).
             where(:anatel => @goal_filter).
+            where(:pop => @pop).
+            where(:bras => @bras).
             where(:plan_id => Plan.where(:throughput_down => plan.throughput_down))
 
-        all_probes = Probe.
-            where(:state => @states).
-            where(:areacode => @cn).
-            where(:type => @type).
-            where(:anatel => @goal_filter).
-            where(:plan_id => Plan.where(:throughput_down => plan.throughput_down)).
-            by_conn_type(@agent_type)
       else
-        if @pop.include? 'all'
+        if (@pop.include? 'all') && (@bras.include? 'all')
           fixed_probes = Probe.
               where(:connection_profile_id => fixed_conn_profile).
               where(:state => @states).
               where(:areacode => @cn).
               where(:type => @type).
               where(:anatel => @goal_filter).
-              where(:bras => @bras).
               where(:plan_id => Plan.where(:throughput_down => plan.throughput_down))
 
           mobile_probes = Probe.
@@ -951,7 +925,6 @@ class ReportsController < ApplicationController
               where(:areacode => @cn).
               where(:type => @type).
               where(:anatel => @goal_filter).
-              where(:bras => @bras).
               where(:plan_id => Plan.where(:throughput_down => plan.throughput_down))
 
           all_probes = Probe.
@@ -959,19 +932,17 @@ class ReportsController < ApplicationController
               where(:areacode => @cn).
               where(:type => @type).
               where(:anatel => @goal_filter).
-              where(:bras => @bras).
               where(:plan_id => Plan.where(:throughput_down => plan.throughput_down)).
               by_conn_type(@agent_type)
-
         else
-          if @bras.include? 'all'
+          if @pop.include? 'all'
             fixed_probes = Probe.
                 where(:connection_profile_id => fixed_conn_profile).
                 where(:state => @states).
                 where(:areacode => @cn).
                 where(:type => @type).
                 where(:anatel => @goal_filter).
-                where(:pop => @pop).
+                where(:bras => @bras).
                 where(:plan_id => Plan.where(:throughput_down => plan.throughput_down))
 
             mobile_probes = Probe.
@@ -980,7 +951,7 @@ class ReportsController < ApplicationController
                 where(:areacode => @cn).
                 where(:type => @type).
                 where(:anatel => @goal_filter).
-                where(:pop => @pop).
+                where(:bras => @bras).
                 where(:plan_id => Plan.where(:throughput_down => plan.throughput_down))
 
             all_probes = Probe.
@@ -988,121 +959,149 @@ class ReportsController < ApplicationController
                 where(:areacode => @cn).
                 where(:type => @type).
                 where(:anatel => @goal_filter).
-                where(:pop => @pop).
+                where(:bras => @bras).
                 where(:plan_id => Plan.where(:throughput_down => plan.throughput_down)).
                 by_conn_type(@agent_type)
+
+          else
+            if @bras.include? 'all'
+              fixed_probes = Probe.
+                  where(:connection_profile_id => fixed_conn_profile).
+                  where(:state => @states).
+                  where(:areacode => @cn).
+                  where(:type => @type).
+                  where(:anatel => @goal_filter).
+                  where(:pop => @pop).
+                  where(:plan_id => Plan.where(:throughput_down => plan.throughput_down))
+
+              mobile_probes = Probe.
+                  where(:connection_profile_id => mobile_conn_profile).
+                  where(:state => @states).
+                  where(:areacode => @cn).
+                  where(:type => @type).
+                  where(:anatel => @goal_filter).
+                  where(:pop => @pop).
+                  where(:plan_id => Plan.where(:throughput_down => plan.throughput_down))
+
+              all_probes = Probe.
+                  where(:state => @states).
+                  where(:areacode => @cn).
+                  where(:type => @type).
+                  where(:anatel => @goal_filter).
+                  where(:pop => @pop).
+                  where(:plan_id => Plan.where(:throughput_down => plan.throughput_down)).
+                  by_conn_type(@agent_type)
+            end
           end
         end
       end
-    end
 
-    fixed_schedules = Schedule.
-        where(:destination_id => fixed_probes).all
+      fixed_schedules = Schedule.
+          where(:destination_id => fixed_probes).all
 
-    mobile_schedules = Schedule.
-        where(:destination_id => mobile_probes).all
+      mobile_schedules = Schedule.
+          where(:destination_id => mobile_probes).all
 
-    all_schedules = Schedule.
-        where(:destination_id => all_probes).all
-                          #
-                          #  SCM4
-                          #
-    @medians_scm4 = Median.
-        where('start_timestamp >= ?', DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
-        where('start_timestamp <= ?', DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
-        where(:schedule_id => fixed_schedules).
-        where(:threshold_id => 1).
-        where("dsavg is not null").
-        order('start_timestamp ASC').all
-                          #
-                          # SMP10
-                          #
-    @medians_smp10 = Median.
-        where('start_timestamp >= ?', DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
-        where('start_timestamp <= ?', DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
-        where(:schedule_id => mobile_schedules).
-        where(:threshold_id => 1).
-        where("dsavg is not null").
-        order('start_timestamp ASC').all
-                          #
-                          # SCM5
-                          #
-    @medians_scm5 = Median.
-        where('start_timestamp >= ?', DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
-        where('start_timestamp <= ?', DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
-        where(:schedule_id => fixed_schedules).
-        where(:threshold_id => 2).
-        where("dsavg is not null").
-        order('start_timestamp ASC').all
+      all_schedules = Schedule.
+          where(:destination_id => all_probes).all
+      #
+      #  SCM4
+      #
+      @medians_scm4 = Median.
+          where('start_timestamp >= ?', DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
+          where('start_timestamp <= ?', DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
+          where(:schedule_id => fixed_schedules).
+          where(:threshold_id => 1).
+          where("dsavg is not null").
+          order('start_timestamp ASC').all
+      #
+      # SMP10
+      #
+      @medians_smp10 = Median.
+          where('start_timestamp >= ?', DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
+          where('start_timestamp <= ?', DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
+          where(:schedule_id => mobile_schedules).
+          where(:threshold_id => 1).
+          where("dsavg is not null").
+          order('start_timestamp ASC').all
+      #
+      # SCM5
+      #
+      @medians_scm5 = Median.
+          where('start_timestamp >= ?', DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
+          where('start_timestamp <= ?', DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
+          where(:schedule_id => fixed_schedules).
+          where(:threshold_id => 2).
+          where("dsavg is not null").
+          order('start_timestamp ASC').all
 
-    #
-    # SMP11
-    #
-    @medians_smp11 = Median.
-        where('start_timestamp >= ?', DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
-        where('start_timestamp <= ?', DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
-        where(:schedule_id => mobile_schedules).
-        where(:threshold_id => 2).
-        where("dsavg is not null").
-        order('start_timestamp ASC').all
+      #
+      # SMP11
+      #
+      @medians_smp11 = Median.
+          where('start_timestamp >= ?', DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
+          where('start_timestamp <= ?', DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
+          where(:schedule_id => mobile_schedules).
+          where(:threshold_id => 2).
+          where("dsavg is not null").
+          order('start_timestamp ASC').all
 
-    #
-    # SCM6
-    #
-    @medians_scm6 = Median.
-        where('start_timestamp >= ?', DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
-        where('start_timestamp <= ?', DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
-        where(:schedule_id => all_schedules).
-        where(:threshold_id => 3).
-        where("dsavg is not null").
-        order('start_timestamp ASC').all
+      #
+      # SCM6
+      #
+      @medians_scm6 = Median.
+          where('start_timestamp >= ?', DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
+          where('start_timestamp <= ?', DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
+          where(:schedule_id => all_schedules).
+          where(:threshold_id => 3).
+          where("dsavg is not null").
+          order('start_timestamp ASC').all
 
-    #
-    # SCM7
-    #
-    @medians_scm7 = Median.
-        where('start_timestamp >= ?', DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
-        where('start_timestamp <= ?', DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
-        where(:schedule_id => all_schedules).
-        where(:threshold_id => 4).
-        where("dsavg is not null").
-        order('start_timestamp ASC').all
+      #
+      # SCM7
+      #
+      @medians_scm7 = Median.
+          where('start_timestamp >= ?', DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
+          where('start_timestamp <= ?', DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
+          where(:schedule_id => all_schedules).
+          where(:threshold_id => 4).
+          where("dsavg is not null").
+          order('start_timestamp ASC').all
 
-    #
-    # SCM8
-    #
-    @medians_scm8 = Median.
-        where('start_timestamp >= ?', DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
-        where('start_timestamp <= ?', DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
-        where(:schedule_id => all_schedules).
-        where(:threshold_id => 5).
-        where("dsavg is not null").
-        order('start_timestamp ASC').all
+      #
+      # SCM8
+      #
+      @medians_scm8 = Median.
+          where('start_timestamp >= ?', DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
+          where('start_timestamp <= ?', DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
+          where(:schedule_id => all_schedules).
+          where(:threshold_id => 5).
+          where("dsavg is not null").
+          order('start_timestamp ASC').all
 
-    #
-    # SCM9
-    #
-    @medians_scm9 = Median.
-        where('start_timestamp >= ?', DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
-        where('start_timestamp <= ?', DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
-        where(:schedule_id => all_schedules).
-        where(:threshold_id => 6).
-        where("dsavg is not null").
-        order('start_timestamp ASC').all
+      #
+      # SCM9
+      #
+      @medians_scm9 = Median.
+          where('start_timestamp >= ?', DateTime.parse(@date).to_date.to_time.beginning_of_day.in_time_zone('GMT')).
+          where('start_timestamp <= ?', DateTime.parse(@date).to_date.to_time.end_of_day.in_time_zone('GMT')).
+          where(:schedule_id => all_schedules).
+          where(:threshold_id => 6).
+          where("dsavg is not null").
+          order('start_timestamp ASC').all
 
 
-    count6 = 0
-    count_all6 = 0
+      count6 = 0
+      count_all6 = 0
 
-    count7 = 0
-    count_all7 = 0
+      count7 = 0
+      count_all7 = 0
 
-    count8 = 0
-    count_all8 = 0
+      count8 = 0
+      count_all8 = 0
 
-    points = 0
-    total_points = 0
-
+      points = 0
+      total_points = 0
 
 
       # Armazena valores de cada plano
@@ -1256,7 +1255,7 @@ class ReportsController < ApplicationController
     end #fim for plan down
 
     #Plan p/ throughput up
-    Plan.all.uniq{|x| x.throughput_up}.each do |plan|
+    Plan.all.uniq { |x| x.throughput_up }.each do |plan|
       fixed_probes = nil
       mobile_probes = nil
       all_probes = nil
@@ -1270,7 +1269,7 @@ class ReportsController < ApplicationController
             where(:anatel => @goal_filter).
             where(:pop => @pop).
             where(:bras => @bras).
-            where(:plan_id =>  Plan.where(:throughput_up => plan.throughput_up))
+            where(:plan_id => Plan.where(:throughput_up => plan.throughput_up))
 
         mobile_probes = Probe.
             where(:connection_profile_id => mobile_conn_profile).
@@ -1280,7 +1279,7 @@ class ReportsController < ApplicationController
             where(:anatel => @goal_filter).
             where(:pop => @pop).
             where(:bras => @bras).
-            where(:plan_id =>  Plan.where(:throughput_up => plan.throughput_up))
+            where(:plan_id => Plan.where(:throughput_up => plan.throughput_up))
 
       else
         if (@pop.include? 'all') && (@bras.include? 'all')
@@ -1290,7 +1289,7 @@ class ReportsController < ApplicationController
               where(:areacode => @cn).
               where(:type => @type).
               where(:anatel => @goal_filter).
-              where(:plan_id =>  Plan.where(:throughput_up => plan.throughput_up))
+              where(:plan_id => Plan.where(:throughput_up => plan.throughput_up))
 
           mobile_probes = Probe.
               where(:connection_profile_id => mobile_conn_profile).
@@ -1298,14 +1297,14 @@ class ReportsController < ApplicationController
               where(:areacode => @cn).
               where(:type => @type).
               where(:anatel => @goal_filter).
-              where(:plan_id =>  Plan.where(:throughput_up => plan.throughput_up))
+              where(:plan_id => Plan.where(:throughput_up => plan.throughput_up))
 
           all_probes = Probe.
               where(:state => @states).
               where(:areacode => @cn).
               where(:type => @type).
               where(:anatel => @goal_filter).
-              where(:plan_id =>  Plan.where(:throughput_up => plan.throughput_up))
+              where(:plan_id => Plan.where(:throughput_up => plan.throughput_up))
         else
           if @pop.include? 'all'
             fixed_probes = Probe.
@@ -1324,7 +1323,7 @@ class ReportsController < ApplicationController
                 where(:type => @type).
                 where(:anatel => @goal_filter).
                 where(:bras => @bras).
-                where(:plan_id =>  Plan.where(:throughput_up => plan.throughput_up))
+                where(:plan_id => Plan.where(:throughput_up => plan.throughput_up))
 
             all_probes = Probe.
                 where(:state => @states).
@@ -1332,7 +1331,7 @@ class ReportsController < ApplicationController
                 where(:type => @type).
                 where(:anatel => @goal_filter).
                 where(:bras => @bras).
-                where(:plan_id =>  Plan.where(:throughput_up => plan.throughput_up))
+                where(:plan_id => Plan.where(:throughput_up => plan.throughput_up))
 
           else
             if @bras.include? 'all'
@@ -1343,7 +1342,7 @@ class ReportsController < ApplicationController
                   where(:type => @type).
                   where(:anatel => @goal_filter).
                   where(:pop => @pop).
-                  where(:plan_id =>  Plan.where(:throughput_up => plan.throughput_up))
+                  where(:plan_id => Plan.where(:throughput_up => plan.throughput_up))
 
               mobile_probes = Probe.
                   where(:connection_profile_id => mobile_conn_profile).
@@ -1352,7 +1351,7 @@ class ReportsController < ApplicationController
                   where(:type => @type).
                   where(:anatel => @goal_filter).
                   where(:pop => @pop).
-                  where(:plan_id =>  Plan.where(:throughput_up => plan.throughput_up))
+                  where(:plan_id => Plan.where(:throughput_up => plan.throughput_up))
 
               all_probes = Probe.
                   where(:state => @states).
@@ -1472,7 +1471,6 @@ class ReportsController < ApplicationController
 
       points = 0
       total_points = 0
-
 
 
       # Armazena valores de cada plano
@@ -2019,9 +2017,6 @@ class ReportsController < ApplicationController
     @from = params[:horario].first.to_i.hours.ago
     @to = Time.now
 
-    @from = '2013-08-21'.to_time
-    @to = '2013-08-26'.to_time
-
     @metric = Metric.find params[:metrics].first.partition(',').first
     profiles = @metric.profiles
     @multiprobe = false
@@ -2038,9 +2033,8 @@ class ReportsController < ApplicationController
     else
       @schedules = Schedule.joins(:evaluations).where(schedules: {:destination_id => @probes}, evaluations: {profile_id: profiles})
     end
-    binding.pry
 
-    @window_size = @schedules.max_by{|schedule| schedule.polling}.polling
+    @window_size = @schedules.max_by { |schedule| schedule.polling }.polling
 
     unless @multiprobe
       schedule = @schedules.last
@@ -2060,14 +2054,14 @@ class ReportsController < ApplicationController
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/dygraphs_bruto' }
           end
-        when 'dns'
+        when /dns|dns_efficiency/
           case @metric.plugin
             when 'dns-efficiency'
               @raw_results = DnsDetail.
                   where(:schedule_uuid => schedule.uuid).
                   where(:timestamp => @from..@to).order('timestamp ASC').all.to_enum
               @results = []
-              @from.all_window_times_until(@to,@window_size.minutes).each do |window|
+              @from.all_window_times_until(@to, @window_size.minutes).each do |window|
                 eficiencies = []
                 begin
                   while @raw_results.peek.timestamp < window+@window_size.minutes
@@ -2076,7 +2070,7 @@ class ReportsController < ApplicationController
                 rescue StopIteration
                   #nothing to do
                 end
-                @results << [window,window+@window_size.minutes,eficiencies.reduce(:+)/eficiencies.count]
+                @results << [window, window+@window_size.minutes, eficiencies.reduce(:+)/eficiencies.count]
               end
             else
               filters = {schedule_uuid: schedule.uuid, timestamp: @from..@to}
@@ -2084,8 +2078,8 @@ class ReportsController < ApplicationController
               filters.merge!({url: params[:by_sites]}) unless params[:by_sites].nil?
               @raw_results = DnsResult.
                   where(filters)
-                  .order('timestamp ASC')
-              
+              .order('timestamp ASC')
+
           end
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/dygraphs_dns' }
@@ -2095,15 +2089,15 @@ class ReportsController < ApplicationController
           filters.merge!({server: params[:by_dns]}) unless params[:by_dns].nil? || params[:by_dns][0] == ''
           filters.merge!({url: params[:by_sites]}) unless params[:by_sites].nil? || params[:by_sites][0] == ''
           query = DnsResult.
-            where(filters).
-            order('timestamp ASC')
+              where(filters).
+              order('timestamp ASC')
           @raw_results = query.all.to_enum
           @results = []
           structcount = {total: 0}
           DnsResult.possible_status.each do |status|
             structcount.merge!({status.to_sym => 0})
           end
-          @from.all_window_times_until(@to,@window_size.minutes).each do |window|
+          @from.all_window_times_until(@to, @window_size.minutes).each do |window|
             count = structcount.clone
             begin
               uuid = @raw_results.peek.uuid
@@ -2114,15 +2108,15 @@ class ReportsController < ApplicationController
                     count[status.to_sym]+=1
                     break
                   else
-                    count["OTHERS".to_sym]+=1
-                  end                  
+                    count["OTHER".to_sym]+=1
+                  end
                 end
               end
             rescue StopIteration
-            #nothing to do
+              #nothing to do
             end
             unless count[:total] == 0
-              newline = [window,uuid]
+              newline = [window, uuid]
               DnsResult.possible_status.each do |status|
                 newline << (count[status.to_sym]/count[:total])*100
               end
@@ -2149,23 +2143,119 @@ class ReportsController < ApplicationController
       @idName = "dygraph-" << @schedules.pluck(:id).join('-') << "-" << @metric.id.to_s #<< "-" << @from.strftime("%s") << "-" << @to.strftime("%s")
       @exportFileName = @metric.plugin + '-'+@schedules.pluck(:id).join('-')+ '-' + @from.strftime("%Y%m%d_%H%M%S") + '-' +@to.strftime("%Y%m%d_%H%M%S")
       @exportParams = "schedules=#{@schedules.pluck(:id).join('-')}&metric=#{@metric.id}&from=#{@from.iso8601}&to=#{@to.iso8601}"
-      
+
       case @metric.metric_type
         when 'active'
+          @variations = params[:variation]
+          query = Results.
+              where(:schedule_id => @schedules).
+              where(:metric_id => @metric.id).
+              where(:timestamp => @from..@to).order('timestamp ASC')
+          @raw_results = query.all.to_enum
+          @results = []
+          @from.all_window_times_until(@to, @window_size.minutes).each do |window|
+            newres = {total: 0}
+            @variations.each do |variation|
+              newres.merge!({("sd"+variation).to_sym => []})
+              newres.merge!({("ds"+variation).to_sym => []})
+            end
+            begin
+              while @raw_results.peek.timestamp < window+@window_size.minutes
+                this_result = @raw_results.next
+                newres[:total] += 1
+                @variations.each do |variation|
+                  newres[("sd"+variation).to_sym] << this_result[("sd"+variation).to_sym]
+                  newres[("ds"+variation).to_sym] << this_result[("ds"+variation).to_sym]
+                end
+              end
+            rescue StopIteration
+              #nothing to do
+            end
+            unless newres[:total] == 0
+              newline = [window]
+              @variations.each do |variation|
+                newline << newres[("sd"+variation).to_sym].reduce(:+)/newres[:total]
+                newline << newres[("ds"+variation).to_sym].reduce(:+)/newres[:total]
+              end
+              @results << newline
+            else
+              newline = [window]
+              @variations.each do |variation|
+                newline << nil
+                newline << nil
+              end
+              @results << newline
+            end
+          end
+          respond_to do |format|
+            format.html { render :layout => false, file: 'reports/dygraphs_active' }
+          end
+        when 'dns_efficiency'
+          @raw_results = DnsDetail.
+              where(:schedule_uuid => @schedules.pluck(:uuid)).
+              where(:timestamp => @from..@to).order('timestamp ASC').all.to_enum
+          @results = []
+          @from.all_window_times_until(@to, @window_size.minutes).each do |window|
+            eficiencies = []
+            begin
+              while @raw_results.peek.timestamp < window+@window_size.minutes
+                eficiencies << @raw_results.next.efic
+              end
+            rescue StopIteration
+              #nothing to do
+            end
+            unless eficiencies.count == 0
+              @results << [window, eficiencies.reduce(:+)/eficiencies.count]
+            else
+              @results << [window, nil]
+            end
+          end
+          respond_to do |format|
+            format.html { render :layout => false, file: 'reports/dygraphs_dns_multi_efficiency' }
+          end
+        when 'dns'
+          filters = {schedule_uuid: @schedules.pluck(:uuid), timestamp: @from..@to}
+          filters.merge!({server: params[:by_dns]}) unless params[:by_dns].nil?
+          filters.merge!({url: params[:by_sites]}) unless params[:by_sites].nil?
+          query = DnsResult.
+              where(filters).
+              order('timestamp ASC')
+          @raw_results = query.all.to_enum
+          @results = []
+          @from.all_window_times_until(@to, @window_size.minutes).each do |window|
+            delays = []
+            begin
+              while @raw_results.peek.timestamp < window+@window_size.minutes
+                delays << @raw_results.next.delay
+              end
+            rescue StopIteration
+              #nothing to do
+            end
+            unless delays.count == 0
+              newline = [window,delays.reduce(:+)/delays.count]
+              @results << newline
+            else
+              newline = [window,nil]
+              @results << newline
+            end
+          end
+          respond_to do |format|
+            format.html { render :layout => false, file: 'reports/dygraphs_dns_multi_delays' }
+          end
         when 'dns_detail'
           filters = {schedule_uuid: @schedules.pluck(:uuid), timestamp: @from..@to}
           filters.merge!({server: params[:by_dns]}) unless params[:by_dns].nil? || params[:by_dns][0] == ''
           filters.merge!({url: params[:by_sites]}) unless params[:by_sites].nil? || params[:by_sites][0] == ''
           query = DnsResult.
-            where(filters).
-            order('timestamp ASC')
+              where(filters).
+              order('timestamp ASC')
           @raw_results = query.all.to_enum
           @results = []
           structcount = {total: 0}
           DnsResult.possible_status.each do |status|
             structcount.merge!({status.to_sym => 0})
           end
-          @from.all_window_times_until(@to,@window_size.minutes).each do |window|
+          @from.all_window_times_until(@to, @window_size.minutes).each do |window|
             count = structcount.clone
             begin
               uuid = @raw_results.peek.uuid
@@ -2176,15 +2266,15 @@ class ReportsController < ApplicationController
                     count[status.to_sym]+=1
                     break
                   else
-                    count["OTHERS".to_sym]+=1
-                  end                  
+                    count["OTHER".to_sym]+=1
+                  end
                 end
               end
             rescue StopIteration
-            #nothing to do
+              #nothing to do
             end
             unless count[:total] == 0
-              newline = [window,uuid]
+              newline = [window, uuid]
               DnsResult.possible_status.each do |status|
                 newline << (count[status.to_sym]/count[:total])*100
               end
@@ -2195,8 +2285,11 @@ class ReportsController < ApplicationController
             format.html { render :layout => false, file: 'reports/dygraphs_dns_detail' }
           end
         when 'webload'
-        else
 
+        else
+          respond_to do |format|
+            format.html { render :layout => false, file: 'reports/dygraphs_notsupported' }
+          end
       end
     end
   end
@@ -2217,7 +2310,8 @@ class ReportsController < ApplicationController
     end
 
     #busca piores urls
-    @dnsresul = DnsResult.where(:server => @nameserver.pluck(:address)).where("url is not null").where(:timestamp => Time.now - 30.minutes).limit(20)
+    @dnsresul = DnsResult.where(:server => @nameserver.pluck(:address)).where("url is not null").where("updated_at >= ?", '2013-08-05 14:00:00').limit(20)
+    #'#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
 
 
     @hash_result = Hash.new(0)
@@ -2229,10 +2323,10 @@ class ReportsController < ApplicationController
 
     @dnsresul.each do |dns|
       @hash_result[dns.server.to_sym][:primary] = Nameserver.where(:address => dns.server).pluck(:primary) if  @hash_result[dns.server.to_sym][:primary].nil?
-      @hash_result[dns.server.to_sym][:vip] =  Nameserver.where(:address => dns.server).pluck(:vip) if  @hash_result[dns.server.to_sym][:vip].nil?
-      @hash_result[dns.server.to_sym][:internal] =  Nameserver.where(:address => dns.server).pluck(:internal) if  @hash_result[dns.server.to_sym][:internal].nil?
+      @hash_result[dns.server.to_sym][:vip] = Nameserver.where(:address => dns.server).pluck(:vip) if  @hash_result[dns.server.to_sym][:vip].nil?
+      @hash_result[dns.server.to_sym][:internal] = Nameserver.where(:address => dns.server).pluck(:internal) if  @hash_result[dns.server.to_sym][:internal].nil?
       @hash_result[dns.server.to_sym][:total] += 1
-      @hash_result[:sites][dns.url.to_sym] = {}  if @hash_result[:sites][dns.url.to_sym].nil?
+      @hash_result[:sites][dns.url.to_sym] = {} if @hash_result[:sites][dns.url.to_sym].nil?
       @hash_result[:sites][dns.url.to_sym][:total] = 0 if @hash_result[:sites][dns.url.to_sym][:total].nil?
       @hash_result[:sites][dns.url.to_sym][:total] += 1
       DnsResult.possible_status.each do |p|
@@ -2248,15 +2342,15 @@ class ReportsController < ApplicationController
     #busca piores sondas
     @dnsprobes = DnsResult.find_by_sql("SELECT  probes.name, dns_results.status, probes.type
                                     from probes, dns_results, schedules where dns_results.schedule_uuid = schedules.uuid
-                                    and schedules.destination_id = probes.id and dns_results.timestamp >= '#{Time.now - 30.minutes}'
-                                    order by timestamp desc limit 20")
+                                    and schedules.destination_id = probes.id and dns_results.created_at >= '2013-08-05 14:00:00'
+                                    order by timestamp desc limit 20")  #'#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
 
     @hash_result[:probes] = {}
-    @hash_result[:probes][:total] = 0
     @dnsprobes.each do |probe|
       @hash_result[:probes][probe.name] = {}
       @hash_result[:probes][probe.name][:type] = probe.type
-      @hash_result[:probes][:total] += 1
+      @hash_result[:probes][probe.name][:total] = 0 if  @hash_result[:probes][probe.name][:total].nil?
+      @hash_result[:probes][probe.name][:total] += 1
       DnsResult.possible_status.each do |p|
         @hash_result[:probes][probe.name][p.to_sym] = 0 if @hash_result[:probes][p.to_sym].nil?
         if probe.status == p
@@ -2271,16 +2365,20 @@ class ReportsController < ApplicationController
   end
 
   def detail_pacman
-=begin
-   @dnsprobes = DnsResult.find_by_sql("SELECT dns_results.timestamp, probes.name, dns_results.url, dns_results.delay, dns_results.status
-                                    from probes, dns_results, schedules where server = '#{@server}' dns_results.schedule_uuid = schedules.uuid
-                                    and schedules.destination_id = probes.id and dns_results.timestamp >= '#{Time.now - 30.minutes}'
+    server = params[:server]
+
+   @dnsprobe = DnsResult.find_by_sql("SELECT dns_results.timestamp, probes.name, dns_results.url, dns_results.delay, dns_results.status
+                                    from probes, dns_results, schedules where server = '#{server}' dns_results.schedule_uuid = schedules.uuid
+                                    and schedules.destination_id = probes.id and dns_results.created_at >= '#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
                                     order by timestamp desc limit 20")
-=end
+
+
+
     respond_to do |format|
       format.html { render :layout => false }
     end
   end
+
   #########################
 
 
@@ -2544,9 +2642,11 @@ class ReportsController < ApplicationController
       report = Nokogiri::XML(params[:report])
 
       user = report.xpath("report/user").children.to_s
-      schedule_uuid = report.xpath("report/uuid").children.to_s
+      #schedule_uuid = report.xpath("report/uuid").children.to_s
+      #enquanto o william nao atualiza os agentes
+      schedule_uuid = Schedule.where(destination_id: Probe.where(ipaddress: user)).first.uuid
       uuid = report.xpath("report/meas_uuid").children.to_s
-      timestamp = report.xpath("report/timestamp").children.to_s
+      timestamp = report.xpath("report/timestamp").inner_text
       agent_type = report.xpath("report/agent_type").children.to_s
 
       #fallback para versoes antigas
@@ -2740,7 +2840,7 @@ class ReportsController < ApplicationController
                   server = c.children.search("server").inner_text
                   url = c.children.search("url").inner_text
                   delay = c.children.search("delay").inner_text.to_i
-                  dns_status = c.children.search("status").inner_text.to_f
+                  dns_status = c.children.search("status").inner_text
                   @dns_results << DnsResult.create(url: url,
                                                    server: server,
                                                    delay: delay,
@@ -2796,9 +2896,9 @@ class ReportsController < ApplicationController
 
   def smartrate
 
-      respond_to do |format|
-          format.xml
-      end
+    respond_to do |format|
+      format.xml
+    end
   end
 
 end

@@ -53,6 +53,7 @@ class Metric < ActiveRecord::Base
         ['Métricas ativas','active'],
         ['DNS','dns'],
         ['DNS Errors','dns_detail'],
+        ['Eficiencia DNS','dns_efficiency'],
         ['Carga Web','web_load'],
         ['KPI','kpi'],
         ['Outra','']
@@ -67,5 +68,9 @@ class Metric < ActiveRecord::Base
 
   def pretty_metric_type
     self.search_metric_types(self.metric_type)[0]
+  end
+
+  def pretty_scalar_convertion(result)
+    "#{result} #{self.raw_db_unit}".to_unit(self.raw_view_unit).scalar
   end
 end
