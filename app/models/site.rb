@@ -16,8 +16,6 @@ class Site < ActiveRecord::Base
   validates :url, :presence => true
   validate :validate_url
 
-
-
   def validate_url
     errors.add(:url, ' tem um formato inválido.') unless hostname?
   end
@@ -26,5 +24,11 @@ class Site < ActiveRecord::Base
     !!(self.url.match(/^((?:https?\:\/\/|www\.|)([-a-z0-9]+\.)+[-a-z]+.)$/i))
   end
 
-
+  def pretty_human_vip
+    if self.vip == true
+      "Sim"
+    else
+      "Não"
+    end
+  end
 end

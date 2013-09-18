@@ -81,13 +81,13 @@ class Probe < ActiveRecord::Base
   def pretty_status
     case self.status
       when 0
-        "inactive"
+        "inativo"
       when 1
-        "active"
+        "ativo"
       when 2
-        "attention"
+        "atenção"
       when 3
-        "error"
+        "erro"
     end
   end
 

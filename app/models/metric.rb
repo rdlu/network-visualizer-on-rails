@@ -25,7 +25,7 @@ class Metric < ActiveRecord::Base
   has_many :thresholds
 
   def db_unit
-    self[:db_unit].to_s.gsub(/b\/s|B\/s/,'b/s' => 'bps', 'B/s' => 'Bps')
+    self[:db_unit].to_s.gsub(/b\/s|B\/s/, 'b/s' => 'bps', 'B/s' => 'Bps')
   end
 
   def raw_db_unit
@@ -33,11 +33,11 @@ class Metric < ActiveRecord::Base
   end
 
   def db_unit= (value)
-    self[:db_unit] = value.gsub(/bps|Bps/,'bps' => 'b/s', 'Bps' => 'B/s')
+    self[:db_unit] = value.gsub(/bps|Bps/, 'bps' => 'b/s', 'Bps' => 'B/s')
   end
 
   def view_unit
-    self[:view_unit].to_s.gsub(/b\/s|B\/s/,'b/s' => 'bps', 'B/s' => 'Bps')
+    self[:view_unit].to_s.gsub(/b\/s|B\/s/, 'b/s' => 'bps', 'B/s' => 'Bps')
   end
 
   def raw_view_unit
@@ -45,18 +45,18 @@ class Metric < ActiveRecord::Base
   end
 
   def view_unit= (value)
-    self[:view_unit] = value.gsub(/bps|Bps/,'bps' => 'b/s', 'Bps' => 'B/s')
+    self[:view_unit] = value.gsub(/bps|Bps/, 'bps' => 'b/s', 'Bps' => 'B/s')
   end
 
   def metric_types
     [
-        ['Métricas ativas','active'],
-        ['DNS','dns'],
-        ['DNS Errors','dns_detail'],
-        ['Eficiencia DNS','dns_efficiency'],
-        ['Carga Web','web_load'],
-        ['KPI','kpi'],
-        ['Outra','']
+        ['Métricas ativas', 'active'],
+        ['DNS', 'dns'],
+        ['DNS Errors', 'dns_detail'],
+        ['Eficiencia DNS', 'dns_efficiency'],
+        ['Carga Web', 'web_load'],
+        ['KPI', 'kpi'],
+        ['Outra', '']
     ]
   end
 
@@ -73,4 +73,13 @@ class Metric < ActiveRecord::Base
   def pretty_scalar_convertion(result)
     "#{result} #{self.raw_db_unit}".to_unit(self.raw_view_unit).scalar
   end
+
+  def pretty_human_reverse
+    if self.reverse == true
+      "Sim"
+    else
+      "Não"
+    end
+  end
+
 end
