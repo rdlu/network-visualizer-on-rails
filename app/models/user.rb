@@ -27,7 +27,7 @@ class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :token_authenticatable, :confirmable,
   # :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable,:confirmable,
+  devise :database_authenticatable, :confirmable,
          :recoverable, :rememberable, :trackable, :validatable
 
   has_and_belongs_to_many :roles
@@ -35,7 +35,7 @@ class User < ActiveRecord::Base
 #  validates :password, :presence => {:message => "não pode ficar em branco"}
 #  validates :password_confirmation, :presence => {:message => "não pode ficar em branco"}
 
-  # Setup accessible (or protected) attributes for your model
+# Setup accessible (or protected) attributes for your model
   attr_accessible :email, :password, :password_confirmation, :remember_me, :adm_block
 
   def role?(role)
@@ -51,12 +51,38 @@ class User < ActiveRecord::Base
   end
 
   def inactive_message
-   if super && self.adm_block
-     :unconfirmed
-   else
-     :locked
-   end
+    if super && self.adm_block
+      :unconfirmed
+    else
+      :locked
+    end
   end
 
+  def type_off_user
+    if self.roles.collect(&:name) == ["admin"]
+      "Administrador"
+    elsif  self.roles.collect(&:name) == ["normal"]
+      "Configurador"
+    elsif self.roles.collect(&:name) == ["visualizador"]
+      "Visualizador"
+    else
+      "Administrador/Configurador"
+    end
+  end
 
+  def last_login
+    if self.last_sign_in_at == nil
+      "Não efetuou login"
+    else
+      self.last_sign_in_at
+    end
+  end
+
+  def status
+    if self.confirmed_at != nil
+      "Ativo"
+    else
+      "Inativo"
+    end
+  end
 end

@@ -74,7 +74,7 @@ class Schedule < ActiveRecord::Base
       metrics << Metric.find(3)
     end
 
-    metrics.uniq.sort_by{ |metric| metric[sort_by]}
+    metrics.uniq.sort_by { |metric| metric[sort_by] }
   end
 
   def have_metric? (metric)
@@ -88,4 +88,11 @@ class Schedule < ActiveRecord::Base
     self.uuid ||= SecureRandom.uuid.tr('-', '')
   end
 
+  def pretty_status
+    if self.status == 'active'
+      "Ativo"
+    else
+      "Inativo"
+    end
+  end
 end

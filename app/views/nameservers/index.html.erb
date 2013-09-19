@@ -1,5 +1,5 @@
 <%- model_class = Nameserver -%>
-<h2><%= t '.title', :default => model_class.model_name.human.pluralize %></h2>
+<h2><%= t '.title', :default => "DNS" %></h2>
 
 <div class="row-fluid">
   <div class="span12">
@@ -7,7 +7,7 @@
         <div class="navbar">
           <div class="navbar-inner">
             <div class="span2 offset10">
-              <%= link_to t('.new', :default => "Novo Nameserver"),
+              <%= link_to t('.new', :default => "Novo DNS"),
                           new_nameserver_path,
                           :class => 'btn btn-primary btn-block' %>
             </div>
@@ -20,12 +20,11 @@
 <table class="table table-bordered table-hover table-striped">
   <thead>
   <tr>
-    <th><%= model_class.human_attribute_name(:id) %></th>
     <th>Endereço</th>
     <th>Nome</th>
-    <th><%= model_class.human_attribute_name(:primary) %></th>
-    <th><%= model_class.human_attribute_name(:vip) %></th>
-    <th><%= model_class.human_attribute_name(:internal) %></th>
+    <th>Primário</th>
+    <th>Vip</th>
+    <th>Interno</th>
     <th>Criado em</th>
     <th colspan="2"><%= t '.actions', :default => "Ações" %></th>
   </tr>
@@ -34,12 +33,11 @@
   <% unless  @nameservers.empty? %>
       <% @nameservers.each do |nameserver| %>
           <tr>
-            <td><%= link_to nameserver.id, nameserver_path(nameserver) %></td>
             <td><%= nameserver.address %></td>
             <td><%= nameserver.name %></td>
-            <td><%= nameserver.primary %></td>
-            <td><%= nameserver.vip %></td>
-            <td><%= nameserver.internal %></td>
+            <td><%= nameserver.pretty_human_primary %></td>
+            <td><%= nameserver.pretty_human_vip %></td>
+            <td><%= nameserver.pretty_human_internal %></td>
             <td><%= l nameserver.created_at %></td>
             <td>
               <%= link_to t('.edit', :default => "Editar"), edit_nameserver_path(nameserver) %>

@@ -14,9 +14,9 @@
 class ConnectionProfile < ActiveRecord::Base
   attr_accessible :name_id, :name, :conn_type, :notes
 
-  validates :name, :presence => true, :uniqueness => true, :length => { :minimum => 2, :maximum => 30 }
+  validates :name, :presence => true, :uniqueness => true, :length => {:minimum => 2, :maximum => 30}
 
-  validates :name_id, :presence => true, :length => {:maximum => 30, :minimum => 2}, :format => { :with => %r{^[0-9a-zA-Z][0-9a-zA-Z\-\_]*[0-9a-zA-Z]$} },
+  validates :name_id, :presence => true, :length => {:maximum => 30, :minimum => 2}, :format => {:with => %r{^[0-9a-zA-Z][0-9a-zA-Z\-\_]*[0-9a-zA-Z]$}},
             :uniqueness => true
 
   #relationships
@@ -25,4 +25,13 @@ class ConnectionProfile < ActiveRecord::Base
   has_many :thresholds
 
   accepts_nested_attributes_for :plans
+
+  def pretty_name_connection
+    if self.conn_type == "mobile"
+      "Móvel"
+    else
+      "Fixo"
+    end
+  end
+
 end
