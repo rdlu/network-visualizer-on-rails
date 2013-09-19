@@ -32,7 +32,7 @@ class DnsResult < ActiveRecord::Base
     where(server: dns) unless dns == '' or dns[0] == ''
   }
 
-  def validate_ipaddress
+  def validate_serveraddress
     errors.add(:server, ' tem um formato inválido') unless IPAddress.valid? self.server
   end
 
