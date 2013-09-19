@@ -1,50 +1,51 @@
-<%= form_for @nameserver, :html => { :class => 'form-horizontal' } do |f| %>
-  <div class="control-group">
-    <%= f.label "Endereço:", :class => 'control-label' %>
-    <div class="controls">
-      <%= f.text_field :address, :class => 'text_field' %>
-    </div>
-  </div>
-  <div class="control-group">
-    <%= f.label "Nome:", :class => 'control-label' %>
-    <div class="controls">
-      <%= f.text_field :name, :class => 'text_field' %>
-    </div>
-  </div>
-
-  <div id="ag_types" class="control-group" >
-    <label class="control-label" for="type">Tipo: </label>
-    <div class="controls">
-       <%= select :type,'',[['Móvel','mobile'],["Fixo","fixed"]]%>
-    </div>
-  </div>
-
-  <div class="control-group" >
-      <%= f.label "Vip:", :class => 'control-label' %>
-      <div class="controls" >
-        <%= f.check_box :vip, {:class => 'check_box'}%>
+<%= form_for @nameserver, :html => {:class => 'form-horizontal'} do |f| %>
+    <div class="control-group">
+      <%= f.label "Endereço:", :class => 'control-label' %>
+      <div class="controls">
+        <%= f.text_field :address, :class => 'text_field' %>
       </div>
     </div>
-  <div class="control-group">
-    <%= f.label "Primary:", :class => 'control-label' %>
-    <div class="controls">
-      <%= f.check_box :primary, :class => 'check_box' %>
+    <div class="control-group">
+      <%= f.label "Nome:", :class => 'control-label' %>
+      <div class="controls">
+        <%= f.text_field :name, :class => 'text_field' %>
+      </div>
     </div>
-  </div>
 
-  <div class="control-group">
-    <%= f.label "Internal:", :class => 'control-label' %>
-    <div class="controls">
-      <%= f.check_box :internal, :class => 'check_box' %>
+    <div id="ag_types" class="control-group">
+      <label class="control-label" for="type">Tipo de conexão: </label>
+
+      <div class="controls">
+        <%= f.select :type, [['Móvel', 'mobile'], ['Fixo', 'fixed']] %>
+      </div>
     </div>
-  </div>
 
-
-  <div class="control-group">
-    <div class="controls">
-    <%= f.submit nil, :class => 'btn btn-primary ' %>
-    <%= link_to t('.cancel', :default => "Cancelar"),
-                nameservers_path, :class => 'btn btn-inverse ' %>
+    <div class="control-group">
+      <%= f.label "Vip:", :class => 'control-label' %>
+      <div class="controls">
+        <%= f.check_box :vip, {:class => 'check_box'} %>
+      </div>
     </div>
-  </div>
+    <div class="control-group">
+      <%= f.label "Primário:", :class => 'control-label' %>
+      <div class="controls">
+        <%= f.check_box :primary, :class => 'check_box' %>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <%= f.label "Interno:", :class => 'control-label' %>
+      <div class="controls">
+        <%= f.check_box :internal, :class => 'check_box' %>
+      </div>
+    </div>
+
+
+    <div class="control-group">
+      <div class="controls">
+        <%= f.submit nil, :class => 'btn btn-primary ' %>
+        <%= link_to t('.cancel', :default => "Cancelar"),
+                    nameservers_path, :class => 'btn btn-inverse ' %>
+      </div>
+    </div>
 <% end %>

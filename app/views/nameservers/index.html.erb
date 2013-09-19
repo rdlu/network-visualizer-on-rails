@@ -22,6 +22,7 @@
   <tr>
     <th>Endereço</th>
     <th>Nome</th>
+    <th>Tipo de Conexão</th>
     <th>Primário</th>
     <th>Vip</th>
     <th>Interno</th>
@@ -35,6 +36,7 @@
           <tr>
             <td><%= nameserver.address %></td>
             <td><%= nameserver.name %></td>
+            <td><%= nameserver.pretty_name_connection %></td>
             <td><%= nameserver.pretty_human_primary %></td>
             <td><%= nameserver.pretty_human_vip %></td>
             <td><%= nameserver.pretty_human_internal %></td>
