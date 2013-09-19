@@ -6,17 +6,17 @@
         <label class="control-label" for="type">Posição dos servidores: </label>
         <div class="controls">
           <!-- select :agent,'', Probe.types,{}, :onchange => 'displayTypes(this.value)', :id=>"agent"  -->
-          <select name="servers[]"  id="servers-position" onchange="showNetworkTypes(this.value)"style="font-size:small; width: 155px" >
-              <option name="servers[]" value="internos">Internos</option>
+          <select id="idservers" name="servers[]"  id="servers-position" onchange="showNetworkTypes(this.value)"style="font-size:small; width: 155px" >
+              <option name="servers[]" value="internos" selected>Internos</option>
               <option name="servers[]" value="externos">Externos</option>
           </select>
         </div>
       </div>
-      <div class="control-group">
+      <div id="networktype" class="control-group">
         <label class="control-label" for="type">Tipo de Rede: </label>
         <div class="controls">
           <!-- select :agent,'', Probe.types,{}, :onchange => 'displayTypes(this.value)', :id=>"agent"  -->
-          <select  name="networks[]" id="type" style="font-size:small; width: 155px" >
+          <select name="networks[]" id="type" style="font-size:small; width: 155px" >
               <option value="fixed">Fixa</option>
               <option value="mobile">Móvel</option>
           </select>
@@ -34,16 +34,26 @@
 <% end %>
 
 <script>
+    $(function () {
+      if ($('#idservers').val() == 'internos')
+      {
+          $('#networktype').show();
+      }
+      else
+      {
+          $('#networktype').hide();
+      }
+    });
+
+
     function showNetworkTypes(selected){
         if(selected == "internos")
         {
-            $('#networktype').attr('disabled',false);
-            $('#networktype').val("fixa");
+            $('#networktype').show();
         }
         else
         {
-            $('#networktype').attr('disabled',true);
-            $('#networktype').val("");
+            $('#networktype').hide();
         }
     }
 
