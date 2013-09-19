@@ -2081,7 +2081,7 @@ class ReportsController < ApplicationController
             unless eficiencies.count == 0
               @results << [window, uuid, eficiencies.reduce(:+)/eficiencies.count]
             else
-              #@results << [window, uuid, nil]
+              @results << [window, uuid, nil]
             end
           end
           respond_to do |format|

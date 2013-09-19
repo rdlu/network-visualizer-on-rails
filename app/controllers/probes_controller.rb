@@ -93,6 +93,12 @@ class ProbesController < ApplicationController
     authorize! :manage, self
     @probe = Probe.find(params[:id])
 
+    begin
+      @selected_plan = ConnectionProfile.find(params[:probe][:connection_profile_id]).plans
+    rescue
+      @selected_plan = ConnectionProfile.all.first.plans
+    end
+
     respond_to do |format|
       if @probe.update_attributes(params[:probe])
         Probe.add_pop @probe.pop unless @probe.pop.nil?
