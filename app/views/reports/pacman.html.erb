@@ -7,7 +7,7 @@
             <h4>Primários</h4>
             <div id="primarios" class="row-fluid">
                 <% @hash_result[:servers].each do |server, value| %>
-                  <% if value[:primary] %>
+                  <% if value[:primary][0] %>
                   <a id='popup-<%= server %>' href="javascript:popupTable('<%= server %>','<%=  value[:name][0] %>','<%= value[:total] %>','<%= value[:status] %>')">
                       <div class="pacmanchartsP" id="chart-pacman-<%= server %>"></div>
                     </a>
@@ -26,7 +26,7 @@
             <h4>Secundários</h4>
               <div id="secundarios" class="row-fluid">
                 <% @hash_result[:servers].each do |server, value| %>
-                    <% unless value[:primary] %>
+                    <% unless value[:primary][0] %>
                     <a id='popup-<%= server %>' href="javascript:popupTable('<%= server %>','<%=  value[:name][0] %>','<%= value[:total] %>',' <%= value[:status] %>')">
                       <div class="pacmanchartsS" id="chart-pacman-<%= server %>"></div>
                     </a>

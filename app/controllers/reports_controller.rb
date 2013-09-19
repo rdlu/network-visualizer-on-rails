@@ -2302,9 +2302,9 @@ class ReportsController < ApplicationController
     #activity = params[:activity]
     #status = params[:status]
     if position[0] == 'internos'
-      @nameserver = Nameserver.where(:type => nil).where(:internal => true)
+      @nameserver = Nameserver.where(:type => type[0]).where(:internal => true)
     else
-      @nameserver = Nameserver.where(:type => nil).where(:internal => false) #type[0]
+      @nameserver = Nameserver.where(:type => type[0]).where(:internal => false) #type[0]
     end
 
     #busca piores urls
@@ -2342,25 +2342,31 @@ class ReportsController < ApplicationController
     end
 
     #busca piores sondas
-    @dnsprobes = DnsResult.find_by_sql("SELECT  probes.name, dns_results.status, probes.type
-                                    from probes, dns_results, schedules where dns_results.schedule_uuid = schedules.uuid
-                                    and schedules.destination_id = probes.id and dns_results.updated_at >= '#{(Time.now - 2.days).strftime("%Y-%m-%d %H:%M:%S")}'
-                                    order by timestamp desc")  #'#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
-
     @hash_result[:probes] = {}
-    @dnsprobes.each do |probe|
-      @hash_result[:probes][probe.name] = {} if @hash_result[:probes][probe.name].nil?
-      @hash_result[:probes][probe.name][:type] = probe.type
-      @hash_result[:probes][probe.name][:total] = 0 if  @hash_result[:probes][probe.name][:total].nil?
-      @hash_result[:probes][probe.name][:total] += 1
-      @hash_result[:probes][probe.name][:status] = {} if @hash_result[:probes][probe.name][:status].nil?
-      DnsResult.possible_status.each do |p|
-        @hash_result[:probes][probe.name][:status][p.to_sym] = 0 if @hash_result[:probes][probe.name][:status][p.to_sym].nil?
-        if probe.status == p
-          @hash_result[:probes][probe.name][:status][p.to_sym] += 1
+    unless @nameserver.empty?
+      @dnsprobes = DnsResult.find_by_sql("SELECT  probes.name, dns_results.status, probes.type
+                                      from probes, dns_results, schedules where dns_results.server IN #{@nameserver.pluck(:address).to_s.html_safe.gsub("[","(").gsub("]",")").gsub("\"","\'")} and dns_results.schedule_uuid = schedules.uuid
+                                      and schedules.destination_id = probes.id and dns_results.updated_at >= '#{(Time.now - 2.days).strftime("%Y-%m-%d %H:%M:%S")}'
+                                      order by timestamp desc")  #'#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
+
+      @dnsprobes.each do |probe|
+        @hash_result[:probes][probe.name] = {} if @hash_result[:probes][probe.name].nil?
+        @hash_result[:probes][probe.name][:type] = probe.type
+        @hash_result[:probes][probe.name][:total] = 0 if  @hash_result[:probes][probe.name][:total].nil?
+        @hash_result[:probes][probe.name][:total] += 1
+        @hash_result[:probes][probe.name][:status] = {} if @hash_result[:probes][probe.name][:status].nil?
+        DnsResult.possible_status.each do |p|
+          @hash_result[:probes][probe.name][:status][p.to_sym] = 0 if @hash_result[:probes][probe.name][:status][p.to_sym].nil?
+          if probe.status == p
+            @hash_result[:probes][probe.name][:status][p.to_sym] += 1
+          end
         end
       end
+    else
+       @dnsprobes = []
     end
+
+
 
     respond_to do |format|
       format.html { render :layout => false }
