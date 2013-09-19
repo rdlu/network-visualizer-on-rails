@@ -8,7 +8,7 @@
             <div id="primarios" class="row-fluid">
                 <% @hash_result[:servers].each do |server, value| %>
                   <% if value[:primary] %>
-                  <a id='popup-<%= server %>' href="javascript:popupTable('<%= server %>','<%=  value[:name][0] %>','<%= value[:total] %>','<%= value[:errors] %>')">
+                  <a id='popup-<%= server %>' href="javascript:popupTable('<%= server %>','<%=  value[:name][0] %>','<%= value[:total] %>','<%= value[:status] %>')">
                       <div class="pacmanchartsP" id="chart-pacman-<%= server %>"></div>
                     </a>
                       <% end %>
@@ -27,7 +27,7 @@
               <div id="secundarios" class="row-fluid">
                 <% @hash_result[:servers].each do |server, value| %>
                     <% unless value[:primary] %>
-                    <a id='popup-<%= server %>' href="javascript:popupTable('<%= server %>','<%=  value[:name][0] %>','<%= value[:total] %>',' <%= value[:errors] %>')">
+                    <a id='popup-<%= server %>' href="javascript:popupTable('<%= server %>','<%=  value[:name][0] %>','<%= value[:total] %>',' <%= value[:status] %>')">
                       <div class="pacmanchartsS" id="chart-pacman-<%= server %>"></div>
                     </a>
                         <% end %>
@@ -208,7 +208,7 @@
 
     <% end %>
 
-    function popupTable()
+    function popupTable(server,name, total, errors)
     {
         var e = document.getElementById('details-table');
 
@@ -221,6 +221,12 @@
                 $.ajax({
                     dataType: '',
                     type: 'POST',
+                    data: {
+                        server: server,
+                        total: total,
+                        name: name,
+                        errors: errors
+                    },
                     url: "<%= pacman_details_reports_url %>",
                     success: function(data){
                         $('#details-table').html(data).modal({show:true});
