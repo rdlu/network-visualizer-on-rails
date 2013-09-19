@@ -8,7 +8,7 @@
             <div id="primarios" class="row-fluid">
                 <% @hash_result[:servers].each do |server, value| %>
                   <% if value[:primary] %>
-                  <a id='clicou' href="javascript:popupTable()">
+                  <a id='popup-<%= server %>' href="javascript:popupTable('<%= server %>','<%=  value[:name][0] %>','<%= value[:total] %>','<%= value[:errors] %>')">
                       <div class="pacmanchartsP" id="chart-pacman-<%= server %>"></div>
                     </a>
                       <% end %>
@@ -27,7 +27,7 @@
               <div id="secundarios" class="row-fluid">
                 <% @hash_result[:servers].each do |server, value| %>
                     <% unless value[:primary] %>
-                    <a id='clicou' href="javascript:popupTable()">
+                    <a id='popup-<%= server %>' href="javascript:popupTable('<%= server %>','<%=  value[:name][0] %>','<%= value[:total] %>',' <%= value[:errors] %>')">
                       <div class="pacmanchartsS" id="chart-pacman-<%= server %>"></div>
                     </a>
                         <% end %>
@@ -206,6 +206,7 @@
             ]
         }]
     });
+    };
 
 
     <% end %>

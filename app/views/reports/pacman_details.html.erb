@@ -8,13 +8,13 @@
 <div class='row-fluid'>
   <div class="span5" style="height:200px;">
   <ul>
-    <li>Sonda (Últimos 15 minutos)</li>
-  <li>Atualizado às</li>
-  <li>Total de Requisições:</li>
-  <li>Total OK:</li>
-  <li>Time Out:</li>
-  <li>Server Fail:</li>
-  <li>Últimas Requisições:</li>
+   <li>Sonda (Últimos 30 minutos)</li>
+  <!--li>Atualizado às</li-->
+  <li>Total de Requisições: <%= @total%></li>
+  <% @errors.each do |k,v|%>
+    <li><%= k %>: <%= v %></li>
+  <% end %>
+
 </ul>
   </div>
   <div id="chart" class="span5"  style="height:200px;">
@@ -22,8 +22,9 @@
   </div>
 
 </div>
-
+<br/><br/>
 <div class="row-fluid">
+Últimas Requisições:<br/>
 <table class="table table-bordered table-hover">
   <thead>
   <tr>
@@ -35,15 +36,21 @@
   </tr>
   </thead>
   <tbody>
-  <% @dnsDetails.each do |details| %>
+  <% unless @dnsprobe.empty?
+       @dnsprobe.each do |details| %>
       <tr>
         <td>
-          <%= details[:date] %>
+          <%= details[:timestamp] %>
         </td>
-        <td><%= details[:probe] %></td>
+        <td><%= details[:name] %></td>
         <td><%= details[:url] %> </td>
-        <td><%= details[:responseTime] %></td>
-        <td><%= details[:serverResponse] %></td>
+        <td><%= details[:delay] %></td>
+        <td><%= details[:status] %></td>
+      </tr>
+  <% end
+     else %>
+      <tr>
+        <td colspan="5"><i>Nenhum resultado encontrado.</i></td>
       </tr>
   <% end %>
   </tbody>
@@ -51,6 +58,7 @@
 </div>
 </div>
 <script>
+
     var hchart1 = new Highcharts.Chart({
         chart: {
             renderTo: 'chart',
@@ -59,7 +67,12 @@
             plotShadow: false
         },
         title: {
-            text: 'pie'
+            text: '<%= @name %>'
+
+        },
+        subtitle: {
+            text: '<%= @server %> '
+
         },
         tooltip: {
             pointFormat: '{series.name}:<b>{point.percentage:.1f}%</b>'
@@ -94,9 +107,9 @@
             type: 'pie',
             name: 'Browser share',
             data: [
-                ['OK',   95],
-                ['TO',   2],
-                ['SF',   1]
+                <% @errors.each do |k,v| %>
+                    ['<%= k %>', <%= ((v/@total.to_i)*100).to_f %>],
+               <% end %>
             ]
         }]
     });
