@@ -5,7 +5,7 @@
           <div class="row-fluid">
 
             <h4>Primários</h4>
-            <div class="row-fluid">
+            <div id="primarios" class="row-fluid">
                 <% @hash_result[:servers].each do |server, value| %>
                   <% if value[:primary] %>
                   <a id='clicou' href="javascript:popupTable()">
@@ -68,16 +68,16 @@
             <% if @hash_result[:sites].empty? %>
                 <td colspan="8">Nenhum site encontrado.</td>
             <%end%>
-            <% @hash_result[:sites].each do |address, errors| %>
+            <% @hash_result[:sites].each do |address| %>
                 <tr>
-                  <td><%= address %></td>
-                  <td><%= (errors[:OK]/errors[:total])*100 %>%</td>
-                  <td>0</td>
-                  <td>0</td>
-                  <td>0</td>
-                  <td>0</td>
-                  <td>0</td>
-                  <td>0</td>
+                  <td><%= address[0] %></td>
+                  <% address[1][:status].each do |status, status_value| %>
+                      <% if status=="OK".to_sym %>
+                        <td><%= (status_value/address[1][:total]).to_f*100.to_f %>%</td>
+                      <% else %>
+                        <td><%= status_value %></td>
+                          <%end%>
+                      <%end%>
                 </tr>
             <% end %>
             </tbody>
@@ -97,19 +97,19 @@
                 <td colspan="8">Nenhuma sonda encontrada.</td>
             <%end%>
 
-                <% @hash_result[:probes].each do |name, values| %>
+                <% @hash_result[:probes].each do |name, value| %>
                 <tr>
                   <td>
-                    <%= image_tag "icons/"+values[:type]+"16.png" %>
+                    <%= image_tag "icons/"+value[:type]+"16.png" %>
                     "<%= name %>"
                   </td>
-                  <td><%= (values[:OK]/values[:total])*100 %>%</td>
-                  <td>0</td>
-                  <td>0</td>
-                  <td>0</td>
-                  <td>0</td>
-                  <td>0</td>
-                  <td>0</td>
+                  <% value[:status].each do |status, status_value| %>
+                      <% if (status=="OK".to_sym) %>
+                        <td><%= (status_value/value[:total])*100.to_f %>%</td>
+                      <% else %>
+                        <td><%= status_value %></td>
+                     <%end%>
+                  <%end%>
                 </tr>
             <% end %>
             </tbody>
@@ -117,6 +117,7 @@
         </div>
       </div>
       <%= debug @hash_result %>
+
     <div class="row-fluid">
       <div class="span12">
         <div class="chart-bottom" style="padding-top: 10px;">
@@ -127,20 +128,20 @@
   <div id="details-table" class="modal hide fade"></div>
 </div>
 </div>
-<% @hash_result[:servers].each do |server, value| %>
-    <%= debug value[:errors]%>
-    <%end%>
+
 <script type="text/javascript">
     $(document).ready(function () {
        $("[rel=tooltip]").tooltip();
-        var element = document.getElementsByClassName('pacmanchartsP');
-        var element2 = document.getElementsByClassName('pacmanchartsS');
-        if(element.length <=6)
-            $('.pacmanchartsP').attr('style', 'width:' + 100/element.length +'%;height:150px;float:left');
-        if(element2.length <=6)
-            $('.pacmanchartsS').attr('style', 'width:' + 100/element2.length +'%;height:150px;float:left;');
-        if(element2.length ==0)
-            jQuery('#secundarios').html('').append($("<h5 />").text('Não há servidores desta categoria.'));
+        var primarios = document.getElementsByClassName('pacmanchartsP');
+        var secundarios = document.getElementsByClassName('pacmanchartsS');
+        if(primarios.length ==0)
+            jQuery('#primarios').html('').append($("<h5 />").text('Não há servidores nesta categoria.'));
+        if(primarios.length <=6)
+            $('.pacmanchartsP').attr('style', 'width:' + 100/primarios.length +'%;height:150px;float:left');
+        if(secundarios.length ==0)
+            jQuery('#secundarios').html('').append($("<h5 />").text('Não há servidores nesta categoria.'));
+        if(secundarios.length <=6)
+            $('.pacmanchartsS').attr('style', 'width:' + 100/secundarios.length +'%;height:150px;float:left;');
 
 
 
@@ -151,27 +152,64 @@
         colors: ['#00E603', '#ffd700', '#E89700','#D60000','#1540EB','#757575','#000000' ]
     });
 
-    var servers = [<% @hash_result[:servers].each do |server, value| %> {
-        name: "<%= value[:name].nil? ? "" : value[:name][0] %>",
-        address: "<%= server %>",
-        ok : <%=value[:errors][:OK]%>,
-        timeout :<%=value[:errors][:TIMEOUT]%>,
-        serverfail :<%=value[:errors][:SERVFAIL]%>,
-        classe :"<%= value[:vip].nil? ? "" : (value[:vip][0] ? "vip" : "principal") %>",
-        nx :<%=value[:errors][:NXDOMAIN]%>,
-        fo :<%=value[:errors][:FORMERR]%>,
-        re :<%=value[:errors][:REFUSED]%>,
-        ot :<%=value[:errors][:OTHER]%>
-    },<% end %>];
 
-    for(var i in servers)  {
-        var color;
-        if(servers[i].classe=="vip")
-            color='#F5F5F5'
-        else
-            color='#DBF0FF'
-        DrawGraph(servers[i].name, servers[i].address, servers[i].ok, servers[i].nx, servers[i].fo, servers[i].serverfail, servers[i].timeout, servers[i].re, servers[i].ot, color);
-    }
+
+
+    <% @hash_result[:servers].each do |server, value| %>
+
+    var classe<%= server.to_s.gsub('.', '_') %> = "<%= value[:vip].nil? ? "" : (value[:vip][0] ? "vip" : "principal") %>";
+    var backgroundColor<%= server.to_s.gsub('.', '_') %>='#DBF0FF';
+
+    if(classe<%= server.to_s.gsub('.', '_') %>=="vip")
+        backgroundColor<%= server.to_s.gsub('.', '_') %>='#F5F5F5';
+
+    var hchart<%= server.to_s.gsub('.', '_') %> = new Highcharts.Chart({
+        chart: {
+            renderTo: 'chart-pacman-' + '<%= server %>',
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            backgroundColor: backgroundColor<%= server.to_s.gsub('.', '_') %>,
+            borderColor: '#D4D4D4',
+            borderWidth:1
+        },
+        title: {
+            text: "<%= value[:name].nil? ? "" : value[:name][0] %>"
+        },
+        subtitle:{
+            text: "<%= server %>"
+        },
+        tooltip: {
+            enabled: true,
+            pointFormat: '{point.percentage:.1f}%'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: false,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: false
+                },
+                showInLegend: false,
+                startAngle:90
+            }
+        },
+        exporting: {
+            enabled: false
+        },
+        series: [{
+            type: 'pie',
+            name: 'Browser share',
+            data: [
+                <% value[:status].each do |status,status_value| %>
+                    ['<%= status[0..1]%>', <%= (status_value/value[:total])*100.to_f %>],
+            <% end %>
+            ]
+        }]
+    });
+
+
+    <% end %>
 
     function popupTable()
     {
@@ -200,56 +238,4 @@
         jQuery('#details-table').modal({show:true});
 
     }
-    function DrawGraph(name, address, ok, nx, fo, serverfail,timeout,re, ot, backgroundColor){
-    var hchart1 = new Highcharts.Chart({
-        chart: {
-            renderTo: 'chart-pacman-' + address,
-            plotBackgroundColor: null,
-            plotBorderWidth: null,
-            plotShadow: false,
-            backgroundColor: backgroundColor,
-            borderColor: '#D4D4D4',
-            borderWidth:1
-        },
-        title: {
-            text: name
-        },
-        subtitle:{
-            text: address
-        },
-        tooltip: {
-            enabled: true,
-            pointFormat: '{point.percentage:.1f}%'
-        },
-        plotOptions: {
-            pie: {
-                allowPointSelect: false,
-                cursor: 'pointer',
-                dataLabels: {
-                    enabled: false
-                },
-                showInLegend: false,
-                startAngle:90
-            }
-        },
-        exporting: {
-            enabled: false
-        },
-        series: [{
-            type: 'pie',
-            name: 'Browser share',
-            data: [
-                ['OK',   ok],
-                ['NX', nx],
-                ['FO', fo],
-                ['SF',   serverfail],
-                ['TO',   timeout],
-                ['RE', re],
-                ['OT', ot]
-            ]
-        }]
-    });
-    };
-
-
 </script>

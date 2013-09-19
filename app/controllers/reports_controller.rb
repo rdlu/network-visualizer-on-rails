@@ -2331,13 +2331,14 @@ class ReportsController < ApplicationController
       @hash_result[:sites][dns.url.to_sym] = {} if @hash_result[:sites][dns.url.to_sym].nil?
       @hash_result[:sites][dns.url.to_sym][:total] = 0 if @hash_result[:sites][dns.url.to_sym][:total].nil?
       @hash_result[:sites][dns.url.to_sym][:total] += 1
+      @hash_result[:servers][dns.server.to_sym][:status] = {} if @hash_result[:servers][dns.server.to_sym][:status].nil?
+      @hash_result[:sites][dns.url.to_sym][:status] = {} if @hash_result[:sites][dns.url.to_sym][:status].nil?
       DnsResult.possible_status.each do |p|
-        @hash_result[:servers][dns.server.to_sym][:errors] = {} if @hash_result[:servers][dns.server.to_sym][:errors].nil?
-        @hash_result[:servers][dns.server.to_sym][:errors][p.to_sym] = 0 if @hash_result[:servers][dns.server.to_sym][:errors][p.to_sym].nil?
-        @hash_result[:sites][dns.url.to_sym][p.to_sym] = 0 if @hash_result[:sites][dns.url.to_sym][p.to_sym].nil?
+        @hash_result[:servers][dns.server.to_sym][:status][p.to_sym] = 0 if @hash_result[:servers][dns.server.to_sym][:status][p.to_sym].nil?
+        @hash_result[:sites][dns.url.to_sym][:status][p.to_sym] = 0 if @hash_result[:sites][dns.url.to_sym][:status][p.to_sym].nil?
         if dns.status == p
-          @hash_result[:servers][dns.server.to_sym][:errors][p.to_sym] += 1
-          @hash_result[:sites][dns.url.to_sym][p.to_sym] += 1
+          @hash_result[:servers][dns.server.to_sym][:status][p.to_sym] += 1
+          @hash_result[:sites][dns.url.to_sym][:status][p.to_sym] += 1
         end
       end
     end
@@ -2354,10 +2355,11 @@ class ReportsController < ApplicationController
       @hash_result[:probes][probe.name][:type] = probe.type
       @hash_result[:probes][probe.name][:total] = 0 if  @hash_result[:probes][probe.name][:total].nil?
       @hash_result[:probes][probe.name][:total] += 1
+      @hash_result[:probes][probe.name][:status] = {} if @hash_result[:probes][probe.name][:status].nil?
       DnsResult.possible_status.each do |p|
-        @hash_result[:probes][probe.name][p.to_sym] = 0 if @hash_result[:probes][p.to_sym].nil?
+        @hash_result[:probes][probe.name][:status][p.to_sym] = 0 if @hash_result[:probes][probe.name][:status][p.to_sym].nil?
         if probe.status == p
-          @hash_result[:probes][probe.name][p.to_sym] += 1
+          @hash_result[:probes][probe.name][:status][p.to_sym] += 1
         end
       end
     end
