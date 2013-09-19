@@ -1473,6 +1473,7 @@ class ReportsController < ApplicationController
       total_points = 0
 
 
+
       # Armazena valores de cada plano
 
       media4 = Array.new
@@ -2285,11 +2286,8 @@ class ReportsController < ApplicationController
             format.html { render :layout => false, file: 'reports/dygraphs_dns_detail' }
           end
         when 'webload'
-
         else
-          respond_to do |format|
-            format.html { render :layout => false, file: 'reports/dygraphs_notsupported' }
-          end
+
       end
     end
   end
@@ -2310,7 +2308,7 @@ class ReportsController < ApplicationController
     end
 
     #busca piores urls
-    @dnsresul = DnsResult.where(:server => @nameserver.pluck(:address)).where("url is not null").where("updated_at >= ?", (Time.now - 5.days).strftime("%Y-%m-%d %H:%M:%S")).limit(20)
+    @dnsresul = DnsResult.where(:server => @nameserver.pluck(:address)).where("url is not null").where("updated_at >= ?", (Time.now - 2.days).strftime("%Y-%m-%d %H:%M:%S"))
     #'#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
 
 
@@ -2345,8 +2343,8 @@ class ReportsController < ApplicationController
     #busca piores sondas
     @dnsprobes = DnsResult.find_by_sql("SELECT  probes.name, dns_results.status, probes.type
                                     from probes, dns_results, schedules where dns_results.schedule_uuid = schedules.uuid
-                                    and schedules.destination_id = probes.id and dns_results.created_at >= '2013-08-05 14:00:00'
-                                    order by timestamp desc limit 20")  #'#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
+                                    and schedules.destination_id = probes.id and dns_results.updated_at >= '#{(Time.now - 2.days).strftime("%Y-%m-%d %H:%M:%S")}'
+                                    order by timestamp desc")  #'#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
 
     @hash_result[:probes] = {}
     @dnsprobes.each do |probe|
@@ -2367,12 +2365,14 @@ class ReportsController < ApplicationController
     end
   end
 
-  def detail_pacman
+  def pacman_details
     server = params[:server]
+    @total = params[:total]
+    @errors = eval(params[:errors])
 
    @dnsprobe = DnsResult.find_by_sql("SELECT dns_results.timestamp, probes.name, dns_results.url, dns_results.delay, dns_results.status
-                                    from probes, dns_results, schedules where server = '#{server}' dns_results.schedule_uuid = schedules.uuid
-                                    and schedules.destination_id = probes.id and dns_results.created_at >= '#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
+                                    from probes, dns_results, schedules where server = '#{server}' and dns_results.schedule_uuid = schedules.uuid
+                                    and schedules.destination_id = probes.id and dns_results.updated_at >= '#{(Time.now - 2.days).strftime("%Y-%m-%d %H:%M:%S")}'
                                     order by timestamp desc limit 20")
 
 
@@ -2843,7 +2843,7 @@ class ReportsController < ApplicationController
                   server = c.children.search("server").inner_text
                   url = c.children.search("url").inner_text
                   delay = c.children.search("delay").inner_text.to_i
-                  dns_status = c.children.search("status").inner_text
+                  dns_status = c.children.search("status").inner_text.to_f
                   @dns_results << DnsResult.create(url: url,
                                                    server: server,
                                                    delay: delay,

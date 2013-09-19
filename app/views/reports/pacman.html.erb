@@ -8,7 +8,7 @@
             <div class="row-fluid">
                 <% @hash_result[:servers].each do |server, value| %>
                   <% if value[:primary] %>
-                  <a id='clicou' href="javascript:popupTable()">
+                  <a id='popup-<%= server %>' href="javascript:popupTable('<%= server %>','<%= value[:total] %>','<%= value[:errors] %>')">
                       <div class="pacmanchartsP" id="chart-pacman-<%= server %>"></div>
                     </a>
                       <% end %>
@@ -27,7 +27,7 @@
               <div id="secundarios" class="row-fluid">
                 <% @hash_result[:servers].each do |server, value| %>
                     <% unless value[:primary] %>
-                    <a id='clicou' href="javascript:popupTable()">
+                    <a id='popup-<%= server %>' href="javascript:popupTable('<%= server %>','<%= value[:total] %>',' <%= value[:errors] %>')">
                       <div class="pacmanchartsS" id="chart-pacman-<%= server %>"></div>
                     </a>
                         <% end %>
@@ -173,7 +173,7 @@
         DrawGraph(servers[i].name, servers[i].address, servers[i].ok, servers[i].nx, servers[i].fo, servers[i].serverfail, servers[i].timeout, servers[i].re, servers[i].ot, color);
     }
 
-    function popupTable()
+    function popupTable(server, total, errors)
     {
         var e = document.getElementById('details-table');
 
@@ -186,6 +186,11 @@
                 $.ajax({
                     dataType: '',
                     type: 'POST',
+                    data: {
+                        server: server,
+                        total: total,
+                        errors: errors
+                    },
                     url: "<%= pacman_details_reports_url %>",
                     success: function(data){
                         $('#details-table').html(data).modal({show:true});
@@ -200,30 +205,26 @@
         jQuery('#details-table').modal({show:true});
 
     }
-    function DrawGraph(name, address, ok, nx, fo, serverfail,timeout,re, ot, backgroundColor){
+    function DrawGraph(address, name, ok, timeout, serverfail, other){
     var hchart1 = new Highcharts.Chart({
         chart: {
-            renderTo: 'chart-pacman-' + address,
+            renderTo: 'chart-pacman-' + name,
             plotBackgroundColor: null,
             plotBorderWidth: null,
-            plotShadow: false,
-            backgroundColor: backgroundColor,
-            borderColor: '#D4D4D4',
-            borderWidth:1
+            plotShadow: false
         },
         title: {
             text: name
         },
-        subtitle:{
+        subtitle: {
             text: address
         },
         tooltip: {
-            enabled: true,
-            pointFormat: '{point.percentage:.1f}%'
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
         },
         plotOptions: {
             pie: {
-                allowPointSelect: false,
+                allowPointSelect: true,
                 cursor: 'pointer',
                 dataLabels: {
                     enabled: false
@@ -232,24 +233,19 @@
                 startAngle:90
             }
         },
-        exporting: {
-            enabled: false
-        },
         series: [{
             type: 'pie',
             name: 'Browser share',
             data: [
                 ['OK',   ok],
-                ['NX', nx],
-                ['FO', fo],
-                ['SF',   serverfail],
                 ['TO',   timeout],
-                ['RE', re],
-                ['OT', ot]
+                ['SF',   serverfail],
+                ['Outro', other]
             ]
         }]
     });
     };
+
 
 
 </script>
