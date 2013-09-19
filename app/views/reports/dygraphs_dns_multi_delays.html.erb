@@ -35,7 +35,7 @@
 
     [
     <% @results.each do |res| %>
-    [new Date("<%= res[0].strftime("%b %d, %Y %H:%M:%S %z")%>"), <%=res[1]%>]<%=(res!=@results.last)?",":""%>
+    [new Date("<%= res[0].strftime("%b %d, %Y %H:%M:%S %z")%>"), <%=res[1].nil? ? "null":res[1]%>]<%=(res!=@results.last)?",":""%>
     <% end %>
     ],
     {

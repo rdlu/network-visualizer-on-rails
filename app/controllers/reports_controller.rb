@@ -2054,32 +2054,35 @@ class ReportsController < ApplicationController
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/dygraphs_bruto' }
           end
-        when /dns|dns_efficiency/
-          case @metric.plugin
-            when 'dns-efficiency'
-              @raw_results = DnsDetail.
-                  where(:schedule_uuid => schedule.uuid).
-                  where(:timestamp => @from..@to).order('timestamp ASC').all.to_enum
-              @results = []
-              @from.all_window_times_until(@to, @window_size.minutes).each do |window|
-                eficiencies = []
-                begin
-                  while @raw_results.peek.timestamp < window+@window_size.minutes
-                    eficiencies << @raw_results.next.efic
-                  end
-                rescue StopIteration
-                  #nothing to do
-                end
-                @results << [window, window+@window_size.minutes, eficiencies.reduce(:+)/eficiencies.count]
-              end
-            else
-              filters = {schedule_uuid: schedule.uuid, timestamp: @from..@to}
+        when 'dns'
+          filters = {schedule_uuid: schedule.uuid, timestamp: @from..@to}
               filters.merge!({server: params[:by_dns]}) unless params[:by_dns].nil?
               filters.merge!({url: params[:by_sites]}) unless params[:by_sites].nil?
-              @raw_results = DnsResult.
-                  where(filters)
-              .order('timestamp ASC')
-
+          @raw_results = DnsResult.
+              where(filters).order('timestamp ASC')
+          respond_to do |format|
+            format.html { render :layout => false, file: 'reports/dygraphs_dns' }
+          end
+        when 'dns_efficiency'
+          @raw_results = DnsDetail.
+                  where(:schedule_uuid => schedule.uuid).
+                  where(:timestamp => @from..@to).order('timestamp ASC').all.to_enum
+          @results = []
+          @from.all_window_times_until(@to, @window_size.minutes).each do |window|
+            eficiencies = []
+            begin
+              uuid = @raw_results.peek.uuid
+              while @raw_results.peek.timestamp < window+@window_size.minutes
+                eficiencies << @raw_results.next.efic
+              end
+            rescue StopIteration
+              #nothing to do
+            end
+            unless eficiencies.count == 0
+              @results << [window, uuid, eficiencies.reduce(:+)/eficiencies.count]
+            else
+              @results << [window, uuid, nil]
+            end
           end
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/dygraphs_dns' }
@@ -2210,6 +2213,7 @@ class ReportsController < ApplicationController
               @results << [window, nil]
             end
           end
+          
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/dygraphs_dns_multi_efficiency' }
           end
