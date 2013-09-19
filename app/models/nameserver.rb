@@ -19,6 +19,8 @@ class Nameserver < ActiveRecord::Base
   validates :address, :presence => true, :length => {:maximum => 255, :minimum => 3}
   validate :validate_address
 
+  @inheritance_column = 'type2'
+
   def pretty_name
     "#{self.name} (#{self.address})"
   end

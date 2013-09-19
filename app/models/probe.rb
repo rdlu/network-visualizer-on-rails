@@ -81,13 +81,13 @@ class Probe < ActiveRecord::Base
   def pretty_status
     case self.status
       when 0
-        "inativo"
+        "inactive"
       when 1
-        "ativo"
+        "active"
       when 2
-        "atenção"
+        "attention"
       when 3
-        "erro"
+        "error"
     end
   end
 
@@ -106,10 +106,6 @@ class Probe < ActiveRecord::Base
 
   def pretty_name_with_location
     "#{self.name} (#{self.ipaddress}) - #{self.city}/#{self.state.upcase}"
-  end
-
-  def pretty_cns
-    "#{self.cn}"
   end
 
   def real_ipaddress

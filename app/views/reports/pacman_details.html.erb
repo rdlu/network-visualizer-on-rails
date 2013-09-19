@@ -1,29 +1,30 @@
 <div class="modal-header">
   <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
-  <h3>Detalhamento para Sonda</h3>
+  <h3>Detalhamento para <%= @name %> - <%= @server %></h3>
 </div>
 
 <div class="modal-body" style="max-height: 500px;">
 
-<div class='row-fluid'>
-  <div class="span5" style="height:200px;">
+<div class='row-fluid' style="height:250px;">
+  <div class="span5">
   <ul>
-    <li>Sonda (Últimos 15 minutos)</li>
-  <li>Atualizado às</li>
-  <li>Total de Requisições:</li>
-  <li>Total OK:</li>
-  <li>Time Out:</li>
-  <li>Server Fail:</li>
-  <li>Últimas Requisições:</li>
+   <li><%= @name %> - <%= @server %> (Últimos 30 minutos)</li>
+  <!--li>Atualizado às</li-->
+  <li>Total de Requisições: <%= @total%></li>
+  <% @errors.each do |k,v|%>
+    <li><%= k %>: <%= v %></li>
+  <% end %>
+
 </ul>
   </div>
-  <div id="chart" class="span5"  style="height:200px;">
+  <div id="chart" class="span5">
 
   </div>
 
 </div>
 
 <div class="row-fluid">
+Últimas Requisições:<br/>
 <table class="table table-bordered table-hover">
   <thead>
   <tr>
@@ -35,15 +36,21 @@
   </tr>
   </thead>
   <tbody>
-  <% @dnsDetails.each do |details| %>
+  <% unless @dnsprobe.empty?
+       @dnsprobe.each do |details| %>
       <tr>
         <td>
-          <%= details[:date] %>
+          <%= details[:timestamp] %>
         </td>
-        <td><%= details[:probe] %></td>
+        <td><%= details[:name] %></td>
         <td><%= details[:url] %> </td>
-        <td><%= details[:responseTime] %></td>
-        <td><%= details[:serverResponse] %></td>
+        <td><%= details[:delay] %></td>
+        <td><%= details[:status] %></td>
+      </tr>
+  <% end
+     else %>
+      <tr>
+        <td colspan="5"><i>Nenhum resultado de erro encontrado.</i></td>
       </tr>
   <% end %>
   </tbody>
@@ -51,18 +58,25 @@
 </div>
 </div>
 <script>
+
     var hchart1 = new Highcharts.Chart({
         chart: {
             renderTo: 'chart',
             plotBackgroundColor: null,
             plotBorderWidth: null,
-            plotShadow: false
+            plotShadow: false,
+            height:250
         },
         title: {
-            text: 'pie'
+            text: '<%= @name %>'
+
+        },
+        subtitle: {
+            text: '<%= @server %> '
+
         },
         tooltip: {
-            pointFormat: '{series.name}:<b>{point.percentage:.1f}%</b>'
+            pointFormat: '<b>{point.percentage:.1f}%</b>'
         },
         plotOptions: {
             pie: {
@@ -78,25 +92,12 @@
                 startAngle:90
             }
         },
-        legend: {
-            margin: -30,
-            layout: 'vertical',
-            align: 'left',
-            verticalAlign: 'top',
-            borderWidth: 0,
-            useHTML: true,
-            labelFormatter: function() {
-                return '<div style="width:70px"><span style="float:left">' + this.name + '</span><span style="float:right">' + this.y + '%</span></div>';
-            }
-
-        },
         series: [{
             type: 'pie',
-            name: 'Browser share',
             data: [
-                ['OK',   95],
-                ['TO',   2],
-                ['SF',   1]
+                <% @errors.each do |k,v| %>
+                    ['<%= k %>', <%= ((v/@total.to_i)*100).to_f %>],
+               <% end %>
             ]
         }]
     });
