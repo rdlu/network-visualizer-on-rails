@@ -9,11 +9,16 @@ class PlansController < ApplicationController
   # GET /plans.json
   def index
     authorize! :read, self
+
     if params.has_key? :connection_profile_id
       @conn_profile = ConnectionProfile.find(params[:connection_profile_id])
       @plans = @conn_profile.plans
+    elsif request.format == 'html'
+      @plans = Plan.paginate(:page => params[:page],
+                             :per_page => 15,
+                             :order => 'name')
     else
-      @plans = Plan.all
+      @plans = Plan.order(:name).all
     end
 
     respond_to do |format|

@@ -12,12 +12,12 @@
             <div class="span12">
                 <div class="chart-bottom" style="padding-top: 10px;">
                     <div class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="jQuery('#box-<%=@idName%>').remove();">Remover</div>
-                    <a id="export-<%= @idName %>" class="btn btn-success" style="float:right; margin-right: 5px ;margin-bottom: 20px" href="<%= reports_csv_bruto_url @exportFileName+".csv" %>?<%= @exportParams %>">Exportar
+                    <a id="export-<%=@idName%>" class="btn btn-success" style="float:right; margin-right: 5px ;margin-bottom: 20px" href="<%= reports_csv_bruto_url @exportFileName+".csv" %>?<%=@exportParams%>">Exportar
                     CSV</a>
-                    <a id="exportxls-<%= @idName %>" class="btn btn-success" style="float:right; margin-right: 5px ;margin-bottom: 20px" href="<%= reports_xls_bruto_url @exportFileName+".xls" %>?<%= @exportParams %>">Exportar
+                    <a id="exportxls-<%=@idName%>" class="btn btn-success" style="float:right; margin-right: 5px ;margin-bottom: 20px" href="<%= reports_xls_bruto_url @exportFileName+".xls" %>?<%= @exportParams %>">Exportar
                     XLS</a>
 
-                    <div id="legend-<%= @idName %>" style="float:right; margin-right: 5px ;margin-bottom: 20px">Ponto Atual:</div>
+                    <div id="legend-<%=@idName%>" style="float:right; margin-right: 5px ;margin-bottom: 20px">Ponto Atual:</div>
                 </div>
             </div>
         </div>
@@ -29,17 +29,17 @@
     <% case @metric.plugin  %>
     <% when "dns-efficiency" %>
             [
-    <% @raw_results.each do |res| %>
-    [new Date("<%=res.timestamp.strftime("%b %d, %Y %H:%M:%S %z")%>"), "<%=res.uuid %>", <%=res.efic %>]<%=(res!=@raw_results.last)?",":""%>
+    <% @results.each do |res| %>
+    [new Date("<%=res[0].strftime("%b %d, %Y %H:%M:%S %z")%>"),<%=res[1].nil? ? "null":"\"#{res[1]}\"".html_safe%>, <%=res[2].nil? ? "null":res[2] %>]<%=(res!=@results.last)?",":""%>
             <% end %>
     ],
     {
         labels: ["Data", "uuid", "Eficiência"],
-                visibility: [false, true],
-            labelsKMB: false,
-            labelsDiv: document.getElementById('legend-<%=@idName%>'),
-            ylabel: "<%=@metric.name%> (<%=@metric.view_unit%>)",
-            dateWindow: [Date.parse("<%=@from.strftime("%b %d, %Y %H:%M:%S %z")%>"),Date.parse("<%=@to.strftime("%b %d, %Y %H:%M:%S %z")%>")],
+        visibility: [false, true],
+        labelsKMB: false,
+        labelsDiv: document.getElementById('legend-<%=@idName%>'),
+        ylabel: "<%=@metric.name%> (<%=@metric.view_unit%>)",
+        dateWindow: [Date.parse("<%=@from.strftime("%b %d, %Y %H:%M:%S %z")%>"),Date.parse("<%=@to.strftime("%b %d, %Y %H:%M:%S %z")%>")],
         clickCallback: function (e, x, pts) {
             jQuery.ajax({
                 url: "<%=show_kpi_url%>",
@@ -81,7 +81,6 @@
                 }
             });
         }
-
     }
     <% else %>
     [

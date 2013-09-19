@@ -1,4 +1,4 @@
-<h2>Lista de Planos </h2>
+<h2>Planos </h2>
 <div class="row-fluid">
   <div class="span12">
     <% if can? :create, User %>
@@ -14,11 +14,11 @@
 </div>
 <div class="row-fluid">
   <div class="span12">
-    <table class="table table-bordered table-hover">
+    <table class="table table-bordered table-hover table-striped">
       <thead>
       <tr>
-        <th>Name</th>
-        <th>Description</th>
+        <th>Nome</th>
+        <th>Descrição</th>
         <th>Throughput Down</th>
         <th>Throughput Up</th>
         <th>Ações</th>
@@ -38,5 +38,6 @@
       <% end %>
       </tbody>
     </table>
+    <%= will_paginate @plans, :style => 'color:#2C719B' %>
   </div>
 </div>

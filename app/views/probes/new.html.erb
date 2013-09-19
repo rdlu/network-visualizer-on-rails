@@ -29,9 +29,11 @@
         </div>
         <div class="control-group">
           <%= f.label :cn, "Código de Área", :class => "control-label" %>
-          <div class="controls">
-            <%= f.select :cn, [['Digite o endereço antes', '']], {}, {disabled: 'true'} %>
-          </div>
+          <% if @probe.cn.nil? %>
+              <div class="controls"><%= f.select :cn, [['Digite o endereço antes', '']], {}, {disabled: 'true'} %></div>
+          <% else %>
+              <div class="controls"><%= f.select :cn, [[@probe.cn, @probe.cn]] %></div>
+          <% end %>
         </div>
         <div class="control-group">
           <%= f.label :connection_profile_id, "Conexão / Plano", :class => "control-label" %>
@@ -186,8 +188,8 @@
             $('#probe_cn').children('option').remove();
 
             var strOptionscn = "";
-            $.each(dataReturned, function (i, l) {
-                strOptionscn += "<option value=\"" + i + "\">" + l[1] + "</option>";
+            $.each(dataReturned, function (i, data) {
+                strOptionscn += "<option value=\"" + data[0] + "\">" + data[1] + "</option>";
             });
 
             $('#probe_cn').append(strOptionscn);

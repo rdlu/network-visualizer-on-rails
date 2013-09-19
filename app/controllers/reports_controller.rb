@@ -1473,6 +1473,7 @@ class ReportsController < ApplicationController
       total_points = 0
 
 
+
       # Armazena valores de cada plano
 
       media4 = Array.new
@@ -2054,32 +2055,35 @@ class ReportsController < ApplicationController
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/dygraphs_bruto' }
           end
-        when /dns|dns_efficiency/
-          case @metric.plugin
-            when 'dns-efficiency'
-              @raw_results = DnsDetail.
-                  where(:schedule_uuid => schedule.uuid).
-                  where(:timestamp => @from..@to).order('timestamp ASC').all.to_enum
-              @results = []
-              @from.all_window_times_until(@to, @window_size.minutes).each do |window|
-                eficiencies = []
-                begin
-                  while @raw_results.peek.timestamp < window+@window_size.minutes
-                    eficiencies << @raw_results.next.efic
-                  end
-                rescue StopIteration
-                  #nothing to do
-                end
-                @results << [window, window+@window_size.minutes, eficiencies.reduce(:+)/eficiencies.count]
-              end
-            else
-              filters = {schedule_uuid: schedule.uuid, timestamp: @from..@to}
+        when 'dns'
+          filters = {schedule_uuid: schedule.uuid, timestamp: @from..@to}
               filters.merge!({server: params[:by_dns]}) unless params[:by_dns].nil?
               filters.merge!({url: params[:by_sites]}) unless params[:by_sites].nil?
-              @raw_results = DnsResult.
-                  where(filters)
-              .order('timestamp ASC')
-
+          @raw_results = DnsResult.
+              where(filters).order('timestamp ASC')
+          respond_to do |format|
+            format.html { render :layout => false, file: 'reports/dygraphs_dns' }
+          end
+        when 'dns_efficiency'
+          @raw_results = DnsDetail.
+                  where(:schedule_uuid => schedule.uuid).
+                  where(:timestamp => @from..@to).order('timestamp ASC').all.to_enum
+          @results = []
+          @from.all_window_times_until(@to, @window_size.minutes).each do |window|
+            eficiencies = []
+            begin
+              uuid = @raw_results.peek.uuid
+              while @raw_results.peek.timestamp < window+@window_size.minutes
+                eficiencies << @raw_results.next.efic
+              end
+            rescue StopIteration
+              #nothing to do
+            end
+            unless eficiencies.count == 0
+              @results << [window, uuid, eficiencies.reduce(:+)/eficiencies.count]
+            else
+              @results << [window, uuid, nil]
+            end
           end
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/dygraphs_dns' }
@@ -2210,6 +2214,7 @@ class ReportsController < ApplicationController
               @results << [window, nil]
             end
           end
+          
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/dygraphs_dns_multi_efficiency' }
           end
@@ -2285,11 +2290,8 @@ class ReportsController < ApplicationController
             format.html { render :layout => false, file: 'reports/dygraphs_dns_detail' }
           end
         when 'webload'
-
         else
-          respond_to do |format|
-            format.html { render :layout => false, file: 'reports/dygraphs_notsupported' }
-          end
+
       end
     end
   end
@@ -2304,72 +2306,89 @@ class ReportsController < ApplicationController
     #activity = params[:activity]
     #status = params[:status]
     if position[0] == 'internos'
-      @nameserver = Nameserver.where(:type => nil).where(:internal => true)
+      @nameserver = Nameserver.where(:type => type[0]).where(:internal => true)
     else
-      @nameserver = Nameserver.where(:type => nil).where(:internal => false) #type[0]
+      @nameserver = Nameserver.where(:internal => false) #type[0]
     end
 
     #busca piores urls
-    @dnsresul = DnsResult.where(:server => @nameserver.pluck(:address)).where("url is not null").where(:timestamp => Time.now - 30.minutes).limit(20)
+    @dnsresul = DnsResult.where(:server => @nameserver.pluck(:address)).where("url is not null").where("updated_at >= ?", (Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S"))
+    #'#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
 
 
     @hash_result = Hash.new(0)
     @hash_result[:sites]= {}
-    @nameserver.each do |server|
-      @hash_result[server.address.to_sym] = {}
-      @hash_result[server.address.to_sym][:total] = 0
+    @hash_result[:servers]= {}
+    @dnsresul.each do |dns|
+      @hash_result[:servers][dns.server.to_sym] = {}
+      @hash_result[:servers][dns.server.to_sym][:total] = 0
     end
 
     @dnsresul.each do |dns|
-      @hash_result[dns.server.to_sym][:primary] = Nameserver.where(:address => dns.server).pluck(:primary) if  @hash_result[dns.server.to_sym][:primary].nil?
-      @hash_result[dns.server.to_sym][:vip] = Nameserver.where(:address => dns.server).pluck(:vip) if  @hash_result[dns.server.to_sym][:vip].nil?
-      @hash_result[dns.server.to_sym][:internal] = Nameserver.where(:address => dns.server).pluck(:internal) if  @hash_result[dns.server.to_sym][:internal].nil?
-      @hash_result[dns.server.to_sym][:total] += 1
+      @hash_result[:servers][dns.server.to_sym][:primary] = Nameserver.where(:address => dns.server).pluck(:primary) if  @hash_result[:servers][dns.server.to_sym][:primary].nil?
+      @hash_result[:servers][dns.server.to_sym][:vip] = Nameserver.where(:address => dns.server).pluck(:vip) if  @hash_result[:servers][dns.server.to_sym][:vip].nil?
+      @hash_result[:servers][dns.server.to_sym][:internal] = Nameserver.where(:address => dns.server).pluck(:internal) if  @hash_result[:servers][dns.server.to_sym][:internal].nil?
+      @hash_result[:servers][dns.server.to_sym][:name] = Nameserver.where(:address => dns.server).pluck(:name) if  @hash_result[:servers][dns.server.to_sym][:name].nil?
+      @hash_result[:servers][dns.server.to_sym][:total] += 1
       @hash_result[:sites][dns.url.to_sym] = {} if @hash_result[:sites][dns.url.to_sym].nil?
       @hash_result[:sites][dns.url.to_sym][:total] = 0 if @hash_result[:sites][dns.url.to_sym][:total].nil?
       @hash_result[:sites][dns.url.to_sym][:total] += 1
+      @hash_result[:servers][dns.server.to_sym][:status] = {} if @hash_result[:servers][dns.server.to_sym][:status].nil?
+      @hash_result[:sites][dns.url.to_sym][:status] = {} if @hash_result[:sites][dns.url.to_sym][:status].nil?
       DnsResult.possible_status.each do |p|
-        @hash_result[dns.server.to_sym][p.to_sym] = 0 if @hash_result[dns.server.to_sym][p.to_sym].nil?
-        @hash_result[:sites][dns.url.to_sym][p.to_sym] = 0 if @hash_result[:sites][dns.url.to_sym][p.to_sym].nil?
+        @hash_result[:servers][dns.server.to_sym][:status][p.to_sym] = 0 if @hash_result[:servers][dns.server.to_sym][:status][p.to_sym].nil?
+        @hash_result[:sites][dns.url.to_sym][:status][p.to_sym] = 0 if @hash_result[:sites][dns.url.to_sym][:status][p.to_sym].nil?
         if dns.status == p
-          @hash_result[dns.server.to_sym][p.to_sym] += 1
-          @hash_result[:sites][dns.url.to_sym][p.to_sym] += 1
+          @hash_result[:servers][dns.server.to_sym][:status][p.to_sym] += 1
+          @hash_result[:sites][dns.url.to_sym][:status][p.to_sym] += 1
         end
       end
     end
 
     #busca piores sondas
-    @dnsprobes = DnsResult.find_by_sql("SELECT  probes.name, dns_results.status, probes.type
-                                    from probes, dns_results, schedules where dns_results.schedule_uuid = schedules.uuid
-                                    and schedules.destination_id = probes.id and dns_results.timestamp >= '#{Time.now - 30.minutes}'
-                                    order by timestamp desc limit 20")
-
     @hash_result[:probes] = {}
-    @hash_result[:probes][:total] = 0
-    @dnsprobes.each do |probe|
-      @hash_result[:probes][probe.name] = {}
-      @hash_result[:probes][probe.name][:type] = probe.type
-      @hash_result[:probes][:total] += 1
-      DnsResult.possible_status.each do |p|
-        @hash_result[:probes][probe.name][p.to_sym] = 0 if @hash_result[:probes][p.to_sym].nil?
-        if probe.status == p
-          @hash_result[:probes][probe.name][p.to_sym] += 1
+    unless @nameserver.empty?
+      @dnsprobes = DnsResult.find_by_sql("SELECT  probes.name, dns_results.status, probes.type
+                                      from probes, dns_results, schedules where dns_results.server IN #{@nameserver.pluck(:address).to_s.html_safe.gsub("[","(").gsub("]",")").gsub("\"","\'")} and dns_results.schedule_uuid = schedules.uuid
+                                      and schedules.destination_id = probes.id and dns_results.updated_at >= '#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
+                                      order by timestamp desc")  #'#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
+
+      @dnsprobes.each do |probe|
+        @hash_result[:probes][probe.name] = {} if @hash_result[:probes][probe.name].nil?
+        @hash_result[:probes][probe.name][:type] = probe.type
+        @hash_result[:probes][probe.name][:total] = 0 if  @hash_result[:probes][probe.name][:total].nil?
+        @hash_result[:probes][probe.name][:total] += 1
+        @hash_result[:probes][probe.name][:status] = {} if @hash_result[:probes][probe.name][:status].nil?
+        DnsResult.possible_status.each do |p|
+          @hash_result[:probes][probe.name][:status][p.to_sym] = 0 if @hash_result[:probes][probe.name][:status][p.to_sym].nil?
+          if probe.status == p
+            @hash_result[:probes][probe.name][:status][p.to_sym] += 1
+          end
         end
       end
+    else
+       @dnsprobes = []
     end
+
+
 
     respond_to do |format|
       format.html { render :layout => false }
     end
   end
 
-  def detail_pacman
-=begin
-   @dnsprobes = DnsResult.find_by_sql("SELECT dns_results.timestamp, probes.name, dns_results.url, dns_results.delay, dns_results.status
-                                    from probes, dns_results, schedules where server = '#{@server}' dns_results.schedule_uuid = schedules.uuid
-                                    and schedules.destination_id = probes.id and dns_results.timestamp >= '#{Time.now - 30.minutes}'
+  def pacman_details
+    @server = params[:server]
+    @name = params[:name]
+    @total = params[:total]
+    @errors = eval(params[:errors])
+
+   @dnsprobe = DnsResult.find_by_sql("SELECT dns_results.timestamp, probes.name, dns_results.url, dns_results.delay, dns_results.status
+                                    from probes, dns_results, schedules where server = '#{@server}' and dns_results.schedule_uuid = schedules.uuid
+                                    and schedules.destination_id = probes.id and dns_results.updated_at >= '#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
+                                    and dns_results.status <> 'OK'
                                     order by timestamp desc limit 20")
-=end
+
     respond_to do |format|
       format.html { render :layout => false }
     end
@@ -2837,7 +2856,7 @@ class ReportsController < ApplicationController
                   server = c.children.search("server").inner_text
                   url = c.children.search("url").inner_text
                   delay = c.children.search("delay").inner_text.to_i
-                  dns_status = c.children.search("status").inner_text
+                  dns_status = c.children.search("status").inner_text.to_f
                   @dns_results << DnsResult.create(url: url,
                                                    server: server,
                                                    delay: delay,

@@ -5,7 +5,14 @@ class ConnectionProfilesController < ApplicationController
   # GET /connection_profiles.json
   def index
     authorize! :read, self
-    @connection_profiles = ConnectionProfile.all
+
+    if request.format == 'html'
+      @connection_profiles = ConnectionProfile.paginate(:page => params[:page],
+                                                        :per_page => 15,
+                                                        :order => 'name')
+    else
+      @connection_profiles = ConnectionProfile.order(:name).all
+    end
 
     respond_to do |format|
       format.html # index.html.erb

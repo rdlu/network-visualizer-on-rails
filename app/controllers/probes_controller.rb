@@ -15,7 +15,14 @@ class ProbesController < ApplicationController
   def index
     authorize! :read, self
 
-    @probes = apply_scopes(Probe).order(:name).all
+    if request.format == 'html'
+      @probes = apply_scopes(Probe).paginate(:page => params[:page],
+                                             :per_page => 15,
+                                             :order => 'name')
+    else
+      @probes = apply_scopes(Probe).order(:name).all
+    end
+
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @probes }
@@ -78,7 +85,7 @@ class ProbesController < ApplicationController
       respond_to do |format|
         format.json { render :json => @probe.to_json, :status => 200 }
         format.xml { head :ok }
-        format.html
+        format.html { redirect_to @probe, notice: 'Suas alterações foram salvas com sucesso.' }
       end
     else
       respond_to do |format|
@@ -92,6 +99,12 @@ class ProbesController < ApplicationController
   def update
     authorize! :manage, self
     @probe = Probe.find(params[:id])
+
+    begin
+      @selected_plan = ConnectionProfile.find(params[:probe][:connection_profile_id]).plans
+    rescue
+      @selected_plan = ConnectionProfile.all.first.plans
+    end
 
     respond_to do |format|
       if @probe.update_attributes(params[:probe])
@@ -131,7 +144,7 @@ class ProbesController < ApplicationController
     source = Probe.find(params[:source_id])
     destination = Probe.find(params[:id])
 
-    metrics = destination.metrics(source).select {|metric| metric.metric_type == 'active'}
+    metrics = destination.metrics(source).select { |metric| metric.metric_type == 'active' }
 
     respond_to do |format|
       format.json { render :json => metrics, :status => 200 }
