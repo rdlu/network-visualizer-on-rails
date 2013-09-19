@@ -2643,7 +2643,7 @@ class ReportsController < ApplicationController
       #enquanto o william nao atualiza os agentes
       schedule_uuid = Schedule.where(destination_id: Probe.where(ipaddress: user)).first.uuid
       uuid = report.xpath("report/meas_uuid").children.to_s
-      timestamp = report.xpath("report/timestamp").inner_text
+      timestamp = DateTime.strptime(report.xpath("report/timestamp").inner_text, '%s')
       agent_type = report.xpath("report/agent_type").children.to_s
 
       #fallback para versoes antigas
@@ -2768,7 +2768,7 @@ class ReportsController < ApplicationController
           end
 
         when /linux|android/i
-          @rep = Report.create(user: user, uuid: uuid, timestamp: DateTime.strptime(timestamp, '%s'), agent_type: agent_type)
+          @rep = Report.create(user: user, uuid: uuid, timestamp: timestamp, agent_type: agent_type)
 
           results = report.xpath("report/results").children
 
@@ -2790,8 +2790,8 @@ class ReportsController < ApplicationController
                 @threshold = Threshold.find_by_goal_method("availability")
 
                 @median = Median.new(schedule_uuid: @schedule.uuid,
-                                     start_timestamp: (DateTime.strptime(timestamp, '%s') - 23.hours - 59.minutes - 59.seconds),
-                                     end_timestamp: DateTime.strptime(timestamp, '%s'),
+                                     start_timestamp: (timestamp - 23.hours - 59.minutes - 59.seconds),
+                                     end_timestamp: timestamp,
                                      expected_points: total,
                                      total_points: success,
                                      dsavg: success.to_f/total.to_f)
@@ -2918,6 +2918,7 @@ class ReportsController < ApplicationController
         format.xml { render xml: "<report><status>OK</status></report>" }
       end
     rescue Exception => e
+      notify_airbrake(e)
       respond_to do |format|
         format.xml { render xml: "<report><status>ERROR</status><message>#{e.message}</message></report>" }
       end
