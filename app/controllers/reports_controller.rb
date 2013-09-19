@@ -2210,6 +2210,7 @@ class ReportsController < ApplicationController
               @results << [window, nil]
             end
           end
+          
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/dygraphs_dns_multi_efficiency' }
           end
