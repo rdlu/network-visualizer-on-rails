@@ -2310,30 +2310,33 @@ class ReportsController < ApplicationController
     end
 
     #busca piores urls
-    @dnsresul = DnsResult.where(:server => @nameserver.pluck(:address)).where("url is not null").where("updated_at >= ?", '2013-08-05 14:00:00').limit(20)
+    @dnsresul = DnsResult.where(:server => @nameserver.pluck(:address)).where("url is not null").where("updated_at >= ?", (Time.now - 5.days).strftime("%Y-%m-%d %H:%M:%S")).limit(20)
     #'#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
 
 
     @hash_result = Hash.new(0)
     @hash_result[:sites]= {}
-    @nameserver.each do |server|
-      @hash_result[server.address.to_sym] = {}
-      @hash_result[server.address.to_sym][:total] = 0
+    @hash_result[:servers]= {}
+    @dnsresul.each do |dns|
+      @hash_result[:servers][dns.server.to_sym] = {}
+      @hash_result[:servers][dns.server.to_sym][:total] = 0
     end
 
     @dnsresul.each do |dns|
-      @hash_result[dns.server.to_sym][:primary] = Nameserver.where(:address => dns.server).pluck(:primary) if  @hash_result[dns.server.to_sym][:primary].nil?
-      @hash_result[dns.server.to_sym][:vip] = Nameserver.where(:address => dns.server).pluck(:vip) if  @hash_result[dns.server.to_sym][:vip].nil?
-      @hash_result[dns.server.to_sym][:internal] = Nameserver.where(:address => dns.server).pluck(:internal) if  @hash_result[dns.server.to_sym][:internal].nil?
-      @hash_result[dns.server.to_sym][:total] += 1
+      @hash_result[:servers][dns.server.to_sym][:primary] = Nameserver.where(:address => dns.server).pluck(:primary) if  @hash_result[:servers][dns.server.to_sym][:primary].nil?
+      @hash_result[:servers][dns.server.to_sym][:vip] = Nameserver.where(:address => dns.server).pluck(:vip) if  @hash_result[:servers][dns.server.to_sym][:vip].nil?
+      @hash_result[:servers][dns.server.to_sym][:internal] = Nameserver.where(:address => dns.server).pluck(:internal) if  @hash_result[:servers][dns.server.to_sym][:internal].nil?
+      @hash_result[:servers][dns.server.to_sym][:name] = Nameserver.where(:address => dns.server).pluck(:name) if  @hash_result[:servers][dns.server.to_sym][:name].nil?
+      @hash_result[:servers][dns.server.to_sym][:total] += 1
       @hash_result[:sites][dns.url.to_sym] = {} if @hash_result[:sites][dns.url.to_sym].nil?
       @hash_result[:sites][dns.url.to_sym][:total] = 0 if @hash_result[:sites][dns.url.to_sym][:total].nil?
       @hash_result[:sites][dns.url.to_sym][:total] += 1
       DnsResult.possible_status.each do |p|
-        @hash_result[dns.server.to_sym][p.to_sym] = 0 if @hash_result[dns.server.to_sym][p.to_sym].nil?
+        @hash_result[:servers][dns.server.to_sym][:errors] = {} if @hash_result[:servers][dns.server.to_sym][:errors].nil?
+        @hash_result[:servers][dns.server.to_sym][:errors][p.to_sym] = 0 if @hash_result[:servers][dns.server.to_sym][:errors][p.to_sym].nil?
         @hash_result[:sites][dns.url.to_sym][p.to_sym] = 0 if @hash_result[:sites][dns.url.to_sym][p.to_sym].nil?
         if dns.status == p
-          @hash_result[dns.server.to_sym][p.to_sym] += 1
+          @hash_result[:servers][dns.server.to_sym][:errors][p.to_sym] += 1
           @hash_result[:sites][dns.url.to_sym][p.to_sym] += 1
         end
       end
@@ -2347,7 +2350,7 @@ class ReportsController < ApplicationController
 
     @hash_result[:probes] = {}
     @dnsprobes.each do |probe|
-      @hash_result[:probes][probe.name] = {}
+      @hash_result[:probes][probe.name] = {} if @hash_result[:probes][probe.name].nil?
       @hash_result[:probes][probe.name][:type] = probe.type
       @hash_result[:probes][probe.name][:total] = 0 if  @hash_result[:probes][probe.name][:total].nil?
       @hash_result[:probes][probe.name][:total] += 1

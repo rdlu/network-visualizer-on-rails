@@ -66,11 +66,24 @@ form {
     margin-top:-150px;
   }
   #details-table{
-    margin-left: 0;width: auto;
+    margin-left: 1;width: auto;
   }
 }
 
 #table-div
 {
-  margin-left:0;
+  margin-left:5px;
 }
+
+.breadcrumb
+{
+  background-color: white;
+  margin:0
+}
+
+.pacmanchartsP
+{
+  height:150px;width:20%;float:left
+}
+.pacmanchartsS
+{height:150px;width:20%;float:left}
