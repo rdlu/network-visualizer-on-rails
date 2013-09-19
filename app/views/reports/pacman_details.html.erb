@@ -5,8 +5,8 @@
 
 <div class="modal-body" style="max-height: 500px;">
 
-<div class='row-fluid'>
-  <div class="span5" style="height:200px;">
+<div class='row-fluid' style="height:250px;">
+  <div class="span5">
   <ul>
    <li><%= @name %> - <%= @server %> (Últimos 30 minutos)</li>
   <!--li>Atualizado às</li-->
@@ -17,12 +17,12 @@
 
 </ul>
   </div>
-  <div id="chart" class="span5"  style="height:200px;width: 400px">
+  <div id="chart" class="span5">
 
   </div>
 
 </div>
-<br/><br/>
+
 <div class="row-fluid">
 Últimas Requisições:<br/>
 <table class="table table-bordered table-hover">
@@ -65,8 +65,7 @@
             plotBackgroundColor: null,
             plotBorderWidth: null,
             plotShadow: false,
-            width: 500,
-            marginLeft: -20
+            height:250
         },
         title: {
             text: '<%= @name %>'
@@ -77,7 +76,7 @@
 
         },
         tooltip: {
-            pointFormat: '{series.name}:<b>{point.percentage:.1f}%</b>'
+            pointFormat: '<b>{point.percentage:.1f}%</b>'
         },
         plotOptions: {
             pie: {
@@ -93,21 +92,8 @@
                 startAngle:90
             }
         },
-        legend: {
-            marginLeft: -80,
-            layout: 'vertical',
-            align: 'left',
-            verticalAlign: 'top',
-            borderWidth: 0,
-            useHTML: true,
-            labelFormatter: function() {
-                return '<div style="width:120px"><span style="float:left">' + this.name + '</span><span style="float:right">' + this.y + '%</span></div>';
-            }
-
-        },
         series: [{
             type: 'pie',
-            name: 'Browser share',
             data: [
                 <% @errors.each do |k,v| %>
                     ['<%= k %>', <%= ((v/@total.to_i)*100).to_f %>],
