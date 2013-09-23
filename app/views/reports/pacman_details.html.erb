@@ -96,7 +96,7 @@
             type: 'pie',
             data: [
                 <% @errors.each do |k,v| %>
-                    ['<%= k %>', <%= ((v/@total.to_i)*100).to_f %>],
+                    ['<%= k %>', <%= number_with_precision ((v/@total.to_i)*100).to_f, :precision => 2 %>],
                <% end %>
             ]
         }]

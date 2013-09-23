@@ -6,6 +6,7 @@
 #  id         :integer          not null, primary key
 #  address    :string(255)
 #  name       :string(255)
+#  type       :string(255)
 #  primary    :boolean
 #  vip        :boolean
 #  internal   :boolean
@@ -31,6 +32,14 @@ class Nameserver < ActiveRecord::Base
 
   def ip?
     !!(IPAddress.valid? self.address)
+  end
+
+  def pretty_name_connection
+    if self.type == "mobile"
+      "Móvel"
+    else
+      "Fixo"
+    end
   end
 
   def pretty_human_internal

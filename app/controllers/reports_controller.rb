@@ -2304,7 +2304,7 @@ class ReportsController < ApplicationController
     if position[0] == 'internos'
       @nameserver = Nameserver.where(:type => type[0]).where(:internal => true)
     else
-      @nameserver = Nameserver.where(:type => type[0]).where(:internal => false) #type[0]
+      @nameserver = Nameserver.where(:internal => false) #type[0]
     end
 
     #busca piores urls
