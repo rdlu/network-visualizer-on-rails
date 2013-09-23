@@ -1,0 +1,30 @@
+<table class="table table-bordered table-hover">
+  <thead>
+  <tr>
+    <th>Nome</th>
+    <th>IP</th>
+    <th>Última Atualização</th>
+    <th>Sinalizações</th>
+  </tr>
+  </thead>
+  <tbody>
+  <% unless @result.empty?
+       @result.each do |details| %>
+          <% if (Time.now - details[:updated_at]) > 5400.0 #probe sem registrar atividade por mais de 1h30 %>
+              <tr style="background-color: #AAAAAA">
+          <% else %>
+               <tr>
+          <% end %>
+            <td><%= details[:name] %></td>
+            <td><%= details[:ipaddress] %></td>
+            <td><%= details[:updated_at] %> </td>
+            <td><%= details[:signal] %></td>
+          </tr>
+      <% end
+         else %>
+      <tr>
+        <td colspan="4"><i>Nenhum resultado de erro encontrado.</i></td>
+      </tr>
+  <% end %>
+  </tbody>
+</table>
