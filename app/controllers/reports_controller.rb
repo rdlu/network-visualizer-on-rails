@@ -2390,6 +2390,18 @@ class ReportsController < ApplicationController
     end
   end
 
+  def pacman_activity
+    @total = Probe.count
+
+    @result = Probe.where(:status => 1)
+
+
+    respond_to do |format|
+      format.html { render :layout => false }
+    end
+  end
+
+
   #########################
 
 
