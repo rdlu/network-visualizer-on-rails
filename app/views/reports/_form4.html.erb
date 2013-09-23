@@ -33,22 +33,26 @@
         <input class="btn btn-primary" type="submit" name="add" id="report-add4" value="Adicionar"  data-toggle="collapse" data-target="#accordion_forms"/>
       </div>
     </div>
+<% end %>
+<%= form_tag(pacman_activity_reports_path, :class => 'form-horizontal', :id => 'report-form5') do %>
 
     <div class="row-fluid">
       <h5>Atividade das Sondas</h5>
       <div class="span4 control-group">
-        <input class="btn btn-primary" type="submit" name="add" id="report-add4" value="Adicionar"  data-toggle="collapse" data-target="#accordion_forms"/>
+        <input class="btn btn-primary" type="submit" name="add" id="report-add5" value="Adicionar"  data-toggle="collapse" data-target="#accordion_forms"/>
       </div>
     </div>
+<% end %>
+    <%= form_tag(pacman_service_activity_reports_path, :class => 'form-horizontal', :id => 'report-form6') do %>
 
-    <div class="row-fluid">
+        <div class="row-fluid">
       <h5>Status do serviço</h5>
       <div class="span4 control-group">
-        <input class="btn btn-primary" type="submit" name="add" id="report-add4" value="Adicionar"  data-toggle="collapse" data-target="#accordion_forms"/>
+        <input class="btn btn-primary" type="submit" name="add" id="report-add6" value="Adicionar"  data-toggle="collapse" data-target="#accordion_forms"/>
       </div>
     </div>
-
 <% end %>
+
 
 <script>
     $(function () {

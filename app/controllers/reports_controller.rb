@@ -2301,12 +2301,13 @@ class ReportsController < ApplicationController
     position = params[:servers]
     #activity = params[:activity]
     #status = params[:status]
+    unless position.nil?
     if position[0] == 'internos'
       @nameserver = Nameserver.where(:type => type[0]).where(:internal => true)
     else
       @nameserver = Nameserver.where(:internal => false) #type[0]
     end
-
+                        end
     #busca piores urls
     @dnsresul = DnsResult.where(:server => @nameserver.pluck(:address)).where("url is not null").where("updated_at >= ?", (Time.now - 6.days).strftime("%Y-%m-%d %H:%M:%S"))
     #'#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
