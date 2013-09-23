@@ -34,6 +34,7 @@ MomRails::Application.routes.draw do
   post 'reports/smartrate', :as => 'smartrate_reports'
   post 'reports/pacman', :as => 'pacman_reports'
   post 'reports/pacman_details', :as => 'pacman_details_reports'
+  post 'reports/pacman_activity', :as => 'pacman_activity_reports'
   resources :metrics
   resources :tests
   resources :schedules
