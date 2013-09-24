@@ -1473,7 +1473,6 @@ class ReportsController < ApplicationController
       total_points = 0
 
 
-
       # Armazena valores de cada plano
 
       media4 = Array.new
@@ -2140,51 +2139,51 @@ class ReportsController < ApplicationController
           @results = []
           case @metric.plugin
             when 'sites-throughput'
-              @variations = ['throughput','throughput_main_domain','throughput_other_domain']
+              @variations = ['throughput', 'throughput_main_domain', 'throughput_other_domain']
             when 'sites-loadtime'
-              @variations = ['time','time_main_domain','time_other_domain']
+              @variations = ['time', 'time_main_domain', 'time_other_domain']
             when 'sites-objects-qty'
-              @variations = ['objects-qty','objects-qty_main_domain','objects-qty_other_domain']
+              @variations = ['objects-qty', 'objects-qty_main_domain', 'objects-qty_other_domain']
             else
               respond_to do |format|
                 format.html { render :layout => false, file: 'reports/dygraphs_notsupported' }
               end
           end
           @from.all_window_times_until(@to, @window_size.minutes).each do |window|
-                newres = {total: 0}
+            newres = {total: 0}
+            @variations.each do |variation|
+              newres.merge!({variation.to_sym => []})
+            end
+            begin
+              while @raw_results.peek.timestamp < window+@window_size.minutes
+                this_result = @raw_results.next
+                newres[:total] += 1
                 @variations.each do |variation|
-                  newres.merge!({variation.to_sym => []})
-                end
-                begin
-                  while @raw_results.peek.timestamp < window+@window_size.minutes
-                    this_result = @raw_results.next
-                    newres[:total] += 1
-                    @variations.each do |variation|
-                      newres[variation.to_sym] << this_result[variation.to_sym]
-                    end
-                  end
-                rescue StopIteration
-                  #nothing to do
-                end
-                unless newres[:total] == 0
-                  newline = [window]
-                  @variations.each do |variation|
-                    sum = newres[variation.to_sym].inject{|sum,n|sum.to_f+n.to_f}
-                    unless sum.nil?
-                      newline << (sum/newres[variation.to_sym].count)*@metric.conversion_rate 
-                    else
-                      newline << "null"
-                    end
-                  end
-                  @results << newline
-                else
-                  newline = [window]
-                  @variations.each do |variation|
-                    newline << "null"
-                  end
-                  @results << newline
+                  newres[variation.to_sym] << this_result[variation.to_sym]
                 end
               end
+            rescue StopIteration
+              #nothing to do
+            end
+            unless newres[:total] == 0
+              newline = [window]
+              @variations.each do |variation|
+                sum = newres[variation.to_sym].inject { |sum, n| sum.to_f+n.to_f }
+                unless sum.nil?
+                  newline << (sum/newres[variation.to_sym].count)*@metric.conversion_rate
+                else
+                  newline << "null"
+                end
+              end
+              @results << newline
+            else
+              newline = [window]
+              @variations.each do |variation|
+                newline << "null"
+              end
+              @results << newline
+            end
+          end
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/performance/dygraphs_webload' }
           end
@@ -2265,7 +2264,7 @@ class ReportsController < ApplicationController
               @results << [window, nil]
             end
           end
-          
+
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/dygraphs_dns_multi_efficiency' }
           end
