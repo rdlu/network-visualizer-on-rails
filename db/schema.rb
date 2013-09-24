@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130904185640) do
+ActiveRecord::Schema.define(:version => 20130924201109) do
 
   create_table "compliances", :force => true do |t|
     t.integer   "schedule_id"
@@ -188,11 +188,12 @@ ActiveRecord::Schema.define(:version => 20130904185640) do
     t.string    "description"
     t.boolean   "reverse"
     t.integer   "order"
-    t.timestamp "created_at",  :limit => 6,                       :null => false
-    t.timestamp "updated_at",  :limit => 6,                       :null => false
+    t.timestamp "created_at",      :limit => 6,                       :null => false
+    t.timestamp "updated_at",      :limit => 6,                       :null => false
     t.string    "view_unit"
     t.string    "db_unit"
-    t.string    "metric_type",              :default => "active", :null => false
+    t.string    "metric_type",                  :default => "active", :null => false
+    t.float     "conversion_rate"
   end
 
   add_index "metrics", ["name"], :name => "index_metrics_on_name", :unique => true
@@ -260,6 +261,7 @@ ActiveRecord::Schema.define(:version => 20130904185640) do
     t.string    "osversion"
     t.string    "modem"
     t.integer   "cn"
+    t.integer   "signal"
   end
 
   add_index "probes", ["connection_profile_id"], :name => "index_probes_on_connection_profile_id"

@@ -156,7 +156,7 @@
         var value = $(this).val();
         var type = value.split(',')[1];
 
-        if (type == "web_load"){
+        if (type == "webload"){
             $('#sites').attr('style','display:block');
             $('#dns').attr('style','display:none');
             $('#variation').attr('style','display:none');
@@ -198,7 +198,7 @@
     );
 
     $('#report-add3').click(function () {
-        $("#optbtn").attr('src', '/mom/assets/opt_btn-right.png');
+        $("#optbtn").attr('src', '<%= image_path 'opt_btn-right.png' %>');
         $("#optbtn").attr('name', 'closed');
 
     });

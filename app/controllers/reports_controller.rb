@@ -1473,7 +1473,6 @@ class ReportsController < ApplicationController
       total_points = 0
 
 
-
       # Armazena valores de cada plano
 
       media4 = Array.new
@@ -2025,7 +2024,7 @@ class ReportsController < ApplicationController
     unless params[:destination][:id] == ''
       @probes = Probe.find(params[:destination][:id])
     else
-      @probes = apply_scopes(Probe).order(:name).all
+      @probes = apply_scopes(Probe).order(:name)
       @multiprobe = true
     end
 
@@ -2057,8 +2056,8 @@ class ReportsController < ApplicationController
           end
         when 'dns'
           filters = {schedule_uuid: schedule.uuid, timestamp: @from..@to}
-              filters.merge!({server: params[:by_dns]}) unless params[:by_dns].nil?
-              filters.merge!({url: params[:by_sites]}) unless params[:by_sites].nil?
+          filters.merge!({server: params[:by_dns]}) unless params[:by_dns].nil?
+          filters.merge!({url: params[:by_sites]}) unless params[:by_sites].nil?
           @raw_results = DnsResult.
               where(filters).order('timestamp ASC')
           respond_to do |format|
@@ -2066,8 +2065,8 @@ class ReportsController < ApplicationController
           end
         when 'dns_efficiency'
           @raw_results = DnsDetail.
-                  where(:schedule_uuid => schedule.uuid).
-                  where(:timestamp => @from..@to).order('timestamp ASC').all.to_enum
+              where(:schedule_uuid => schedule.uuid).
+              where(:timestamp => @from..@to).order('timestamp ASC').all.to_enum
           @results = []
           @from.all_window_times_until(@to, @window_size.minutes).each do |window|
             eficiencies = []
@@ -2214,7 +2213,7 @@ class ReportsController < ApplicationController
               @results << [window, nil]
             end
           end
-          
+
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/dygraphs_dns_multi_efficiency' }
           end
@@ -2237,10 +2236,10 @@ class ReportsController < ApplicationController
               #nothing to do
             end
             unless delays.count == 0
-              newline = [window,delays.reduce(:+)/delays.count]
+              newline = [window, delays.reduce(:+)/delays.count]
               @results << newline
             else
-              newline = [window,nil]
+              newline = [window, nil]
               @results << newline
             end
           end
@@ -2349,9 +2348,9 @@ class ReportsController < ApplicationController
     @hash_result[:probes] = {}
     unless @nameserver.empty?
       @dnsprobes = DnsResult.find_by_sql("SELECT  probes.name, dns_results.status, probes.type
-                                      from probes, dns_results, schedules where dns_results.server IN #{@nameserver.pluck(:address).to_s.html_safe.gsub("[","(").gsub("]",")").gsub("\"","\'")} and dns_results.schedule_uuid = schedules.uuid
+                                      from probes, dns_results, schedules where dns_results.server IN #{@nameserver.pluck(:address).to_s.html_safe.gsub("[", "(").gsub("]", ")").gsub("\"", "\'")} and dns_results.schedule_uuid = schedules.uuid
                                       and schedules.destination_id = probes.id and dns_results.updated_at >= '#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
-                                      order by timestamp desc")  #'#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
+                                      order by timestamp desc") #'#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
 
       @dnsprobes.each do |probe|
         @hash_result[:probes][probe.name] = {} if @hash_result[:probes][probe.name].nil?
@@ -2367,9 +2366,8 @@ class ReportsController < ApplicationController
         end
       end
     else
-       @dnsprobes = []
+      @dnsprobes = []
     end
-
 
 
     respond_to do |format|
@@ -2383,7 +2381,7 @@ class ReportsController < ApplicationController
     @total = params[:total]
     @errors = eval(params[:errors])
 
-   @dnsprobe = DnsResult.find_by_sql("SELECT dns_results.timestamp, probes.name, dns_results.url, dns_results.delay, dns_results.status
+    @dnsprobe = DnsResult.find_by_sql("SELECT dns_results.timestamp, probes.name, dns_results.url, dns_results.delay, dns_results.status
                                     from probes, dns_results, schedules where server = '#{@server}' and dns_results.schedule_uuid = schedules.uuid
                                     and schedules.destination_id = probes.id and dns_results.updated_at >= '#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
                                     and dns_results.status <> 'OK'
@@ -2877,38 +2875,38 @@ class ReportsController < ApplicationController
                                                schedule_uuid: schedule_uuid,
                                                timestamp: timestamp,
                                                uuid: uuid)
-	      when "ativas"
-		ativas=["loss", "jitter", "owd", "pom", "rtt", "throughput", "throughput_tcp" ]
-		@ativas_results = []
-		ativas.each do |a|
-			c = report.xpath("report/results/ativas/" + a)
-			unless (c.nil? || c.empty?)
-				dsmax = c.children.search("upmax").inner_text.to_f
-				dsmin = c.children.search("upmin").inner_text.to_f
-				dsavg = c.children.search("upavg").inner_text.to_f
+              when "ativas"
+                ativas=["loss", "jitter", "owd", "pom", "rtt", "throughput", "throughput_tcp"]
+                @ativas_results = []
+                ativas.each do |a|
+                  c = report.xpath("report/results/ativas/" + a)
+                  unless (c.nil? || c.empty?)
+                    dsmax = c.children.search("upmax").inner_text.to_f
+                    dsmin = c.children.search("upmin").inner_text.to_f
+                    dsavg = c.children.search("upavg").inner_text.to_f
 
-				sdmax = c.children.search("downmax").inner_text.to_f
-				sdmin = c.children.search("downmin").inner_text.to_f
-				sdavg = c.children.search("downavg").inner_text.to_f
-				
-				metric = Metric.where(plugin: a).first.id
-                		probe = Probe.where(ipaddress: user).first
-       			        schedule = probe.schedules_as_destination.last
-			
-				@ativas_results = Results.create(schedule_id: schedule.id,
-								 metric_id: metric,
-								 schedule_uuid: schedule_uuid,
-								 uuid: uuid,
-								 metric_name: a,
-								 timestamp: timestamp,
-								 dsmax: dsmax,
-								 dsmin: dsmin,
-								 dsavg: dsavg,
-								 sdmax: sdmax,
-								 sdmin: sdmin,
-								 sdavg: sdavg)
-			end
-		end
+                    sdmax = c.children.search("downmax").inner_text.to_f
+                    sdmin = c.children.search("downmin").inner_text.to_f
+                    sdavg = c.children.search("downavg").inner_text.to_f
+
+                    metric = Metric.where(plugin: a).first.id
+                    probe = Probe.where(ipaddress: user).first
+                    schedule = probe.schedules_as_destination.last
+
+                    @ativas_results = Results.create(schedule_id: schedule.id,
+                                                     metric_id: metric,
+                                                     schedule_uuid: schedule_uuid,
+                                                     uuid: uuid,
+                                                     metric_name: a,
+                                                     timestamp: timestamp,
+                                                     dsmax: dsmax,
+                                                     dsmin: dsmin,
+                                                     dsavg: dsavg,
+                                                     sdmax: sdmax,
+                                                     sdmin: sdmin,
+                                                     sdavg: sdavg)
+                  end
+                end
 
               when "throughput_http"
                 throughput_http_down = report.xpath("report/results/throughput_http/down").inner_text.to_f

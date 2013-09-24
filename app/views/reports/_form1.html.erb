@@ -109,7 +109,7 @@
     });
         $('#report-add').click(function () {
             $("html, body").animate({ scrollTop: 0 }, "slow");
-            $("#optbtn").attr('src', '/mom/assets/opt_btn-right.png');
+            $("#optbtn").attr('src', '<%= image_path 'opt_btn-right.png' %>');
             $("#optbtn").attr('name', 'closed');
 
         });

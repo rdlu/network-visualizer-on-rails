@@ -1,0 +1,48 @@
+<div class="row-fluid" id="pacman_service_activity">
+<table class="table table-bordered table-hover">
+  <thead>
+  <tr>
+    <th colspan="11"><h4>Status das Sondas (<%= @active_count %> Ativas de <%= @total_count %> Instaladas)</h4></th>
+  </tr>
+  <tr>
+    <th>Máquina</th>
+    <th>Estação</th>
+    <th>Terminal</th>
+    <th>Último IP</th>
+    <th>DSLAM</th>
+    <th>SWD</th>
+    <th>SWC</th>
+    <th>ERX</th>
+    <th>Velocidade</th>
+    <th>Versão</th>
+    <th>Última Coleta</th>
+  </tr>
+  </thead>
+  <tbody>
+  <% unless @active.empty?
+       @active.each do |probe| %>
+          <td><%= probe[:name] %></td>
+          <td> </td>
+          <td> </td>
+          <td><%= probe[:ipaddress] %></td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td><%= probe[:osversion] %></td>
+          <td><%= probe[:updated_at].strftime("%H:%M:%S %d-%m-%Y") %></td>
+          </tr>
+      <% end
+         else %>
+      <tr>
+        <td colspan="11"><i>Nenhum resultado de erro encontrado.</i></td>
+      </tr>
+  <% end %>
+  </tbody>
+</table>
+  <div class="chart-bottom" style="padding-top: 10px;">
+    <div class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="jQuery('#box-pacman').remove();">Remover</div>
+
+  </div>
+</div>
