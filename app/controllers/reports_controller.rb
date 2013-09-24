@@ -1473,7 +1473,6 @@ class ReportsController < ApplicationController
       total_points = 0
 
 
-
       # Armazena valores de cada plano
 
       media4 = Array.new
@@ -2341,6 +2340,63 @@ class ReportsController < ApplicationController
             format.html { render :layout => false, file: 'reports/dygraphs_dns_detail' }
           end
         when 'webload'
+          filters = {schedule_uuid: @schedules.pluck(:uuid), timestamp: @from..@to}
+          filters.merge!({url: params[:by_sites]}) unless params[:by_sites].nil? || params[:by_sites][0] == ''
+          query = WebLoadResult.
+              where(filters).
+              order('timestamp ASC')
+          @raw_results = query.all.to_enum
+          @results = []
+          case @metric.plugin
+            when 'sites-throughput'
+              @variations = ['throughput', 'throughput_main_domain', 'throughput_other_domain']
+            when 'sites-loadtime'
+              @variations = ['time', 'time_main_domain', 'time_other_domain']
+            when 'sites-objects-qty'
+              @variations = ['objects-qty', 'objects-qty_main_domain', 'objects-qty_other_domain']
+            else
+              respond_to do |format|
+                format.html { render :layout => false, file: 'reports/dygraphs_notsupported' }
+              end
+          end
+          @from.all_window_times_until(@to, @window_size.minutes).each do |window|
+            newres = {total: 0}
+            @variations.each do |variation|
+              newres.merge!({variation.to_sym => []})
+            end
+            begin
+              while @raw_results.peek.timestamp < window+@window_size.minutes
+                this_result = @raw_results.next
+                newres[:total] += 1
+                @variations.each do |variation|
+                  newres[variation.to_sym] << this_result[variation.to_sym]
+                end
+              end
+            rescue StopIteration
+              #nothing to do
+            end
+            unless newres[:total] == 0
+              newline = [window]
+              @variations.each do |variation|
+                sum = newres[variation.to_sym].inject { |sum, n| sum.to_f+n.to_f }
+                unless sum.nil?
+                  newline << (sum/newres[variation.to_sym].count)*@metric.conversion_rate
+                else
+                  newline << "null"
+                end
+              end
+              @results << newline
+            else
+              newline = [window]
+              @variations.each do |variation|
+                newline << "null"
+              end
+              @results << newline
+            end
+          end
+          respond_to do |format|
+            format.html { render :layout => false, file: 'reports/performance/dygraphs_webload' }
+          end
         else
 
       end
@@ -2951,36 +3007,36 @@ class ReportsController < ApplicationController
                                                timestamp: timestamp,
                                                uuid: uuid)
               when "ativas"
-                ativas=["loss", "jitter", "owd", "pom", "rtt", "throughput", "throughput_tcp" ]
+                ativas=["loss", "jitter", "owd", "pom", "rtt", "throughput", "throughput_tcp"]
                 @ativas_results = []
                 ativas.each do |a|
-                        c = report.xpath("report/results/ativas/" + a)
-                        unless (c.nil? || c.empty?)
-                                dsmax = c.children.search("upmax").inner_text.to_f
-                                dsmin = c.children.search("upmin").inner_text.to_f
-                                dsavg = c.children.search("upavg").inner_text.to_f
+                  c = report.xpath("report/results/ativas/" + a)
+                  unless (c.nil? || c.empty?)
+                    dsmax = c.children.search("upmax").inner_text.to_f
+                    dsmin = c.children.search("upmin").inner_text.to_f
+                    dsavg = c.children.search("upavg").inner_text.to_f
 
-                                sdmax = c.children.search("downmax").inner_text.to_f
-                                sdmin = c.children.search("downmin").inner_text.to_f
-                                sdavg = c.children.search("downavg").inner_text.to_f
+                    sdmax = c.children.search("downmax").inner_text.to_f
+                    sdmin = c.children.search("downmin").inner_text.to_f
+                    sdavg = c.children.search("downavg").inner_text.to_f
 
-                                metric = Metric.where(plugin: a).first.id
-                                probe = Probe.where(ipaddress: user).first
-                                schedule = probe.schedules_as_destination.last
+                    metric = Metric.where(plugin: a).first.id
+                    probe = Probe.where(ipaddress: user).first
+                    schedule = probe.schedules_as_destination.last
 
-                                @ativas_results = Results.create(schedule_id: schedule.id,
-                                                                 metric_id: metric,
-                                                                 schedule_uuid: schedule_uuid,
-                                                                 uuid: uuid,
-                                                                 metric_name: a,
-                                                                 timestamp: timestamp,
-                                                                 dsmax: dsmax,
-                                                                 dsmin: dsmin,
-                                                                 dsavg: dsavg,
-                                                                 sdmax: sdmax,
-                                                                 sdmin: sdmin,
-                                                                 sdavg: sdavg)
-                        end
+                    @ativas_results = Results.create(schedule_id: schedule.id,
+                                                     metric_id: metric,
+                                                     schedule_uuid: schedule_uuid,
+                                                     uuid: uuid,
+                                                     metric_name: a,
+                                                     timestamp: timestamp,
+                                                     dsmax: dsmax,
+                                                     dsmin: dsmin,
+                                                     dsavg: dsavg,
+                                                     sdmax: sdmax,
+                                                     sdmin: sdmin,
+                                                     sdavg: sdavg)
+                  end
                 end
               when "throughput_http"
                 throughput_http_down = report.xpath("report/results/throughput_http/down").inner_text.to_f
