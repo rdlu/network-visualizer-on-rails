@@ -1473,6 +1473,7 @@ class ReportsController < ApplicationController
       total_points = 0
 
 
+
       # Armazena valores de cada plano
 
       media4 = Array.new
@@ -2902,7 +2903,7 @@ class ReportsController < ApplicationController
                   time_main_domain = c.children.search("time_main_domain").inner_text.to_f
                   size_main_domain = c.children.search("size_main_domain").inner_text.to_i
                   throughput_main_domain = c.children.search("throughput_main_domain").inner_text.to_f
-                  time_other_domain = c.children.search("time_main_domain").inner_text.to_f
+                  time_other_domain = c.children.search("time_other_domain").inner_text.to_f
                   size_other_domain = c.children.search("size_other_domain").inner_text.to_i
                   throughput_other_domain = c.children.search("throughput_other_domain").inner_text.to_f
                   @web_load_results << WebLoadResult.create(url: url,
@@ -2928,7 +2929,7 @@ class ReportsController < ApplicationController
                   server = c.children.search("server").inner_text
                   url = c.children.search("url").inner_text
                   delay = c.children.search("delay").inner_text.to_i
-                  dns_status = c.children.search("status").inner_text.to_f
+                  dns_status = c.children.search("status").inner_text
                   @dns_results << DnsResult.create(url: url,
                                                    server: server,
                                                    delay: delay,
@@ -2950,43 +2951,42 @@ class ReportsController < ApplicationController
                                                timestamp: timestamp,
                                                uuid: uuid)
               when "ativas"
-                ativas=["loss", "jitter", "owd", "pom", "rtt", "throughput", "throughput_tcp"]
+                ativas=["loss", "jitter", "owd", "pom", "rtt", "throughput", "throughput_tcp" ]
                 @ativas_results = []
                 ativas.each do |a|
-                  c = report.xpath("report/results/ativas/" + a)
-                  unless (c.nil? || c.empty?)
-                    dsmax = c.children.search("upmax").inner_text.to_f
-                    dsmin = c.children.search("upmin").inner_text.to_f
-                    dsavg = c.children.search("upavg").inner_text.to_f
+                        c = report.xpath("report/results/ativas/" + a)
+                        unless (c.nil? || c.empty?)
+                                dsmax = c.children.search("upmax").inner_text.to_f
+                                dsmin = c.children.search("upmin").inner_text.to_f
+                                dsavg = c.children.search("upavg").inner_text.to_f
 
-                    sdmax = c.children.search("downmax").inner_text.to_f
-                    sdmin = c.children.search("downmin").inner_text.to_f
-                    sdavg = c.children.search("downavg").inner_text.to_f
+                                sdmax = c.children.search("downmax").inner_text.to_f
+                                sdmin = c.children.search("downmin").inner_text.to_f
+                                sdavg = c.children.search("downavg").inner_text.to_f
 
-                    metric = Metric.where(plugin: a).first.id
-                    probe = Probe.where(ipaddress: user).first
-                    schedule = probe.schedules_as_destination.last
+                                metric = Metric.where(plugin: a).first.id
+                                probe = Probe.where(ipaddress: user).first
+                                schedule = probe.schedules_as_destination.last
 
-                    @ativas_results = Results.create(schedule_id: schedule.id,
-                                                     metric_id: metric,
-                                                     schedule_uuid: schedule_uuid,
-                                                     uuid: uuid,
-                                                     metric_name: a,
-                                                     timestamp: timestamp,
-                                                     dsmax: dsmax,
-                                                     dsmin: dsmin,
-                                                     dsavg: dsavg,
-                                                     sdmax: sdmax,
-                                                     sdmin: sdmin,
-                                                     sdavg: sdavg)
-                  end
+                                @ativas_results = Results.create(schedule_id: schedule.id,
+                                                                 metric_id: metric,
+                                                                 schedule_uuid: schedule_uuid,
+                                                                 uuid: uuid,
+                                                                 metric_name: a,
+                                                                 timestamp: timestamp,
+                                                                 dsmax: dsmax,
+                                                                 dsmin: dsmin,
+                                                                 dsavg: dsavg,
+                                                                 sdmax: sdmax,
+                                                                 sdmin: sdmin,
+                                                                 sdavg: sdavg)
+                        end
                 end
-
               when "throughput_http"
                 throughput_http_down = report.xpath("report/results/throughput_http/down").inner_text.to_f
                 throughput_http_up = report.xpath("report/results/throughput_http/up").inner_text.to_f
 
-                metric = Metric.where(plugin: "throughput_http").first.id
+                metric = Metric.where(plugin: "throughput_http").first
                 probe = Probe.where(ipaddress: user).first
                 schedule = probe.schedules_as_destination.last
 
