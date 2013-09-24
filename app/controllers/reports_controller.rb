@@ -2024,7 +2024,7 @@ class ReportsController < ApplicationController
     unless params[:destination][:id] == ''
       @probes = Probe.find(params[:destination][:id])
     else
-      @probes = apply_scopes(Probe).order(:name)
+      @probes = apply_scopes(Probe).order(:name).all
       @multiprobe = true
     end
 
@@ -2130,11 +2130,62 @@ class ReportsController < ApplicationController
             format.html { render :layout => false, file: 'reports/dygraphs_dns_detail' }
           end
         when 'webload'
-          @raw_results = WebLoadResult.
-              where(:schedule_uuid => schedule.uuid).
-              where(:timestamp => @from..@to).order('timestamp ASC').all
+          filters = {schedule_uuid: schedule.uuid, timestamp: @from..@to}
+          filters.merge!({url: params[:by_sites]}) unless params[:by_sites].nil? || params[:by_sites][0] == ''
+          query = WebLoadResult.
+              where(filters).
+              order('timestamp ASC')
+          @raw_results = query.all.to_enum
+          @results = []
+          case @metric.plugin
+            when 'sites-throughput'
+              @variations = ['throughput', 'throughput_main_domain', 'throughput_other_domain']
+            when 'sites-loadtime'
+              @variations = ['time', 'time_main_domain', 'time_other_domain']
+            when 'sites-objects-qty'
+              @variations = ['objects-qty', 'objects-qty_main_domain', 'objects-qty_other_domain']
+            else
+              respond_to do |format|
+                format.html { render :layout => false, file: 'reports/dygraphs_notsupported' }
+              end
+          end
+          @from.all_window_times_until(@to, @window_size.minutes).each do |window|
+            newres = {total: 0}
+            @variations.each do |variation|
+              newres.merge!({variation.to_sym => []})
+            end
+            begin
+              while @raw_results.peek.timestamp < window+@window_size.minutes
+                this_result = @raw_results.next
+                newres[:total] += 1
+                @variations.each do |variation|
+                  newres[variation.to_sym] << this_result[variation.to_sym]
+                end
+              end
+            rescue StopIteration
+              #nothing to do
+            end
+            unless newres[:total] == 0
+              newline = [window]
+              @variations.each do |variation|
+                sum = newres[variation.to_sym].inject { |sum, n| sum.to_f+n.to_f }
+                unless sum.nil?
+                  newline << (sum/newres[variation.to_sym].count)*@metric.conversion_rate
+                else
+                  newline << "null"
+                end
+              end
+              @results << newline
+            else
+              newline = [window]
+              @variations.each do |variation|
+                newline << "null"
+              end
+              @results << newline
+            end
+          end
           respond_to do |format|
-            format.html { render :layout => false, file: 'reports/dygraphs_webload' }
+            format.html { render :layout => false, file: 'reports/performance/dygraphs_webload' }
           end
         else
           #tipo de metrica nao suportado
@@ -2386,6 +2437,29 @@ class ReportsController < ApplicationController
                                     and schedules.destination_id = probes.id and dns_results.updated_at >= '#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
                                     and dns_results.status <> 'OK'
                                     order by timestamp desc limit 20")
+
+    respond_to do |format|
+      format.html { render :layout => false }
+    end
+  end
+
+  def pacman_activity
+    @total = Probe.count
+
+    @result = Probe.where(:status => 1).order("name")
+    @result_count = Probe.where(:status => 1).count
+
+
+    respond_to do |format|
+      format.html { render :layout => false }
+    end
+  end
+
+  def pacman_service_activity
+    @active = Probe.where(:status => 1).order("name")
+    @active_count = Probe.where(:status => 1).count
+    @total_count = Probe.count
+
 
     respond_to do |format|
       format.html { render :layout => false }
@@ -2774,7 +2848,7 @@ class ReportsController < ApplicationController
             web_load_url = c.children.search("url").inner_text
             web_load_time = c.children.search("time").inner_text.to_f
             web_load_size = c.children.search("size").inner_text.to_f
-            web_load_throughput = c.children.search("trhoughput").inner_text.to_f
+            web_load_throughput = c.children.search("throughput").inner_text.to_f
 
             @web_load_dynamic_results << WebLoadDynamicResult.create(url: web_load_url,
                                                                      time: web_load_time,
