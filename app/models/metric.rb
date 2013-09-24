@@ -16,13 +16,14 @@
 #
 
 class Metric < ActiveRecord::Base
-  attr_accessible :description, :name, :order, :plugin, :reverse, :db_unit, :view_unit, :metric_type
+  attr_accessible :description, :name, :order, :plugin, :reverse, :db_unit, :view_unit, :metric_type, :conversion_rate
 
   validates :name, :presence => true, :length => {:maximum => 30, :minimum => 3}, :uniqueness => true
   validates :plugin, :presence => true, :length => {:maximum => 20, :minimum => 3}, :uniqueness => true,
             :format => {:with => /[a-z0-9]+/}
   has_and_belongs_to_many :profiles
   has_many :thresholds
+  before_save { |metric| metric.conversion_rate = "1 #{self.raw_db_unit}".to_unit(self.raw_view_unit).scalar }
 
   def db_unit
     self[:db_unit].to_s.gsub(/b\/s|B\/s/, 'b/s' => 'bps', 'B/s' => 'Bps')
@@ -54,7 +55,7 @@ class Metric < ActiveRecord::Base
         ['DNS', 'dns'],
         ['DNS Errors', 'dns_detail'],
         ['Eficiencia DNS', 'dns_efficiency'],
-        ['Carga Web', 'web_load'],
+        ['Carga Web', 'webload'],
         ['KPI', 'kpi'],
         ['Outra', '']
     ]

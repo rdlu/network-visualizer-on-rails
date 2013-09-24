@@ -41,6 +41,9 @@ metrics = [
       { name: "DNS - Tempo de Resposta", description: "Tempo de Resposta para uma query DNS", order:10, plugin: "dns-response-time", reverse: true, view_unit: 'ms', db_unit: 's', metric_type: 'dns' },
       { name: "DNS - Eficiência", description: "Porcentagem de Respostas positivas do servidor DNS", order:11, plugin: "dns-efficiency", reverse: true, view_unit: '%', db_unit: '%', metric_type: 'dns_eficiency' },
       { name: "DNS - Detalhes", description: "Detalhes das falhas de DNS por categorias definidas na RFC1035", order:12, plugin: "dns-details", reverse: true, view_unit: '%', db_unit: '%', metric_type: 'dns_detail' },
+      { name: "Sites - Taxa de Aquisição", description: "Tempo de download dos sites", order:13, plugin: "sites-throughput", reverse: false, view_unit: 'Mb/s', db_unit: 'kb/s', metric_type: 'webload' },
+      { name: "Sites - Tempo de Carga", description: "Tempo de carga dos sites", order:14, plugin: "sites-loadtime", reverse: true, view_unit: 'ms', db_unit: 'ms', metric_type: 'webload' },
+      { name: "Sites - Número de Objetos", description: "Número de objetos carregados para um determinado site", order:13, plugin: "sites-objects-qty", reverse: true, view_unit: '', db_unit: '', metric_type: 'webload' },
 ]
 
 metrics.each do |metric|
