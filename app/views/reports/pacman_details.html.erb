@@ -40,7 +40,7 @@
        @dnsprobe.each do |details| %>
       <tr>
         <td>
-          <%= details[:timestamp] %>
+          <%= details[:timestamp].strftime("%H:%M:%S %d-%m-%Y") %>
         </td>
         <td><%= details[:name] %></td>
         <td><%= details[:url] %> </td>

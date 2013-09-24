@@ -1,5 +1,9 @@
+<div id="pacman_activity">
 <table class="table table-bordered table-hover">
   <thead>
+  <tr>
+    <th colspan="4"><h4>Atividades das Sondas (<%= @result_count %> Ativas de <%= @total %> Instaladas)</h4></th>
+  </tr>
   <tr>
     <th>Nome</th>
     <th>IP</th>
@@ -17,7 +21,7 @@
           <% end %>
             <td><%= details[:name] %></td>
             <td><%= details[:ipaddress] %></td>
-            <td><%= details[:updated_at] %> </td>
+            <td><%= details[:updated_at].strftime("%H:%M:%S %d-%m-%Y") %> </td>
             <td><%= details[:signal] %></td>
           </tr>
       <% end
@@ -28,3 +32,10 @@
   <% end %>
   </tbody>
 </table>
+<div class="span12">
+  <div class="chart-bottom" style="padding-top: 10px;">
+    <div class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="jQuery('#pacman_activity').remove();">Remover</div>
+
+  </div>
+</div>
+</div>

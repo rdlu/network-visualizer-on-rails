@@ -2394,7 +2394,8 @@ class ReportsController < ApplicationController
   def pacman_activity
     @total = Probe.count
 
-    @result = Probe.where(:status => 1)
+    @result = Probe.where(:status => 1).order("updated_at DESC")
+    @result_count = Probe.where(:status => 1).count
 
 
     respond_to do |format|
@@ -2402,6 +2403,16 @@ class ReportsController < ApplicationController
     end
   end
 
+  def pacman_service_activity
+    @active = Probe.where(:status => 1)
+    @active_count = Probe.where(:status => 1).count
+    @total_count = Probe.count
+
+
+    respond_to do |format|
+      format.html { render :layout => false }
+    end
+  end
 
   #########################
 
