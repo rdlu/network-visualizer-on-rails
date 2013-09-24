@@ -12,7 +12,7 @@
                 <li class="active"><a href="#form_1" data-toggle="tab">Formato 1</a></li>
                 <li><a href="#form_2" data-toggle="tab">Formato 2</a></li>
                 <li><a href="#form_3" data-toggle="tab">Performance</a></li>
-                <li><a href="#form_4" data-toggle="tab">Pac-Man</a></li>
+                <li><a href="#form_4" data-toggle="tab">SmartRate</a></li>
               </ul>
               <div class="tab-content tab-content-border" style="min-height: 50px !important">
                 <div class="tab-pane active" id="form_1">
@@ -300,6 +300,66 @@
                         'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
                     }
                 });
+        });
+        jQuery('#report-form5').submit(function (event) {
+            event.preventDefault();
+
+            jQuery.ajax("<%= pacman_activity_reports_path %>/", {
+                beforeSend: function () {
+                    jQuery('#graphs-area').prepend('<div id=\"row-loading\" class="row-fluid"><div   class=\"span12\"><div id=\"box-loading\" style="height:100px;"><%=image_tag 'ajax-loader.gif' %> <strong>Requisitando o relatório selecionado, aguarde...</strong></div></div></div>');
+                },
+                complete: function (obj, status) {
+                    jQuery('#row-loading').remove();
+                },
+                error: function (obj, status) {
+                    console.log(obj);
+                    console.log("Query Error " + status);
+                },
+                success: function (result, status) {
+                    if (!jQuery("#box-pacman").is(':empty')) {
+                        jQuery("#box-pacman").remove();
+                    }
+
+                    jQuery('#graphs-area').prepend(result);
+
+                },
+                //dataType: 'json',
+                data: $(this).serialize(),
+                method: 'post',
+                headers: {
+                    'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+        });
+        jQuery('#report-form6').submit(function (event) {
+            event.preventDefault();
+
+            jQuery.ajax("<%= pacman_service_activity_reports_path %>/", {
+                beforeSend: function () {
+                    jQuery('#graphs-area').prepend('<div id=\"row-loading\" class="row-fluid"><div   class=\"span12\"><div id=\"box-loading\" style="height:100px;"><%=image_tag 'ajax-loader.gif' %> <strong>Requisitando o relatório selecionado, aguarde...</strong></div></div></div>');
+                },
+                complete: function (obj, status) {
+                    jQuery('#row-loading').remove();
+                },
+                error: function (obj, status) {
+                    console.log(obj);
+                    console.log("Query Error " + status);
+                },
+                success: function (result, status) {
+                    if (!jQuery("#box-pacman").is(':empty')) {
+                        jQuery("#box-pacman").remove();
+                    }
+
+                    jQuery('#graphs-area').prepend(result);
+
+                },
+                //dataType: 'json',
+                data: $(this).serialize(),
+                method: 'post',
+                headers: {
+                    'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
         });
 
         jQuery('#report-form2').submit(function (event) {

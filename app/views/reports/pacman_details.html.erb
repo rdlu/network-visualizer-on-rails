@@ -40,7 +40,7 @@
        @dnsprobe.each do |details| %>
       <tr>
         <td>
-          <%= details[:timestamp] %>
+          <%= details[:timestamp].strftime("%H:%M:%S %d-%m-%Y") %>
         </td>
         <td><%= details[:name] %></td>
         <td><%= details[:url] %> </td>
@@ -96,7 +96,7 @@
             type: 'pie',
             data: [
                 <% @errors.each do |k,v| %>
-                    ['<%= k %>', <%= ((v/@total.to_i)*100).to_f %>],
+                    ['<%= k %>', <%= number_with_precision ((v/@total.to_i)*100).to_f, :precision => 2 %>],
                <% end %>
             ]
         }]

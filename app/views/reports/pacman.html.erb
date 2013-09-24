@@ -73,7 +73,7 @@
                   <td><%= address[0] %></td>
                   <% address[1][:status].each do |status, status_value| %>
                       <% if status=="OK".to_sym %>
-                        <td><%= (status_value/address[1][:total]).to_f*100.to_f %>%</td>
+                        <td><%= number_with_precision (status_value/address[1][:total]).to_f*100.to_f, :precision =>2 %>%</td>
                       <% else %>
                         <td><%= status_value %></td>
                           <%end%>
@@ -92,7 +92,6 @@
             </tr>
             </thead>
             <tbody>
-
             <% if @hash_result[:probes].empty? %>
                 <td colspan="8">Nenhuma sonda encontrada.</td>
             <%end%>
@@ -105,7 +104,7 @@
                   </td>
                   <% value[:status].each do |status, status_value| %>
                       <% if (status=="OK".to_sym) %>
-                        <td><%= (status_value/value[:total])*100.to_f %>%</td>
+                        <td><%= number_with_precision (status_value/value[:total])*100.to_f, :precision =>2 %>%</td>
                       <% else %>
                         <td><%= status_value %></td>
                      <%end%>
@@ -199,7 +198,7 @@
             name: 'Browser share',
             data: [
                 <% value[:status].each do |status,status_value| %>
-                    ['<%= status[0..1]%>', <%= (status_value/value[:total])*100.to_f %>],
+                    ['<%= status[0..1]%>', <%= number_with_precision (status_value/value[:total])*100.to_f, :precision =>2 %>],
             <% end %>
             ]
         }]
