@@ -41,7 +41,7 @@ MomRails::Application.routes.draw do
   resources :schedules
   get 'schedules/win/schedule' => 'schedules#win', :as => 'windows_schedules'
   post 'schedules/private_schedule' => 'schedules#private_schedule', :as => 'private_schedules'
- 
+  post 'schedules/private_agt_index' => 'schedules#private_agt_index', :as => 'private_agt_indexes'
   resources :probes do
     member do
       get 'destinations'

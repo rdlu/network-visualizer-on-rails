@@ -17,3 +17,4 @@ test: &test
 production: &production
   <<: *default
   database: mom-rails_production
+  port: 5433

@@ -108,7 +108,10 @@ class SchedulesController < ApplicationController
       @used_profiles += schedule.profiles
     end
     @used_profiles = @used_profiles.uniq
-    @profiles = Profile.where(connection_profile_id: [@connection_profile.id, nil, ""]).all
+    #WIRLAU - alterado provisoriamente para pegar todos os profiles
+ #  @profiles = Profile.where(connection_profile_id: [@connection_profile.id,nil,""]).all
+    @profiles = Profile.all;
+    
     @unused_profiles = @profiles - @used_profiles
 
     render :layout => false
@@ -132,4 +135,21 @@ class SchedulesController < ApplicationController
       format.xml
     end
   end
+
+  # Android / Linux Schedules
+  def private_agt_index
+      ipaddress = params[:ipaddress]
+      @probe = Probe.where(ipaddress: ipaddress).first;
+      if @probe.nil?
+	@probe_id = -1
+      else
+        @probe_id = @probe.id
+      end
+#     @schedules = Schedule.where(destination_id: @probe.id).all
+
+      respond_to do |format|
+          format.xml
+      end
+  end
+
 end
