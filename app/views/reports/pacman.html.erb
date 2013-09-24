@@ -1,12 +1,20 @@
 <div id="box-pacman" class="row-fluid">
     <div class="row-fluid pagination-centered">
         <div class='span5'>
-          <h3>DNS</h3>
+          <h3>DNS <%=@position[0]%>
+            <% unless @position[0]=="externos"%>
+            <% if @type[0]=="fixed"%>
+                <%=" - rede fixa"%>
+                <%else%>
+                    <%=" - rede móvel"%>
+                <%end%>
+                <%end%>
+          </h3>
           <div class="row-fluid">
 
             <h4>Primários</h4>
             <div id="primarios" class="row-fluid">
-                <% @hash_result[:servers].each do |server, value| %>
+                <% @servers.each do |server, value| %>
                   <% if value[:primary][0] %>
                   <a id='popup-<%= server %>' href="javascript:popupTable('<%= server %>','<%=  value[:name][0] %>','<%= value[:total] %>','<%= value[:status] %>')">
                       <div class="pacmanchartsP" id="chart-pacman-<%= server %>"></div>
@@ -25,7 +33,7 @@
             </div>
             <h4>Secundários</h4>
               <div id="secundarios" class="row-fluid">
-                <% @hash_result[:servers].each do |server, value| %>
+                <% @servers.each do |server, value| %>
                     <% unless value[:primary][0] %>
                     <a id='popup-<%= server %>' href="javascript:popupTable('<%= server %>','<%=  value[:name][0] %>','<%= value[:total] %>',' <%= value[:status] %>')">
                       <div class="pacmanchartsS" id="chart-pacman-<%= server %>"></div>
@@ -65,10 +73,10 @@
                 </tr>
             </thead>
             <tbody>
-            <% if @hash_result[:sites].empty? %>
+            <% if @urls.empty? %>
                 <td colspan="8">Nenhum site encontrado.</td>
             <%end%>
-            <% @hash_result[:sites].each do |address| %>
+            <% @urls.each do |address| %>
                 <tr>
                   <td><%= address[0] %></td>
                   <% address[1][:status].each do |status, status_value| %>
@@ -92,11 +100,11 @@
             </tr>
             </thead>
             <tbody>
-            <% if @hash_result[:probes].empty? %>
+            <% if @probes.empty? %>
                 <td colspan="8">Nenhuma sonda encontrada.</td>
             <%end%>
 
-                <% @hash_result[:probes].each do |name, value| %>
+                <% @probes.each do |name, value| %>
                 <tr>
                   <td>
                     <%= image_tag "icons/"+value[:type]+"16.png" %>
@@ -151,7 +159,7 @@
 
 
 
-    <% @hash_result[:servers].each do |server, value| %>
+    <% @servers.each do |server, value| %>
 
     var classe<%= server.to_s.gsub('.', '_') %> = "<%= value[:vip].nil? ? "" : (value[:vip][0] ? "vip" : "principal") %>";
     var backgroundColor<%= server.to_s.gsub('.', '_') %>='#DBF0FF';
@@ -217,7 +225,8 @@
 
         }else{
             if($('#details-table').is(':empty')){
-                $.ajax({
+               jQuery('#details-table').prepend('<div id=\"row-loading\" class="modal-body"><div   class=\"span12\"><div id=\"box-loading\" style="height:100px;"><%=image_tag 'ajax-loader.gif' %> <strong>Requisitando o relatório selecionado, aguarde...</strong></div></div></div>');
+               $.ajax({
                     dataType: '',
                     type: 'POST',
                     data: {
@@ -228,6 +237,7 @@
                     },
                     url: "<%= pacman_details_reports_url %>",
                     success: function(data){
+                        jQuery('#row-loading').remove();
                         $('#details-table').html(data).modal({show:true});
                     },
                     headers: {

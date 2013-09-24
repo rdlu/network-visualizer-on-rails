@@ -2297,72 +2297,75 @@ class ReportsController < ApplicationController
 
   #RELATORIO PACMAN
   def pacman
-    type = params[:networks]
-    position = params[:servers]
+    @type = params[:networks]
+    @position = params[:servers]
     #activity = params[:activity]
     #status = params[:status]
-    unless position.nil?
-    if position[0] == 'internos'
-      @nameserver = Nameserver.where(:type => type[0]).where(:internal => true)
+    unless @position.nil?
+    if @position[0] == 'internos'
+      @nameserver = Nameserver.where(:type => @type[0]).where(:internal => true)
     else
       @nameserver = Nameserver.where(:internal => false) #type[0]
     end
                         end
     #busca piores urls
-    @dnsresul = DnsResult.where(:server => @nameserver.pluck(:address)).where("url is not null").where("updated_at >= ?", (Time.now - 6.days).strftime("%Y-%m-%d %H:%M:%S"))
+    @dnsresul = DnsResult.where(:server => @nameserver.pluck(:address)).where("url is not null").where("updated_at >= ?", (Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S"))
     #'#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
 
 
-    @hash_result = Hash.new(0)
-    @hash_result[:sites]= {}
-    @hash_result[:servers]= {}
+    @urls={}
+    @servers= {}
     @dnsresul.each do |dns|
-      @hash_result[:servers][dns.server.to_sym] = {}
-      @hash_result[:servers][dns.server.to_sym][:total] = 0
+      @servers[dns.server.to_sym] = {}
+      @servers[dns.server.to_sym][:total] = 0
     end
 
     @dnsresul.each do |dns|
-      @hash_result[:servers][dns.server.to_sym][:primary] = Nameserver.where(:address => dns.server).pluck(:primary) if  @hash_result[:servers][dns.server.to_sym][:primary].nil?
-      @hash_result[:servers][dns.server.to_sym][:vip] = Nameserver.where(:address => dns.server).pluck(:vip) if  @hash_result[:servers][dns.server.to_sym][:vip].nil?
-      @hash_result[:servers][dns.server.to_sym][:internal] = Nameserver.where(:address => dns.server).pluck(:internal) if  @hash_result[:servers][dns.server.to_sym][:internal].nil?
-      @hash_result[:servers][dns.server.to_sym][:name] = Nameserver.where(:address => dns.server).pluck(:name) if  @hash_result[:servers][dns.server.to_sym][:name].nil?
-      @hash_result[:servers][dns.server.to_sym][:total] += 1
-      @hash_result[:sites][dns.url.to_sym] = {} if @hash_result[:sites][dns.url.to_sym].nil?
-      @hash_result[:sites][dns.url.to_sym][:total] = 0 if @hash_result[:sites][dns.url.to_sym][:total].nil?
-      @hash_result[:sites][dns.url.to_sym][:total] += 1
-      @hash_result[:servers][dns.server.to_sym][:status] = {} if @hash_result[:servers][dns.server.to_sym][:status].nil?
-      @hash_result[:sites][dns.url.to_sym][:status] = {} if @hash_result[:sites][dns.url.to_sym][:status].nil?
+      @servers[dns.server.to_sym][:primary] = Nameserver.where(:address => dns.server).pluck(:primary) if  @servers[dns.server.to_sym][:primary].nil?
+      @servers[dns.server.to_sym][:vip] = Nameserver.where(:address => dns.server).pluck(:vip) if  @servers[dns.server.to_sym][:vip].nil?
+      @servers[dns.server.to_sym][:internal] = Nameserver.where(:address => dns.server).pluck(:internal) if  @servers[dns.server.to_sym][:internal].nil?
+      @servers[dns.server.to_sym][:name] = Nameserver.where(:address => dns.server).pluck(:name) if  @servers[dns.server.to_sym][:name].nil?
+      @servers[dns.server.to_sym][:total] += 1
+      @urls[dns.url.to_sym] = {} if @urls[dns.url.to_sym].nil?
+      @urls[dns.url.to_sym][:total] = 0 if @urls[dns.url.to_sym][:total].nil?
+      @urls[dns.url.to_sym][:total] += 1
+      @servers[dns.server.to_sym][:status] = {} if @servers[dns.server.to_sym][:status].nil?
+      @urls[dns.url.to_sym][:status] = {} if @urls[dns.url.to_sym][:status].nil?
       DnsResult.possible_status.each do |p|
-        @hash_result[:servers][dns.server.to_sym][:status][p.to_sym] = 0 if @hash_result[:servers][dns.server.to_sym][:status][p.to_sym].nil?
-        @hash_result[:sites][dns.url.to_sym][:status][p.to_sym] = 0 if @hash_result[:sites][dns.url.to_sym][:status][p.to_sym].nil?
+        @servers[dns.server.to_sym][:status][p.to_sym] = 0 if @servers[dns.server.to_sym][:status][p.to_sym].nil?
+        @urls[dns.url.to_sym][:status][p.to_sym] = 0 if @urls[dns.url.to_sym][:status][p.to_sym].nil?
         if dns.status == p
-          @hash_result[:servers][dns.server.to_sym][:status][p.to_sym] += 1
-          @hash_result[:sites][dns.url.to_sym][:status][p.to_sym] += 1
+          @servers[dns.server.to_sym][:status][p.to_sym] += 1
+          @urls[dns.url.to_sym][:status][p.to_sym] += 1
         end
       end
     end
+    @urls=@urls.sort_by{ |a, b| b[:status][:OK]/b[:total]}
 
     #busca piores sondas
-    @hash_result[:probes] = {}
+    @probes = {}
     unless @nameserver.empty?
       @dnsprobes = DnsResult.find_by_sql("SELECT  probes.name, dns_results.status, probes.type
                                       from probes, dns_results, schedules where dns_results.server IN #{@nameserver.pluck(:address).to_s.html_safe.gsub("[","(").gsub("]",")").gsub("\"","\'")} and dns_results.schedule_uuid = schedules.uuid
-                                      and schedules.destination_id = probes.id and dns_results.updated_at >= '#{(Time.now - 6.days).strftime("%Y-%m-%d %H:%M:%S")}'
+                                      and schedules.destination_id = probes.id and dns_results.updated_at >= '#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
                                       order by timestamp desc")  #'#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
 
+
+
       @dnsprobes.each do |probe|
-        @hash_result[:probes][probe.name] = {} if @hash_result[:probes][probe.name].nil?
-        @hash_result[:probes][probe.name][:type] = probe.type
-        @hash_result[:probes][probe.name][:total] = 0 if  @hash_result[:probes][probe.name][:total].nil?
-        @hash_result[:probes][probe.name][:total] += 1
-        @hash_result[:probes][probe.name][:status] = {} if @hash_result[:probes][probe.name][:status].nil?
+        @probes[probe.name] = {} if @probes[probe.name].nil?
+        @probes[probe.name][:type] = probe.type
+        @probes[probe.name][:total] = 0 if  @probes[probe.name][:total].nil?
+        @probes[probe.name][:total] += 1
+        @probes[probe.name][:status] = {} if @probes[probe.name][:status].nil?
         DnsResult.possible_status.each do |p|
-          @hash_result[:probes][probe.name][:status][p.to_sym] = 0 if @hash_result[:probes][probe.name][:status][p.to_sym].nil?
+          @probes[probe.name][:status][p.to_sym] = 0 if @probes[probe.name][:status][p.to_sym].nil?
           if probe.status == p
-            @hash_result[:probes][probe.name][:status][p.to_sym] += 1
+            @probes[probe.name][:status][p.to_sym] += 1
           end
         end
       end
+      @probes=@probes.sort_by{ |a, b| b[:status][:OK]/b[:total]}
     else
        @dnsprobes = []
     end
@@ -2382,7 +2385,7 @@ class ReportsController < ApplicationController
 
    @dnsprobe = DnsResult.find_by_sql("SELECT dns_results.timestamp, probes.name, dns_results.url, dns_results.delay, dns_results.status
                                     from probes, dns_results, schedules where server = '#{@server}' and dns_results.schedule_uuid = schedules.uuid
-                                    and schedules.destination_id = probes.id and dns_results.updated_at >= '#{(Time.now - 3.days).strftime("%Y-%m-%d %H:%M:%S")}'
+                                    and schedules.destination_id = probes.id and dns_results.updated_at >= '#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
                                     and dns_results.status <> 'OK'
                                     order by timestamp desc limit 20")
 
@@ -2394,7 +2397,7 @@ class ReportsController < ApplicationController
   def pacman_activity
     @total = Probe.count
 
-    @result = Probe.where(:status => 1).order("updated_at DESC")
+    @result = Probe.where(:status => 1).order("name")
     @result_count = Probe.where(:status => 1).count
 
 
@@ -2404,7 +2407,7 @@ class ReportsController < ApplicationController
   end
 
   def pacman_service_activity
-    @active = Probe.where(:status => 1)
+    @active = Probe.where(:status => 1).order("name")
     @active_count = Probe.where(:status => 1).count
     @total_count = Probe.count
 
