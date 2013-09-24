@@ -44,7 +44,7 @@ form {
 #view{
   margin-left: 40px;
 }
-#details-table{
+.detailsModal{
   margin-left: -42%;width: 85%;
 }
 /* When the window is less than 979px, the new css rules will be applied */
@@ -65,7 +65,7 @@ form {
   #graphs-area{
     margin-top:-150px;
   }
-  #details-table{
+  .detailsModal{
     margin-left: 1;width: auto;
   }
 }

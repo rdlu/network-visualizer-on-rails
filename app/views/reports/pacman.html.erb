@@ -131,7 +131,9 @@
 
         </div>
     </div>
-  <div id="details-table" class="modal hide fade"></div>
+      <% @servers.each do |server, value| %>
+  <div id="details-table-<%=server.to_s.gsub(".", "_")%>" class="modal hide fade detailsModal"></div>
+          <%end%>
 </div>
 </div>
 
@@ -217,15 +219,17 @@
 
     function popupTable(server,name, total, errors)
     {
-        var e = document.getElementById('details-table');
+        var serverformat=server.replace(/\./g, '_');
+        console.log(serverformat);
+        var e = document.getElementById('details-table-'+serverformat);
 
         if (e.style.display == 'block'){
             e.style.display = 'none';
-            document.getElementById('details-table').style.display = 'none';
+            document.getElementById('details-table-'+serverformat).style.display = 'none';
 
         }else{
-            if($('#details-table').is(':empty')){
-               jQuery('#details-table').prepend('<div id=\"row-loading\" class="modal-body"><div   class=\"span12\"><div id=\"box-loading\" style="height:100px;"><%=image_tag 'ajax-loader.gif' %> <strong>Requisitando o relatório selecionado, aguarde...</strong></div></div></div>');
+            if($('#details-table-'+serverformat).is(':empty')){
+               jQuery('#details-table-'+serverformat).prepend('<div id=\"row-loading\" class="modal-body"><div   class=\"span12\"><div id=\"box-loading\" style="height:100px;"><%=image_tag 'ajax-loader.gif' %> <strong>Requisitando o relatório selecionado, aguarde...</strong></div></div></div>');
                $.ajax({
                     dataType: '',
                     type: 'POST',
@@ -238,7 +242,7 @@
                     url: "<%= pacman_details_reports_url %>",
                     success: function(data){
                         jQuery('#row-loading').remove();
-                        $('#details-table').html(data).modal({show:true});
+                        $('#details-table-'+serverformat).html(data).modal({show:true});
                     },
                     headers: {
                         'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
@@ -247,7 +251,7 @@
             }
         }
         e.style.display = 'block';
-        jQuery('#details-table').modal({show:true});
+        jQuery('#details-table-'+serverformat).modal({show:true});
 
     }
 </script>
