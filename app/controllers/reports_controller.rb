@@ -2025,7 +2025,7 @@ class ReportsController < ApplicationController
     unless params[:destination][:id] == ''
       @probes = Probe.find(params[:destination][:id])
     else
-      @probes = apply_scopes(Probe).order(:name).all
+      @probes = apply_scopes(Probe).order(:name)
       @multiprobe = true
     end
 
@@ -2131,11 +2131,62 @@ class ReportsController < ApplicationController
             format.html { render :layout => false, file: 'reports/dygraphs_dns_detail' }
           end
         when 'webload'
-          @raw_results = WebLoadResult.
-              where(:schedule_uuid => schedule.uuid).
-              where(:timestamp => @from..@to).order('timestamp ASC').all
+          filters = {schedule_uuid: schedule.uuid, timestamp: @from..@to}
+          filters.merge!({url: params[:by_sites]}) unless params[:by_sites].nil? || params[:by_sites][0] == ''
+          query = WebLoadResult.
+              where(filters).
+              order('timestamp ASC')
+          @raw_results = query.all.to_enum
+          @results = []
+          case @metric.plugin
+            when 'sites-throughput'
+              @variations = ['throughput','throughput_main_domain','throughput_other_domain']
+            when 'sites-loadtime'
+              @variations = ['time','time_main_domain','time_other_domain']
+            when 'sites-objects-qty'
+              @variations = ['objects-qty','objects-qty_main_domain','objects-qty_other_domain']
+            else
+              respond_to do |format|
+                format.html { render :layout => false, file: 'reports/dygraphs_notsupported' }
+              end
+          end
+          @from.all_window_times_until(@to, @window_size.minutes).each do |window|
+                newres = {total: 0}
+                @variations.each do |variation|
+                  newres.merge!({variation.to_sym => []})
+                end
+                begin
+                  while @raw_results.peek.timestamp < window+@window_size.minutes
+                    this_result = @raw_results.next
+                    newres[:total] += 1
+                    @variations.each do |variation|
+                      newres[variation.to_sym] << this_result[variation.to_sym]
+                    end
+                  end
+                rescue StopIteration
+                  #nothing to do
+                end
+                unless newres[:total] == 0
+                  newline = [window]
+                  @variations.each do |variation|
+                    sum = newres[variation.to_sym].inject{|sum,n|sum.to_f+n.to_f}
+                    unless sum.nil?
+                      newline << (sum/newres[variation.to_sym].count)*@metric.conversion_rate 
+                    else
+                      newline << "null"
+                    end
+                  end
+                  @results << newline
+                else
+                  newline = [window]
+                  @variations.each do |variation|
+                    newline << "null"
+                  end
+                  @results << newline
+                end
+              end
           respond_to do |format|
-            format.html { render :layout => false, file: 'reports/dygraphs_webload' }
+            format.html { render :layout => false, file: 'reports/performance/dygraphs_webload' }
           end
         else
           #tipo de metrica nao suportado
@@ -2684,6 +2735,7 @@ class ReportsController < ApplicationController
       report = Nokogiri::XML(params[:report])
 
       user = report.xpath("report/user").children.to_s
+      user = user.gsub("_", "-")
       #schedule_uuid = report.xpath("report/uuid").children.to_s
       #enquanto o william nao atualiza os agentes
       schedule_uuid = Schedule.where(destination_id: Probe.where(ipaddress: user)).first.uuid
@@ -2856,7 +2908,7 @@ class ReportsController < ApplicationController
                   time_main_domain = c.children.search("time_main_domain").inner_text.to_f
                   size_main_domain = c.children.search("size_main_domain").inner_text.to_i
                   throughput_main_domain = c.children.search("throughput_main_domain").inner_text.to_f
-                  time_other_domain = c.children.search("time_main_domain").inner_text.to_f
+                  time_other_domain = c.children.search("time_other_domain").inner_text.to_f
                   size_other_domain = c.children.search("size_other_domain").inner_text.to_i
                   throughput_other_domain = c.children.search("throughput_other_domain").inner_text.to_f
                   @web_load_results << WebLoadResult.create(url: url,
@@ -2882,7 +2934,7 @@ class ReportsController < ApplicationController
                   server = c.children.search("server").inner_text
                   url = c.children.search("url").inner_text
                   delay = c.children.search("delay").inner_text.to_i
-                  dns_status = c.children.search("status").inner_text.to_f
+                  dns_status = c.children.search("status").inner_text
                   @dns_results << DnsResult.create(url: url,
                                                    server: server,
                                                    delay: delay,
@@ -2903,11 +2955,43 @@ class ReportsController < ApplicationController
                                                schedule_uuid: schedule_uuid,
                                                timestamp: timestamp,
                                                uuid: uuid)
-              when "throughput_http"
-                throughput_http_down = report.xpath("report/results/throughput_http/down").to_s.to_f
-                throughput_http_up = report.xpath("report/results/throughput_http/up").to_s.to_f
+              when "ativas"
+                ativas=["loss", "jitter", "owd", "pom", "rtt", "throughput", "throughput_tcp" ]
+                @ativas_results = []
+                ativas.each do |a|
+                        c = report.xpath("report/results/ativas/" + a)
+                        unless (c.nil? || c.empty?)
+                                dsmax = c.children.search("upmax").inner_text.to_f
+                                dsmin = c.children.search("upmin").inner_text.to_f
+                                dsavg = c.children.search("upavg").inner_text.to_f
 
-                metric = Metric.where(plugin: "throughput_http")
+                                sdmax = c.children.search("downmax").inner_text.to_f
+                                sdmin = c.children.search("downmin").inner_text.to_f
+                                sdavg = c.children.search("downavg").inner_text.to_f
+
+                                metric = Metric.where(plugin: a).first.id
+                                probe = Probe.where(ipaddress: user).first
+                                schedule = probe.schedules_as_destination.last
+
+                                @ativas_results = Results.create(schedule_id: schedule.id,
+                                                                 metric_id: metric,
+                                                                 schedule_uuid: schedule_uuid,
+                                                                 uuid: uuid,
+                                                                 metric_name: a,
+                                                                 timestamp: timestamp,
+                                                                 dsmax: dsmax,
+                                                                 dsmin: dsmin,
+                                                                 dsavg: dsavg,
+                                                                 sdmax: sdmax,
+                                                                 sdmin: sdmin,
+                                                                 sdavg: sdavg)
+                        end
+                end
+              when "throughput_http"
+                throughput_http_down = report.xpath("report/results/throughput_http/down").inner_text.to_f
+                throughput_http_up = report.xpath("report/results/throughput_http/up").inner_text.to_f
+
+                metric = Metric.where(plugin: "throughput_http").first
                 probe = Probe.where(ipaddress: user).first
                 schedule = probe.schedules_as_destination.last
 
