@@ -3,65 +3,65 @@
   <h3>Detalhamento para <%= @name %> - <%= @server %></h3>
 </div>
 
-<div class="modal-body" style="max-height: 500px;">
+<div class="modal-body">
 
-<div class='row-fluid' style="height:250px;">
-  <div class="span5">
-  <ul>
-   <li><%= @name %> - <%= @server %> (Últimos 30 minutos)</li>
-  <!--li>Atualizado às</li-->
-  <li>Total de Requisições: <%= @total%></li>
-  <% @errors.each do |k,v|%>
-    <li><%= k %>: <%= v %></li>
-  <% end %>
+    <div class='row-fluid' style="height:250px;">
+      <div class="span5">
+      <ul>
+       <li><%= @name %> - <%= @server %> (Últimos 30 minutos)</li>
+      <!--li>Atualizado às</li-->
+      <li>Total de Requisições: <%= @total%></li>
+      <% @errors.each do |k,v|%>
+        <li><%= k %>: <%= v %></li>
+      <% end %>
 
-</ul>
-  </div>
-  <div id="chart" class="span5">
+    </ul>
+      </div>
+      <div id="chart-details-<%=@server.to_s.gsub(".", "_")%>" class="span5">
 
-  </div>
+      </div>
 
-</div>
+    </div>
 
-<div class="row-fluid">
-Últimas Requisições:<br/>
-<table class="table table-bordered table-hover">
-  <thead>
-  <tr>
-    <th>Data</th>
-    <th>Sonda</th>
-    <th>URL</th>
-    <th>Tempo de Resposta</th>
-    <th>Resposta do Servidor</th>
-  </tr>
-  </thead>
-  <tbody>
-  <% unless @dnsprobe.empty?
-       @dnsprobe.each do |details| %>
+    <div class="row-fluid">
+    Últimas Requisições:<br/>
+    <table class="table table-bordered table-hover">
+      <thead>
       <tr>
-        <td>
-          <%= details[:timestamp].strftime("%H:%M:%S %d-%m-%Y") %>
-        </td>
-        <td><%= details[:name] %></td>
-        <td><%= details[:url] %> </td>
-        <td><%= details[:delay] %></td>
-        <td><%= details[:status] %></td>
+        <th>Data</th>
+        <th>Sonda</th>
+        <th>URL</th>
+        <th>Tempo de Resposta</th>
+        <th>Resposta do Servidor</th>
       </tr>
-  <% end
-     else %>
-      <tr>
-        <td colspan="5"><i>Nenhum resultado de erro encontrado.</i></td>
-      </tr>
-  <% end %>
-  </tbody>
-</table>
-</div>
+      </thead>
+      <tbody>
+      <% unless @dnsprobe.empty?
+           @dnsprobe.each do |details| %>
+          <tr>
+            <td>
+              <%= details[:timestamp].strftime("%H:%M:%S %d-%m-%Y") %>
+            </td>
+            <td><%= details[:name] %></td>
+            <td><%= details[:url] %> </td>
+            <td><%= details[:delay] %></td>
+            <td><%= details[:status] %></td>
+          </tr>
+      <% end
+         else %>
+          <tr>
+            <td colspan="5"><i>Nenhum resultado de erro encontrado.</i></td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+    </div>
 </div>
 <script>
 
     var hchart1 = new Highcharts.Chart({
         chart: {
-            renderTo: 'chart',
+            renderTo: 'chart-details-<%=@server.to_s.gsub(".", "_")%>',
             plotBackgroundColor: null,
             plotBorderWidth: null,
             plotShadow: false,
