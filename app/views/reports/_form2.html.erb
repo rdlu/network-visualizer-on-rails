@@ -199,7 +199,7 @@
       $("html, body").animate({ scrollTop: 0 }, "slow");
       var text = document.getElementById('optbtn').getAttribute('src');
       var text = document.getElementById('optbtn').getAttribute('name');
-      $("#optbtn").attr('src', '/mom/assets/opt_btn-right.png');
+      $("#optbtn").attr('src', '<%= image_path 'opt_btn-right.png' %>');
       $("#optbtn").attr('name', 'closed');
 
   });

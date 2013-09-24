@@ -1,7 +1,7 @@
 <div id="header">
     <h2>Relatórios</h2>
 
-    <input type="image" name="open" id="optbtn" src='/mom/assets/opt_btn-left.png' data-toggle="collapse" href="#accordion_forms">
+    <input type="image" name="open" id="optbtn" src='<%= image_path 'opt_btn-left.png' %>' data-toggle="collapse" href="#accordion_forms">
 </div>
     <div style="margin-left:40px;position: absolute;z-index: 100;">
 
@@ -40,10 +40,10 @@
         $('#optbtn').click(function () {
             var text = document.getElementById('optbtn').getAttribute('name');
             if (text == 'open') {
-                $("#optbtn").attr('src', '/mom/assets/opt_btn-right.png');
+                $("#optbtn").attr('src', '<%= image_path 'opt_btn-right.png' %>');
                 $("#optbtn").attr('name', 'closed');
             } else {
-                $("#optbtn").attr('src', '/mom/assets/opt_btn-left.png');
+                $("#optbtn").attr('src', '<%= image_path 'opt_btn-left.png' %>');
                 $("#optbtn").attr('name', 'open');
             }
         });
