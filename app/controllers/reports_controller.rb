@@ -2848,7 +2848,7 @@ class ReportsController < ApplicationController
             web_load_url = c.children.search("url").inner_text
             web_load_time = c.children.search("time").inner_text.to_f
             web_load_size = c.children.search("size").inner_text.to_f
-            web_load_throughput = c.children.search("trhoughput").inner_text.to_f
+            web_load_throughput = c.children.search("throughput").inner_text.to_f
 
             @web_load_dynamic_results << WebLoadDynamicResult.create(url: web_load_url,
                                                                      time: web_load_time,
