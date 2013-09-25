@@ -2056,12 +2056,12 @@ class ReportsController < ApplicationController
           end
         when 'dns'
           filters = {schedule_uuid: schedule.uuid, timestamp: @from..@to}
-          filters.merge!({server: params[:by_dns]}) unless params[:by_dns].nil?
-          filters.merge!({url: params[:by_sites]}) unless params[:by_sites].nil?
+          filters.merge!({server: params[:by_dns]}) unless params[:by_dns].nil? || params[:by_dns][0] == ''
+          filters.merge!({url: params[:by_sites]}) unless params[:by_sites].nil? || params[:by_sites][0] == ''
           @raw_results = DnsResult.
               where(filters).order('timestamp ASC')
           respond_to do |format|
-            format.html { render :layout => false, file: 'reports/dygraphs_dns' }
+            format.html { render :layout => false, file: 'reports/performance/dygraphs_dns' }
           end
         when 'dns_efficiency'
           @raw_results = DnsDetail.
@@ -2085,7 +2085,7 @@ class ReportsController < ApplicationController
             end
           end
           respond_to do |format|
-            format.html { render :layout => false, file: 'reports/dygraphs_dns' }
+            format.html { render :layout => false, file: 'reports/performance/dygraphs_dns' }
           end
         when 'dns_detail'
           filters = {schedule_uuid: schedule.uuid, timestamp: @from..@to}
@@ -2127,7 +2127,7 @@ class ReportsController < ApplicationController
             end
           end
           respond_to do |format|
-            format.html { render :layout => false, file: 'reports/dygraphs_dns_detail' }
+            format.html { render :layout => false, file: 'reports/performance/dygraphs_dns_detail' }
           end
         when 'webload'
           filters = {schedule_uuid: schedule.uuid, timestamp: @from..@to}
@@ -2146,7 +2146,7 @@ class ReportsController < ApplicationController
               @variations = ['objects-qty', 'objects-qty_main_domain', 'objects-qty_other_domain']
             else
               respond_to do |format|
-                format.html { render :layout => false, file: 'reports/dygraphs_notsupported' }
+                format.html { render :layout => false, file: 'reports/performance/dygraphs_notsupported' }
               end
           end
           @from.all_window_times_until(@to, @window_size.minutes).each do |window|
@@ -2190,7 +2190,7 @@ class ReportsController < ApplicationController
         else
           #tipo de metrica nao suportado
           respond_to do |format|
-            format.html { render :layout => false, file: 'reports/dygraphs_notsupported' }
+            format.html { render :layout => false, file: 'reports/performance/dygraphs_notsupported' }
           end
       end
     else #is multiprobe
@@ -2228,8 +2228,8 @@ class ReportsController < ApplicationController
             unless newres[:total] == 0
               newline = [window]
               @variations.each do |variation|
-                newline << newres[("sd"+variation).to_sym].reduce(:+)/newres[:total]
-                newline << newres[("ds"+variation).to_sym].reduce(:+)/newres[:total]
+                newline << (newres[("sd"+variation).to_sym].reduce(:+)/newres[:total])*@metric.conversion_rate
+                newline << (newres[("ds"+variation).to_sym].reduce(:+)/newres[:total])*@metric.conversion_rate
               end
               @results << newline
             else
@@ -2242,7 +2242,7 @@ class ReportsController < ApplicationController
             end
           end
           respond_to do |format|
-            format.html { render :layout => false, file: 'reports/dygraphs_active' }
+            format.html { render :layout => false, file: 'reports/performance/dygraphs_active' }
           end
         when 'dns_efficiency'
           @raw_results = DnsDetail.
@@ -2266,12 +2266,12 @@ class ReportsController < ApplicationController
           end
 
           respond_to do |format|
-            format.html { render :layout => false, file: 'reports/dygraphs_dns_multi_efficiency' }
+            format.html { render :layout => false, file: 'reports/performance/dygraphs_dns_multi_efficiency' }
           end
         when 'dns'
           filters = {schedule_uuid: @schedules.pluck(:uuid), timestamp: @from..@to}
-          filters.merge!({server: params[:by_dns]}) unless params[:by_dns].nil?
-          filters.merge!({url: params[:by_sites]}) unless params[:by_sites].nil?
+          filters.merge!({server: params[:by_dns]}) unless params[:by_dns].nil? || params[:by_dns][0] == ''
+          filters.merge!({url: params[:by_sites]}) unless params[:by_sites].nil? || params[:by_sites][0] == ''
           query = DnsResult.
               where(filters).
               order('timestamp ASC')
@@ -2287,7 +2287,7 @@ class ReportsController < ApplicationController
               #nothing to do
             end
             unless delays.count == 0
-              newline = [window, delays.reduce(:+)/delays.count]
+              newline = [window, delays.reduce(:+)/delays.count]*@metric.conversion_rate
               @results << newline
             else
               newline = [window, nil]
@@ -2295,7 +2295,7 @@ class ReportsController < ApplicationController
             end
           end
           respond_to do |format|
-            format.html { render :layout => false, file: 'reports/dygraphs_dns_multi_delays' }
+            format.html { render :layout => false, file: 'reports/performance/dygraphs_dns_multi_delays' }
           end
         when 'dns_detail'
           filters = {schedule_uuid: @schedules.pluck(:uuid), timestamp: @from..@to}
@@ -2337,7 +2337,7 @@ class ReportsController < ApplicationController
             end
           end
           respond_to do |format|
-            format.html { render :layout => false, file: 'reports/dygraphs_dns_detail' }
+            format.html { render :layout => false, file: 'reports/performance/dygraphs_dns_detail' }
           end
         when 'webload'
           filters = {schedule_uuid: @schedules.pluck(:uuid), timestamp: @from..@to}
@@ -2356,7 +2356,7 @@ class ReportsController < ApplicationController
               @variations = ['objects-qty', 'objects-qty_main_domain', 'objects-qty_other_domain']
             else
               respond_to do |format|
-                format.html { render :layout => false, file: 'reports/dygraphs_notsupported' }
+                format.html { render :layout => false, file: 'reports/performance/dygraphs_notsupported' }
               end
           end
           @from.all_window_times_until(@to, @window_size.minutes).each do |window|
@@ -2378,7 +2378,7 @@ class ReportsController < ApplicationController
             unless newres[:total] == 0
               newline = [window]
               @variations.each do |variation|
-                sum = newres[variation.to_sym].inject { |sum, n| sum.to_f+n.to_f }
+                sum = newres[variation.to_sym].inject { |sum, n| sum.to_f + n.to_f }
                 unless sum.nil?
                   newline << (sum/newres[variation.to_sym].count)*@metric.conversion_rate
                 else
