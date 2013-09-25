@@ -2504,7 +2504,7 @@ class ReportsController < ApplicationController
   def pacman_activity
     @total = Probe.count
 
-    @result = Probe.where(:status => 1).order("name")
+    @result = Probe.where(:status => 1).where('signal is not null').where('signal > 0').order("name")
     @result_count = Probe.where(:status => 1).count
 
 
@@ -2811,7 +2811,10 @@ class ReportsController < ApplicationController
       user = user.gsub("_", "-")
       #schedule_uuid = report.xpath("report/uuid").children.to_s
       #enquanto o william nao atualiza os agentes
-      schedule_uuid = Schedule.where(destination_id: Probe.where(ipaddress: user)).first.uuid
+      probe = Probe.where(ipaddress: user)
+      schedule_uuid = Schedule.where(destination_id: probe).first.uuid
+      probe.signal += 1
+      probe.save!
       uuid = report.xpath("report/meas_uuid").children.to_s
       timestamp = DateTime.strptime(report.xpath("report/timestamp").inner_text, '%s')
       agent_type = report.xpath("report/agent_type").children.to_s
@@ -3087,7 +3090,15 @@ class ReportsController < ApplicationController
         format.xml { render xml: "<report><status>OK</status></report>" }
       end
     rescue Exception => e
-      notify_airbrake(e)
+      Airbrake.notify(e,{
+          :parameters       => airbrake_filter_if_filtering(params.to_hash.merge({xml: params[:report].to_s})),
+          :session_data     => airbrake_filter_if_filtering(airbrake_session_data),
+          :controller       => params[:controller],
+          :action           => params[:action],
+          :url              => airbrake_request_url,
+          :cgi_data         => airbrake_filter_if_filtering(request.env),
+          :user             => airbrake_current_user
+      })
       respond_to do |format|
         format.xml { render xml: "<report><status>ERROR</status><message>#{e.message}</message></report>" }
       end
