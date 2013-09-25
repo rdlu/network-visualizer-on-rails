@@ -3079,7 +3079,15 @@ class ReportsController < ApplicationController
         format.xml { render xml: "<report><status>OK</status></report>" }
       end
     rescue Exception => e
-      notify_airbrake(e)
+      Airbrake.notify(e,{
+          :parameters       => airbrake_filter_if_filtering(params.to_hash.merge({xml: params[:report].to_s})),
+          :session_data     => airbrake_filter_if_filtering(airbrake_session_data),
+          :controller       => params[:controller],
+          :action           => params[:action],
+          :url              => airbrake_request_url,
+          :cgi_data         => airbrake_filter_if_filtering(request.env),
+          :user             => airbrake_current_user
+      })
       respond_to do |format|
         format.xml { render xml: "<report><status>ERROR</status><message>#{e.message}</message></report>" }
       end
