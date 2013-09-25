@@ -2803,7 +2803,10 @@ class ReportsController < ApplicationController
       user = user.gsub("_", "-")
       #schedule_uuid = report.xpath("report/uuid").children.to_s
       #enquanto o william nao atualiza os agentes
-      schedule_uuid = Schedule.where(destination_id: Probe.where(ipaddress: user)).first.uuid
+      probe = Probe.where(ipaddress: user)
+      schedule_uuid = Schedule.where(destination_id: probe).first.uuid
+      probe.signal += 1
+      probe.save!
       uuid = report.xpath("report/meas_uuid").children.to_s
       timestamp = DateTime.strptime(report.xpath("report/timestamp").inner_text, '%s')
       agent_type = report.xpath("report/agent_type").children.to_s
