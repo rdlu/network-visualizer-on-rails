@@ -2519,11 +2519,11 @@ class ReportsController < ApplicationController
     @hash_result = {}
 
     @probes.all.each do |p|
-     result = Results.where(:schedule_id => Schedule.where(:destination_id => p.id)).where(:metric_id => 3).where('dsavg is not null').order('updated_at DESC').first #metric = throughput HTTP
+     result = Results.where(:schedule_id => Schedule.where(:destination_id => p.id)).where(:metric_id => 3).where('sdavg is not null').order('updated_at DESC').first #metric = throughput HTTP
      @hash_result[p.id]= {} if  @hash_result[p.id].nil?
      unless result.nil?
        @hash_result[p.id][:name]= p.name
-       @hash_result[p.id][:speed] = result.dsavg
+       @hash_result[p.id][:speed] = result.sdavg
        @hash_result[p.id][:ip] = p.ipaddress #mudar isso aqui
        @hash_result[p.id][:updated] = result.updated_at
        p.agent_version.nil? ? @hash_result[p.id][:version] = "" : @hash_result[p.id][:version] = p.agent_version
@@ -2802,7 +2802,10 @@ class ReportsController < ApplicationController
       user = user.gsub("_", "-")
       #schedule_uuid = report.xpath("report/uuid").children.to_s
       #enquanto o william nao atualiza os agentes
-      schedule_uuid = Schedule.where(destination_id: Probe.where(ipaddress: user)).first.uuid
+      probe = Probe.where(ipaddress: user)
+      schedule_uuid = Schedule.where(destination_id: probe).first.uuid
+      probe.signal += 1
+      probe.save!
       uuid = report.xpath("report/meas_uuid").children.to_s
       timestamp = DateTime.strptime(report.xpath("report/timestamp").inner_text, '%s')
       agent_type = report.xpath("report/agent_type").children.to_s
