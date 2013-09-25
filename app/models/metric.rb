@@ -23,7 +23,12 @@ class Metric < ActiveRecord::Base
             :format => {:with => /[a-z0-9]+/}
   has_and_belongs_to_many :profiles
   has_many :thresholds
-  before_save { |metric| metric.conversion_rate = "1 #{self.raw_db_unit}".to_unit(self.raw_view_unit).scalar }
+  before_save { |metric| 
+    metric.view_unit ||= "unit"
+    metric.db_unit ||= "unit"
+    metric.conversion_rate = "1 #{self.raw_db_unit}".to_unit(self.raw_view_unit).scalar
+    metric.order ||= Metric.highest_order+1
+  }
 
   def db_unit
     self[:db_unit].to_s.gsub(/b\/s|B\/s/, 'b/s' => 'bps', 'B/s' => 'Bps')
@@ -81,6 +86,14 @@ class Metric < ActiveRecord::Base
     else
       "Não"
     end
+  end
+
+  def self.highest_order_metric
+    Metric.order("metrics.order DESC").limit(1).first
+  end
+
+  def self.highest_order
+    self.highest_order_metric.order
   end
 
 end
