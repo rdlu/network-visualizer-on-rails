@@ -42,7 +42,7 @@
         labels: ["Data", "Tempo de resposta"],
         labelsKMB: false,
         labelsDiv: document.getElementById('legend-<%=@idName%>'),
-        ylabel: "<%=@metric.name%> (<%=@metric.db_unit%>)",
+        ylabel: "<%=@metric.name%> (<%=@metric.view_unit%>)",
         dateWindow: [Date.parse("<%=@from.strftime("%b %d, %Y %H:%M:%S %z")%>"),Date.parse("<%=@to.strftime("%b %d, %Y %H:%M:%S %z")%>")]
     });
 
