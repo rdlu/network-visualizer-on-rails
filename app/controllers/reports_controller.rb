@@ -2503,7 +2503,7 @@ class ReportsController < ApplicationController
   def pacman_activity
     @total = Probe.count
 
-    @result = Probe.where(:status => 1).order("name")
+    @result = Probe.where(:status => 1).where('signal is not null').where('signal > 0').order("name")
     @result_count = Probe.where(:status => 1).count
 
 
@@ -2513,9 +2513,22 @@ class ReportsController < ApplicationController
   end
 
   def pacman_service_activity
-    @active = Probe.where(:status => 1).order("name")
+    @probes = Probe.where(:status => 1).order("name")
     @active_count = Probe.where(:status => 1).count
     @total_count = Probe.count
+    @hash_result = {}
+
+    @probes.all.each do |p|
+     result = Results.where(:schedule_id => Schedule.where(:destination_id => p.id)).where(:metric_id => 3).where('dsavg is not null').order('updated_at DESC').first #metric = throughput HTTP
+     @hash_result[p.id]= {} if  @hash_result[p.id].nil?
+     unless result.nil?
+       @hash_result[p.id][:name]= p.name
+       @hash_result[p.id][:speed] = result.dsavg
+       @hash_result[p.id][:ip] = p.ipaddress #mudar isso aqui
+       @hash_result[p.id][:updated] = result.updated_at
+       p.agent_version.nil? ? @hash_result[p.id][:version] = "" : @hash_result[p.id][:version] = p.agent_version
+     end
+    end
 
 
     respond_to do |format|
