@@ -6,7 +6,6 @@
   </tr>
   <tr>
     <th>Máquina</th>
-    <th>Estação</th>
     <th>Terminal</th>
     <th>Último IP</th>
     <th>DSLAM</th>
@@ -22,7 +21,6 @@
   <% unless @hash_result.empty?
        @hash_result.each do |key, value| %>
           <td><%= value[:name]%></td>
-          <td> </td>
           <td> </td>
           <td><%= value[:ip] %></td>
           <td> </td>

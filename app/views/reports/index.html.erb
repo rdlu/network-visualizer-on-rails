@@ -316,8 +316,8 @@
                     console.log("Query Error " + status);
                 },
                 success: function (result, status) {
-                    if (!jQuery("#box-pacman").is(':empty')) {
-                        jQuery("#box-pacman").remove();
+                    if (!jQuery("#pacman_activity").is(':empty')) {
+                        jQuery("#pacman_activity").remove();
                     }
 
                     jQuery('#graphs-area').prepend(result);
@@ -346,8 +346,8 @@
                     console.log("Query Error " + status);
                 },
                 success: function (result, status) {
-                    if (!jQuery("#box-pacman").is(':empty')) {
-                        jQuery("#box-pacman").remove();
+                    if (!jQuery("#pacman_service_activity").is(':empty')) {
+                        jQuery("#pacman_service_activity").remove();
                     }
 
                     jQuery('#graphs-area').prepend(result);
