@@ -10,7 +10,7 @@
           Data: <%= @from.strftime('%Y-%m-%d %H:%M:%S %Z') %> à <%= @to.strftime('%Y-%m-%d %H:%M:%S %Z') %></h5>
         <h6 style="text-align: center">
             <small><strong>Filtros:</strong> 
-                UFs: <%=params[:by_state].nil? ? "Todos" : params[:by_state].join(',')  %>; 
+                UFs: <%=params[:by_state].nil? || params[:by_state][0] == '' ? "Todos" : params[:by_state].join(',')  %>; 
                 POPs: <%=params[:by_pop].join(',')%>; 
                 Tipos de Sonda: <%=params[:by_type].join(',')%>
             </small>
