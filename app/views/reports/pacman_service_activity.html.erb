@@ -6,7 +6,6 @@
   </tr>
   <tr>
     <th>Máquina</th>
-    <th>Estação</th>
     <th>Terminal</th>
     <th>Último IP</th>
     <th>DSLAM</th>
@@ -19,24 +18,24 @@
   </tr>
   </thead>
   <tbody>
-  <% unless @active.empty?
-       @active.each do |probe| %>
-          <td><%= probe[:name] %></td>
+  <% unless @hash_result.empty?
+       @hash_result.each do |key, value| %>
+          <td><%= value[:name]%></td>
           <td> </td>
-          <td> </td>
-          <td><%= probe[:ipaddress] %></td>
-          <td> </td>
+          <td><%= value[:ip] %></td>
           <td> </td>
           <td> </td>
           <td> </td>
           <td> </td>
-          <td><%= probe[:osversion] %></td>
-          <td><%= probe[:updated_at].strftime("%H:%M:%S %d-%m-%Y") %></td>
+          <td><%= number_with_precision value[:speed], :precision => 2 %> </td>
+          <td><%= value[:version] %></td>
+          <td><%= value[:updated].strftime("%H:%M:%S %d-%m-%Y") %></td>
+
           </tr>
       <% end
          else %>
       <tr>
-        <td colspan="11"><i>Nenhum resultado de erro encontrado.</i></td>
+        <td colspan="11"><i>Nenhum resultado encontrado.</i></td>
       </tr>
   <% end %>
   </tbody>

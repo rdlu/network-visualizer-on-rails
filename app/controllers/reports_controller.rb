@@ -2408,12 +2408,12 @@ class ReportsController < ApplicationController
 
   #RELATORIO PACMAN
   def pacman
-    type = params[:networks]
-    position = params[:servers]
+    @type = params[:networks]
+    @position = params[:servers]
     #activity = params[:activity]
     #status = params[:status]
-    if position[0] == 'internos'
-      @nameserver = Nameserver.where(:type => type[0]).where(:internal => true)
+    if @position[0] == 'internos'
+      @nameserver = Nameserver.where(:type => @type[0]).where(:internal => true)
     else
       @nameserver = Nameserver.where(:internal => false) #type[0]
     end
@@ -2423,37 +2423,37 @@ class ReportsController < ApplicationController
     #'#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
 
 
-    @hash_result = Hash.new(0)
-    @hash_result[:sites]= {}
-    @hash_result[:servers]= {}
+    @urls= {}
+    @servers= {}
     @dnsresul.each do |dns|
-      @hash_result[:servers][dns.server.to_sym] = {}
-      @hash_result[:servers][dns.server.to_sym][:total] = 0
+      @servers[dns.server.to_sym] = {}
+      @servers[dns.server.to_sym][:total] = 0
     end
 
     @dnsresul.each do |dns|
-      @hash_result[:servers][dns.server.to_sym][:primary] = Nameserver.where(:address => dns.server).pluck(:primary) if  @hash_result[:servers][dns.server.to_sym][:primary].nil?
-      @hash_result[:servers][dns.server.to_sym][:vip] = Nameserver.where(:address => dns.server).pluck(:vip) if  @hash_result[:servers][dns.server.to_sym][:vip].nil?
-      @hash_result[:servers][dns.server.to_sym][:internal] = Nameserver.where(:address => dns.server).pluck(:internal) if  @hash_result[:servers][dns.server.to_sym][:internal].nil?
-      @hash_result[:servers][dns.server.to_sym][:name] = Nameserver.where(:address => dns.server).pluck(:name) if  @hash_result[:servers][dns.server.to_sym][:name].nil?
-      @hash_result[:servers][dns.server.to_sym][:total] += 1
-      @hash_result[:sites][dns.url.to_sym] = {} if @hash_result[:sites][dns.url.to_sym].nil?
-      @hash_result[:sites][dns.url.to_sym][:total] = 0 if @hash_result[:sites][dns.url.to_sym][:total].nil?
-      @hash_result[:sites][dns.url.to_sym][:total] += 1
-      @hash_result[:servers][dns.server.to_sym][:status] = {} if @hash_result[:servers][dns.server.to_sym][:status].nil?
-      @hash_result[:sites][dns.url.to_sym][:status] = {} if @hash_result[:sites][dns.url.to_sym][:status].nil?
+      @servers[dns.server.to_sym][:primary] = Nameserver.where(:address => dns.server).pluck(:primary) if  @servers[dns.server.to_sym][:primary].nil?
+      @servers[dns.server.to_sym][:vip] = Nameserver.where(:address => dns.server).pluck(:vip) if  @servers[dns.server.to_sym][:vip].nil?
+      @servers[dns.server.to_sym][:internal] = Nameserver.where(:address => dns.server).pluck(:internal) if  @servers[dns.server.to_sym][:internal].nil?
+      @servers[dns.server.to_sym][:name] = Nameserver.where(:address => dns.server).pluck(:name) if  @servers[dns.server.to_sym][:name].nil?
+      @servers[dns.server.to_sym][:total] += 1
+      @urls[dns.url.to_sym] = {} if @urls[dns.url.to_sym].nil?
+      @urls[dns.url.to_sym][:total] = 0 if @urls[dns.url.to_sym][:total].nil?
+      @urls[dns.url.to_sym][:total] += 1
+      @servers[dns.server.to_sym][:status] = {} if @servers[dns.server.to_sym][:status].nil?
+      @urls[dns.url.to_sym][:status] = {} if @urls[dns.url.to_sym][:status].nil?
       DnsResult.possible_status.each do |p|
-        @hash_result[:servers][dns.server.to_sym][:status][p.to_sym] = 0 if @hash_result[:servers][dns.server.to_sym][:status][p.to_sym].nil?
-        @hash_result[:sites][dns.url.to_sym][:status][p.to_sym] = 0 if @hash_result[:sites][dns.url.to_sym][:status][p.to_sym].nil?
+        @servers[dns.server.to_sym][:status][p.to_sym] = 0 if @servers[dns.server.to_sym][:status][p.to_sym].nil?
+        @urls[dns.url.to_sym][:status][p.to_sym] = 0 if @urls[dns.url.to_sym][:status][p.to_sym].nil?
         if dns.status == p
-          @hash_result[:servers][dns.server.to_sym][:status][p.to_sym] += 1
-          @hash_result[:sites][dns.url.to_sym][:status][p.to_sym] += 1
+          @servers[dns.server.to_sym][:status][p.to_sym] += 1
+          @urls[dns.url.to_sym][:status][p.to_sym] += 1
         end
       end
     end
+    @urls=@urls.sort_by{ |a, b| b[:status][:OK]/b[:total]}
 
     #busca piores sondas
-    @hash_result[:probes] = {}
+    @probes = {}
     unless @nameserver.empty?
       @dnsprobes = DnsResult.find_by_sql("SELECT  probes.name, dns_results.status, probes.type
                                       from probes, dns_results, schedules where dns_results.server IN #{@nameserver.pluck(:address).to_s.html_safe.gsub("[", "(").gsub("]", ")").gsub("\"", "\'")} and dns_results.schedule_uuid = schedules.uuid
@@ -2461,18 +2461,19 @@ class ReportsController < ApplicationController
                                       order by timestamp desc") #'#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
 
       @dnsprobes.each do |probe|
-        @hash_result[:probes][probe.name] = {} if @hash_result[:probes][probe.name].nil?
-        @hash_result[:probes][probe.name][:type] = probe.type
-        @hash_result[:probes][probe.name][:total] = 0 if  @hash_result[:probes][probe.name][:total].nil?
-        @hash_result[:probes][probe.name][:total] += 1
-        @hash_result[:probes][probe.name][:status] = {} if @hash_result[:probes][probe.name][:status].nil?
+        @probes[probe.name] = {} if @probes[probe.name].nil?
+        @probes[probe.name][:type] = probe.type
+        @probes[probe.name][:total] = 0 if  @probes[probe.name][:total].nil?
+        @probes[probe.name][:total] += 1
+        @probes[probe.name][:status] = {} if @probes[probe.name][:status].nil?
         DnsResult.possible_status.each do |p|
-          @hash_result[:probes][probe.name][:status][p.to_sym] = 0 if @hash_result[:probes][probe.name][:status][p.to_sym].nil?
+          @probes[probe.name][:status][p.to_sym] = 0 if @probes[probe.name][:status][p.to_sym].nil?
           if probe.status == p
-            @hash_result[:probes][probe.name][:status][p.to_sym] += 1
+            @probes[probe.name][:status][p.to_sym] += 1
           end
         end
       end
+      @probes=@probes.sort_by{ |a, b| b[:status][:OK]/b[:total]}
     else
       @dnsprobes = []
     end
@@ -2503,7 +2504,7 @@ class ReportsController < ApplicationController
   def pacman_activity
     @total = Probe.count
 
-    @result = Probe.where(:status => 1).where('signal is not null').where('signal > 0').order("name")
+    @result = Probe.where(:status => 1).order("name")
     @result_count = Probe.where(:status => 1).count
 
 
@@ -2519,11 +2520,11 @@ class ReportsController < ApplicationController
     @hash_result = {}
 
     @probes.all.each do |p|
-     result = Results.where(:schedule_id => Schedule.where(:destination_id => p.id)).where(:metric_id => 3).where('dsavg is not null').order('updated_at DESC').first #metric = throughput HTTP
-     @hash_result[p.id]= {} if  @hash_result[p.id].nil?
+     result = Results.where(:schedule_id => Schedule.where(:destination_id => p.id)).where(:metric_id => 3).where('sdavg is not null').order('updated_at DESC').first #metric = throughput HTTP
      unless result.nil?
+       @hash_result[p.id]= {} if  @hash_result[p.id].nil?
        @hash_result[p.id][:name]= p.name
-       @hash_result[p.id][:speed] = result.dsavg
+       @hash_result[p.id][:speed] = result.sdavg
        @hash_result[p.id][:ip] = p.ipaddress #mudar isso aqui
        @hash_result[p.id][:updated] = result.updated_at
        p.agent_version.nil? ? @hash_result[p.id][:version] = "" : @hash_result[p.id][:version] = p.agent_version
@@ -3078,7 +3079,15 @@ class ReportsController < ApplicationController
         format.xml { render xml: "<report><status>OK</status></report>" }
       end
     rescue Exception => e
-      notify_airbrake(e)
+      Airbrake.notify(e,{
+          :parameters       => airbrake_filter_if_filtering(params.to_hash.merge({xml: params[:report].to_s})),
+          :session_data     => airbrake_filter_if_filtering(airbrake_session_data),
+          :controller       => params[:controller],
+          :action           => params[:action],
+          :url              => airbrake_request_url,
+          :cgi_data         => airbrake_filter_if_filtering(request.env),
+          :user             => airbrake_current_user
+      })
       respond_to do |format|
         format.xml { render xml: "<report><status>ERROR</status><message>#{e.message}</message></report>" }
       end
