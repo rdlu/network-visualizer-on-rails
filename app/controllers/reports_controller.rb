@@ -2537,6 +2537,14 @@ class ReportsController < ApplicationController
     end
   end
 
+  def pacman_service_activity_details
+    @id = params[:id]
+
+    respond_to do |format|
+      format.html { render :layout => false }
+    end
+  end
+
   #########################
 
 

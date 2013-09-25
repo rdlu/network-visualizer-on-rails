@@ -20,18 +20,20 @@
   <tbody>
   <% unless @hash_result.empty?
        @hash_result.each do |key, value| %>
-          <td><%= value[:name]%></td>
-          <td> </td>
-          <td><%= value[:ip] %></td>
-          <td> </td>
-          <td> </td>
-          <td> </td>
-          <td> </td>
-          <td><%= number_with_precision value[:speed], :precision => 2 %> </td>
-          <td><%= value[:version] %></td>
-          <td><%= value[:updated].strftime("%H:%M:%S %d-%m-%Y") %></td>
 
-          </tr>
+            <tr class="clickableRow" href='javascript:popupTable(<%=key%>)'>
+              <td><%= value[:name]%></td>
+              <td> </td>
+              <td><%= value[:ip] %></td>
+              <td> </td>
+              <td> </td>
+              <td> </td>
+              <td> </td>
+              <td><%= number_with_precision value[:speed], :precision => 2 %> </td>
+              <td><%= value[:version] %></td>
+              <td><%= value[:updated].strftime("%H:%M:%S %d-%m-%Y") %></td>
+            </tr>
+
       <% end
          else %>
       <tr>
@@ -44,4 +46,48 @@
     <div class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="jQuery('#box-pacman').remove();">Remover</div>
 
   </div>
+  <% @hash_result.each do |key, value| %>
+  <div id="details_<%=key%>" class="modal hide fade detailsModal"></div>
+  <%end%>
+
 </div>
+
+<script>
+    jQuery(document).ready(function($) {
+        $(".clickableRow").click(function() {
+            window.document.location = $(this).attr("href");
+        });
+    });
+    function popupTable(key)
+    {
+        var e = document.getElementById('details_'+key);
+
+        if (e.style.display == 'block'){
+            e.style.display = 'none';
+            document.getElementById('details_'+key).style.display = 'none';
+
+        }else{
+            if($('#details_'+key).is(':empty')){
+                jQuery('#details_'+key).prepend('<div id=\"row-loading\" class="modal-body"><div   class=\"span12\"><div id=\"box-loading\" style="height:100px;"><%=image_tag 'ajax-loader.gif' %> <strong>Requisitando o relatório selecionado, aguarde...</strong></div></div></div>');
+                $.ajax({
+                    dataType: '',
+                    type: 'POST',
+                    data: {
+                          id: key
+                    },
+                    url: "<%= pacman_service_activity_details_reports_url %>",
+                    success: function(data){
+                        jQuery('#row-loading').remove();
+                        $('#details_'+key).html(data).modal({show:true});
+                    },
+                    headers: {
+                        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+            }
+        }
+        e.style.display = 'block';
+        jQuery('#details_'+key).modal({show:true});
+
+    }
+</script>
