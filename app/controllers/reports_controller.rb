@@ -2056,12 +2056,12 @@ class ReportsController < ApplicationController
           end
         when 'dns'
           filters = {schedule_uuid: schedule.uuid, timestamp: @from..@to}
-          filters.merge!({server: params[:by_dns]}) unless params[:by_dns].nil?
-          filters.merge!({url: params[:by_sites]}) unless params[:by_sites].nil?
+          filters.merge!({server: params[:by_dns]}) unless params[:by_dns].nil? || params[:by_dns][0] == ''
+          filters.merge!({url: params[:by_sites]}) unless params[:by_sites].nil? || params[:by_sites][0] == ''
           @raw_results = DnsResult.
               where(filters).order('timestamp ASC')
           respond_to do |format|
-            format.html { render :layout => false, file: 'reports/dygraphs_dns' }
+            format.html { render :layout => false, file: 'reports/performance/dygraphs_dns' }
           end
         when 'dns_efficiency'
           @raw_results = DnsDetail.
@@ -2085,7 +2085,7 @@ class ReportsController < ApplicationController
             end
           end
           respond_to do |format|
-            format.html { render :layout => false, file: 'reports/dygraphs_dns' }
+            format.html { render :layout => false, file: 'reports/performance/dygraphs_dns' }
           end
         when 'dns_detail'
           filters = {schedule_uuid: schedule.uuid, timestamp: @from..@to}
@@ -2127,7 +2127,7 @@ class ReportsController < ApplicationController
             end
           end
           respond_to do |format|
-            format.html { render :layout => false, file: 'reports/dygraphs_dns_detail' }
+            format.html { render :layout => false, file: 'reports/performance/dygraphs_dns_detail' }
           end
         when 'webload'
           filters = {schedule_uuid: schedule.uuid, timestamp: @from..@to}
@@ -2146,7 +2146,7 @@ class ReportsController < ApplicationController
               @variations = ['objects-qty', 'objects-qty_main_domain', 'objects-qty_other_domain']
             else
               respond_to do |format|
-                format.html { render :layout => false, file: 'reports/dygraphs_notsupported' }
+                format.html { render :layout => false, file: 'reports/performance/dygraphs_notsupported' }
               end
           end
           @from.all_window_times_until(@to, @window_size.minutes).each do |window|
@@ -2190,7 +2190,7 @@ class ReportsController < ApplicationController
         else
           #tipo de metrica nao suportado
           respond_to do |format|
-            format.html { render :layout => false, file: 'reports/dygraphs_notsupported' }
+            format.html { render :layout => false, file: 'reports/performance/dygraphs_notsupported' }
           end
       end
     else #is multiprobe
@@ -2228,8 +2228,8 @@ class ReportsController < ApplicationController
             unless newres[:total] == 0
               newline = [window]
               @variations.each do |variation|
-                newline << newres[("sd"+variation).to_sym].reduce(:+)/newres[:total]
-                newline << newres[("ds"+variation).to_sym].reduce(:+)/newres[:total]
+                newline << (newres[("sd"+variation).to_sym].reduce(:+)/newres[:total])*@metric.conversion_rate
+                newline << (newres[("ds"+variation).to_sym].reduce(:+)/newres[:total])*@metric.conversion_rate
               end
               @results << newline
             else
@@ -2242,7 +2242,7 @@ class ReportsController < ApplicationController
             end
           end
           respond_to do |format|
-            format.html { render :layout => false, file: 'reports/dygraphs_active' }
+            format.html { render :layout => false, file: 'reports/performance/dygraphs_active' }
           end
         when 'dns_efficiency'
           @raw_results = DnsDetail.
@@ -2266,12 +2266,12 @@ class ReportsController < ApplicationController
           end
 
           respond_to do |format|
-            format.html { render :layout => false, file: 'reports/dygraphs_dns_multi_efficiency' }
+            format.html { render :layout => false, file: 'reports/performance/dygraphs_dns_multi_efficiency' }
           end
         when 'dns'
           filters = {schedule_uuid: @schedules.pluck(:uuid), timestamp: @from..@to}
-          filters.merge!({server: params[:by_dns]}) unless params[:by_dns].nil?
-          filters.merge!({url: params[:by_sites]}) unless params[:by_sites].nil?
+          filters.merge!({server: params[:by_dns]}) unless params[:by_dns].nil? || params[:by_dns][0] == ''
+          filters.merge!({url: params[:by_sites]}) unless params[:by_sites].nil? || params[:by_sites][0] == ''
           query = DnsResult.
               where(filters).
               order('timestamp ASC')
@@ -2287,7 +2287,7 @@ class ReportsController < ApplicationController
               #nothing to do
             end
             unless delays.count == 0
-              newline = [window, delays.reduce(:+)/delays.count]
+              newline = [window, delays.reduce(:+)/delays.count]*@metric.conversion_rate
               @results << newline
             else
               newline = [window, nil]
@@ -2295,7 +2295,7 @@ class ReportsController < ApplicationController
             end
           end
           respond_to do |format|
-            format.html { render :layout => false, file: 'reports/dygraphs_dns_multi_delays' }
+            format.html { render :layout => false, file: 'reports/performance/dygraphs_dns_multi_delays' }
           end
         when 'dns_detail'
           filters = {schedule_uuid: @schedules.pluck(:uuid), timestamp: @from..@to}
@@ -2337,7 +2337,7 @@ class ReportsController < ApplicationController
             end
           end
           respond_to do |format|
-            format.html { render :layout => false, file: 'reports/dygraphs_dns_detail' }
+            format.html { render :layout => false, file: 'reports/performance/dygraphs_dns_detail' }
           end
         when 'webload'
           filters = {schedule_uuid: @schedules.pluck(:uuid), timestamp: @from..@to}
@@ -2356,7 +2356,7 @@ class ReportsController < ApplicationController
               @variations = ['objects-qty', 'objects-qty_main_domain', 'objects-qty_other_domain']
             else
               respond_to do |format|
-                format.html { render :layout => false, file: 'reports/dygraphs_notsupported' }
+                format.html { render :layout => false, file: 'reports/performance/dygraphs_notsupported' }
               end
           end
           @from.all_window_times_until(@to, @window_size.minutes).each do |window|
@@ -2378,7 +2378,7 @@ class ReportsController < ApplicationController
             unless newres[:total] == 0
               newline = [window]
               @variations.each do |variation|
-                sum = newres[variation.to_sym].inject { |sum, n| sum.to_f+n.to_f }
+                sum = newres[variation.to_sym].inject { |sum, n| sum.to_f + n.to_f }
                 unless sum.nil?
                   newline << (sum/newres[variation.to_sym].count)*@metric.conversion_rate
                 else
@@ -2408,12 +2408,12 @@ class ReportsController < ApplicationController
 
   #RELATORIO PACMAN
   def pacman
-    type = params[:networks]
-    position = params[:servers]
+    @type = params[:networks]
+    @position = params[:servers]
     #activity = params[:activity]
     #status = params[:status]
-    if position[0] == 'internos'
-      @nameserver = Nameserver.where(:type => type[0]).where(:internal => true)
+    if @position[0] == 'internos'
+      @nameserver = Nameserver.where(:type => @type[0]).where(:internal => true)
     else
       @nameserver = Nameserver.where(:internal => false) #type[0]
     end
@@ -2423,37 +2423,37 @@ class ReportsController < ApplicationController
     #'#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
 
 
-    @hash_result = Hash.new(0)
-    @hash_result[:sites]= {}
-    @hash_result[:servers]= {}
+    @urls= {}
+    @servers= {}
     @dnsresul.each do |dns|
-      @hash_result[:servers][dns.server.to_sym] = {}
-      @hash_result[:servers][dns.server.to_sym][:total] = 0
+      @servers[dns.server.to_sym] = {}
+      @servers[dns.server.to_sym][:total] = 0
     end
 
     @dnsresul.each do |dns|
-      @hash_result[:servers][dns.server.to_sym][:primary] = Nameserver.where(:address => dns.server).pluck(:primary) if  @hash_result[:servers][dns.server.to_sym][:primary].nil?
-      @hash_result[:servers][dns.server.to_sym][:vip] = Nameserver.where(:address => dns.server).pluck(:vip) if  @hash_result[:servers][dns.server.to_sym][:vip].nil?
-      @hash_result[:servers][dns.server.to_sym][:internal] = Nameserver.where(:address => dns.server).pluck(:internal) if  @hash_result[:servers][dns.server.to_sym][:internal].nil?
-      @hash_result[:servers][dns.server.to_sym][:name] = Nameserver.where(:address => dns.server).pluck(:name) if  @hash_result[:servers][dns.server.to_sym][:name].nil?
-      @hash_result[:servers][dns.server.to_sym][:total] += 1
-      @hash_result[:sites][dns.url.to_sym] = {} if @hash_result[:sites][dns.url.to_sym].nil?
-      @hash_result[:sites][dns.url.to_sym][:total] = 0 if @hash_result[:sites][dns.url.to_sym][:total].nil?
-      @hash_result[:sites][dns.url.to_sym][:total] += 1
-      @hash_result[:servers][dns.server.to_sym][:status] = {} if @hash_result[:servers][dns.server.to_sym][:status].nil?
-      @hash_result[:sites][dns.url.to_sym][:status] = {} if @hash_result[:sites][dns.url.to_sym][:status].nil?
+      @servers[dns.server.to_sym][:primary] = Nameserver.where(:address => dns.server).pluck(:primary) if  @servers[dns.server.to_sym][:primary].nil?
+      @servers[dns.server.to_sym][:vip] = Nameserver.where(:address => dns.server).pluck(:vip) if  @servers[dns.server.to_sym][:vip].nil?
+      @servers[dns.server.to_sym][:internal] = Nameserver.where(:address => dns.server).pluck(:internal) if  @servers[dns.server.to_sym][:internal].nil?
+      @servers[dns.server.to_sym][:name] = Nameserver.where(:address => dns.server).pluck(:name) if  @servers[dns.server.to_sym][:name].nil?
+      @servers[dns.server.to_sym][:total] += 1
+      @urls[dns.url.to_sym] = {} if @urls[dns.url.to_sym].nil?
+      @urls[dns.url.to_sym][:total] = 0 if @urls[dns.url.to_sym][:total].nil?
+      @urls[dns.url.to_sym][:total] += 1
+      @servers[dns.server.to_sym][:status] = {} if @servers[dns.server.to_sym][:status].nil?
+      @urls[dns.url.to_sym][:status] = {} if @urls[dns.url.to_sym][:status].nil?
       DnsResult.possible_status.each do |p|
-        @hash_result[:servers][dns.server.to_sym][:status][p.to_sym] = 0 if @hash_result[:servers][dns.server.to_sym][:status][p.to_sym].nil?
-        @hash_result[:sites][dns.url.to_sym][:status][p.to_sym] = 0 if @hash_result[:sites][dns.url.to_sym][:status][p.to_sym].nil?
+        @servers[dns.server.to_sym][:status][p.to_sym] = 0 if @servers[dns.server.to_sym][:status][p.to_sym].nil?
+        @urls[dns.url.to_sym][:status][p.to_sym] = 0 if @urls[dns.url.to_sym][:status][p.to_sym].nil?
         if dns.status == p
-          @hash_result[:servers][dns.server.to_sym][:status][p.to_sym] += 1
-          @hash_result[:sites][dns.url.to_sym][:status][p.to_sym] += 1
+          @servers[dns.server.to_sym][:status][p.to_sym] += 1
+          @urls[dns.url.to_sym][:status][p.to_sym] += 1
         end
       end
     end
+    @urls=@urls.sort_by{ |a, b| b[:status][:OK]/b[:total]}
 
     #busca piores sondas
-    @hash_result[:probes] = {}
+    @probes = {}
     unless @nameserver.empty?
       @dnsprobes = DnsResult.find_by_sql("SELECT  probes.name, dns_results.status, probes.type
                                       from probes, dns_results, schedules where dns_results.server IN #{@nameserver.pluck(:address).to_s.html_safe.gsub("[", "(").gsub("]", ")").gsub("\"", "\'")} and dns_results.schedule_uuid = schedules.uuid
@@ -2461,18 +2461,19 @@ class ReportsController < ApplicationController
                                       order by timestamp desc") #'#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
 
       @dnsprobes.each do |probe|
-        @hash_result[:probes][probe.name] = {} if @hash_result[:probes][probe.name].nil?
-        @hash_result[:probes][probe.name][:type] = probe.type
-        @hash_result[:probes][probe.name][:total] = 0 if  @hash_result[:probes][probe.name][:total].nil?
-        @hash_result[:probes][probe.name][:total] += 1
-        @hash_result[:probes][probe.name][:status] = {} if @hash_result[:probes][probe.name][:status].nil?
+        @probes[probe.name] = {} if @probes[probe.name].nil?
+        @probes[probe.name][:type] = probe.type
+        @probes[probe.name][:total] = 0 if  @probes[probe.name][:total].nil?
+        @probes[probe.name][:total] += 1
+        @probes[probe.name][:status] = {} if @probes[probe.name][:status].nil?
         DnsResult.possible_status.each do |p|
-          @hash_result[:probes][probe.name][:status][p.to_sym] = 0 if @hash_result[:probes][probe.name][:status][p.to_sym].nil?
+          @probes[probe.name][:status][p.to_sym] = 0 if @probes[probe.name][:status][p.to_sym].nil?
           if probe.status == p
-            @hash_result[:probes][probe.name][:status][p.to_sym] += 1
+            @probes[probe.name][:status][p.to_sym] += 1
           end
         end
       end
+      @probes=@probes.sort_by{ |a, b| b[:status][:OK]/b[:total]}
     else
       @dnsprobes = []
     end
@@ -2520,8 +2521,8 @@ class ReportsController < ApplicationController
 
     @probes.all.each do |p|
      result = Results.where(:schedule_id => Schedule.where(:destination_id => p.id)).where(:metric_id => 3).where('sdavg is not null').order('updated_at DESC').first #metric = throughput HTTP
-     @hash_result[p.id]= {} if  @hash_result[p.id].nil?
      unless result.nil?
+       @hash_result[p.id]= {} if  @hash_result[p.id].nil?
        @hash_result[p.id][:name]= p.name
        @hash_result[p.id][:speed] = result.sdavg
        @hash_result[p.id][:ip] = p.ipaddress #mudar isso aqui
@@ -2802,10 +2803,7 @@ class ReportsController < ApplicationController
       user = user.gsub("_", "-")
       #schedule_uuid = report.xpath("report/uuid").children.to_s
       #enquanto o william nao atualiza os agentes
-      probe = Probe.where(ipaddress: user)
-      schedule_uuid = Schedule.where(destination_id: probe).first.uuid
-      probe.signal += 1
-      probe.save!
+      schedule_uuid = Schedule.where(destination_id: Probe.where(ipaddress: user)).first.uuid
       uuid = report.xpath("report/meas_uuid").children.to_s
       timestamp = DateTime.strptime(report.xpath("report/timestamp").inner_text, '%s')
       agent_type = report.xpath("report/agent_type").children.to_s
