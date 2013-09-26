@@ -1,0 +1,36 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
+  <h3>Detalhamento</h3>
+</div>
+
+<div class="modal-body">
+    <h5 style="text-align: center">Sonda: <%= @name %>|
+      Data: <%= @result.first.timestamp.strftime('%Y-%m-%d %H:%M:%S %Z') %> à <%= @result.last.timestamp.strftime('%Y-%m-%d %H:%M:%S %Z') %></h5>
+    <div id="chart-<%= @id %>" style="height:250px;"></div>
+</div>
+
+<div class="modal-footer">
+  <div id="legend-<%= @id %>" style="float:right; margin-right: 5px ;margin-bottom: 20px">Ponto Atual:</div>
+
+</div>
+
+<script type="text/javascript">
+    graphs["<%=@id%>"] = new Dygraph(
+            document.getElementById("chart-<%=@id%>"),
+            [
+                <% @result.each do |r| %>
+                [new Date("<%=r.timestamp.strftime("%b %d, %Y %H:%M:%S %z")%>"), "<%=r.uuid %>", <%=r.pretty_scalar_download%>]<%=(r!=@result.last)?",":""%>
+                <% end %>
+            ],
+            {
+                labels: ["Data","uuid", "Velocidade"],
+                visibility: [false, true, true],
+                labelsKMB: false,
+                labelsDiv: document.getElementById('legend-<%=@id%>'),
+                ylabel: "Throughput HTTP (bps)",
+                dateWindow: [Date.parse("<%=@result.first.timestamp.strftime("%b %d, %Y %H:%M:%S %z")%>"),Date.parse("<%=@result.last.timestamp.strftime("%b %d, %Y %H:%M:%S")%>")],
+                clickCallback: function (e, x, pts) {
+                    console.log(graphs["<%=@id%>"].file_[pts[0].idx]);
+                }
+            });
+</script>

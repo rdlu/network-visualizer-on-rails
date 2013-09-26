@@ -1,4 +1,4 @@
-<div id="box-pacman" class="row-fluid">
+<div id="box-pacman-<%=@position[0]%><%=@position[0]=="internos" ? @type[0] : ''%>" class="row-fluid">
     <div class="row-fluid pagination-centered">
         <div class='span5'>
           <h3>DNS <%=@position[0]%>
@@ -127,7 +127,7 @@
     <div class="row-fluid">
       <div class="span12">
         <div class="chart-bottom" style="padding-top: 10px;">
-          <div class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="jQuery('#box-pacman').remove();">Remover</div>
+          <div class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="jQuery('#box-pacman-<%=@position[0]%><%=@position[0]=="internos" ? @type[0] : ''%>').remove();">Remover</div>
 
         </div>
     </div>
@@ -220,7 +220,7 @@
     function popupTable(server,name, total, errors)
     {
         var serverformat=server.replace(/\./g, '_');
-        console.log(serverformat);
+
         var e = document.getElementById('details-table-'+serverformat);
 
         if (e.style.display == 'block'){
