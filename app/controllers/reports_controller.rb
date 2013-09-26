@@ -1460,18 +1460,6 @@ class ReportsController < ApplicationController
           order('start_timestamp ASC').all
 
 
-      count6 = 0
-      count_all6 = 0
-
-      count7 = 0
-      count_all7 = 0
-
-      count8 = 0
-      count_all8 = 0
-
-      points = 0
-      total_points = 0
-
 
       # Armazena valores de cada plano
 
@@ -2235,8 +2223,8 @@ class ReportsController < ApplicationController
             else
               newline = [window]
               @variations.each do |variation|
-                newline << nil
-                newline << nil
+                newline << "null"
+                newline << "null"
               end
               @results << newline
             end
@@ -2504,7 +2492,7 @@ class ReportsController < ApplicationController
   def pacman_activity
     @total = Probe.count
 
-    @result = Probe.where(:status => 1).where('signal is not null').where('signal > 0').order("name")
+    @result = Probe.where(:status => 1).order('updated_at DESC')
     @result_count = Probe.where(:status => 1).count
 
 
@@ -2520,13 +2508,13 @@ class ReportsController < ApplicationController
     @hash_result = {}
 
     @probes.all.each do |p|
-     result = Results.where(:schedule_id => Schedule.where(:destination_id => p.id)).where(:metric_id => 3).where('sdavg is not null').order('updated_at DESC').first #metric = throughput HTTP
-     unless result.nil?
+     @result = Results.where(:schedule_id => Schedule.where(:destination_id => p.id)).where(:metric_id => 3).where('sdavg is not null').order('timestamp DESC').first #metric = throughput HTTP
+     unless @result.nil?
        @hash_result[p.id]= {} if  @hash_result[p.id].nil?
        @hash_result[p.id][:name]= p.name
-       @hash_result[p.id][:speed] = result.sdavg
+       @hash_result[p.id][:speed] = '%.2f' % (@result.sdavg * @result.metric.conversion_rate)
        @hash_result[p.id][:ip] = p.ipaddress #mudar isso aqui
-       @hash_result[p.id][:updated] = result.updated_at
+       @hash_result[p.id][:timestamp] = @result.timestamp
        p.agent_version.nil? ? @hash_result[p.id][:version] = "" : @hash_result[p.id][:version] = p.agent_version
      end
     end
@@ -2539,6 +2527,14 @@ class ReportsController < ApplicationController
 
   def pacman_service_activity_details
     @id = params[:id]
+    @timestamp = params[:date]
+    @name = params[:name]
+
+    @result = Results.where(:schedule_id => Schedule.where(:destination_id => @id))
+                         .where(:metric_id => 3)
+                         .where('sdavg is not null').where('timestamp >= ?', (@timestamp.to_time - 1.day).strftime("%Y-%m-%d %H:%M:%S"))
+                         .order('timestamp ASC') #metric = throughput HTTP
+
 
     respond_to do |format|
       format.html { render :layout => false }
