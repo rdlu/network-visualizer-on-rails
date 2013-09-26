@@ -2,6 +2,8 @@
 //By Rodrigo Dlugokenski <github.com/rodrigodk>
 //Heavily Based on David Walsh work - Kudos to him
 //http://davidwalsh.name/jquery-countdown-plugin
+//Demo: http://jsfiddle.net/rodrigodk/x5J4B
+
 //Define the Extension
 jQuery.fn.regressiveTimer = function (settings, to) {
     settings = jQuery.extend({
