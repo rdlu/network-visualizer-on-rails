@@ -28,7 +28,7 @@
             CSV</a>
           <a id="exportxls-<%= @idName %>" class="btn btn-success" style="float:right; margin-right: 5px ;margin-bottom: 20px" href="<%= reports_performance_export_url @exportFileName+".xls" %>?<%= params.to_query %>">Exportar
             XLS</a>
-
+          <small>Próxima atualização <span class="update" id="update-<%= @idName %>">X</span></small>
           <div id="legend-<%= @idName %>" style="float:right; margin-right: 5px ;margin-bottom: 20px">Ponto Atual:</div>
         </div>
       </div>
@@ -50,7 +50,14 @@
                 dateWindow: [Date.parse("<%=@from.strftime("%b %d, %Y %H:%M:%S %z")%>"),Date.parse("<%=@to.strftime("%b %d, %Y %H:%M:%S %z")%>")]
             }
     );
-
-
     params["<%=@idName%>"] = <%= params.to_json.html_safe %>;
+    moment.lang('pt-br');
+    var tempUpdtObj = {
+      endDate: moment().add('m', <%= @window_size %>),
+      callBack: function (me) {
+        jQuery(me).text("Atualizando os dados").css("color", "#090");
+        jQuery(me).regressiveTimer(tempUpdtObj);
+      }
+    } 
+    jQuery("#update-<%= @idName %>").regressiveTimer(tempUpdtObj);
 </script>
