@@ -2235,8 +2235,8 @@ class ReportsController < ApplicationController
             else
               newline = [window]
               @variations.each do |variation|
-                newline << nil
-                newline << nil
+                newline << "null"
+                newline << "null"
               end
               @results << newline
             end

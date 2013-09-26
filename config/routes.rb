@@ -30,6 +30,7 @@ MomRails::Application.routes.draw do
   match 'reports/xls_diario/:filename' => 'reports#xls_diario', :as => 'reports_xls_diario', :via => [:get]
   match 'reports/xls_mensal/:filename' => 'reports#xls_mensal', :as => 'reports_xls_mensal', :via => [:get]
   post 'reports/send' => 'reports#send_report', :as => 'send_reports'
+  match 'reports/performance/:filename' => 'reports#performance', :as => 'reports_performance_export', :via => [:get]
   post 'reports/performance', :as => 'performance_reports'
   post 'reports/smartrate', :as => 'smartrate_reports'
   post 'reports/pacman', :as => 'pacman_reports'
