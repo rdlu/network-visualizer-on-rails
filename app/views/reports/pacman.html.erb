@@ -1,6 +1,6 @@
 <div id="box-pacman-<%=@position[0]%><%=@position[0]=="internos" ? @type[0] : ''%>" class="row-fluid">
     <div class="row-fluid pagination-centered">
-        <div class='span5'>
+        <div class='span6'>
           <h3>DNS <%=@position[0]%>
             <% unless @position[0]=="externos"%>
             <% if @type[0]=="fixed"%>
@@ -13,11 +13,11 @@
           <div class="row-fluid">
 
             <h4>Primários</h4>
-            <div id="primarios" class="row-fluid">
+            <div id="primarios_<%=@position[0]%><%=@position[0]=="internos" ? @type[0] : ''%>" class="row-fluid">
                 <% @servers.each do |server, value| %>
                   <% if value[:primary][0] %>
                   <a id='popup-<%= server %>' href="javascript:popupTable('<%= server %>','<%=  value[:name][0] %>','<%= value[:total] %>','<%= value[:status] %>')">
-                      <div class="pacmanchartsP" id="chart-pacman-<%= server %>"></div>
+                      <div class="pacmanchartsP_<%=@position[0]%><%=@position[0]=="internos" ? @type[0] : ''%>" id="chart-pacman-<%= server %>"></div>
                     </a>
                       <% end %>
                 <% end %>
@@ -32,11 +32,11 @@
               </div>
             </div>
             <h4>Secundários</h4>
-              <div id="secundarios" class="row-fluid">
+              <div id="secundarios_<%=@position[0]%><%=@position[0]=="internos" ? @type[0] : ''%>" class="row-fluid">
                 <% @servers.each do |server, value| %>
                     <% unless value[:primary][0] %>
                     <a id='popup-<%= server %>' href="javascript:popupTable('<%= server %>','<%=  value[:name][0] %>','<%= value[:total] %>',' <%= value[:status] %>')">
-                      <div class="pacmanchartsS" id="chart-pacman-<%= server %>"></div>
+                      <div class="pacmanchartsS_<%=@position[0]%><%=@position[0]=="internos" ? @type[0] : ''%>" id="chart-pacman-<%= server %>"></div>
                     </a>
                         <% end %>
                 <% end %>
@@ -62,7 +62,7 @@
 
           </ul>
         </div>
-        <div id="table-div" class='span7' style="margin-top:70px;">
+        <div id="table-div" class='span6' style="margin-top:70px;">
           <table class="table table-bordered table-hover table-condensed">
             <thead>
                 <tr>
@@ -140,16 +140,16 @@
 <script type="text/javascript">
     $(document).ready(function () {
        $("[rel=tooltip]").tooltip();
-        var primarios = document.getElementsByClassName('pacmanchartsP');
-        var secundarios = document.getElementsByClassName('pacmanchartsS');
+        var primarios = document.getElementsByClassName('pacmanchartsP_<%=@position[0]%><%=@position[0]=="internos" ? @type[0] : ''%>');
+        var secundarios = document.getElementsByClassName('pacmanchartsS_<%=@position[0]%><%=@position[0]=="internos" ? @type[0] : ''%>');
         if(primarios.length ==0)
-            jQuery('#primarios').html('').append($("<h5 />").text('Não há servidores nesta categoria.'));
+            jQuery('#primarios_<%=@position[0]%><%=@position[0]=="internos" ? @type[0] : ''%>').html('').append($("<h5 />").text('Não há servidores nesta categoria.'));
         if(primarios.length <=6)
-            $('.pacmanchartsP').attr('style', 'width:' + 100/primarios.length +'%;height:150px;float:left');
+            $('.pacmanchartsP_<%=@position[0]%><%=@position[0]=="internos" ? @type[0] : ''%>').attr('style', 'width:' + 100/primarios.length +'%;height:200px;float:left');
         if(secundarios.length ==0)
-            jQuery('#secundarios').html('').append($("<h5 />").text('Não há servidores nesta categoria.'));
+            jQuery('#secundarios_<%=@position[0]%><%=@position[0]=="internos" ? @type[0] : ''%>').html('').append($("<h5 />").text('Não há servidores nesta categoria.'));
         if(secundarios.length <=6)
-            $('.pacmanchartsS').attr('style', 'width:' + 100/secundarios.length +'%;height:150px;float:left;');
+            $('.pacmanchartsS_<%=@position[0]%><%=@position[0]=="internos" ? @type[0] : ''%>').attr('style', 'width:' + 100/secundarios.length +'%;height:200px;float:left;');
 
     });
 
