@@ -12,7 +12,7 @@
     <th>SWD</th>
     <th>SWC</th>
     <th>ERX</th>
-    <th>Velocidade</th>
+    <th>Velocidade (<%= @result.metric.view_unit %>)</th>
     <th>Versão</th>
     <th>Última Coleta</th>
   </tr>
@@ -21,7 +21,7 @@
   <% unless @hash_result.empty?
        @hash_result.each do |key, value| %>
 
-            <tr class="clickableRow" href='javascript:popupTable(<%=key%>)'>
+            <tr class="clickableRow" href='javascript:popupTable(<%=key%>,<%= value[:name].to_json.html_safe %>,<%=value[:timestamp].to_json.html_safe %>)'>
               <td><%= value[:name]%></td>
               <td> </td>
               <td><%= value[:ip] %></td>
@@ -29,9 +29,9 @@
               <td> </td>
               <td> </td>
               <td> </td>
-              <td><%= number_with_precision value[:speed], :precision => 2 %> </td>
+              <td><%= value[:speed] %> </td>
               <td><%= value[:version] %></td>
-              <td><%= value[:updated].strftime("%H:%M:%S %d-%m-%Y") %></td>
+              <td><%= value[:timestamp].strftime("%H:%M:%S %d-%m-%Y") %></td>
             </tr>
 
       <% end
@@ -43,7 +43,7 @@
   </tbody>
 </table>
   <div class="chart-bottom" style="padding-top: 10px;">
-    <div class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="jQuery('#box-pacman').remove();">Remover</div>
+    <div class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="jQuery('#pacman_service_activity').remove();">Remover</div>
 
   </div>
   <% @hash_result.each do |key, value| %>
@@ -58,7 +58,7 @@
             window.document.location = $(this).attr("href");
         });
     });
-    function popupTable(key)
+    function popupTable(key,name,date)
     {
         var e = document.getElementById('details_'+key);
 
@@ -73,7 +73,9 @@
                     dataType: '',
                     type: 'POST',
                     data: {
-                          id: key
+                          id: key,
+                          date: date,
+                          name: name
                     },
                     url: "<%= pacman_service_activity_details_reports_url %>",
                     success: function(data){
