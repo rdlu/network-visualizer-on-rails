@@ -28,7 +28,7 @@
             CSV</a>
           <a id="exportxls-<%= @idName %>" class="btn btn-success" style="float:right; margin-right: 5px ;margin-bottom: 20px" href="<%= reports_performance_export_url @exportFileName+".xls" %>?<%= params.to_query %>">Exportar
             XLS</a>
-          <small>Próxima atualização <span class="update" id="update-<%= @idName %>">X</span></small>
+          <small>Próxima atualização deste gráfico <span class="update" id="update-<%= @idName %>">X</span></small>
           <div id="legend-<%= @idName %>" style="float:right; margin-right: 5px ;margin-bottom: 20px">Ponto Atual:</div>
         </div>
       </div>
@@ -51,7 +51,6 @@
             }
     );
     params["<%=@idName%>"] = <%= params.to_json.html_safe %>;
-    moment.lang('pt-br');
     var tempUpdtObj = {
       endDate: moment().add('m', <%= @window_size %>),
       callBack: function (me) {
