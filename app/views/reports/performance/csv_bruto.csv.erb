@@ -1,0 +1,79 @@
+Tipo de Metrica:; <%= @metric.pretty_metric_type %>
+Nome da Metrica:; <%= @metric.name %>
+Periodo Inicial:; <%= @from.strftime('%Y-%m-%d %H:%M:%S %Z') %>
+Periodo Final:; <%= @to.strftime('%Y-%m-%d %H:%M:%S %Z') %>
+
+<% unless @multiprobe %>
+    Origem:; <%= @source.name %>
+    Destino:; <%= @destination.name %>
+<% else %>
+    Multiprobe/Filtros
+    UFs:; <%= params[:by_state].nil? || params[:by_state][0] == '' ? "Todos" : params[:by_state].join('/') %>;
+    POPs:; <%= params[:by_pop].join('/') %>;
+    Tipos de Sonda:; <%= params[:by_type].join('/') %>
+<% end %>
+<% if @metric.metric_type == 'webload' %>
+    Sites:; <%= params[:by_sites].nil? || params[:by_sites][0] == '' ? "Todos testados" : params[:by_sites].join(';') %>
+<% end %>
+
+<% case @metric.metric_type %>
+<% when 'active' %>
+    <% unless @multiprobe %>
+        <% if @metric.plugin != 'rtt' %>
+            DATA; DOWNLOAD; UPLOAD
+            <% @raw_results.each do |res| %>
+                <%= res.timestamp.strftime("%b %d %Y %H:%M:%S %z") %>;<%= res.pretty_scalar_download %>;<%= res.pretty_scalar_upload %>
+            <% end %>
+        <% else %>
+            else do if
+        <% end %>
+    <% else %>
+        DATA; <%= @variations.map { |x| "DOWNLOAD #{x.upcase}, UPLOAD #{x.upcase}" }.join(';') %>
+        <% @results.each do |res| %>
+            <%= res[0].strftime('%Y-%m-%d %H:%M:%S %Z') %>;<%= res.drop(1).join(', ').chomp(', ') %>
+        <% end %>
+    <% end %>
+
+<% when 'dns' %>
+    DATA; TEMPO DE RESPOSTA <%= @metric.view_unit %>
+    <% unless @multiprobe %>
+        <% @raw_results.each do |res| %>
+            <%= res.delay %>
+        <% end %>
+    <% else %>
+        <% @results.each do |res| %>
+            <%= res[0].strftime('%Y-%m-%d %H:%M:%S %Z') %>;<%= res[1] %>
+        <% end %>
+    <% end %>
+
+<% when 'dns_detail' %>
+    DATA; <%= DnsResult.possible_status.drop(1).join(';') %>
+    <% @results.each do |res| %>
+        <%= res[0].strftime('%Y-%m-%d %H:%M:%S %Z') %>;<%= res.drop(3).join(', ').chomp(', ') %>
+    <% end %>
+
+<% when 'dns_efficiency' %>
+    DATA; EFICIENCIA <%= @metric.view_unit %>
+    <% unless @multiprobe %>
+        <% @results.each do |res| %>
+            <%= res[0].strftime('%Y-%m-%d %H:%M:%S %Z') %>;<%= res[2] %>
+        <% end %>
+    <% else %>
+        <% @results.each do |res| %>
+            <%= res[0].strftime('%Y-%m-%d %H:%M:%S %Z') %>;<%= res[1] %>
+        <% end %>
+    <% end %>
+
+<% when 'webload' %>
+    DATA; <%= @variations.join(';').upcase.gsub(/[_]/, ' ') %>
+    <% @results.each do |res| %>
+        <%= res[0].strftime('%Y-%m-%d %H:%M:%S %Z') %>;<%= res.drop(1).join(', ').chomp(', ') %>
+    <% end %>
+
+<% when 'kpi' %>
+    <%= @raw_results.class %>
+    <%= @results.class %>
+    <%= @metric.view_unit %>
+<% end %>
+
+
