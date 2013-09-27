@@ -2039,8 +2039,7 @@ class ReportsController < ApplicationController
               where(:metric_id => @metric.id).
               where(:timestamp => @from..@to).order('timestamp ASC').all
           respond_to do |format|
-            format.html { render :layout => false, file: 'reports/performance/dygraphs_bruto' }
-            format.csv { render file: 'reports/performance/csv_bruto' }
+            format.html { render :layout => false, file: 'reports/dygraphs_bruto' }
           end
         when 'dns'
           filters = {schedule_uuid: schedule.uuid, timestamp: @from..@to}
@@ -2050,7 +2049,6 @@ class ReportsController < ApplicationController
               where(filters).order('timestamp ASC')
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/performance/dygraphs_dns' }
-            format.csv { render file: 'reports/performance/csv_bruto' }
           end
         when 'dns_efficiency'
           @raw_results = DnsDetail.
@@ -2235,6 +2233,7 @@ class ReportsController < ApplicationController
           end
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/performance/dygraphs_active' }
+            format.json { render json: {results: @results, from: @from.to_i, to: @to.to_i} }
             format.csv { render file: 'reports/performance/csv_bruto' }
           end
         when 'dns_efficiency'
