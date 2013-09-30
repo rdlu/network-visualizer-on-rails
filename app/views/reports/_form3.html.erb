@@ -1,89 +1,98 @@
 <%= form_tag(performance_reports_path, :class => 'form-horizontal', :id => 'report-form3') do %>
     <div class="row-fluid">
-        <div class="span6">
-          <div class="control-group">
-            <label for="probe-state" class="control-label">UF:</label>
-            <div class="controls">
-              <select multiple="true"  name = "by_state[]"  id="by_state"  >
-                <option name="by_state" value="">Todas</option>
-                <% Probe.states.each do |state| %>
-                    <option  value="<%= state.at(1) %>" <%= params[:by_state].to_s == state.at(1).to_s ? "selected=\"selected\"".html_safe : "" %>><%= state.at(1).upcase %></option>
-                <% end %>
-              </select>
-            </div>
-          </div>
-          <div class="control-group">
-            <label class="control-label" for="pop">POP: </label>
-            <div class="controls"  >
-              <select multiple="true"  name="by_pop[]" id="by_pop" >
-                <option value="" selected>Todas</option>
-                <%  Probe.pops.each do |p|  %>
-                      <option  value="<%= p %>"><%= p %></option>
-                <% end %>
-              </select>
-            </div>
+      <div class="span6">
+        <div class="control-group">
+          <label for="probe-state" class="control-label">UF:</label>
+
+          <div class="controls">
+            <select multiple="true" name="by_state[]" id="by_state">
+              <option name="by_state" value="">Todas</option>
+              <% Probe.states.each do |state| %>
+                  <option value="<%= state.at(1) %>" <%= params[:by_state].to_s == state.at(1).to_s ? "selected=\"selected\"".html_safe : "" %>><%= state.at(1).upcase %></option>
+              <% end %>
+            </select>
           </div>
         </div>
-        <div class="span6">
-            <div class="control-group">
-                <label class="control-label"  for="by_type">Tipo de Destino: </label>
-                <div class="controls">
-                  <%= select :by_type,'', Probe.types, :onchange => 'displayTypes(this.value)', :id=>"by_type", :include_blank => "Todos"  %>
-                </div>
-            </div>
-            <div id="ag_types" class="control-group" >
-              <label class="control-label" for="by_conn_type">Tipo: </label>
-              <div class="controls">
-                <%= select :by_conn_type,'',[['Todos',''],['Móvel','mobile'],["Fixo","fixed"]]%>
-              </div>
-            </div>
-            <div class="control-group">
-              <label class="control-label" for="modem">Modem: </label>
-                <div class="controls">
-                  <select  name="by_modem[]" id="by_modem"  >
-                    <option value="">Todos</option>
-                    <%  Probe.modems.each do |p|  %>
-                        <option value="<%= p %>"><%= p %></option>
-                    <% end %>
-                  </select>
-                </div>
-            </div>
-          <div class="control-group">
-            <label class="control-label" for="by_tech">Tecnologia: </label>
-            <div class="controls">
-              <select  name="by_tech[]" id="by_tech"  >
-                <option value="">Todas</option>
-                <%  Probe.techs.each do |p|  %>
-                    <option value="<%= p %>"><%= p %></option>
-                <% end %>
-              </select>
-            </div>
+        <div class="control-group">
+          <label class="control-label" for="pop">POP: </label>
+
+          <div class="controls">
+            <select multiple="true" name="by_pop[]" id="by_pop">
+              <option value="" selected>Todas</option>
+              <% Probe.pops.each do |p| %>
+                  <option value="<%= p %>"><%= p %></option>
+              <% end %>
+            </select>
           </div>
         </div>
+      </div>
+      <div class="span6">
+        <div class="control-group">
+          <label class="control-label" for="by_type">Tipo de Destino: </label>
+
+          <div class="controls">
+            <%= select :by_type, '', Probe.types, :onchange => 'displayTypes(this.value)', :id => "by_type", :include_blank => "Todos" %>
+          </div>
+        </div>
+        <div id="ag_types" class="control-group">
+          <label class="control-label" for="by_conn_type">Tipo de Conexão: </label>
+
+          <div class="controls">
+            <%= select :by_conn_type, '', [['Todos', ''], ['Móvel', 'mobile'], ["Fixo", "fixed"]] %>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="modem">Modem: </label>
+
+          <div class="controls">
+            <select name="by_modem[]" id="by_modem">
+              <option value="">Todos</option>
+              <% Probe.modems.each do |p| %>
+                  <option value="<%= p %>"><%= p %></option>
+              <% end %>
+            </select>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="by_tech">Tecnologia: </label>
+
+          <div class="controls">
+            <select name="by_tech[]" id="by_tech">
+              <option value="">Todas</option>
+              <% Probe.techs.each do |p| %>
+                  <option value="<%= p %>"><%= p %></option>
+              <% end %>
+            </select>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="row-fluid" style="border-top: 1px solid #CCCCCC;">
       <div class="span7">
-          <div class="control-group" style="margin-top: 10px">
-            <label class="control-label" for="destino">Sonda de Destino: </label>
-            <div class="controls ">
-              <select class="input-block-level" name="destination[id]" id="destino">
-               <option value=""> Selecione um UF primeiro...</option>
+        <div class="control-group" style="margin-top: 10px">
+          <label class="control-label" for="destino">Sonda de Destino: </label>
+
+          <div class="controls ">
+            <select class="input-block-level" name="destination[id]" id="destino">
+              <option value=""> Selecione um UF primeiro...</option>
               <!--%= collection_select :destination, :id, Probe.order(:name).all, :id, :pretty_name_with_location, {:include_blank => "Selecione..."}, {:class => 'input-block-level',:id=>"destino"} %>
             -->
-              </select>
-              <div id="alert_dest" class="alert alert-error" style="display: none">
-                Você deve selecionar pelo menos um UF válido.
-              </div>
-            </div>
-          </div>
+            </select>
 
-          <div class="control-group">
-            <label for="source_id" class="control-label">Sonda de Origem:</label>
-            <div class="controls">
-              <%= collection_select :source, :id, {}, :id, :pretty_name_with_location, {:include_blank => "Selecione a sonda de destino primeiro"}, {:class => 'input-block-level',:id=>"origem"} %>
+            <div id="alert_dest" class="alert alert-error" style="display: none">
+              Você deve selecionar pelo menos um UF válido.
             </div>
           </div>
+        </div>
+
+        <div class="control-group">
+          <label for="source_id" class="control-label">Sonda de Origem:</label>
+
+          <div class="controls">
+            <%= collection_select :source, :id, {}, :id, :pretty_name_with_location, {:include_blank => "Selecione a sonda de destino primeiro"}, {:class => 'input-block-level', :id => "origem"} %>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -91,7 +100,8 @@
       <div style="margin-top: 10px">
         <div class="span6">
           <div class="control-group">
-            <span class="control-label" >Métricas:</span>
+            <span class="control-label">Métricas:</span>
+
             <div class="controls">
               <select id="metrics" name="metrics[]">
                 <% Metric.all.each do |m| %>
@@ -102,14 +112,16 @@
           </div>
           <div class="control-group">
             <label class="control-label" for="horario">Horário: </label>
+
             <div class="controls">
-              <%= select :horario,'',[['Últimas 24h','24'],["Últimas 48h",'48'],['Últimas 72h','72']]%>
+              <%= select :horario, '', [['Últimas 24h', '24'], ["Últimas 48h", '48'], ['Últimas 72h', '72']] %>
             </div>
           </div>
         </div>
         <div class="span6">
           <div id="sites" class="control-group" style="display: none">
-            <span class="control-label" >Sites:</span>
+            <span class="control-label">Sites:</span>
+
             <div class="controls">
               <select multiple="true" name="by_sites[]">
                 <option value="" selected>Todos</option>
@@ -120,7 +132,8 @@
             </div>
           </div>
           <div id="dns" class="control-group" style="display: none">
-            <span class="control-label" >Servidor DNS:</span>
+            <span class="control-label">Servidor DNS:</span>
+
             <div class="controls">
               <select multiple="true" name="by_dns[]">
                 <option value="" selected>Todos</option>
@@ -131,9 +144,10 @@
             </div>
           </div>
           <div id="variation" class="control-group" style="display:block">
-            <span class="control-label" >Variação Métrica:</span>
+            <span class="control-label">Variação Métrica:</span>
+
             <div class="controls">
-              <%= select :variation,'',[["Média","avg"],["Mínimo","min"],["Máximo","max"]] %>
+              <%= select :variation, '', [["Média", "avg"], ["Mínimo", "min"], ["Máximo", "max"]] %>
             </div>
           </div>
         </div>
@@ -142,59 +156,65 @@
 
     <div class="row-fluid ">
       <div class="span6">
-          <div class="control-group">
-            <div class="controls">
-              <input class="btn btn-primary" type="submit" name="add" id="report-add3" value="Adicionar"  data-toggle="collapse" data-target="#accordion_forms"/>
-            </div>
+        <div class="control-group">
+          <div class="controls">
+            <input class="btn btn-primary" type="submit" name="add" id="report-add3" value="Adicionar" data-toggle="collapse" data-target="#accordion_forms"/>
           </div>
+        </div>
       </div>
     </div>
 <% end %>
 
 <script>
-    jQuery('#metrics').change(function (){
+    jQuery('#metrics').change(function () {
         var value = $(this).val();
         var type = value.split(',')[1];
 
-        if (type == "webload"){
-            $('#sites').attr('style','display:block');
-            $('#dns').attr('style','display:none');
-            $('#variation').attr('style','display:none');
-        } else if (type == "dns" || type =="dns_detail"){
-            $('#sites').attr('style','display:block');
-            $('#dns').attr('style','display:block');
-            $('#variation').attr('style','display:none');
-        } else  if (type == "active"){
-             $('#sites').attr('style','display:none');
-             $('#dns').attr('style','display:none');
-             $('#variation').attr('style','display:block');
-             }else{
-                $('#sites').attr('style','display:none');
-                $('#dns').attr('style','display:none');
-                $('#variation').attr('style','display:none');
-         }
+        if (type == "webload") {
+            $('#sites').attr('style', 'display:block');
+            $('#dns').attr('style', 'display:none');
+            $('#variation').attr('style', 'display:none');
+        } else if (type == "dns" || type == "dns_detail") {
+            $('#sites').attr('style', 'display:block');
+            $('#dns').attr('style', 'display:block');
+            $('#variation').attr('style', 'display:none');
+        } else if (type == "active") {
+            $('#sites').attr('style', 'display:none');
+            $('#dns').attr('style', 'display:none');
+            $('#variation').attr('style', 'display:block');
+        } else {
+            $('#sites').attr('style', 'display:none');
+            $('#dns').attr('style', 'display:none');
+            $('#variation').attr('style', 'display:none');
+        }
 
 
     });
 
 
     jQuery('#by_state').change(function () {
-                filter_all();}
+                filter_all();
+            }
     );
     jQuery('#by_pop').change(function () {
-                filter_all();}
+                filter_all();
+            }
     );
     jQuery('#by_type_').change(function () {
-                filter_all();}
+                filter_all();
+            }
     );
     jQuery('#by_modem').change(function () {
-                filter_all();}
+                filter_all();
+            }
     );
     jQuery('#by_tech').change(function () {
-                filter_all();}
+                filter_all();
+            }
     );
     jQuery('#by_conn_type_').change(function () {
-                filter_all();}
+                filter_all();
+            }
     );
 
     $('#report-add3').click(function () {
@@ -203,24 +223,23 @@
 
     });
 
-    function setAllOpt(value,id)
-    {
+    function setAllOpt(value, id) {
 
-        if (value == "" || value == 1 || value == "all"){
-            var aux =  document.getElementById(id).options;
+        if (value == "" || value == 1 || value == "all") {
+            var aux = document.getElementById(id).options;
             aux.selected = false;
-            for (var i =0; i < aux.length; i++){
+            for (var i = 0; i < aux.length; i++) {
                 aux.item(i).selected = true;
             }
         }
 
-        return  $('select#'+id).val();
+        return  $('select#' + id).val();
     }
 
-    function filter_all(){
+    function filter_all() {
         var ufs;
         ufs = jQuery('#by_state').val();
-        ufs = setAllOpt(ufs,'by_state');
+        ufs = setAllOpt(ufs, 'by_state');
         var pops = jQuery('#by_pop').val();
         var type = jQuery('#by_type_').val();
         var modem = jQuery('#by_modem').val();
@@ -235,23 +254,23 @@
             data: {
                 'by_state': ufs,
                 'by_pop': pops,
-                'by_type':type,
+                'by_type': type,
                 'by_modem': modem,
                 'by_tech': techs,
                 'by_conn_type': conn_type
 
             },
-            success: function(data){
+            success: function (data) {
                 var html = "";
-                if (data == ""){
+                if (data == "") {
                     html = "<option value='not'>Não há sonda para estes filtros selecionados.</option>";
                     $('#origem').html("<option value=''>Selecione a sonda de destino primeiro</option>");
-                }else{
-                    $('#alert_dest').attr('style','display:none');
+                } else {
+                    $('#alert_dest').attr('style', 'display:none');
                     $('#origem').html("<option value=''>Todas</option>");
                     html = html + "<option value=''>Todas</option>";
-                    for (p in data){
-                        html = html + "<option value='"+data[p]["id"]+"'>"+data[p]["name"]+" ("+data[p]["ipaddress"]+")</option>";
+                    for (p in data) {
+                        html = html + "<option value='" + data[p]["id"] + "'>" + data[p]["name"] + " (" + data[p]["ipaddress"] + ")</option>";
                     }
                 }
                 $('#destino').html(html);
@@ -286,9 +305,9 @@
                 }
             });
         else {
-               jQuery('#origem').html('').append($("<option />").val('').text('Selecione a sonda de destino primeiro')).prop('disabled', true).trigger('change');
+            jQuery('#origem').html('').append($("<option />").val('').text('Selecione a sonda de destino primeiro')).prop('disabled', true).trigger('change');
 
-            }
+        }
 
     });
 
@@ -296,22 +315,22 @@
         event.preventDefault();
         var dest = $('#destino').val();
 
-        if (dest == "not"){
-            $('#alert_dest').attr('style','display:block');
-            $('#accordion_forms').attr("class","collapse width in");
-            $('#accordion_forms').attr("style","width: auto");
-        }else{
+        if (dest == "not") {
+            $('#alert_dest').attr('style', 'display:block');
+            $('#accordion_forms').attr("class", "collapse width in");
+            $('#accordion_forms').attr("style", "width: auto");
+        } else {
             $("html, body").animate({ scrollTop: 0 }, "slow");
-            $('#accordion_forms').attr("class","collapse width");
-            $('#accordion_forms').attr("style","width: 0px");
+            $('#accordion_forms').attr("class", "collapse width");
+            $('#accordion_forms').attr("style", "width: 0px");
 
-            jQuery.ajax("<%= performance_reports_url %>/", {
-              data: $(this).serialize(),
+            jQuery.ajax("<%= performance_reports_url %>", {
+                data: $(this).serialize(),
                 type: 'POST',
-              success: function(result){
-                  jQuery('#graphs-area').prepend(result);
-              },
-              headers: {
+                success: function (result) {
+                    jQuery('#graphs-area').prepend(result);
+                },
+                headers: {
                     'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
                 }
             });

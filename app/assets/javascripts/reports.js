@@ -2,6 +2,7 @@
 //= require highcharts/highcharts-more
 //= require highcharts/modules/exporting
 //= require jquery_imask
+//= require jquery_regressivetimer
 //= require bootstrap_datepicker
 //= require bootstrap-modal
 //= require moment-js/moment
