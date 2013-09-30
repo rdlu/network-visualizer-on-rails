@@ -2,7 +2,11 @@
 <table class="table table-bordered table-hover">
   <thead>
   <tr>
-    <th colspan="4"><h4>Atividades das Sondas (<%= @result_count %> Ativas de <%= @total %> Instaladas)</h4></th>
+    <th colspan="4">
+      <label style="float:right;">&nbsp;Última atualização há mais de 1h30</label>
+      <span class="label" style="float:right;background-color: lightgoldenrodyellow;;border: #757575 1px solid">&nbsp;&nbsp;&nbsp;</span>
+      <h4 style="float: left">Atividades das Sondas (<%= @result_count %> Ativas de <%= @total %> Instaladas)</h4>
+    </th>
   </tr>
   <tr>
     <th>Nome</th>
@@ -15,7 +19,7 @@
   <% unless @result.empty?
        @result.each do |details| %>
           <% if (Time.now - details[:updated_at]) > 5400.0 #probe sem registrar atividade por mais de 1h30 %>
-              <tr style="background-color: #AAAAAA">
+              <tr style="background-color: lightgoldenrodyellow">
           <% else %>
                <tr>
           <% end %>

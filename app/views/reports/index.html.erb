@@ -3,7 +3,7 @@
 
     <input type="image" name="open" id="optbtn" src='<%= image_path 'opt_btn-left.png' %>' data-toggle="collapse" href="#accordion_forms">
 </div>
-    <div style="margin-left:40px;position: absolute;z-index: 100;">
+    <div style="margin-left:40px;z-index: 100;">
 
       <div id="accordion_forms" class="collapse width in">
           <div id="tabs">
@@ -45,6 +45,7 @@
                 $("#optbtn").attr('src', '<%= image_path 'opt_btn-right.png' %>');
                 $("#optbtn").attr('name', 'closed');
             } else {
+                $("html, body").animate({ scrollTop: 0 }, "slow");
                 $("#optbtn").attr('src', '<%= image_path 'opt_btn-left.png' %>');
                 $("#optbtn").attr('name', 'open');
             }
