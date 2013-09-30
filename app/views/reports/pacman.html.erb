@@ -1,9 +1,9 @@
-<div id="box-pacman-<%=@position[0]%><%=@position[0]=="internos" ? @type[0] : ''%>" class="row-fluid">
+<div id="box-pacman-<%=@position%><%=@position=="internos" ? @type : ''%>" class="row-fluid">
     <div class="row-fluid pagination-centered">
         <div class='span6'>
-          <h3>DNS <%=@position[0]%>
-            <% unless @position[0]=="externos"%>
-            <% if @type[0]=="fixed"%>
+          <h3>DNS <%=@position%>
+            <% unless @position=="externos"%>
+            <% if @type=="fixed"%>
                 <%=" - rede fixa"%>
                 <%else%>
                     <%=" - rede móvel"%>
@@ -13,11 +13,11 @@
           <div class="row-fluid">
 
             <h4>Primários</h4>
-            <div id="primarios_<%=@position[0]%><%=@position[0]=="internos" ? @type[0] : ''%>" class="row-fluid">
+            <div id="primarios_<%=@position%><%=@position=="internos" ? @type : ''%>" class="row-fluid">
                 <% @servers.each do |server, value| %>
                   <% if value[:primary][0] %>
                   <a id='popup-<%= server %>' href="javascript:popupTable('<%= server %>','<%=  value[:name][0] %>','<%= value[:total] %>','<%= value[:status] %>')">
-                      <div class="pacmanchartsP_<%=@position[0]%><%=@position[0]=="internos" ? @type[0] : ''%>" id="chart-pacman-<%= server %>"></div>
+                      <div class="pacmanchartsP_<%=@position%><%=@position=="internos" ? @type : ''%>" id="chart-pacman-<%= server %>"></div>
                     </a>
                       <% end %>
                 <% end %>
@@ -32,11 +32,11 @@
               </div>
             </div>
             <h4>Secundários</h4>
-              <div id="secundarios_<%=@position[0]%><%=@position[0]=="internos" ? @type[0] : ''%>" class="row-fluid">
+              <div id="secundarios_<%=@position%><%=@position=="internos" ? @type : ''%>" class="row-fluid">
                 <% @servers.each do |server, value| %>
                     <% unless value[:primary][0] %>
                     <a id='popup-<%= server %>' href="javascript:popupTable('<%= server %>','<%=  value[:name][0] %>','<%= value[:total] %>',' <%= value[:status] %>')">
-                      <div class="pacmanchartsS_<%=@position[0]%><%=@position[0]=="internos" ? @type[0] : ''%>" id="chart-pacman-<%= server %>"></div>
+                      <div class="pacmanchartsS_<%=@position%><%=@position=="internos" ? @type : ''%>" id="chart-pacman-<%= server %>"></div>
                     </a>
                         <% end %>
                 <% end %>
@@ -62,7 +62,12 @@
 
           </ul>
         </div>
-        <div id="table-div" class='span6' style="margin-top:70px;">
+      <div class="span6">
+          <div id="update_<%=@position%><%=@position=="internos" ? @type : ''%>" style="padding-top: 10px;">
+            <div id="btn_update_<%=@position%><%=@position=="internos" ? @type : ''%>" class="btn btn-primary" style="float:right"  onclick="reload('<%=@position%>','<%=@position=="internos" ? @type : ''%>')">Atualizar</div>
+            <label style="float:right;margin-right: 10px;margin-top:5px;">Atualizado às <%=@horario%></label>
+          </div>
+        <div id="table-div" style="margin-top:50px;">
           <table class="table table-bordered table-hover table-condensed">
             <thead>
                 <tr>
@@ -123,11 +128,12 @@
           </table>
         </div>
       </div>
+      </div>
 
-    <div class="row-fluid">
+    <div class="row-fluid" style="border-bottom: #757575 1px solid">
       <div class="span12">
         <div class="chart-bottom" style="padding-top: 10px;">
-          <div class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="jQuery('#box-pacman-<%=@position[0]%><%=@position[0]=="internos" ? @type[0] : ''%>').remove();">Remover</div>
+          <div class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="jQuery('#box-pacman-<%=@position%><%=@position=="internos" ? @type : ''%>').remove();">Remover</div>
 
         </div>
     </div>
@@ -140,16 +146,20 @@
 <script type="text/javascript">
     $(document).ready(function () {
        $("[rel=tooltip]").tooltip();
-        var primarios = document.getElementsByClassName('pacmanchartsP_<%=@position[0]%><%=@position[0]=="internos" ? @type[0] : ''%>');
-        var secundarios = document.getElementsByClassName('pacmanchartsS_<%=@position[0]%><%=@position[0]=="internos" ? @type[0] : ''%>');
+        var primarios = document.getElementsByClassName('pacmanchartsP_<%=@position%><%=@position=="internos" ? @type : ''%>');
+        var secundarios = document.getElementsByClassName('pacmanchartsS_<%=@position%><%=@position=="internos" ? @type : ''%>');
         if(primarios.length ==0)
-            jQuery('#primarios_<%=@position[0]%><%=@position[0]=="internos" ? @type[0] : ''%>').html('').append($("<h5 />").text('Não há servidores nesta categoria.'));
+            jQuery('#primarios_<%=@position%><%=@position=="internos" ? @type : ''%>').html('').append($("<h5 />").text('Não há servidores nesta categoria.'));
         if(primarios.length <=6)
-            $('.pacmanchartsP_<%=@position[0]%><%=@position[0]=="internos" ? @type[0] : ''%>').attr('style', 'width:' + 100/primarios.length +'%;height:200px;float:left');
+            $('.pacmanchartsP_<%=@position%><%=@position=="internos" ? @type : ''%>').attr('style', 'width:' + 100/primarios.length +'%;height:200px;float:left');
+        else
+            $('.pacmanchartsP_<%=@position%><%=@position=="internos" ? @type : ''%>').attr('style', 'width:20%;height:150px;float:left');
         if(secundarios.length ==0)
-            jQuery('#secundarios_<%=@position[0]%><%=@position[0]=="internos" ? @type[0] : ''%>').html('').append($("<h5 />").text('Não há servidores nesta categoria.'));
+            jQuery('#secundarios_<%=@position%><%=@position=="internos" ? @type : ''%>').html('').append($("<h5 />").text('Não há servidores nesta categoria.'));
         if(secundarios.length <=6)
-            $('.pacmanchartsS_<%=@position[0]%><%=@position[0]=="internos" ? @type[0] : ''%>').attr('style', 'width:' + 100/secundarios.length +'%;height:200px;float:left;');
+            $('.pacmanchartsS_<%=@position%><%=@position=="internos" ? @type : ''%>').attr('style', 'width:' + 100/secundarios.length +'%;height:200px;float:left;');
+        else
+            $('.pacmanchartsS_<%=@position%><%=@position=="internos" ? @type : ''%>').attr('style', 'width:20%%;height:150px;float:left;');
 
     });
 
@@ -208,7 +218,7 @@
             name: 'Browser share',
             data: [
                 <% value[:status].each do |status,status_value| %>
-                    ['<%= status[0..1]%>', <%= number_with_precision (status_value/value[:total])*100.to_f, :precision =>2 %>],
+                    ['<%= status[0..1]%>', <%= (status_value/value[:total])*100.to_f %>],
             <% end %>
             ]
         }]
@@ -252,6 +262,39 @@
         }
         e.style.display = 'block';
         jQuery('#details-table-'+serverformat).modal({show:true});
+
+    }
+
+    function reload(position, type){
+
+        jQuery.ajax("<%= pacman_reports_url %>/", {
+            beforeSend: function () {
+                jQuery('#update_'+position+type).empty();
+                jQuery("#update_"+position+type).append('<div id=\"row-updating_'+position+type+'\" style="float:right; margin-right:10px; vertical-align:middle"><%=image_tag 'ajax-loader.gif' %> <strong>Atualizando, aguarde...</strong></div>');
+            },
+            complete: function (obj, status) {
+                jQuery("#row-updating_"+position+type).remove();
+            },
+            error: function (obj, status) {
+                console.log(obj);
+                console.log("Query Error " + status);
+            },
+            success: function (result, status) {
+                if (!jQuery("#box-pacman-"+position+type).is(':empty')) {
+                    jQuery("#box-pacman-"+position+type).empty();
+                }
+
+                jQuery('#box-pacman-'+position+type).prepend(result);
+
+            },
+            //dataType: 'json',
+            data:{ servers: [position],
+            networks: [type]},
+            method: 'post',
+            headers: {
+                'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
 
     }
 </script>

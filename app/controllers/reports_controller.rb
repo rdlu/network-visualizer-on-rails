@@ -2396,12 +2396,13 @@ class ReportsController < ApplicationController
 
   #RELATORIO PACMAN
   def pacman
-    @type = params[:networks]
-    @position = params[:servers]
+    @horario = Time.now.strftime("%H:%M:%S")
+    @type = params[:networks][0]
+    @position = params[:servers][0]
     #activity = params[:activity]
     #status = params[:status]
-    if @position[0] == 'internos'
-      @nameserver = Nameserver.where(:type => @type[0]).where(:internal => true)
+    if @position == 'internos'
+      @nameserver = Nameserver.where(:type => @type).where(:internal => true)
     else
       @nameserver = Nameserver.where(:internal => false) #type[0]
     end

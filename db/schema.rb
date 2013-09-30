@@ -14,47 +14,47 @@
 ActiveRecord::Schema.define(:version => 20130924224158) do
 
   create_table "compliances", :force => true do |t|
-    t.integer   "schedule_id"
-    t.integer   "threshold_id"
-    t.string    "schedule_uuid"
-    t.timestamp "start_timestamp", :limit => 6
-    t.timestamp "end_timestamp",   :limit => 6
-    t.integer   "expected_days"
-    t.integer   "total_days"
-    t.float     "download"
-    t.float     "upload"
-    t.timestamp "created_at",      :limit => 6, :null => false
-    t.timestamp "updated_at",      :limit => 6, :null => false
-    t.string    "type"
-    t.string    "calc_method"
+    t.integer  "schedule_id"
+    t.integer  "threshold_id"
+    t.string   "schedule_uuid"
+    t.datetime "start_timestamp"
+    t.datetime "end_timestamp"
+    t.integer  "expected_days"
+    t.integer  "total_days"
+    t.float    "download"
+    t.float    "upload"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+    t.string   "type"
+    t.string   "calc_method"
   end
 
   add_index "compliances", ["schedule_id"], :name => "index_quotients_on_schedule_id"
   add_index "compliances", ["threshold_id"], :name => "index_quotients_on_threshold_id"
 
   create_table "connection_profiles", :force => true do |t|
-    t.string    "name_id"
-    t.string    "name"
-    t.string    "conn_type"
-    t.timestamp "created_at", :limit => 6, :null => false
-    t.timestamp "updated_at", :limit => 6, :null => false
-    t.text      "notes"
+    t.string   "name_id"
+    t.string   "name"
+    t.string   "conn_type"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+    t.text     "notes"
   end
 
   add_index "connection_profiles", ["name_id"], :name => "index_connection_profiles_on_name", :unique => true
 
   create_table "delayed_jobs", :force => true do |t|
-    t.integer   "priority",                :default => 0
-    t.integer   "attempts",                :default => 0
-    t.text      "handler"
-    t.text      "last_error"
-    t.timestamp "run_at",     :limit => 6
-    t.timestamp "locked_at",  :limit => 6
-    t.timestamp "failed_at",  :limit => 6
-    t.string    "locked_by"
-    t.string    "queue"
-    t.timestamp "created_at", :limit => 6,                :null => false
-    t.timestamp "updated_at", :limit => 6,                :null => false
+    t.integer  "priority",   :default => 0
+    t.integer  "attempts",   :default => 0
+    t.text     "handler"
+    t.text     "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string   "locked_by"
+    t.string   "queue"
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
@@ -90,11 +90,11 @@ ActiveRecord::Schema.define(:version => 20130924224158) do
     t.string   "server"
     t.string   "url"
     t.integer  "delay"
-    t.string   "schedule_uuid", :limit => nil
+    t.string   "uuid",          :limit => nil
     t.datetime "created_at",                   :null => false
     t.datetime "updated_at",                   :null => false
     t.string   "status"
-    t.string   "uuid",          :limit => nil
+    t.string   "schedule_uuid", :limit => nil
     t.datetime "timestamp"
   end
 
@@ -124,10 +124,10 @@ ActiveRecord::Schema.define(:version => 20130924224158) do
   end
 
   create_table "evaluations", :force => true do |t|
-    t.integer   "schedule_id"
-    t.integer   "profile_id"
-    t.timestamp "created_at",  :limit => 6, :null => false
-    t.timestamp "updated_at",  :limit => 6, :null => false
+    t.integer  "schedule_id"
+    t.integer  "profile_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   add_index "evaluations", ["profile_id", "schedule_id"], :name => "index_evaluations_on_profile_id_and_schedule_id"
@@ -135,28 +135,28 @@ ActiveRecord::Schema.define(:version => 20130924224158) do
   add_index "evaluations", ["schedule_id"], :name => "index_evaluations_on_schedule_id"
 
   create_table "kpis", :force => true do |t|
-    t.string    "schedule_uuid",    :limit => nil
-    t.string    "uuid",             :limit => nil
-    t.integer   "destination_id"
-    t.integer   "source_id"
-    t.integer   "schedule_id"
-    t.timestamp "timestamp",        :limit => 6
-    t.string    "source_name"
-    t.string    "destination_name"
-    t.string    "lac"
-    t.string    "cell_id"
-    t.string    "brand"
-    t.string    "model"
-    t.string    "conn_type"
-    t.string    "conn_tech"
-    t.string    "signal"
-    t.string    "error_rate"
-    t.integer   "change_of_ips"
-    t.integer   "mtu"
-    t.integer   "dns_latency"
-    t.text      "route"
-    t.timestamp "created_at",       :limit => 6,   :null => false
-    t.timestamp "updated_at",       :limit => 6,   :null => false
+    t.string   "schedule_uuid",    :limit => nil
+    t.string   "uuid",             :limit => nil
+    t.integer  "destination_id"
+    t.integer  "source_id"
+    t.integer  "schedule_id"
+    t.datetime "timestamp"
+    t.string   "source_name"
+    t.string   "destination_name"
+    t.string   "lac"
+    t.string   "cell_id"
+    t.string   "brand"
+    t.string   "model"
+    t.string   "conn_type"
+    t.string   "conn_tech"
+    t.string   "signal"
+    t.string   "error_rate"
+    t.integer  "change_of_ips"
+    t.integer  "mtu"
+    t.integer  "dns_latency"
+    t.text     "route"
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
   end
 
   add_index "kpis", ["destination_id"], :name => "index_kpis_on_destination_id"
@@ -165,35 +165,35 @@ ActiveRecord::Schema.define(:version => 20130924224158) do
   add_index "kpis", ["uuid"], :name => "index_kpis_on_uuid"
 
   create_table "medians", :force => true do |t|
-    t.integer   "schedule_id"
-    t.integer   "threshold_id"
-    t.string    "schedule_uuid",   :limit => nil
-    t.timestamp "start_timestamp", :limit => 6
-    t.timestamp "end_timestamp",   :limit => 6
-    t.integer   "expected_points"
-    t.integer   "total_points"
-    t.float     "dsavg"
-    t.float     "sdavg"
-    t.timestamp "created_at",      :limit => 6,   :null => false
-    t.timestamp "updated_at",      :limit => 6,   :null => false
-    t.string    "type"
+    t.integer  "schedule_id"
+    t.integer  "threshold_id"
+    t.string   "schedule_uuid",   :limit => nil
+    t.datetime "start_timestamp"
+    t.datetime "end_timestamp"
+    t.integer  "expected_points"
+    t.integer  "total_points"
+    t.float    "dsavg"
+    t.float    "sdavg"
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
+    t.string   "type"
   end
 
   add_index "medians", ["schedule_id"], :name => "index_medians_on_schedule_id"
   add_index "medians", ["threshold_id"], :name => "index_medians_on_threshold_id"
 
   create_table "metrics", :force => true do |t|
-    t.string    "name"
-    t.string    "plugin"
-    t.string    "description"
-    t.boolean   "reverse"
-    t.integer   "order"
-    t.timestamp "created_at",      :limit => 6,                       :null => false
-    t.timestamp "updated_at",      :limit => 6,                       :null => false
-    t.string    "view_unit"
-    t.string    "db_unit"
-    t.string    "metric_type",                  :default => "active", :null => false
-    t.float     "conversion_rate"
+    t.string   "name"
+    t.string   "plugin"
+    t.string   "description"
+    t.boolean  "reverse"
+    t.integer  "order"
+    t.datetime "created_at",                            :null => false
+    t.datetime "updated_at",                            :null => false
+    t.string   "view_unit"
+    t.string   "db_unit"
+    t.string   "metric_type",     :default => "active", :null => false
+    t.float    "conversion_rate"
   end
 
   add_index "metrics", ["name"], :name => "index_metrics_on_name", :unique => true
@@ -207,61 +207,54 @@ ActiveRecord::Schema.define(:version => 20130924224158) do
   add_index "metrics_profiles", ["profile_id", "metric_id"], :name => "index_metrics_profiles_on_profile_id_and_metric_id"
 
   create_table "nameservers", :force => true do |t|
-    t.string    "address"
-    t.string    "name"
-    t.boolean   "primary"
-    t.boolean   "vip"
-    t.boolean   "internal"
-    t.timestamp "created_at", :limit => 6, :null => false
-    t.timestamp "updated_at", :limit => 6, :null => false
-    t.string    "type"
+    t.string   "address"
+    t.string   "name"
+    t.boolean  "primary"
+    t.boolean  "vip"
+    t.boolean  "internal"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+    t.string   "type"
   end
 
   create_table "plans", :force => true do |t|
-    t.string    "name"
-    t.text      "description"
-    t.integer   "throughput_down"
-    t.integer   "connection_profile_id"
-    t.timestamp "created_at",            :limit => 6, :null => false
-    t.timestamp "updated_at",            :limit => 6, :null => false
-    t.integer   "throughput_up"
+    t.string   "name"
+    t.text     "description"
+    t.integer  "throughput_down"
+    t.integer  "connection_profile_id"
+    t.datetime "created_at",            :null => false
+    t.datetime "updated_at",            :null => false
+    t.integer  "throughput_up"
   end
 
   add_index "plans", ["connection_profile_id"], :name => "index_plans_on_connection_profile_id"
   add_index "plans", ["name"], :name => "index_plans_on_name", :unique => true
 
-  create_table "probe_version", :id => false, :force => true do |t|
-    t.string    "probe_name"
-    t.string    "probe_type"
-    t.string    "version"
-    t.timestamp "timestamp",  :limit => 6
-  end
-
   create_table "probes", :force => true do |t|
-    t.string    "name",                                                      :null => false
-    t.string    "ipaddress",                                                 :null => false
-    t.text      "description"
-    t.integer   "status",                             :default => 0,         :null => false
-    t.string    "type",                               :default => "android"
-    t.text      "address"
-    t.text      "pre_address"
-    t.float     "latitude",                           :default => 0.0
-    t.float     "longitude",                          :default => 0.0
-    t.integer   "plan_id"
-    t.integer   "connection_profile_id"
-    t.timestamp "created_at",            :limit => 6,                        :null => false
-    t.timestamp "updated_at",            :limit => 6,                        :null => false
-    t.string    "city",                                                      :null => false
-    t.string    "state",                                                     :null => false
-    t.integer   "areacode"
-    t.boolean   "anatel"
-    t.string    "agent_version"
-    t.string    "pop"
-    t.string    "bras"
-    t.string    "osversion"
-    t.string    "modem"
-    t.integer   "cn"
-    t.integer   "signal"
+    t.string   "name",                                         :null => false
+    t.string   "ipaddress",                                    :null => false
+    t.text     "description"
+    t.integer  "status",                :default => 0,         :null => false
+    t.string   "type",                  :default => "android"
+    t.text     "address"
+    t.text     "pre_address"
+    t.float    "latitude",              :default => 0.0
+    t.float    "longitude",             :default => 0.0
+    t.integer  "plan_id"
+    t.integer  "connection_profile_id"
+    t.datetime "created_at",                                   :null => false
+    t.datetime "updated_at",                                   :null => false
+    t.string   "city",                                         :null => false
+    t.string   "state",                                        :null => false
+    t.integer  "areacode"
+    t.string   "agent_version"
+    t.boolean  "anatel"
+    t.string   "pop"
+    t.string   "bras"
+    t.string   "osversion"
+    t.string   "modem"
+    t.integer  "cn"
+    t.integer  "signal"
   end
 
   add_index "probes", ["connection_profile_id"], :name => "index_probes_on_connection_profile_id"
@@ -270,12 +263,12 @@ ActiveRecord::Schema.define(:version => 20130924224158) do
   add_index "probes", ["plan_id"], :name => "index_probes_on_plan_id"
 
   create_table "profiles", :force => true do |t|
-    t.string    "name"
-    t.text      "config_parameters"
-    t.string    "config_method"
-    t.integer   "connection_profile_id"
-    t.timestamp "created_at",            :limit => 6, :null => false
-    t.timestamp "updated_at",            :limit => 6, :null => false
+    t.string   "name"
+    t.text     "config_parameters"
+    t.string   "config_method"
+    t.integer  "connection_profile_id"
+    t.datetime "created_at",            :null => false
+    t.datetime "updated_at",            :null => false
   end
 
   add_index "profiles", ["connection_profile_id"], :name => "index_profiles_on_connection_profile_id"
@@ -290,20 +283,20 @@ ActiveRecord::Schema.define(:version => 20130924224158) do
   end
 
   create_table "results", :force => true do |t|
-    t.integer   "schedule_id"
-    t.integer   "metric_id"
-    t.string    "schedule_uuid", :limit => nil
-    t.string    "uuid",          :limit => nil
-    t.string    "metric_name"
-    t.timestamp "timestamp",     :limit => 6
-    t.float     "dsavg"
-    t.float     "sdavg"
-    t.float     "dsmin"
-    t.float     "sdmin"
-    t.float     "dsmax"
-    t.float     "sdmax"
-    t.timestamp "created_at",    :limit => 6,   :null => false
-    t.timestamp "updated_at",    :limit => 6,   :null => false
+    t.integer  "schedule_id"
+    t.integer  "metric_id"
+    t.string   "schedule_uuid", :limit => nil
+    t.string   "uuid",          :limit => nil
+    t.string   "metric_name"
+    t.datetime "timestamp"
+    t.float    "dsavg"
+    t.float    "sdavg"
+    t.float    "dsmin"
+    t.float    "sdmin"
+    t.float    "dsmax"
+    t.float    "sdmax"
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
   end
 
   add_index "results", ["schedule_id", "metric_id", "timestamp"], :name => "index_results_on_schedule_id_and_metric_id_and_timestamp", :unique => true
@@ -311,10 +304,10 @@ ActiveRecord::Schema.define(:version => 20130924224158) do
   add_index "results", ["uuid"], :name => "index_results_on_uuid"
 
   create_table "roles", :force => true do |t|
-    t.string    "name"
-    t.timestamp "created_at",  :limit => 6, :null => false
-    t.timestamp "updated_at",  :limit => 6, :null => false
-    t.string    "description"
+    t.string   "name"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+    t.string   "description"
   end
 
   create_table "roles_users", :id => false, :force => true do |t|
@@ -326,15 +319,15 @@ ActiveRecord::Schema.define(:version => 20130924224158) do
   add_index "roles_users", ["user_id", "role_id"], :name => "index_roles_users_on_user_id_and_role_id"
 
   create_table "schedules", :force => true do |t|
-    t.timestamp "start",          :limit => 6
-    t.timestamp "end",            :limit => 6
-    t.integer   "polling"
-    t.string    "status"
-    t.timestamp "created_at",     :limit => 6,   :null => false
-    t.timestamp "updated_at",     :limit => 6,   :null => false
-    t.string    "uuid",           :limit => nil
-    t.integer   "destination_id"
-    t.integer   "source_id"
+    t.datetime "start"
+    t.datetime "end"
+    t.integer  "polling"
+    t.string   "status"
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
+    t.string   "uuid",           :limit => nil
+    t.integer  "destination_id"
+    t.integer  "source_id"
   end
 
   add_index "schedules", ["destination_id", "source_id"], :name => "index_schedules_on_destination_id_and_source_id"
@@ -343,49 +336,49 @@ ActiveRecord::Schema.define(:version => 20130924224158) do
   add_index "schedules", ["uuid"], :name => "index_schedules_on_uuid"
 
   create_table "sites", :force => true do |t|
-    t.string    "url"
-    t.boolean   "vip"
-    t.timestamp "created_at", :limit => 6, :null => false
-    t.timestamp "updated_at", :limit => 6, :null => false
+    t.string   "url"
+    t.boolean  "vip"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "thresholds", :force => true do |t|
-    t.string    "name"
-    t.float     "compliance_level",                   :default => 0.85,       :null => false
-    t.string    "compliance_period",                  :default => "monthly",  :null => false
-    t.string    "compliance_method",                  :default => "standard", :null => false
-    t.float     "goal_level",                                                 :null => false
-    t.string    "goal_period",                        :default => "daily",    :null => false
-    t.string    "goal_method",                        :default => "median",   :null => false
-    t.integer   "connection_profile_id"
-    t.integer   "metric_id"
-    t.timestamp "created_at",            :limit => 6,                         :null => false
-    t.timestamp "updated_at",            :limit => 6,                         :null => false
-    t.string    "description"
-    t.integer   "base_year"
+    t.string   "name"
+    t.float    "compliance_level",      :default => 0.85,       :null => false
+    t.string   "compliance_period",     :default => "monthly",  :null => false
+    t.string   "compliance_method",     :default => "standard", :null => false
+    t.float    "goal_level",                                    :null => false
+    t.string   "goal_period",           :default => "daily",    :null => false
+    t.string   "goal_method",           :default => "median",   :null => false
+    t.integer  "connection_profile_id"
+    t.integer  "metric_id"
+    t.datetime "created_at",                                    :null => false
+    t.datetime "updated_at",                                    :null => false
+    t.string   "description"
+    t.integer  "base_year"
   end
 
   add_index "thresholds", ["connection_profile_id"], :name => "index_thresholds_on_connection_profile_id"
   add_index "thresholds", ["metric_id"], :name => "index_thresholds_on_metric_id"
 
   create_table "users", :force => true do |t|
-    t.string    "email",                               :default => "",   :null => false
-    t.string    "encrypted_password",                  :default => "",   :null => false
-    t.string    "reset_password_token"
-    t.timestamp "reset_password_sent_at", :limit => 6
-    t.timestamp "remember_created_at",    :limit => 6
-    t.integer   "sign_in_count",                       :default => 0
-    t.timestamp "current_sign_in_at",     :limit => 6
-    t.timestamp "last_sign_in_at",        :limit => 6
-    t.string    "current_sign_in_ip"
-    t.string    "last_sign_in_ip"
-    t.string    "confirmation_token"
-    t.timestamp "confirmed_at",           :limit => 6
-    t.timestamp "confirmation_sent_at",   :limit => 6
-    t.string    "unconfirmed_email"
-    t.timestamp "created_at",             :limit => 6,                   :null => false
-    t.timestamp "updated_at",             :limit => 6,                   :null => false
-    t.boolean   "adm_block",                           :default => true
+    t.string   "email",                  :default => "",   :null => false
+    t.string   "encrypted_password",     :default => "",   :null => false
+    t.string   "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer  "sign_in_count",          :default => 0
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string   "current_sign_in_ip"
+    t.string   "last_sign_in_ip"
+    t.string   "confirmation_token"
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
+    t.string   "unconfirmed_email"
+    t.datetime "created_at",                               :null => false
+    t.datetime "updated_at",                               :null => false
+    t.boolean  "adm_block",              :default => true
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
@@ -446,8 +439,8 @@ ActiveRecord::Schema.define(:version => 20130924224158) do
 
   add_foreign_key "profiles", "connection_profiles", :name => "test_profiles_connection_profile_id_fk"
 
-  add_foreign_key "results", "metrics", :name => "results_metric_id_fkey", :dependent => :delete
-  add_foreign_key "results", "schedules", :name => "results_schedule_id_fkey", :dependent => :delete
+  add_foreign_key "results", "metrics", :name => "results_metric_id_fk", :dependent => :delete
+  add_foreign_key "results", "schedules", :name => "results_schedule_id_fk", :dependent => :delete
 
   add_foreign_key "roles_users", "roles", :name => "roles_users_role_id_fk"
   add_foreign_key "roles_users", "users", :name => "roles_users_user_id_fk"
