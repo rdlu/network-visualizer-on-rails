@@ -2040,6 +2040,7 @@ class ReportsController < ApplicationController
               where(:timestamp => @from..@to).order('timestamp ASC').all
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/dygraphs_bruto' }
+            format.json { render json: {results: @raw_results, from: @from.to_i, to: @to.to_i} }
           end
         when 'dns'
           filters = {schedule_uuid: schedule.uuid, timestamp: @from..@to}
@@ -2049,6 +2050,7 @@ class ReportsController < ApplicationController
               where(filters).order('timestamp ASC')
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/performance/dygraphs_dns' }
+            format.json { render json: {results: @raw_results, from: @from.to_i, to: @to.to_i} }
           end
         when 'dns_efficiency'
           @raw_results = DnsDetail.
@@ -2072,7 +2074,8 @@ class ReportsController < ApplicationController
             end
           end
           respond_to do |format|
-            format.html { render :layout => false, file: 'reports/performance/dygraphs_dns' }
+            format.html { render :layout => false, file: 'reports/performance/dygraphs_dns_efficiency' }
+            format.json { render json: {results: @results, from: @from.to_i, to: @to.to_i} }
             format.csv { render file: 'reports/performance/csv_bruto' }
           end
         when 'dns_detail'
@@ -2116,6 +2119,7 @@ class ReportsController < ApplicationController
           end
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/performance/dygraphs_dns_detail' }
+            format.json { render json: {results: @results, from: @from.to_i, to: @to.to_i} }
             format.csv { render file: 'reports/performance/csv_bruto' }
           end
         when 'webload'
@@ -2175,6 +2179,7 @@ class ReportsController < ApplicationController
           end
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/performance/dygraphs_webload' }
+            format.json { render json: {results: @results, from: @from.to_i, to: @to.to_i} }
             format.csv { render file: 'reports/performance/csv_bruto' }
           end
         else
@@ -2259,6 +2264,7 @@ class ReportsController < ApplicationController
 
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/performance/dygraphs_dns_multi_efficiency' }
+            format.json { render json: {results: @results, from: @from.to_i, to: @to.to_i} }
             format.csv { render file: 'reports/performance/csv_bruto' }
           end
         when 'dns'
@@ -2289,6 +2295,7 @@ class ReportsController < ApplicationController
           end
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/performance/dygraphs_dns_multi_delays' }
+            format.json { render json: {results: @results, from: @from.to_i, to: @to.to_i} }
             format.csv { render file: 'reports/performance/csv_bruto' }
           end
         when 'dns_detail'
@@ -2332,6 +2339,7 @@ class ReportsController < ApplicationController
           end
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/performance/dygraphs_dns_detail' }
+            format.json { render json: {results: @results, from: @from.to_i, to: @to.to_i} }
             format.csv { render file: 'reports/performance/csv_bruto' }
           end
         when 'webload'
@@ -2391,6 +2399,7 @@ class ReportsController < ApplicationController
           end
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/performance/dygraphs_webload' }
+            format.json { render json: {results: @results, from: @from.to_i, to: @to.to_i} }
             format.csv { render file: 'reports/performance/csv_bruto' }
           end
         else

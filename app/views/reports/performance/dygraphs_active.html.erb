@@ -40,7 +40,7 @@
                 <% @results.each do |res| %>
                 [new Date("<%=res[0].strftime("%b %d, %Y %H:%M:%S %z")%>"), <%=res.drop(1).join(', ').chomp(', ') %>]<%=(res!=@results.last)?",":""%>
                 <% end %>
-            ]
+            ];
     graphs["<%=@idName%>"] = new Dygraph(
             document.getElementById("chart-<%=@idName%>"),
             graphData["<%=@idName%>"],
