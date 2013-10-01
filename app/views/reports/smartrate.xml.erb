@@ -1,0 +1,49 @@
+<DNS>
+<% @hash_result.each do |key,value|%>
+
+      <% if key.to_s != 'url' && key.to_s != 'probe' %>
+      <CentroServico nome="<%= value[:name][0] %>" ip="<%= key %>" id="<%= value[:id] %>">
+          <DataAtualizacao><%= value[:timestamp] %></DataAtualizacao>
+          <% value[:status].each do |k,v| %>
+           <<%= k %>><%= v %></<%= k %>>
+          <% end %>
+          <% value[:fail].each do |k,v| %>
+          <Falha id="<%= k %>">
+                <Data><%= v[:date] %></Data>
+                <IP><%= v[:ip]%></IP>
+                <NomeDNS><%=v[:name] %></NomeDNS>
+                <URL><%= v[:url] %></URL>
+                <TempoResposta><%= v[:delay] %></TempoResposta>
+                <ServerResponse><%= v[:status]%></ServerResponse>
+                <Estacao><%= v[:station] %></Estacao>
+                <Porta><%= v[:port] %></Porta>
+          </Falha>
+         <% end %>
+      </CentroServico>
+      <% end
+      end %>
+      <% @hash_result[:url].each do |k,v| %>
+      <URL id="<%= k %>">
+		<Host><%= v[:name]%></Host>
+		<% v[:status].each do |k,v|%>
+        <<%= k %>><%= v %></<%= k %>>
+        <% end %>
+        <LatenciaMedia><%= "%.2f" % (v[:latencia]/v[:status][:OK]).to_f %></LatenciaMedia>
+        <Total><%= v[:total] %></Total>
+        <TotalFalha><%= v[:total] - v[:status][:OK] %></TotalFalha>
+	  </URL>
+    <% end %>
+     <% @hash_result[:probe].each do |k,v| %>
+    <Sonda id="<%= v[:id] %>">
+		<Estacao><%= k %></Estacao>
+		<IdEstacao><%= v[:id] %></IdEstacao>
+		<% v[:status].each do |k,v|%>
+        <<%= k %>><%= v %></<%= k %>>
+        <% end %>
+		<LatenciaMedia><%= "%.2f" % (v[:latencia]/v[:status][:OK]).to_f %></LatenciaMedia>
+		<Total><%= v[:total] %></Total>
+        <TotalFalha><%= v[:total] - v[:status][:OK] %></TotalFalha>
+	</Sonda>
+    <% end %>
+
+ </DNS>
