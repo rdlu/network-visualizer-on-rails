@@ -277,7 +277,7 @@
         jQuery('#report-form4').submit(function (event) {
             event.preventDefault();
 
-            jQuery.ajax("<%= pacman_reports_url %>/", {
+            jQuery.ajax("<%= smartrate_reports_url %>/", {
                     beforeSend: function () {
                         jQuery('#graphs-area').prepend('<div id=\"row-loading\" class="row-fluid"><div   class=\"span12\"><div id=\"box-loading\" style="height:100px;"><%=image_tag 'ajax-loader.gif' %> <strong>Requisitando o relatório selecionado, aguarde...</strong></div></div></div>');
                     },

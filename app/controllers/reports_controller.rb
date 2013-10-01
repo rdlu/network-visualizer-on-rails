@@ -10,6 +10,8 @@ class ReportsController < ApplicationController
   has_scope :by_modem, :type => :array_or_string
   has_scope :by_tech, :type => :array_or_string
   has_scope :by_conn_type, :type => :array_or_string
+  #variaveis globais
+  attr_accessor :smartrate_dns_total, :smartrate_dns_results
 
   def index
     @report_types = [
@@ -3152,7 +3154,94 @@ class ReportsController < ApplicationController
   end
 
   def smartrate
+    #xml  <server> e <url>
+    @dnsresul = DnsResult.where("url is not null").where("timestamp >= ?", (Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S"))
 
+    @hash_result = {}
+    @dnsresul.each do |dns|
+      @hash_result[dns.server.to_sym] = {}
+      @hash_result[dns.server.to_sym][:fail] = {}
+    end
+    @hash_result[:url] = {}
+    @dnsresul.each do |dns|
+      @hash_result[dns.server.to_sym][:name] = Nameserver.where(:address => dns.server).pluck(:name) if   @hash_result[dns.server.to_sym][:name].nil?
+      @hash_result[dns.server.to_sym][:id] = dns.id if @hash_result[dns.server.to_sym][:id].nil?
+      @hash_result[dns.server.to_sym][:timestamp] = dns.timestamp if @hash_result[dns.server.to_sym][:timestamp].nil?
+      site = Site.where(:url => dns.url).select('id')
+      unless site.empty? #TO-DO: add site q não esta cadastrado
+
+
+      @hash_result[:url][site[0][:id].to_s.to_sym] = {} if @hash_result[:url][site[0][:id].to_s.to_sym].nil?
+      @hash_result[:url][site[0][:id].to_s.to_sym][:name] = dns.url.to_sym
+      @hash_result[:url][site[0][:id].to_s.to_sym][:total] = 0 if @hash_result[:url][site[0][:id].to_s.to_sym][:total].nil?
+      @hash_result[:url][site[0][:id].to_s.to_sym][:total] += 1
+      @hash_result[dns.server.to_sym][:status] = {} if @hash_result[dns.server.to_sym][:status].nil?
+      @hash_result[:url][site[0][:id].to_s.to_sym][:status] = {} if @hash_result[:url][site[0][:id].to_s.to_sym][:status].nil?
+      DnsResult.possible_status.each do |p|
+        @hash_result[dns.server.to_sym][:status][p.to_sym] = 0 if @hash_result[dns.server.to_sym][:status][p.to_sym].nil?
+        @hash_result[:url][site[0][:id].to_s.to_sym][:status][p.to_sym] = 0 if @hash_result[:url][site[0][:id].to_s.to_sym][:status][p.to_sym].nil?
+        if dns.status == p
+          if dns.status == 'OK'
+            @hash_result[:url][site[0][:id].to_s.to_sym][:latencia] = 0 if @hash_result[:url][site[0][:id].to_s.to_sym][:latencia].nil?
+            @hash_result[:url][site[0][:id].to_s.to_sym][:latencia] += dns.delay
+          end
+          @hash_result[dns.server.to_sym][:status][p.to_sym] += 1
+          @hash_result[:url][site[0][:id].to_s.to_sym][:status][p.to_sym] += 1
+        end
+      end
+      end
+    end
+    #xml <sonda>
+    @dnsprobes = DnsResult.find_by_sql("SELECT  dns_results.delay,probes.id, dns_results.server,probes.name, dns_results.status, probes.type
+                                      from probes, dns_results, schedules where dns_results.schedule_uuid = schedules.uuid
+                                      and schedules.destination_id = probes.id and dns_results.updated_at >= '#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
+                                      order by timestamp desc")
+
+    @hash_result[:probe] = {}
+    @dnsprobes.each do |probe|
+      @hash_result[:probe][probe.name] = {} if @hash_result[:probe][probe.name].nil?
+      @hash_result[:probe][probe.name][:id] = probe.id
+      @hash_result[:probe][probe.name][:total] = 0 if  @hash_result[:probe][probe.name][:total].nil?
+      @hash_result[:probe][probe.name][:total] += 1
+      @hash_result[:probe][probe.name][:status] = {} if @hash_result[:probe][probe.name][:status].nil?
+      DnsResult.possible_status.each do |p|
+        @hash_result[:probe][probe.name][:status][p.to_sym] = 0 if @hash_result[:probe][probe.name][:status][p.to_sym].nil?
+        if probe.status == p
+          if probe.status == 'OK'
+            @hash_result[:probe][probe.name][:latencia] = 0 if @hash_result[:probe][probe.name][:latencia].nil?
+            @hash_result[:probe][probe.name][:latencia] += probe.delay
+          end
+          @hash_result[:probe][probe.name][:status][p.to_sym] += 1
+        end
+      end
+    end
+
+    #xml <falha>
+    Nameserver.all.each do |ns|
+      @dnsfails = DnsResult.find_by_sql("SELECT dns_results.server, dns_results.timestamp, probes.name, dns_results.url, dns_results.delay, dns_results.status
+                                      from probes, dns_results, schedules where server='#{ns.address}' and dns_results.schedule_uuid = schedules.uuid
+                                      and schedules.destination_id = probes.id and dns_results.updated_at >= '#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
+                                      and dns_results.status <> 'OK'
+                                      order by timestamp desc limit 20")
+
+      unless @dnsfails.nil?
+        count = 0
+        @dnsfails.each do |fail|
+          count += 1
+          @hash_result[fail.server.to_sym][:fail][count.to_s.to_sym] = {} if @hash_result[fail.server.to_sym][:fail][count.to_s.to_sym].nil?
+          @hash_result[fail.server.to_sym][:fail][count.to_s.to_sym][:date] = fail.timestamp
+          @hash_result[fail.server.to_sym][:fail][count.to_s.to_sym][:ip] = fail.server
+          @hash_result[fail.server.to_sym][:fail][count.to_s.to_sym][:name] = ns.name
+          @hash_result[fail.server.to_sym][:fail][count.to_s.to_sym][:url] = fail.url
+          @hash_result[fail.server.to_sym][:fail][count.to_s.to_sym][:delay] = fail.delay
+          @hash_result[fail.server.to_sym][:fail][count.to_s.to_sym][:status] = fail.status
+          @hash_result[fail.server.to_sym][:fail][count.to_s.to_sym][:station] = ""
+          @hash_result[fail.server.to_sym][:fail][count.to_s.to_sym][:port] = 0
+        end
+      end
+    end
+
+    #teste
     respond_to do |format|
       format.xml
     end
