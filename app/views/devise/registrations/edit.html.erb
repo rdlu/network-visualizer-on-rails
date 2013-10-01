@@ -1,29 +1,25 @@
-<div class="row-fluid">
-  <div class="span12" style="text-align: center;">
-    <h1>Alterar Meu Cadastro </h1>
-   </div>
+<h2><%= t ".title", resource: resource_name.to_s.humanize %></h2>
 
 <%= form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put }) do |f| %>
+  <%= devise_error_messages! %>
 
-  <div class="span4 offset4" style="text-align: center;">
+  <div><%= f.label :email %><br />
+  <%= f.email_field :email %></div>
 
-      <div class="field"> <i>Deixe em branco caso não queria alterar este campo</i><br />
-      <%= f.password_field :password, :autocomplete => "off", :placeholder => "Digite a sua Nova Senha"  %></div>
+  <div><%= f.label :password %> <i>(leave blank if you don't want to change it)</i><br />
+  <%= f.password_field :password, :autocomplete => "off" %></div>
 
-      <div class="field">
-      <%= f.password_field :password_confirmation, :placeholder => "Repita a sua Nova Senha" %></div>
+  <div><%= f.label :password_confirmation %><br />
+  <%= f.password_field :password_confirmation %></div>
 
-      <div class="field"><i>Você precisa de sua senha atual para confirmar suas alterações</i><br />
-      <%= f.password_field :current_password, :placeholder => "Senha Atual"%></div>
+  <div><%= f.label :current_password %> <i>(we need your current password to confirm your changes)</i><br />
+  <%= f.password_field :current_password %></div>
 
-      <div><%= f.submit "Salvar", :class => 'btn btn-primary btn-large btn-block' %></div>
-    <br/>
-      <%= link_to "Voltar", :back , :class => 'btn btn-inverse btn-large btn-block' %>
-      <br/>
-    <h3>Cancelar minha Conta: </h3>
-    <%= link_to "Clique aqui", registration_path(resource_name), :data => { :confirm => "Você tem certeza que deseja cancelar sua conta?" }, :method => :delete %>.
-    <br/>
-  </div>
+  <div><%= f.submit t(".update") %></div>
 <% end %>
- </div>
 
+<h3><%= t(".cancel.title") %></h3>
+
+<p><%= t(".cancel.message") %> <%= link_to t(".cancel.action"), registration_path(resource_name), :data => { :confirm => t(".cancel.confirm") }, :method => :delete %>.</p>
+
+<%= link_to "Back", :back %>

@@ -85,6 +85,10 @@ group :test, :development do
 	gem 'fabrication'
 	gem 'faker'
   gem 'railroady'
+
+  gem 'guard'
+  gem 'guard-rspec'
+  gem 'growl'
 end
 
 # Deploy with Capistrano
