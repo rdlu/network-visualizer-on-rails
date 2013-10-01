@@ -1,43 +1,43 @@
 <div id="box-<%=@idName%>" class="row-fluid">
-    <div class="span12">
-        <div class="row-fluid">
-            <div class="span12">
-                <h5 style="text-align: center">Gráfico Multiprobe - Tempos de Resposta DNS (média) |
-                    Data: <%= @from.strftime('%Y-%m-%d %H:%M:%S %Z') %> à <%= @to.strftime('%Y-%m-%d %H:%M:%S %Z') %></h5>
-                <h6 style="text-align: center">
-                  <small><strong>Filtros:</strong> 
-                    UFs: <%=params[:by_state].nil? || params[:by_state][0] == '' ? "Todos" : params[:by_state].join(',')  %>; 
-                    POPs: <%=params[:by_pop].join(',')%>; 
-                    Tipos de Sonda: <%=params[:by_type].join(',')%>
-                  </small>
-                </h6>
-                <div id="chart-<%= @idName %>" style="height:250px;"></div>
-            </div>
-        </div>
-        <div class="row-fluid">
-            <div class="span12">
-                <div class="chart-bottom" style="padding-top: 10px;">
-                     <div class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="jQuery('#box-<%=@idName%>').remove(); delete graphs['<%=@idName%>'];">Remover</div>
+  <div class="span12">
+    <div class="row-fluid">
+      <div class="span12">
+        <h5 style="text-align: center">Gráfico Multiprobe <%= @metric.name %> |
+          <span id="graph-date-<%=@idName%>">Data: <%= @from.strftime('%Y-%m-%d %H:%M:%S %Z') %> à <%= @to.strftime('%Y-%m-%d %H:%M:%S %Z') %></span></h5>
+        <h6 style="text-align: center">
+          <small><strong>Filtros:</strong> 
+            UFs: <%=params[:by_state].nil? || params[:by_state][0] == '' ? "Todos" : params[:by_state].join(',')  %>;
+            POPs: <%=params[:by_pop].join(',')%>; 
+            Tipos de Sonda: <%=params[:by_type].join(',')%>
+          </small>
+        </h6>
+        <div id="chart-<%= @idName %>" style="height:250px;"></div>
+      </div>
+    </div>
+    <div class="row-fluid">
+      <div class="span12">
+        <div class="chart-bottom" style="padding-top: 10px;">
+          <div class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="jQuery('#box-<%=@idName%>').remove(); delete graphs['<%=@idName%>']; delete params['<%=@idName%>'];">Remover</div>
           <a id="export-<%= @idName %>" class="btn btn-success" style="float:right; margin-right: 5px ;margin-bottom: 20px" href="<%= reports_performance_export_url @exportFileName+".csv" %>?<%= params.to_query %>">Exportar
             CSV</a>
           <a id="exportxls-<%= @idName %>" class="btn btn-success" style="float:right; margin-right: 5px ;margin-bottom: 20px" href="<%= reports_performance_export_url @exportFileName+".xls" %>?<%= params.to_query %>">Exportar
             XLS</a>
-
-                    <div id="legend-<%= @idName %>" style="float:right; margin-right: 5px ;margin-bottom: 20px">Ponto Atual:</div>
-                </div>
-            </div>
+          <small>Próxima atualização deste gráfico <span class="update" id="update-<%= @idName %>">X</span></small>
+          <div id="legend-<%= @idName %>" style="float:right; margin-right: 5px ;margin-bottom: 20px">Ponto Atual:</div>
         </div>
+      </div>
     </div>
+  </div>
 </div>
 <script type="text/javascript">
+    graphData["<%=@idName%>"] = [
+                <% @results.each do |res| %>
+                [new Date("<%= res[0].strftime("%b %d, %Y %H:%M:%S %z")%>"), <%=res[1].nil? ? "null":res[1]%>]<%=(res!=@results.last)?",":""%>
+                <% end %>
+            ];
     graphs["<%=@idName%>"] = new Dygraph(
             document.getElementById("chart-<%=@idName%>"),
-
-    [
-    <% @results.each do |res| %>
-    [new Date("<%= res[0].strftime("%b %d, %Y %H:%M:%S %z")%>"), <%=res[1].nil? ? "null":res[1]%>]<%=(res!=@results.last)?",":""%>
-    <% end %>
-    ],
+            graphData["<%=@idName%>"],
     {
         labels: ["Data", "Tempo de resposta"],
         labelsKMB: false,
@@ -45,5 +45,28 @@
         ylabel: "<%=@metric.name%> (<%=@metric.view_unit%>)",
         dateWindow: [Date.parse("<%=@from.strftime("%b %d, %Y %H:%M:%S %z")%>"),Date.parse("<%=@to.strftime("%b %d, %Y %H:%M:%S %z")%>")]
     });
+    
     params["<%=@idName%>"] = <%= params.to_json.html_safe %>;
+    params["<%=@idName%>"].from = new Date(<%=@results.last[0].to_i unless @results.last.nil? %>000);
+    var tempUpdtObj = {
+      endDate: moment().add('m', <%= @window_size %>),
+      callBack: function (me) {
+        if(params["<%=@idName%>"] != undefined) {
+          jQuery(me).text("Atualizando os dados");
+          jQuery.post('<%=performance_reports_url%>.json', params["<%=@idName%>"]).done(function (dataReturned) {
+            jQuery.each(dataReturned.results, function(i,val) {
+              val[0] = new Date(val[0]);
+            });
+            graphData["<%=@idName%>"].shift();
+            graphData["<%=@idName%>"]= graphData["<%=@idName%>"].concat(dataReturned.results);
+            jQuery("#graph-date-<%=@idName%>").text("Data: "+moment(graphData["<%=@idName%>"][0][0]).format('YYYY-MM-DD HH:mm:ss Z')+" à "+moment.unix(dataReturned.to).format('YYYY-MM-DD HH:mm:ss Z'));
+            graphs["<%=@idName%>"].updateOptions({'file':graphData["<%=@idName%>"],dateWindow: [graphData["<%=@idName%>"][0][0],moment.unix(dataReturned.to)]});
+            var tempUpdtObj2 = jQuery.extend({},tempUpdtObj);
+            tempUpdtObj2.endDate = moment().add('m', <%= @window_size %>);
+            jQuery("#update-<%=@idName%>").regressiveTimer(tempUpdtObj2);
+          });
+        }
+      }
+    } 
+    jQuery("#update-<%=@idName%>").regressiveTimer(jQuery.extend({},tempUpdtObj));
 </script>

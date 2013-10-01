@@ -95,8 +95,8 @@ graphs["<%=@idName%>"] = new Dygraph(
 
             }
     );
-        params["<%=@idName%>"] = <%= params.to_json.html_safe %>;
-    params["<%=@idName%>"].from = new Date(<%=@results.last[0].to_i%>000);
+    params["<%=@idName%>"] = <%= params.to_json.html_safe %>;
+    params["<%=@idName%>"].from = new Date(<%=@results.last[0].to_i unless @results.last.nil? %>000);
     var tempUpdtObj = {
       endDate: moment().add('m', <%= @window_size %>),
       callBack: function (me) {
