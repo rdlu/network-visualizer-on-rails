@@ -37,7 +37,7 @@ form {
   position: fixed;display: block; margin-top: 5px;margin-left:-15px;z-index:1000;
 }
 #accordion_forms{
-  height: auto !important;width: auto;float:left;position: fixed;
+  height: auto !important;width: auto;float:left;position: relative;
 }
 
 
@@ -80,10 +80,3 @@ form {
   background-color: white;
   margin:0
 }
-
-.pacmanchartsP
-{
-  height:150px;width:20%;float:left
-}
-.pacmanchartsS
-{height:150px;width:20%;float:left}

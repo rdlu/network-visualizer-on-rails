@@ -1462,7 +1462,6 @@ class ReportsController < ApplicationController
           order('start_timestamp ASC').all
 
 
-
       # Armazena valores de cada plano
 
       media4 = Array.new
@@ -2043,6 +2042,7 @@ class ReportsController < ApplicationController
               where(:timestamp => @from..@to).order('timestamp ASC').all
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/dygraphs_bruto' }
+            format.json { render json: {results: @raw_results, from: @from.to_i, to: @to.to_i} }
           end
         when 'dns'
           filters = {schedule_uuid: schedule.uuid, timestamp: @from..@to}
@@ -2052,6 +2052,7 @@ class ReportsController < ApplicationController
               where(filters).order('timestamp ASC')
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/performance/dygraphs_dns' }
+            format.json { render json: {results: @raw_results, from: @from.to_i, to: @to.to_i} }
           end
         when 'dns_efficiency'
           @raw_results = DnsDetail.
@@ -2075,7 +2076,9 @@ class ReportsController < ApplicationController
             end
           end
           respond_to do |format|
-            format.html { render :layout => false, file: 'reports/performance/dygraphs_dns' }
+            format.html { render :layout => false, file: 'reports/performance/dygraphs_dns_efficiency' }
+            format.json { render json: {results: @results, from: @from.to_i, to: @to.to_i} }
+            format.csv { render file: 'reports/performance/csv_bruto' }
           end
         when 'dns_detail'
           filters = {schedule_uuid: schedule.uuid, timestamp: @from..@to}
@@ -2118,6 +2121,8 @@ class ReportsController < ApplicationController
           end
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/performance/dygraphs_dns_detail' }
+            format.json { render json: {results: @results, from: @from.to_i, to: @to.to_i} }
+            format.csv { render file: 'reports/performance/csv_bruto' }
           end
         when 'webload'
           filters = {schedule_uuid: schedule.uuid, timestamp: @from..@to}
@@ -2176,6 +2181,8 @@ class ReportsController < ApplicationController
           end
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/performance/dygraphs_webload' }
+            format.json { render json: {results: @results, from: @from.to_i, to: @to.to_i} }
+            format.csv { render file: 'reports/performance/csv_bruto' }
           end
         else
           #tipo de metrica nao suportado
@@ -2185,7 +2192,7 @@ class ReportsController < ApplicationController
       end
     else #is multiprobe
       @idName = "dygraph-" << @schedules.pluck(:id).join('-') << "-" << @metric.id.to_s #<< "-" << @from.strftime("%s") << "-" << @to.strftime("%s")
-      @exportFileName = @metric.plugin + '-'+@schedules.pluck(:id).join('-')+ '-' + @from.strftime("%Y%m%d_%H%M%S") + '-' +@to.strftime("%Y%m%d_%H%M%S")
+      @exportFileName = @metric.plugin + '-'+ @from.strftime("%Y%m%d_%H%M%S") + '-' +@to.strftime("%Y%m%d_%H%M%S")
       @exportParams = "schedules=#{@schedules.pluck(:id).join('-')}&metric=#{@metric.id}&from=#{@from.iso8601}&to=#{@to.iso8601}"
 
       case @metric.metric_type
@@ -2225,14 +2232,16 @@ class ReportsController < ApplicationController
             else
               newline = [window]
               @variations.each do |variation|
-                newline << nil
-                newline << nil
+                newline << "null"
+                newline << "null"
               end
               @results << newline
             end
           end
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/performance/dygraphs_active' }
+            format.json { render json: {results: @results, from: @from.to_i, to: @to.to_i} }
+            format.csv { render file: 'reports/performance/csv_bruto' }
           end
         when 'dns_efficiency'
           @raw_results = DnsDetail.
@@ -2257,6 +2266,8 @@ class ReportsController < ApplicationController
 
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/performance/dygraphs_dns_multi_efficiency' }
+            format.json { render json: {results: @results, from: @from.to_i, to: @to.to_i} }
+            format.csv { render file: 'reports/performance/csv_bruto' }
           end
         when 'dns'
           filters = {schedule_uuid: @schedules.pluck(:uuid), timestamp: @from..@to}
@@ -2286,6 +2297,8 @@ class ReportsController < ApplicationController
           end
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/performance/dygraphs_dns_multi_delays' }
+            format.json { render json: {results: @results, from: @from.to_i, to: @to.to_i} }
+            format.csv { render file: 'reports/performance/csv_bruto' }
           end
         when 'dns_detail'
           filters = {schedule_uuid: @schedules.pluck(:uuid), timestamp: @from..@to}
@@ -2328,6 +2341,8 @@ class ReportsController < ApplicationController
           end
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/performance/dygraphs_dns_detail' }
+            format.json { render json: {results: @results, from: @from.to_i, to: @to.to_i} }
+            format.csv { render file: 'reports/performance/csv_bruto' }
           end
         when 'webload'
           filters = {schedule_uuid: @schedules.pluck(:uuid), timestamp: @from..@to}
@@ -2386,6 +2401,8 @@ class ReportsController < ApplicationController
           end
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/performance/dygraphs_webload' }
+            format.json { render json: {results: @results, from: @from.to_i, to: @to.to_i} }
+            format.csv { render file: 'reports/performance/csv_bruto' }
           end
         else
 
@@ -2398,12 +2415,13 @@ class ReportsController < ApplicationController
 
   #RELATORIO PACMAN
   def pacman
-    @type = params[:networks]
-    @position = params[:servers]
+    @horario = Time.now.strftime("%H:%M:%S")
+    @type = params[:networks][0]
+    @position = params[:servers][0]
     #activity = params[:activity]
     #status = params[:status]
-    if @position[0] == 'internos'
-      @nameserver = Nameserver.where(:type => @type[0]).where(:internal => true)
+    if @position == 'internos'
+      @nameserver = Nameserver.where(:type => @type).where(:internal => true)
     else
       @nameserver = Nameserver.where(:internal => false) #type[0]
     end
@@ -2440,7 +2458,7 @@ class ReportsController < ApplicationController
         end
       end
     end
-    @urls=@urls.sort_by{ |a, b| b[:status][:OK]/b[:total]}
+    @urls=@urls.sort_by { |a, b| b[:status][:OK]/b[:total] }
 
     #busca piores sondas
     @probes = {}
@@ -2463,7 +2481,7 @@ class ReportsController < ApplicationController
           end
         end
       end
-      @probes=@probes.sort_by{ |a, b| b[:status][:OK]/b[:total]}
+      @probes=@probes.sort_by { |a, b| b[:status][:OK]/b[:total] }
     else
       @dnsprobes = []
     end
@@ -2510,15 +2528,15 @@ class ReportsController < ApplicationController
     @hash_result = {}
 
     @probes.all.each do |p|
-     @result = Results.where(:schedule_id => Schedule.where(:destination_id => p.id)).where(:metric_id => 3).where('sdavg is not null').order('timestamp DESC').first #metric = throughput HTTP
-     unless @result.nil?
-       @hash_result[p.id]= {} if  @hash_result[p.id].nil?
-       @hash_result[p.id][:name]= p.name
-       @hash_result[p.id][:speed] = '%.2f' % (@result.sdavg * @result.metric.conversion_rate)
-       @hash_result[p.id][:ip] = p.ipaddress #mudar isso aqui
-       @hash_result[p.id][:timestamp] = @result.timestamp
-       p.agent_version.nil? ? @hash_result[p.id][:version] = "" : @hash_result[p.id][:version] = p.agent_version
-     end
+      @result = Results.where(:schedule_id => Schedule.where(:destination_id => p.id)).where(:metric_id => 3).where('sdavg is not null').order('timestamp DESC').first #metric = throughput HTTP
+      unless @result.nil?
+        @hash_result[p.id]= {} if  @hash_result[p.id].nil?
+        @hash_result[p.id][:name]= p.name
+        @hash_result[p.id][:speed] = '%.2f' % (@result.sdavg * @result.metric.conversion_rate)
+        @hash_result[p.id][:ip] = p.ipaddress #mudar isso aqui
+        @hash_result[p.id][:timestamp] = @result.timestamp
+        p.agent_version.nil? ? @hash_result[p.id][:version] = "" : @hash_result[p.id][:version] = p.agent_version
+      end
     end
 
 
@@ -2533,9 +2551,9 @@ class ReportsController < ApplicationController
     @name = params[:name]
 
     @result = Results.where(:schedule_id => Schedule.where(:destination_id => @id))
-                         .where(:metric_id => 3)
-                         .where('sdavg is not null').where('timestamp >= ?', (@timestamp.to_time - 1.day).strftime("%Y-%m-%d %H:%M:%S"))
-                         .order('timestamp ASC') #metric = throughput HTTP
+    .where(:metric_id => 3)
+    .where('sdavg is not null').where('timestamp >= ?', (@timestamp.to_time - 1.day).strftime("%Y-%m-%d %H:%M:%S"))
+    .order('timestamp ASC') #metric = throughput HTTP
 
 
     respond_to do |format|
@@ -3088,14 +3106,14 @@ class ReportsController < ApplicationController
         format.xml { render xml: "<report><status>OK</status></report>" }
       end
     rescue Exception => e
-      Airbrake.notify(e,{
-          :parameters       => airbrake_filter_if_filtering(params.to_hash.merge({xml: params[:report].to_s})),
-          :session_data     => airbrake_filter_if_filtering(airbrake_session_data),
-          :controller       => params[:controller],
-          :action           => params[:action],
-          :url              => airbrake_request_url,
-          :cgi_data         => airbrake_filter_if_filtering(request.env),
-          :user             => airbrake_current_user
+      Airbrake.notify(e, {
+          :parameters => airbrake_filter_if_filtering(params.to_hash.merge({xml: params[:report].to_s})),
+          :session_data => airbrake_filter_if_filtering(airbrake_session_data),
+          :controller => params[:controller],
+          :action => params[:action],
+          :url => airbrake_request_url,
+          :cgi_data => airbrake_filter_if_filtering(request.env),
+          :user => airbrake_current_user
       })
       respond_to do |format|
         format.xml { render xml: "<report><status>ERROR</status><message>#{e.message}</message></report>" }
