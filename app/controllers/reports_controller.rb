@@ -2276,22 +2276,54 @@ class ReportsController < ApplicationController
               order('timestamp ASC')
           @raw_results = query.all.to_enum
           @results = []
+
+          multisite = false
+          if(params[:by_sites].count <= 5 && params[:by_sites][0] == '' && params[:by_dns].count == 1)
+            multisite = true
+          end
+
           @from.all_window_times_until(@to, @window_size.minutes).each do |window|
-            delays = []
+            if multisite
+              delays = {}
+              params[:by_sites].each do |site|
+                delays[site] = []
+              end
+            else
+              delays = []
+            end
+            
             begin
-              while @raw_results.peek.timestamp < window+@window_size.minutes
-                delays << @raw_results.next.delay
+              unless multisite
+                while @raw_results.peek.timestamp < window+@window_size.minutes
+                  delays << @raw_results.next.delay
+                end
+              else
+                while @raw_results.peek.timestamp < window+@window_size.minutes
+                  delays[@raw_results.peek.url] << @raw_results.next.delay
+                end
               end
             rescue StopIteration
               #nothing to do
             end
-            unless delays.count == 0
-              newline = [window, delays.reduce(:+)/delays.count]*@metric.conversion_rate
-              @results << newline
+            unless multisite
+              unless delays.count == 0
+                newline = [window, (delays.reduce(:+)/delays.count)*@metric.conversion_rate]
+                @results << newline
+              else
+                newline = [window, nil]
+                @results << newline
+              end
             else
-              newline = [window, nil]
-              @results << newline
-            end
+                newline = [window]
+                params[:by_sites].each do |site|
+                  unless delays[site].count == 0
+                    newline << delays[site].reduce(:+)/delays[site].count*@metric.conversion_rate
+                  else
+                    newline << nil
+                  end
+                end
+                @results << newline
+            end              
           end
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/performance/dygraphs_dns_multi_delays' }
