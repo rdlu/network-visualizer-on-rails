@@ -1,5 +1,6 @@
 <DNS>
-<% @hash_result.each do |key,value|%>
+<% #teste
+   @hash_result.each do |key,value|%>
 
       <% if key.to_s != 'url' && key.to_s != 'probe' %>
       <CentroServico nome="<%= value[:name][0] %>" ip="<%= key %>" id="<%= value[:id] %>">
