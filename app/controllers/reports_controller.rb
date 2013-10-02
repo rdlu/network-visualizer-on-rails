@@ -2535,6 +2535,13 @@ class ReportsController < ApplicationController
                                     and schedules.destination_id = probes.id and dns_results.updated_at >= '#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
                                     and dns_results.status <> 'OK'
                                     order by timestamp desc limit 20")
+    if @dnsprobe.size < 20
+       @dnsprobe.to_a.concat(DnsResult.find_by_sql("SELECT dns_results.timestamp, probes.name, dns_results.url, dns_results.delay, dns_results.status
+                                    from probes, dns_results, schedules where server = '#{@server}' and dns_results.schedule_uuid = schedules.uuid
+                                    and schedules.destination_id = probes.id and dns_results.updated_at >= '#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
+                                    and dns_results.status == 'OK'
+                                    order by timestamp desc limit #{20 - @dnsprobe.size}"))
+    end
 
     respond_to do |format|
       format.html { render :layout => false }
