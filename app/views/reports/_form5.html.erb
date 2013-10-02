@@ -1,0 +1,34 @@
+
+<%= form_tag(pacman_activity_reports_path, :class => 'form-horizontal', :id => 'report-form5') do %>
+
+    <div class="row-fluid">
+      <h5>Atividade das Sondas</h5>
+      <div class="span4 control-group">
+        <input class="btn btn-primary" type="submit" name="add" id="report-add5" value="Adicionar"  data-toggle="collapse" data-target="#accordion_forms"/>
+      </div>
+    </div>
+<% end %>
+<%= form_tag(pacman_service_activity_reports_path, :class => 'form-horizontal', :id => 'report-form6') do %>
+
+    <div class="row-fluid">
+      <h5>Status do serviço</h5>
+      <div class="span4 control-group">
+        <input class="btn btn-primary" type="submit" name="add" id="report-add6" value="Adicionar"  data-toggle="collapse" data-target="#accordion_forms"/>
+      </div>
+    </div>
+<% end %>
+
+<script>
+
+    jQuery('#report-form5').submit(function (event) {
+        $("html, body").animate({ scrollTop: 0 }, "slow");
+        $("#optbtn").attr('src', '<%= image_path 'opt_btn-right.png' %>');
+        $("#optbtn").attr('name', 'closed');
+    });
+
+    jQuery('#report-form6').submit(function (event) {
+        $("html, body").animate({ scrollTop: 0 }, "slow");
+        $("#optbtn").attr('src', '<%= image_path 'opt_btn-right.png' %>');
+        $("#optbtn").attr('name', 'closed');
+    });
+</script>
