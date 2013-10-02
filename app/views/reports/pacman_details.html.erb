@@ -76,7 +76,7 @@
 
         },
         tooltip: {
-            pointFormat: '<b>{point.percentage:.1f}%</b>'
+            pointFormat: '<b>{point.percentage:.2f}%</b>'
         },
         plotOptions: {
             pie: {
@@ -91,6 +91,9 @@
                 showInLegend: true,
                 startAngle:90
             }
+        },
+        credits: {
+            enabled: false
         },
         series: [{
             type: 'pie',
