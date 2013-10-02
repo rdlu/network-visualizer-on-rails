@@ -21,10 +21,13 @@ Sites:; <%= params[:by_sites].nil? || params[:by_sites][0] == '' ? "Todos testad
 <% if @metric.plugin != 'rtt' %>
 DATA; DOWNLOAD; UPLOAD
 <% @raw_results.each do |res| %>
-<%= res.timestamp.strftime("%b %d %Y %H:%M:%S %z") %>;<%= res.pretty_scalar_download == "null" ? '' : res.pretty_scalar_download %>;<%= res.pretty_scalar_upload %>
+<%= res.timestamp.strftime("%b %d %Y %H:%M:%S %z") %>;<%= res.pretty_scalar_download == "null" ? '' : res.pretty_scalar_download %>;<%= res.pretty_scalar_upload == "null" ? '' : res.pretty_scalar_upload %>
 <% end %>
 <% else %>
-else do if
+DATA; RTT
+<% @raw_results.each do |res| %>
+<%= res.timestamp.strftime("%b %d %Y %H:%M:%S %z") %>;<%= res.pretty_scalar_upload == "null" ? '' : res.pretty_scalar_upload %>
+<% end %>
 <% end %>
 <% else %>
 DATA; <%= @variations.map { |x| "DOWNLOAD #{x.upcase}, UPLOAD #{x.upcase}" }.join(';') %>
@@ -48,7 +51,7 @@ DATA; TEMPO DE RESPOSTA
 <% when 'dns_detail' %>
 DATA; <%= DnsResult.possible_status.drop(1).join(';') %>
 <% @results.each do |res| %>
-<%= res[0].strftime('%Y-%m-%d %H:%M:%S %Z') %>;<%= res.drop(3).join(';') %>
+<%= res[0].to_i %>000;<%= res.drop(3).join(';') %>
 <% end %>
 
 <% when 'dns_efficiency' %>
@@ -70,9 +73,7 @@ DATA; <%= @variations.join(';').upcase.gsub(/[_]/, ' ') %>
 <% end %>
 
 <% when 'kpi' %>
-<%= @raw_results.class %>
-<%= @results.class %>
-<%= @metric.view_unit %>
+KPI
 <% end %>
 
 
