@@ -3123,7 +3123,7 @@ class ReportsController < ApplicationController
 
   def smartrate
     #xml  <server> e <url>
-    @dnsresul = DnsResult.where("url is not null").where("timestamp >= ?", (Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S"))
+    @dnsresul = DnsResult.where("url is not null").where("timestamp >= ?", (Time.now - 7.days).strftime("%Y-%m-%d %H:%M:%S"))
 
     @hash_result = {}
     @dnsresul.each do |dns|
@@ -3136,9 +3136,10 @@ class ReportsController < ApplicationController
       @hash_result[dns.server.to_sym][:id] = dns.id if @hash_result[dns.server.to_sym][:id].nil?
       @hash_result[dns.server.to_sym][:timestamp] = dns.timestamp if @hash_result[dns.server.to_sym][:timestamp].nil?
       site = Site.where(:url => dns.url).select('id')
-      unless site.empty? #TO-DO: add site q não esta cadastrado
-
-
+      if site.empty?
+        Site.create(:url => dns.url, :vip => false)
+        site = Site.where(:url => dns.url).select('id')
+      end
       @hash_result[:url][site[0][:id].to_s.to_sym] = {} if @hash_result[:url][site[0][:id].to_s.to_sym].nil?
       @hash_result[:url][site[0][:id].to_s.to_sym][:name] = dns.url.to_sym
       @hash_result[:url][site[0][:id].to_s.to_sym][:total] = 0 if @hash_result[:url][site[0][:id].to_s.to_sym][:total].nil?
@@ -3157,12 +3158,11 @@ class ReportsController < ApplicationController
           @hash_result[:url][site[0][:id].to_s.to_sym][:status][p.to_sym] += 1
         end
       end
-      end
     end
     #xml <sonda>
     @dnsprobes = DnsResult.find_by_sql("SELECT  dns_results.delay,probes.id, dns_results.server,probes.name, dns_results.status, probes.type
                                       from probes, dns_results, schedules where dns_results.schedule_uuid = schedules.uuid
-                                      and schedules.destination_id = probes.id and dns_results.updated_at >= '#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
+                                      and schedules.destination_id = probes.id and dns_results.updated_at >= '#{(Time.now - 7.days).strftime("%Y-%m-%d %H:%M:%S")}'
                                       order by timestamp desc")
 
     @hash_result[:probe] = {}
@@ -3188,7 +3188,7 @@ class ReportsController < ApplicationController
     Nameserver.all.each do |ns|
       @dnsfails = DnsResult.find_by_sql("SELECT dns_results.server, dns_results.timestamp, probes.name, dns_results.url, dns_results.delay, dns_results.status
                                       from probes, dns_results, schedules where server='#{ns.address}' and dns_results.schedule_uuid = schedules.uuid
-                                      and schedules.destination_id = probes.id and dns_results.updated_at >= '#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
+                                      and schedules.destination_id = probes.id and dns_results.updated_at >= '#{(Time.now - 7.days).strftime("%Y-%m-%d %H:%M:%S")}'
                                       and dns_results.status <> 'OK'
                                       order by timestamp desc limit 20")
 
