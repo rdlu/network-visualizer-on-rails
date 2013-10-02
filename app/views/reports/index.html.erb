@@ -12,7 +12,8 @@
                 <li class="active"><a href="#form_1" data-toggle="tab">Formato 1</a></li>
                 <li><a href="#form_2" data-toggle="tab">Formato 2</a></li>
                 <li><a href="#form_3" data-toggle="tab">Performance</a></li>
-                <li><a href="#form_4" data-toggle="tab">SmartRate</a></li>
+                <li><a href="#form_4" data-toggle="tab">DNS</a></li>
+                <li><a href="#form_5" data-toggle="tab">Monitoração</a></li>
               </ul>
               <div class="tab-content tab-content-border" style="min-height: 50px !important">
                 <div class="tab-pane active" id="form_1">
@@ -21,6 +22,7 @@
                 <div class="tab-pane"  id="form_2"> <%= render 'form2' %> </div>
                 <div class="tab-pane"  id="form_3"> <%= render 'form3' %></div>
                 <div class="tab-pane"  id="form_4">  <%= render 'form4' %></div>
+                <div class="tab-pane"  id="form_5">  <%= render 'form5' %></div>
               </div>
             </div>
           </div>
@@ -278,7 +280,7 @@
         jQuery('#report-form4').submit(function (event) {
             event.preventDefault();
 
-            jQuery.ajax("<%= smartrate_reports_url %>/", {
+            jQuery.ajax("<%= pacman_reports_url %>/", {
                     beforeSend: function () {
                         jQuery('#graphs-area').prepend('<div id=\"row-loading\" class="row-fluid"><div   class=\"span12\"><div id=\"box-loading\" style="height:100px;"><%=image_tag 'ajax-loader.gif' %> <strong>Requisitando o relatório selecionado, aguarde...</strong></div></div></div>');
                     },

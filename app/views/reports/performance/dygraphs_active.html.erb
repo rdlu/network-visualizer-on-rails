@@ -6,7 +6,7 @@
         <h5 style="text-align: center">Origem: <%= @source.name %> | Destino: <%= @destination.name %> |
           <span id="graph-date-<%=@idName%>">Data: <%= @from.strftime('%Y-%m-%d %H:%M:%S %Z') %> à <%= @to.strftime('%Y-%m-%d %H:%M:%S %Z') %></span></h5>
         <% else %>
-        <h5 style="text-align: center">Gráfico Multiprobe <%= @metric.name %> |
+        <h5 style="text-align: center">Gráfico Multiprobe - <%= @metric.name %> |
           <span id="graph-date-<%=@idName%>">Data: <%= @from.strftime('%Y-%m-%d %H:%M:%S %Z') %> à <%= @to.strftime('%Y-%m-%d %H:%M:%S %Z') %></span></h5>
         <h6 style="text-align: center">
           <small><strong>Filtros:</strong> 

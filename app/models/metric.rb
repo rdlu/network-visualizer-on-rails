@@ -56,10 +56,10 @@ class Metric < ActiveRecord::Base
 
   def metric_types
     [
-        ['Métricas ativas', 'active'],
+        ['Métricas Ativas', 'active'],
         ['DNS', 'dns'],
         ['DNS Errors', 'dns_detail'],
-        ['Eficiencia DNS', 'dns_efficiency'],
+        ['Eficiência DNS', 'dns_efficiency'],
         ['Carga Web', 'webload'],
         ['KPI', 'kpi'],
         ['Outra', '']
