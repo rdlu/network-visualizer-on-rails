@@ -10,8 +10,8 @@
                 <%end%>
             <%end%>
           </h3>
-            <div id="update_<%=@position%><%=@position=="internos" ? @type : ''%>">
-              <label>Dados dos últimos 30 minutos (atualizado às <%=@horario%>)</label>
+            <div id="update_<%=@position%><%=@position=="internos" ? @type : ''%>"> <div>
+              <span class="label-inverted">Dados dos últimos 30 minutos (atualizado às <%=@horario%>)</span>    </div>
               <div id="btn_update_<%=@position%><%=@position=="internos" ? @type : ''%>" class="btn btn-primary" onclick="reload('<%=@position%>','<%=@position=="internos" ? @type : ''%>')">Atualizar</div>
             </div>
       </div>
@@ -63,8 +63,8 @@
     </div>
   </div>
   </div>
-  <div style="margin-top:20px">
-    <div class="span6">
+  <div>
+    <div class="span6" style="margin-top:15px">
       <div id="table-div">
         <table class="table table-bordered table-hover table-condensed">
           <thead>
@@ -95,7 +95,7 @@
         </table>
       </div>
     </div>
-    <div class="span6" style="margin-left:5px;">
+    <div class="span6" style="margin-left:5px;margin-top:15px">
         <table class="table table-bordered table-hover table-condensed">
           <thead>
           <tr>
