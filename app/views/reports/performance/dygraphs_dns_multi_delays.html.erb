@@ -41,8 +41,11 @@
     {
         labels: ["Data", <%= @labels.map{|x|"\"#{x}\""}.join(', ').chomp(', ').html_safe %>],
         labelsKMB: false,
+        legend: "always",
+        axisLabelFontSize: 10,
         labelsDiv: document.getElementById('legend-<%=@idName%>'),
         ylabel: "<%=@metric.name%> (<%=@metric.view_unit%>)",
+        yLabelWidth: 14,
         dateWindow: [Date.parse("<%=@from.strftime("%b %d, %Y %H:%M:%S %z")%>"),Date.parse("<%=@to.strftime("%b %d, %Y %H:%M:%S %z")%>")]
     });
     

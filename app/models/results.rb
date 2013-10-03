@@ -85,10 +85,10 @@ class Results < ActiveRecord::Base
   end
 
   def pretty_scalar_download
-    "#{self.download} #{self.metric.raw_db_unit}".to_unit(self.metric.raw_view_unit).scalar
+    self.download*self.metric.conversion_rate
   end
 
   def pretty_scalar_upload
-    "#{self.upload} #{self.metric.raw_db_unit}".to_unit(self.metric.raw_view_unit).scalar
+    self.upload*self.metric.conversion_rate
   end
 end

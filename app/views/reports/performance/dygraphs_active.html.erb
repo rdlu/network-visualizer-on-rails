@@ -47,7 +47,10 @@
             {
                 labels: ["Data", <%= @variations.map{|x| "\"Download #{x.upcase}\",\"Upload #{x.upcase}\""}.join(', ').html_safe %>],
                 labelsDiv: document.getElementById('legend-<%=@idName%>'),
+                legend: "always",
+                axisLabelFontSize: 10,
                 ylabel: "<%=@metric.name%> (<%=@metric.view_unit%>)",
+                yLabelWidth: 14,
                 dateWindow: [Date.parse("<%=@from.strftime("%b %d, %Y %H:%M:%S %z")%>"),Date.parse("<%=@to.strftime("%b %d, %Y %H:%M:%S %z")%>")]
             }
     );

@@ -24,118 +24,48 @@
   </div>
 </div>
 <script type="text/javascript">
-    graphs["<%=@idName%>"] = new Dygraph(
-            document.getElementById("chart-<%=@idName%>"),
-            <% case @metric.plugin  %>
-            <% when "jitter" %>
-            [
-                <% @raw_results.each do |res| %>
-                [new Date("<%=res.timestamp.strftime("%b %d, %Y %H:%M:%S %z")%>"), "<%=res.uuid %>", <%=res.pretty_scalar_download %> , <%=res.pretty_scalar_upload %>]<%=(res!=@raw_results.last)?",":""%>
-                <% end %>
-            ],
-            {
-                labels: ["Data", "uuid", "Download", "Upload"],
-                visibility: [false, true, true],
-                labelsKMB: false,
-                labelsDiv: document.getElementById('legend-<%=@idName%>'),
-                ylabel: "<%=@metric.name%> (<%=@metric.view_unit%>)",
-                dateWindow: [Date.parse("<%=@from.strftime("%b %d, %Y %H:%M:%S %z")%>"), Date.parse("<%=@to.strftime("%b %d, %Y %H:%M:%S %z")%>")],
-                clickCallback: function (e, x, pts) {
-                    console.log(graphs["<%=@idName%>"].file_[pts[0].idx]);
-                }
+<% case @metric.plugin %>
+<% when 'rtt' %>
+graphData["<%=@idName%>"] = [
+        <% @raw_results.each do |res| %>
+        [new Date("<%= res.timestamp.strftime("%b %d, %Y %H:%M:%S %z")%>"),<%=res.pretty_scalar_upload%>]<%=(res!=@results.last)?",":""%>
+        <% end %>
+    ];
+<% else %>
+graphData["<%=@idName%>"] = [
+        <% @raw_results.each do |res| %>
+        [new Date("<%= res.timestamp.strftime("%b %d, %Y %H:%M:%S %z")%>"),<%= res.pretty_scalar_download %>,<%= res.pretty_scalar_upload %>]<%=(res!=@results.last)?",":""%>
+        <% end %>
+    ];
+<% end %>
 
+graphs["<%=@idName%>"] = new Dygraph(document.getElementById("chart-<%=@idName%>"),
+    graphData["<%=@idName%>"],
+    {
+        labels: <%= @labels.unshift('Data', 'uuid').to_json %>,
+        visibility: <%= ([true]*@labels.count).unshift(false).to_json %>,
+        labelsDiv: document.getElementById('legend-<%=@idName%>'),
+        legend: "always",
+        axisLabelFontSize: 10,
+        ylabel: "<%=@metric.name%> (<%=@metric.view_unit%>)",
+        yLabelWidth: 14,
+        dateWindow: [Date.parse("<%=@from.strftime("%b %d, %Y %H:%M:%S %z")%>"), Date.parse("<%=@to.strftime("%b %d, %Y %H:%M:%S %z")%>")],
+        clickCallback: function (e, x, pts) {
+            if(params["<%=@idName%>"] != undefined) {
+              jQuery(me).text("Atualizando os dados");
+              jQuery.post('<%=performance_reports_url%>.json', params["<%=@idName%>"]).done(function (dataReturned) {
+                jQuery.each(dataReturned.results, function(i,val) {
+                  val[0] = new Date(val[0]);
+                });
+                graphData["<%=@idName%>"].shift();
+                graphData["<%=@idName%>"]= graphData["<%=@idName%>"].concat(dataReturned.results);
+                jQuery("#graph-date-<%=@idName%>").text("Data: "+moment(graphData["<%=@idName%>"][0][0]).format('YYYY-MM-DD HH:mm:ss Z')+" à "+moment.unix(dataReturned.to).format('YYYY-MM-DD HH:mm:ss Z'));
+                graphs["<%=@idName%>"].updateOptions({'file':graphData["<%=@idName%>"],dateWindow: [graphData["<%=@idName%>"][0][0],moment.unix(dataReturned.to)]});
+                var tempUpdtObj2 = jQuery.extend({},tempUpdtObj["<%=@idName%>"]);
+                tempUpdtObj2.endDate = moment().add('m', <%= @window_size %>);
+                jQuery("#update-<%=@idName%>").regressiveTimer(tempUpdtObj2);
+              });
             }
-                    <% when "loss" %>
-                    [
-                    <% @raw_results.each do |res| %>
-                    [new Date("<%=res.timestamp.strftime("%b %d, %Y %H:%M:%S %z")%>"), "<%=res.uuid %>", <%=res.download %> , <%=res.upload %>]<%=(res!=@raw_results.last)?",":""%>
-                    <% end %>
-                    ],
-            {
-                labels: ["Data", "uuid", "Download", "Upload"],
-                visibility: [false, true, true],
-                labelsKMB: false,
-                labelsDiv: document.getElementById('legend-<%=@idName%>'),
-                ylabel: "<%=@metric.name%> (<%=@metric.view_unit%>)",
-                dateWindow: [Date.parse("<%=@from.strftime("%b %d, %Y %H:%M:%S %z")%>"), Date.parse("<%=@to.strftime("%b %d, %Y %H:%M:%S %z")%>")],
-                clickCallback: function (e, x, pts) {
-                    console.log(graphs["<%=@idName%>"].file_[pts[0].idx]);
-                }
-            }
-                    <% when 'rtt' %>
-                    [
-                    <% @raw_results.each do |res| %>
-                    [new Date("<%=res.timestamp.strftime("%b %d, %Y %H:%M:%S %z")%>"), "<%=res.uuid %>", <%=res.pretty_scalar_upload %>]<%=(res!=@raw_results.last)?",":""%>
-                    <% end %>
-                    ],
-            {
-                labels: ["Data", "uuid", "RTT"],
-                labelsKMB: false,
-                labelsDiv: document.getElementById('legend-<%=@idName%>'),
-                ylabel: "<%=@metric.name%> (<%=@metric.view_unit%>)",
-                visibility: [false, true],
-                dateWindow: [Date.parse("<%=@from.strftime("%b %d, %Y %H:%M:%S %z")%>"), Date.parse("<%=@to.strftime("%b %d, %Y %H:%M:%S %z")%>")],
-                clickCallback: function (e, x, pts) {
-                    console.log(graphs["<%=@idName%>"].file_[pts[0].idx]);
-                }
-            }
-                    <% else %>
-                    [
-                    <% @raw_results.each do |res| %>
-                    [new Date("<%=res.timestamp.strftime("%b %d, %Y %H:%M:%S %z")%>"), "<%=res.uuid %>", <%=res.sdavg%>, <%=res.dsavg%>]<%=(res!=@raw_results.last)?",":""%>
-                    <% end %>
-                    ],
-            {
-                labels: ["Data", "uuid", "Download", "Upload"],
-                visibility: [false, true, true],
-                labelsDiv: document.getElementById('legend-<%=@idName%>'),
-                labelsKMG2: true,
-                ylabel: "<%=@metric.name%> (<%=@metric.db_unit%>)",
-                dateWindow: [Date.parse("<%=@from.strftime("%b %d, %Y %H:%M:%S %z")%>"), Date.parse("<%=@to.strftime("%b %d, %Y %H:%M:%S %z")%>")],
-                clickCallback: function (e, x, pts) {
-                    console.log(pts);
-                    jQuery.ajax({
-                        url: "<%=show_kpi_url%>",
-                        type: 'post',
-                        dataType: 'json',
-                        data: {
-                            uuid: graphs["<%=@idName%>"].file_[pts[0].idx][1]
-                        },
-                        success: function (kpi) {
-                            if (!jQuery.isEmptyObject(kpi)) {
-                                var extras = '';
-                                extras += '<b>Timestamp: </b>' + moment(kpi.timestamp).format('YYYY-MM-DD HH:mm:ss Z') + '<br />';
-                                extras += '<b>LAC: </b>' + kpi.lac + '<br />' + '<b>CELLID: </b>' + kpi.cell_id + '<br />';
-                                extras += '<b>Marca: </b>' + kpi.brand + '<br />' + '<b>Modelo: </b>' + kpi.model + '<br />';
-                                extras += '<b>Tec. Conex.: </b>' + kpi.conn_tech + '<br />' + '<b>Sinal: </b>' + kpi.signal + 'dB<br />';
-                                extras += '<b>Atraso DNS: </b>' + kpi.dns_latency + 'ms<br />';
-                                jQuery.pnotify({
-                                    title: "KPI Info",
-                                    text: extras,
-                                    type: 'success'
-                                });
-                            } else {
-                                jQuery.pnotify({
-                                    title: "KPI Info",
-                                    text: "Este ponto não possui informação KPI disponíveis"
-                                });
-                            }
-
-                        },
-                        error: function (status, msg, error) {
-                            jQuery.pnotify({
-                                title: "KPI Info",
-                                text: "Algum erro ocorreu na hora de consultar os KPIs: " + msg,
-                                type: 'error'
-                            });
-                        },
-                        headers: {
-                            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-                        }
-                    });
-                }
-            }
-            <% end %>
-    );
-
+        }
+    });
 </script>
