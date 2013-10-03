@@ -47,7 +47,7 @@ graphs["<%=@idName%>"] = new Dygraph(
     });
 params["<%=@idName%>"] = <%= params.to_json.html_safe %>;
 params["<%=@idName%>"].from = new Date(<%=@results.last[0].to_i unless @results.last.nil? %>000);
-var tempUpdtObj = {
+tempUpdtObj["<%=@idName%>"] = {
   endDate: moment().add('m', <%= @window_size %>),
   callBack: function (me) {
     if(params["<%=@idName%>"] != undefined) {
@@ -60,12 +60,12 @@ var tempUpdtObj = {
         graphData["<%=@idName%>"]= graphData["<%=@idName%>"].concat(dataReturned.results);
         jQuery("#graph-date-<%=@idName%>").text("Data: "+moment(graphData["<%=@idName%>"][0][0]).format('YYYY-MM-DD HH:mm:ss Z')+" à "+moment.unix(dataReturned.to).format('YYYY-MM-DD HH:mm:ss Z'));
         graphs["<%=@idName%>"].updateOptions({'file':graphData["<%=@idName%>"],dateWindow: [graphData["<%=@idName%>"][0][0],moment.unix(dataReturned.to)]});
-        var tempUpdtObj2 = jQuery.extend({},tempUpdtObj);
+        var tempUpdtObj2 = jQuery.extend({},tempUpdtObj["<%=@idName%>"]);
         tempUpdtObj2.endDate = moment().add('m', <%= @window_size %>);
         jQuery("#update-<%=@idName%>").regressiveTimer(tempUpdtObj2);
       });
     }
   }
 } 
-jQuery("#update-<%=@idName%>").regressiveTimer(jQuery.extend({},tempUpdtObj));
+jQuery("#update-<%=@idName%>").regressiveTimer(jQuery.extend({},tempUpdtObj["<%=@idName%>"]));
 </script>
