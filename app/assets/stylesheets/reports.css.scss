@@ -47,26 +47,25 @@ form {
 .detailsModal{
   margin-left: -42%;width: 85%;
 }
+
+#legendas{
+  position:absolute;right:0;bottom:0; text-align:left;
+}
+
 /* When the window is less than 979px, the new css rules will be applied */
 @media (max-width: 979px){
-  #optbtn{
-    position: relative;
-  }
-  #accordion_forms{
-    margin-top:-150px;
-    position: relative;
-  }
   #header{
     margin-top:-70px;
   }
   #tabs{
     width:auto;
   }
-  #graphs-area{
-    margin-top:-150px;
-  }
+
   .detailsModal{
     margin-left: 1;width: auto;
+  }
+  #legendas{
+    position:relative;text-align: center;margin-top:5px;
   }
 }
 

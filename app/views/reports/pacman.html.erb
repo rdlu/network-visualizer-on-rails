@@ -1,6 +1,6 @@
 <div id="box-pacman-<%=@position%><%=@position=="internos" ? @type : ''%>" class="row-fluid">
-  <div class="row-fluid span12 pagination-centered" style="margin:0">
-      <div class="span6" style="min-width: 440px">
+  <div class="span12 pagination-centered" style="margin:0; position:relative">
+      <div class="span6">
           <h3>DNS <%=@position%>
             <% unless @position=="externos"%>
                 <% if @type=="fixed"%>
@@ -15,9 +15,8 @@
               <div id="btn_update_<%=@position%><%=@position=="internos" ? @type : ''%>" class="btn btn-primary" onclick="reload('<%=@position%>','<%=@position=="internos" ? @type : ''%>')">Atualizar</div>
             </div>
       </div>
-      <div class="span6" style="margin-left:5px;min-width:440px">
-        <div id="legendas" style="text-align: left;margin-top:50px">
-          <div class="row-fluid">
+      <div id="legendas" class="span6">
+          <div>
             <span class="label" style="background-color:#F5F5F5;border: 1px solid #D4D4D4;color:#274B6D;line-height: 20px;">&nbsp;VIP&nbsp;</span>
           </div>
               <ul class="breadcrumb">
@@ -36,11 +35,10 @@
                 <li><span class="label" style="background-color:#000000;">&nbsp;OTHER&nbsp;</span>
                 </li>
               </ul>
-        </div>
       </div>
   </div>
-  <div class="row-fluid pagination-centered"  style="margin-top:10px">
-    <div class="span6" style="min-width:440px">
+  <div class="pagination-centered"  style="margin-top:10px">
+    <div class="span6">
         <h4>Primários</h4>
         <div id="primarios_<%=@position%><%=@position=="internos" ? @type : ''%>">
             <% @servers.each do |server, value| %>
@@ -52,7 +50,7 @@
             <% end %>
           </div>
     </div>
-  <div class="span6" style="margin-left:5px;min-width:440px">
+  <div class="span6" style="margin-left:5px;">
     <h4>Secundários</h4>
     <div id="secundarios_<%=@position%><%=@position=="internos" ? @type : ''%>" class="row-fluid">
       <% @servers.each do |server, value| %>
@@ -65,8 +63,8 @@
     </div>
   </div>
   </div>
-  <div class="row-fluid" style="margin-top:20px">
-    <div class="span6" style="min-width:440px">
+  <div style="margin-top:20px">
+    <div class="span6">
       <div id="table-div">
         <table class="table table-bordered table-hover table-condensed">
           <thead>
@@ -97,7 +95,7 @@
         </table>
       </div>
     </div>
-    <div class="span6" style="margin-left:5px; min-width:440px">
+    <div class="span6" style="margin-left:5px;">
         <table class="table table-bordered table-hover table-condensed">
           <thead>
           <tr>
@@ -152,15 +150,15 @@
         if(primarios.length ==0)
             jQuery('#primarios_<%=@position%><%=@position=="internos" ? @type : ''%>').html('').append($("<h5 />").text('Não há servidores nesta categoria.'));
         if(primarios.length <=6)
-            $('.pacmanchartsP_<%=@position%><%=@position=="internos" ? @type : ''%>').attr('style', 'width:' + 100/primarios.length +'%;height:200px;float:left');
+            $('.pacmanchartsP_<%=@position%><%=@position=="internos" ? @type : ''%>').attr('style', 'min-width:90px;width:' + 100/primarios.length +'%;height:200px;float:left');
         else
-            $('.pacmanchartsP_<%=@position%><%=@position=="internos" ? @type : ''%>').attr('style', 'width:20%;height:150px;float:left');
+            $('.pacmanchartsP_<%=@position%><%=@position=="internos" ? @type : ''%>').attr('style', 'min-width:90px;width:20%;height:150px;float:left');
         if(secundarios.length ==0)
             jQuery('#secundarios_<%=@position%><%=@position=="internos" ? @type : ''%>').html('').append($("<h5 />").text('Não há servidores nesta categoria.'));
         if(secundarios.length <=6)
-            $('.pacmanchartsS_<%=@position%><%=@position=="internos" ? @type : ''%>').attr('style', 'width:' + 100/secundarios.length +'%;height:200px;float:left;');
+            $('.pacmanchartsS_<%=@position%><%=@position=="internos" ? @type : ''%>').attr('style', 'min-width:90px;width:' + 100/secundarios.length +'%;height:200px;float:left;');
         else
-            $('.pacmanchartsS_<%=@position%><%=@position=="internos" ? @type : ''%>').attr('style', 'width:20%%;height:150px;float:left;');
+            $('.pacmanchartsS_<%=@position%><%=@position=="internos" ? @type : ''%>').attr('style', 'min-width:90px;width:20%%;height:150px;float:left;');
 
     });
 
@@ -291,7 +289,7 @@
                     jQuery("#box-pacman-"+position+type).empty();
                 }
 
-                jQuery('#box-pacman-'+position+type).prepend(result);
+                jQuery('#box-pacman-'+position+type).replaceWith(result);
 
             },
             //dataType: 'json',
