@@ -2488,7 +2488,7 @@ class ReportsController < ApplicationController
     end
 
     #busca piores urls
-    @dnsresul = DnsResult.where(:server => @nameserver.pluck(:address)).where("url is not null").where("updated_at >= ?", (Time.now - 8.days).strftime("%Y-%m-%d %H:%M:%S"))
+    @dnsresul = DnsResult.where(:server => @nameserver.pluck(:address)).where("url is not null").where("updated_at >= ?", (Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S"))
     #'#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
 
 
@@ -2526,7 +2526,7 @@ class ReportsController < ApplicationController
     unless @nameserver.empty?
       @dnsprobes = DnsResult.find_by_sql("SELECT  probes.name, dns_results.status, probes.type
                                       from probes, dns_results, schedules where dns_results.server IN #{@nameserver.pluck(:address).to_s.html_safe.gsub("[", "(").gsub("]", ")").gsub("\"", "\'")} and dns_results.schedule_uuid = schedules.uuid
-                                      and schedules.destination_id = probes.id and dns_results.updated_at >= '#{(Time.now - 8.days).strftime("%Y-%m-%d %H:%M:%S")}'
+                                      and schedules.destination_id = probes.id and dns_results.updated_at >= '#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
                                       order by timestamp desc") #'#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
 
       @dnsprobes.each do |probe|
@@ -2561,13 +2561,13 @@ class ReportsController < ApplicationController
 
     @dnsprobe = DnsResult.find_by_sql("SELECT dns_results.timestamp, probes.name, dns_results.url, dns_results.delay, dns_results.status
                                     from probes, dns_results, schedules where server = '#{@server}' and dns_results.schedule_uuid = schedules.uuid
-                                    and schedules.destination_id = probes.id and dns_results.updated_at >= '#{(Time.now - 8.days).strftime("%Y-%m-%d %H:%M:%S")}'
+                                    and schedules.destination_id = probes.id and dns_results.updated_at >= '#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
                                     and dns_results.status <> 'OK'
                                     order by timestamp desc limit 20")
     if @dnsprobe.size < 20
        @dnsprobe.to_a.concat(DnsResult.find_by_sql("SELECT dns_results.timestamp, probes.name, dns_results.url, dns_results.delay, dns_results.status
                                     from probes, dns_results, schedules where server = '#{@server}' and dns_results.schedule_uuid = schedules.uuid
-                                    and schedules.destination_id = probes.id and dns_results.updated_at >= '#{(Time.now - 8.days).strftime("%Y-%m-%d %H:%M:%S")}'
+                                    and schedules.destination_id = probes.id and dns_results.updated_at >= '#{(Time.now - 30.minutes).strftime("%Y-%m-%d %H:%M:%S")}'
                                     and dns_results.status = 'OK'
                                     order by timestamp desc limit #{20 - @dnsprobe.size}"))
     end
