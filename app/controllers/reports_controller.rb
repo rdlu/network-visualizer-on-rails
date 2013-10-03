@@ -2040,6 +2040,12 @@ class ReportsController < ApplicationController
               where(:schedule_id => schedule.id).
               where(:metric_id => @metric.id).
               where(:timestamp => @from..@to).order('timestamp ASC').all
+          @labels = case @metric.plugin
+          when 'rtt'
+            %w(RTT)
+          else
+            %w(Download Upload)
+          end
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/performance/dygraphs_bruto' }
             format.json { render json: {results: @raw_results, from: @from.to_i, to: @to.to_i} }
