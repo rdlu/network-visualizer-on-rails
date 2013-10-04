@@ -1,18 +1,31 @@
-<h2><%= t(".title") %></h2>
+<div class="row-fluid">
+  <div class="span12" style="text-align: center;">
+    <h1> Cadastro NetMetric MoM</h1>
+  </div>
 
-<%= form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f| %>
-  <%= devise_error_messages! %>
+  <%= form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f| %>
+      <%= devise_error_messages! %>
 
-  <div><%= f.label :email %><br />
-  <%= f.email_field :email %></div>
+      <div class="span4 offset4" style="text-align: center;">
+        <div class="field">
+          <%= f.email_field :email, :placeholder => "Digite seu E-Mail", :class => 'input-block-level' %>
+        </div>
 
-  <div><%= f.label :password %><br />
-  <%= f.password_field :password %></div>
+        <div class="field">
+          <%= f.password_field :password, :placeholder => "Digite uma Senha", :class => 'input-block-level' %>
+        </div>
 
-  <div><%= f.label :password_confirmation %><br />
-  <%= f.password_field :password_confirmation %></div>
+        <div class="field">
+          <%= f.password_field :password_confirmation, :placeholder => "Repita a sua Senha", :class => 'input-block-level' %>
+        </div>
+        <br/>
 
-  <div><%= f.submit t(".submit") %></div>
-<% end %>
+        <div><%= f.submit "Cadastrar", :class => 'btn btn-primary btn-large btn-block' %></div>
+        <br/>
+        <!--<%= render "devise/shared/links" %>-->
+        <div><%= link_to "Voltar", :back, :class => 'btn btn-inverse btn-large btn-block' %></div>
+      </div>
+  <% end %>
 
-<%= render "devise/shared/links" %>
+
+</div>

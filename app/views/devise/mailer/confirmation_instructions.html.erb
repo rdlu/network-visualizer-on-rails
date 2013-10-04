@@ -1,5 +1,30 @@
-<p>Welcome <%= @resource.email %>!</p>
+<html>
+<body>
+<% unless @resource.adm_block %>
+    <p>Bem-vindo,  <%= @resource.email %>!</p>
 
-<p>You can confirm your account email through the link below:</p>
+    <p>Você foi cadastrado no sistema NetMetric MoM. Confirme sua conta de e-mail através do link abaixo:</p>
 
-<p><%= link_to 'Confirm my account', confirmation_url(@resource, :confirmation_token => @resource.confirmation_token) %></p>
+    <p><%= link_to 'Confirmar minha conta.', confirmation_url(@resource, :confirmation_token => @resource.confirmation_token) %></p>
+
+    <p>Aṕos a confirmação <b>altere a sua senha</b>.<br/>
+      Dados para seu primeiro login no sistema:<br/>
+      Login: <%= @user.email %> <br/>
+      Senha(provisória): <%= @user.password %>
+    </p>
+
+    <p>Atenciosamente,</p>
+    <i>Equipe NetMetric.</i>
+
+<% else %>
+    <p>Atenção, <%= @resource.email %>!</p>
+
+    <p>Você foi bloqueado, para reativar sua conta, entre em contato com o Administrador.</p>
+
+    <p>Atenciosamente,</p>
+    <i>Equipe NetMetric.</i>
+
+<% end %>
+
+</body>
+</html>
