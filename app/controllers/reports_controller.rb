@@ -2047,18 +2047,25 @@ class ReportsController < ApplicationController
             %w(Download Upload)
           end
           respond_to do |format|
-            format.html { render :layout => false, file: 'reports/performance/dygraphs_bruto' }
-            format.json { render json: {results: @raw_results, from: @from.to_i, to: @to.to_i} }
+            format.html { render :layout => false, file: 'reports/performance/dygraphs_active' }
+            format.json { render json: 
+              {
+                results: (@metric.plugin == 'rtt') ? @raw_results.map{|x| [x.timestamp.strftime("%b %d, %Y %H:%M:%S %z"),x.uuid,x.pretty_scalar_upload]} : @raw_results.map{|x| [x.timestamp.strftime("%b %d, %Y %H:%M:%S %z"),x.uuid,x.pretty_scalar_download,x.pretty_scalar_upload]}, 
+                from: @from.to_i,
+                to: @to.to_i
+              }
+            }
             format.csv { render file: 'reports/performance/csv_bruto' }
           end
         when 'dns'
           filters = {schedule_uuid: schedule.uuid, timestamp: @from..@to}
           filters.merge!({server: params[:by_dns]}) unless params[:by_dns].nil? || params[:by_dns][0] == ''
           filters.merge!({url: params[:by_sites]}) unless params[:by_sites].nil? || params[:by_sites][0] == ''
-          @raw_results = DnsResult.
+          query = DnsResult.
               where(filters).order('timestamp ASC')
-
+          @raw_results = query.all.to_enum
           @labels = ["Tempo de resposta"]
+          @results = []
           multisite = false
           if(params[:by_sites].count <= 5 && params[:by_sites][0] != '' && params[:by_dns].count == 1)
             multisite = true
@@ -2325,7 +2332,7 @@ class ReportsController < ApplicationController
             end
           end
           respond_to do |format|
-            format.html { render :layout => false, file: 'reports/performance/dygraphs_active' }
+            format.html { render :layout => false, file: 'reports/performance/dygraphs_multi_active' }
             format.json { render json: {results: @results, from: @from.to_i, to: @to.to_i} }
             format.csv { render file: 'reports/performance/csv_bruto' }
           end
@@ -2980,7 +2987,8 @@ class ReportsController < ApplicationController
       #schedule_uuid = report.xpath("report/uuid").children.to_s
       #enquanto o william nao atualiza os agentes
       probe = Probe.where(ipaddress: user)
-      schedule_uuid = Schedule.where(destination_id: probe).first.uuid
+      schedule = Schedule.where(destination_id: probe).first
+      schedule_uuid = schedule.uuid
       probe.signal += 1
       probe.save!
       uuid = report.xpath("report/meas_uuid").children.to_s
@@ -3166,6 +3174,7 @@ class ReportsController < ApplicationController
                                                             size_other_domain: size_other_domain,
                                                             throughput_other_domain: throughput_other_domain,
                                                             schedule_uuid: schedule_uuid,
+                                                            schedule_id: schedule.id,
                                                             timestamp: timestamp,
                                                             uuid: uuid)
                 end
@@ -3184,6 +3193,7 @@ class ReportsController < ApplicationController
                                                    delay: delay,
                                                    status: dns_status,
                                                    schedule_uuid: schedule_uuid,
+                                                   schedule_id: schedule.id,
                                                    timestamp: timestamp,
                                                    uuid: uuid)
                 end
@@ -3197,6 +3207,7 @@ class ReportsController < ApplicationController
                                                server_failure_errors: server_failure_errors,
                                                total: dnstests.length,
                                                schedule_uuid: schedule_uuid,
+                                               schedule_id: schedule.id,
                                                timestamp: timestamp,
                                                uuid: uuid)
               when "ativas"

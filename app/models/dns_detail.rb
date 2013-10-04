@@ -13,7 +13,9 @@
 #
 
 class DnsDetail < ActiveRecord::Base
-  attr_accessible :average, :efic, :server_failure_errors, :timeout_errors, :uuid, :schedule_uuid, :total, :timestamp
+  belongs_to :schedule
+  
+  attr_accessible :average, :efic, :server_failure_errors, :timeout_errors, :uuid, :schedule_uuid, :total, :timestamp, :schedule_id
 
   def timeout
     unless total.nil?

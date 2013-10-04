@@ -10,7 +10,7 @@
     <div class="row-fluid">
       <div class="span12">
         <div class="chart-bottom" style="padding-top: 10px;">
-          <div class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="jQuery('#box-<%=@idName%>').remove(); delete graphs['<%=@idName%>']; delete params['<%=@idName%>'];">Remover</div>
+          <div class="btn btn-danger" style="float:right; margin-bottom: 20px" onclick="jQuery('#box-<%=@idName%>').remove(); delete graphs['<%=@idName%>']; delete params['<%=@idName%>']; delete tempUpdtObj['<%=@idName%>'];">Remover</div>
           <a id="export-<%= @idName %>" class="btn btn-success" style="float:right; margin-right: 5px ;margin-bottom: 20px" href="<%= reports_performance_export_url @exportFileName+".csv" %>?<%= params.to_query %>">Exportar
             CSV</a>
           <a id="exportxls-<%= @idName %>" class="btn btn-success" style="float:right; margin-right: 5px ;margin-bottom: 20px" href="<%= reports_performance_export_url @exportFileName+".xls" %>?<%= params.to_query %>">Exportar

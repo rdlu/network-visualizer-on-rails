@@ -6,7 +6,7 @@
 
           <div class="controls">
             <select multiple="true" name="by_state[]" id="by_state">
-              <option name="by_state" value="">Todas</option>
+              <option name="by_state" value="" selected="selected">Todas</option>
               <% Probe.states.each do |state| %>
                   <option value="<%= state.at(1) %>" <%= params[:by_state].to_s == state.at(1).to_s ? "selected=\"selected\"".html_safe : "" %>><%= state.at(1).upcase %></option>
               <% end %>
@@ -104,7 +104,7 @@
 
             <div class="controls">
               <select id="metrics" name="metrics[]">
-                <% Metric.all.each do |m| %>
+                <% Metric.order('"order" ASC').all.each do |m| %>
                     <option value="<%= m.id %>,<%= m.metric_type %>"><%= m.name %></option>
                 <% end %>
               </select>
@@ -239,7 +239,7 @@
     function filter_all() {
         var ufs;
         ufs = jQuery('#by_state').val();
-        ufs = setAllOpt(ufs, 'by_state');
+        //ufs = setAllOpt(ufs, 'by_state');
         var pops = jQuery('#by_pop').val();
         var type = jQuery('#by_type_').val();
         var modem = jQuery('#by_modem').val();
@@ -327,6 +327,16 @@
             jQuery.ajax("<%= performance_reports_url %>", {
                 data: $(this).serialize(),
                 type: 'POST',
+                beforeSend: function () {
+                        jQuery('#graphs-area').prepend('<div id=\"row-loading\" class="row-fluid"><div   class=\"span12\"><div id=\"box-loading\" style="height:100px;"><%=image_tag 'ajax-loader.gif' %> <strong>Requisitando o relatório selecionado, aguarde...</strong></div></div></div>');
+                    },
+                complete: function (obj, status) {
+                    jQuery('#row-loading').remove();
+                },
+                error: function (obj, status) {
+                    console.log(obj);
+                    console.log("Query Error " + status);
+                },
                 success: function (result) {
                     jQuery('#graphs-area').prepend(result);
                 },

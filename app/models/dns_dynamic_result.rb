@@ -12,5 +12,7 @@
 #
 
 class DnsDynamicResult < ActiveRecord::Base
-  attr_accessible :delay, :server, :url, :uuid, :schedule_uuid
+  belongs_to :schedule
+  
+  attr_accessible :delay, :server, :url, :uuid, :schedule_uuid, :schedule_id
 end

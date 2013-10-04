@@ -13,7 +13,9 @@
 #
 
 class DnsResult < ActiveRecord::Base
-  attr_accessible :delay, :server, :url, :uuid, :status, :schedule_uuid, :timestamp
+  belongs_to :schedule
+  
+  attr_accessible :delay, :server, :url, :uuid, :status, :schedule_uuid, :timestamp, :schedule_id
 
   validates :status, presence: true, format: {with: %r{^[A-Z0-9]+$}}
   validates :server, presence: true
