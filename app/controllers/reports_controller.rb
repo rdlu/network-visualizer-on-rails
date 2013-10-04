@@ -2057,9 +2057,86 @@ class ReportsController < ApplicationController
           filters.merge!({url: params[:by_sites]}) unless params[:by_sites].nil? || params[:by_sites][0] == ''
           @raw_results = DnsResult.
               where(filters).order('timestamp ASC')
+
+          @labels = ["Tempo de resposta"]
+          multisite = false
+          if(params[:by_sites].count <= 5 && params[:by_sites][0] != '' && params[:by_dns].count == 1)
+            multisite = true
+            @labels = params[:by_sites]
+          end
+
+          multidns = false
+          if(params[:by_dns].count <= 5 && params[:by_dns][0] != '' && params[:by_sites].count == 1)
+            multidns = true
+            @labels = params[:by_dns].map{|x| "Servidor DNS: #{x}"}
+          end
+
+          @from.all_window_times_until(@to, @window_size.minutes).each do |window|
+            if multisite
+              delays = {}
+              params[:by_sites].each do |site|
+                delays[site] = []
+              end
+            elsif multidns
+              delays = {}
+              params[:by_dns].each do |dns|
+                delays[dns] = []
+              end
+            else
+              delays = []
+            end
+            
+            begin
+              if multisite
+                while @raw_results.peek.timestamp < window+@window_size.minutes
+                  delays[@raw_results.peek.url] << @raw_results.next.delay
+                end
+              elsif multidns
+                while @raw_results.peek.timestamp < window+@window_size.minutes
+                  delays[@raw_results.peek.server] << @raw_results.next.delay
+                end
+              else
+                while @raw_results.peek.timestamp < window+@window_size.minutes
+                  delays << @raw_results.next.delay
+                end
+              end
+            rescue StopIteration
+              #nothing to do
+            end
+            if multisite
+              newline = [window]
+              params[:by_sites].each do |site|
+                unless delays[site].count == 0
+                  newline << (delays[site].reduce(:+)/delays[site].count)*@metric.conversion_rate
+                else
+                  newline << nil
+                end
+              end
+              @results << newline
+            elsif multidns
+              newline = [window]
+              params[:by_dns].each do |dns|
+                unless delays[dns].count == 0
+                  newline << (delays[dns].reduce(:+)/delays[dns].count)*@metric.conversion_rate
+                else
+                  newline << nil
+                end
+              end
+              @results << newline                                         
+            else
+              unless delays.count == 0
+                newline = [window, (delays.reduce(:+)/delays.count)*@metric.conversion_rate]
+                @results << newline
+              else
+                newline = [window, nil]
+                @results << newline
+              end
+            end              
+          end
+
           respond_to do |format|
             format.html { render :layout => false, file: 'reports/performance/dygraphs_dns' }
-            format.json { render json: {results: @raw_results, from: @from.to_i, to: @to.to_i} }
+            format.json { render json: {results: @results, from: @from.to_i, to: @to.to_i} }
             format.csv { render file: 'reports/performance/csv_bruto' }
           end
         when 'dns_efficiency'
@@ -2067,6 +2144,7 @@ class ReportsController < ApplicationController
               where(:schedule_uuid => schedule.uuid).
               where(:timestamp => @from..@to).order('timestamp ASC').all.to_enum
           @results = []
+          @labels = ['Eficiência']
           @from.all_window_times_until(@to, @window_size.minutes).each do |window|
             eficiencies = []
             begin
