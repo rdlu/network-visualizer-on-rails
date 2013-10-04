@@ -3270,7 +3270,7 @@ class ReportsController < ApplicationController
       end
     rescue Exception => e
       Airbrake.notify(e, {
-          :parameters => airbrake_filter_if_filtering(params.to_hash.merge({xml: params[:report].to_s})),
+          :parameters => airbrake_filter_if_filtering(params.to_hash.merge({xml: params[:report].read})),
           :session_data => airbrake_filter_if_filtering(airbrake_session_data),
           :controller => params[:controller],
           :action => params[:action],
