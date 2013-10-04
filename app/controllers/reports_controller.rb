@@ -3061,7 +3061,7 @@ class ReportsController < ApplicationController
                 schedule = probe.schedules_as_destination.last
 
                 @results = Results.create(schedule_id: schedule.id,
-                                          metric_id: metric,
+                                          metric_id: metric.id,
                                           schedule_uuid: schedule_uuid,
                                           uuid: uuid,
                                           metric_name: "throughput_http",
