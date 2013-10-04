@@ -2989,8 +2989,8 @@ class ReportsController < ApplicationController
       probe = Probe.where(ipaddress: user)
       schedule = Schedule.where(destination_id: probe).first
       schedule_uuid = schedule.uuid
-      probe.signal += 1
-      probe.save!
+      #probe.signal += 1
+      #probe.save!
       uuid = report.xpath("report/meas_uuid").children.to_s
       timestamp = DateTime.strptime(report.xpath("report/timestamp").inner_text, '%s')
       agent_type = report.xpath("report/agent_type").children.to_s
