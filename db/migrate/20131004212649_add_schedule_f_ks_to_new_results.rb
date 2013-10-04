@@ -22,11 +22,13 @@ class AddScheduleFKsToNewResults < ActiveRecord::Migration
     add_foreign_key :web_load_results, :schedules, dependent: :delete
     add_foreign_key :dns_details, :schedules, dependent: :delete
 
+=begin
     remove_index :dns_results, :schedule_uuid
     remove_index :dns_dynamic_results, :schedule_uuid
     remove_index :web_load_dynamic_results, :schedule_uuid
     remove_index :web_load_results, :schedule_uuid
     remove_index :dns_details, :schedule_uuid
+=end
 
 =begin
     execute <<-SQL
